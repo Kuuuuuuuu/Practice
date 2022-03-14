@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils\DiscordUtils;
 
+use JsonSerializable;
 use ReturnTypeWillChange;
 
-class DiscordWebhookUtils implements \JsonSerializable
+class DiscordWebhookUtils implements JsonSerializable
 {
 
     protected array $data = [];

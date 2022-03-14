@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils\DiscordUtils;
 
+use DateTime;
+use DateTimeZone;
+
 class DiscordWebhookEmbed
 {
 
@@ -82,9 +85,9 @@ class DiscordWebhookEmbed
         }
     }
 
-    public function setTimestamp(\DateTime $timestamp): void
+    public function setTimestamp(DateTime $timestamp): void
     {
-        $timestamp->setTimezone(new \DateTimeZone("UTC"));
+        $timestamp->setTimezone(new DateTimeZone("UTC"));
         $this->data["timestamp"] = $timestamp->format("Y-m-d\TH:i:s.v\Z");
     }
 }
