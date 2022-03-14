@@ -33,8 +33,8 @@ class InterruptEvent implements Listener
                     Loader::getInstance()->opponent[$damager->getName()] = $player->getName();
                     Loader::getInstance()->CombatTimer[$player->getName()] = 10;
                     Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
-                    $player->sendMessage(Loader::getInstance()->StartCombatMessage);
-                    $damager->sendMessage(Loader::getInstance()->StartCombatMessage);
+                    $player->sendMessage(Loader::getInstance()->message["StartCombat"]);
+                    $damager->sendMessage(Loader::getInstance()->message["StartCombat"]);
                 } else {
                     if (isset(Loader::getInstance()->opponent[$damager->getName()]) and isset(Loader::getInstance()->opponent[$player->getName()])) {
                         if (Loader::getInstance()->opponent[$player->getName()] === $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] === $player->getName()) {

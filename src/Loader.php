@@ -33,12 +33,6 @@ class Loader extends PluginBase
     public $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
-    public string $CantUseWhenCombat = "§b§bHorizon§f » §r§cYou can't use this command while in combat!";
-    public string $StartCombatMessage = "§b§bHorizon§f » §r§aYou Started combat!";
-    public string $ClearCombatMessage = "§b§bHorizon§f » §r§aYou Cleared combat!";
-    public string $StartSkillMessage = "§b§bHorizon§f » §r§aYou Use Skills!";
-    public string $NoPlayer = "§b§bHorizon§f » §r§cPlayer not found!";
-    public string $ClearSkillMessage = "§b§bHorizon§f » §r§aYou Cleared your Skills Cooldown!";
     public array $CombatTimer = [];
     public array $opponent = [];
     public array $Sprinting = [];
@@ -48,12 +42,10 @@ class Loader extends PluginBase
     public array $targetPlayer = [];
     public array $ChatCooldown = [];
     public int $ChatCooldownSec = 1;
-    public string $ChatCooldownMessage = "§b§bHorizon§f » §r§cYou can't chat for {cooldown} seconds!";
     public array $BoxingPoint = [];
     public array $AutoClickWarn = [];
     public int $MaximumCPS = 20;
     public array $ClearChunksWorlds = [];
-    public string $AntiCheatName = "§bGuardian §f» ";
     public array $ToolboxCheck = [];
     public array $PlayerDevice = [];
     public array $PlayerOS = [];

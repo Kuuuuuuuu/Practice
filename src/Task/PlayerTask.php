@@ -60,8 +60,8 @@ class PlayerTask extends Task
                 if (Loader::getInstance()->AutoClickWarn[$name] > 5) {
                     Loader::getInstance()->AutoClickWarn[$name] = 0;
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
-                    Server::getInstance()->broadcastMessage(Loader::getInstance()->AntiCheatName . $message);
-                    $player->kick(Loader::getInstance()->AntiCheatName . "§cYou have been kicked for using §e" . $nowcps . " §cCPS§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
+                    Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
+                    $player->kick(Loader::getInstance()->message["AntiCheatName"] . "§cYou have been kicked for using §e" . $nowcps . " §cCPS§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                 }
             } else {
                 Loader::getInstance()->AutoClickWarn[$name] = 0;

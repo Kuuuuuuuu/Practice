@@ -30,7 +30,7 @@ class PlayerCooldownTask extends Task
                     if ($player->getArmorInventory()->getHelmet()->getId() == ItemIds::SKULL) {
                         $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
                     }
-                    $player->sendMessage(Loader::getInstance()->ClearSkillMessage);
+                    $player->sendMessage(Loader::getInstance()->message["SkillCleared"]);
                     unset(Loader::getInstance()->SkillCooldown[$name]);
                 }
             }
@@ -41,7 +41,7 @@ class PlayerCooldownTask extends Task
                     Loader::getInstance()->CombatTimer[$name] -= 0.05;
                 } else {
                     $player->getXpManager()->setXpProgress(0.0);
-                    $player->sendMessage(Loader::getInstance()->ClearCombatMessage);
+                    $player->sendMessage(Loader::getInstance()->message["StopCombat"]);
                     unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
                     unset(Loader::getInstance()->CombatTimer[$name]);
                     unset(Loader::getInstance()->opponent[$name]);

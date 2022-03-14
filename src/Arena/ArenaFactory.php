@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Arena;
 
+use JsonException;
 use Kohaku\Core\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -64,7 +65,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
 
     public function setFistArena(Player $player, string $world)
@@ -76,7 +77,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function setResistanceArena(Player $player, string $world)
     {
@@ -87,7 +88,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
 
     public function setKitPVPArena(Player $player, string $world)
@@ -99,7 +100,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
 
     public function setBoxingArena(Player $player, string $world)
@@ -111,7 +112,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
 
     public function setParkourArena(Player $player, string $world)
@@ -123,7 +124,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function setComboArena(Player $player, string $world)
     {
@@ -134,7 +135,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function setKnockbackArena(Player $player, string $world)
     {
@@ -145,7 +146,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeFist(Player $player)
     {
@@ -156,7 +157,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeKnockback(Player $player)
     {
@@ -167,7 +168,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeParkour(Player $player)
     {
@@ -178,7 +179,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeBoxing(Player $player)
     {
@@ -189,7 +190,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeResistance(Player $player)
     {
@@ -200,7 +201,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeCombo(Player $player)
     {
@@ -211,7 +212,7 @@ class ArenaFactory
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function removeKitPVP(Player $player)
     {

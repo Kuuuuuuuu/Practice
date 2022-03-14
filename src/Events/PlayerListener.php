@@ -69,7 +69,7 @@ class PlayerListener implements Listener
         }
         if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
             if ($item->getCustomName() === "§r§6Reaper") {
-                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
                         if ($p->getName() !== $name) {
@@ -85,7 +85,7 @@ class PlayerListener implements Listener
                 }
             }
             if ($item->getCustomName() === "§r§6Ultimate Tank") {
-                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 60, 1, false));
@@ -94,7 +94,7 @@ class PlayerListener implements Listener
             if ($item->getCustomName() === "§r§6Ultimate Boxing") {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
             if ($item->getCustomName() === "§r§6Ultimate Bower") {
@@ -102,18 +102,18 @@ class PlayerListener implements Listener
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 60, 3, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 60, 3, false));
-                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
             if ($item->getCustomName() === "§r§6Teleport") {
-                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
                         if ($p->getName() !== $name) {
                             $player->teleport($p->getPosition()->asVector3());
                             Loader::getInstance()->SkillCooldown[$name] = 10;
                         } else {
-                            $player->sendMessage(Loader::getInstance()->NoPlayer);
+                            $player->sendMessage(Loader::getInstance()->message["NoPlayer"]);
                         }
                     }
                 }
@@ -215,7 +215,7 @@ class PlayerListener implements Listener
             if (time() - Loader::getInstance()->ChatCooldown[$player->getName()] < Loader::getInstance()->ChatCooldownSec) {
                 $event->cancel();
                 $time = Loader::getInstance()->ChatCooldownSec - (time() - Loader::getInstance()->ChatCooldown[$player->getName()]);
-                $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", $time], Loader::getInstance()->ChatCooldownMessage));
+                $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", $time], Loader::getInstance()->message["CooldownMessage"]));
             } else {
                 $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
                 $msg = new DiscordWebhookUtils();
@@ -299,7 +299,7 @@ class PlayerListener implements Listener
                 if ($damager->getGamemode() !== Gamemode::CREATIVE() and $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockBackArena())) {
                     if ($dis > 5.5) {
                         $event->cancel();
-                        $message = (Loader::getInstance()->AntiCheatName . "§c" . $name . " §eHas " . $dis . " §cDistance" . "§f(§a" . $damager->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($damager) . "§f)");
+                        $message = (Loader::getInstance()->message["AntiCheatName"] . "§c" . $name . " §eHas " . $dis . " §cDistance" . "§f(§a" . $damager->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($damager) . "§f)");
                         Server::getInstance()->broadcastMessage($message);
                         $damager->kill();
                     }
@@ -446,7 +446,7 @@ class PlayerListener implements Listener
             $msg = explode(" ", $msg);
             if (!in_array($msg[0], Loader::getInstance()->BanCommand)) return;
             $event->cancel();
-            $player->sendMessage(Loader::getInstance()->CantUseWhenCombat);
+            $player->sendMessage(Loader::getInstance()->message["CantUseWantCombat"]);
         }
     }
 }

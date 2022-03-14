@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Commands;
 
+use JsonException;
 use Kohaku\Core\Loader;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
@@ -26,7 +27,7 @@ class CoreCommand extends Command
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {

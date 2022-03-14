@@ -162,12 +162,20 @@ class ArenaUtils
         }
         Loader::getInstance()->db = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
         Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
-        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "bantext.yml", Config::YAML))->getAll();
+        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML))->getAll();
     }
 
     public function reloadConfigs()
     {
-        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "bantext.yml", Config::YAML, array(
+        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
+            "StartCombat" => "§bHorizon§f » §r§aYou Started combat!",
+            "AntiCheatName" => "§bGuardian §f» ",
+            "CooldownMessage" => "§bHorizon§f » §r§cYou can't chat for {cooldown} seconds!",
+            "StopCombat" => "§bHorizon§f » §r§aYou Cleared combat!",
+            "StartSkillMessage" => "§bHorizon§f » §r§aYou Started Skill!",
+            "NoPlayer" => "§bHorizon§f » §r§cPlayer not found!",
+            "SkillCleared" => "§bHorizon§f » §r§aSkill Cleared!",
+            "CantUseWantCombat" => "§bHorizon§f » §r§cYou can't use this command in combat!",
             "BroadcastBanMessage" => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
             "KickBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
             "LoginBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
