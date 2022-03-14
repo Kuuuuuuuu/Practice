@@ -163,16 +163,6 @@ class ArenaUtils
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
         @mkdir(Loader::getInstance()->getDataFolder() . "pkdata/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
-        if (!file_exists(Loader::getInstance()->getDataFolder() . "bantext.yml")) {
-            ArenaUtils::getInstance()->reloadConfigs();
-        }
-        Loader::getInstance()->db = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
-        Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
-        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML))->getAll();
-    }
-
-    public function reloadConfigs()
-    {
         Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
             "StartCombat" => "§bHorizon§f » §r§aYou Started combat!",
             "AntiCheatName" => "§bGuardian §f» ",
@@ -196,7 +186,8 @@ class ArenaUtils
             "InfoUIContent" => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             "InfoUIUnBanButton" => "§aUnban",
         )))->getAll();
-        Loader::getInstance()->getLogger()->info("§aPass √ > §eReload Config");
+        Loader::getInstance()->db = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
+        Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
     }
 
     #[Pure] public static function getInstance(): ArenaUtils
