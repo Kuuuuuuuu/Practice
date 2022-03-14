@@ -6,8 +6,8 @@ namespace Kohaku\Core\Task;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
-use pocketmine\permission\DefaultPermissions;
-use pocketmine\player\GameMode;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -52,23 +52,14 @@ class PlayerTask extends Task
                     $player->setScoreTag($untagpvp);
                 }
             }
-            if (isset(Loader::getInstance()->AutoClickWarn[$name])) {
-                if ($nowcps > Loader::getInstance()->MaximumCPS) {
-                    Loader::getInstance()->AutoClickWarn[$name]++;
-                }
-                if (Loader::getInstance()->AutoClickWarn[$name] > 5) {
-                    Loader::getInstance()->AutoClickWarn[$name] = 0;
-                    $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
-                    Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
-                    $player->kick(Loader::getInstance()->message["AntiCheatName"] . "§cYou have been kicked for using §e" . $nowcps . " §cCPS§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
-                }
-            } else {
-                Loader::getInstance()->AutoClickWarn[$name] = 0;
+            if ($nowcps > Loader::getInstance()->MaximumCPS) {
+                $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
+                Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
             }
             if (isset(Loader::getInstance()->TimerTask[$name])) {
                 if (isset(Loader::getInstance()->TimerData[$name])) {
                     if (Loader::getInstance()->TimerTask[$name] === "yes") {
-                        Loader::getInstance()->TimerData[$name] = Loader::getInstance()->TimerData[$name] + 5;
+                        Loader::getInstance()->TimerData[$name] += 5;
                     } else {
                         Loader::getInstance()->TimerData[$name] = 0;
                     }
@@ -78,10 +69,43 @@ class PlayerTask extends Task
             } else {
                 Loader::getInstance()->TimerTask[$name] = "no";
             }
+            if (isset(Loader::getInstance()->SkillCooldown[$name])) {
+                if (Loader::getInstance()->SkillCooldown[$name] > 0) {
+                    Loader::getInstance()->SkillCooldown[$name] -= 0.05;
+                } else {
+                    if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                        $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                    }
+                    $player->sendMessage(Loader::getInstance()->message["SkillCleared"]);
+                    unset(Loader::getInstance()->SkillCooldown[$name]);
+                }
+            }
+            if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                if (Loader::getInstance()->CombatTimer[$name] > 0) {
+                    $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                    $player->getXpManager()->setXpProgress($percent);
+                    Loader::getInstance()->CombatTimer[$name] -= 0.05;
+                } else {
+                    $player->getXpManager()->setXpProgress(0.0);
+                    $player->sendMessage(Loader::getInstance()->message["StopCombat"]);
+                    unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
+                    unset(Loader::getInstance()->CombatTimer[$name]);
+                    unset(Loader::getInstance()->opponent[$name]);
+                }
+            } else {
+                $player->getXpManager()->setXpProgress(0.0);
+            }
+            if (isset(Loader::getInstance()->ChatCooldown[$name])) {
+                if (Loader::getInstance()->ChatCooldown[$name] > 0) {
+                    Loader::getInstance()->ChatCooldown[$name] -= 0.05;
+                } else {
+                    unset(Loader::getInstance()->ChatCooldown[$name]);
+                }
+            }
             if ($player->getHungerManager()->getFood() < 20) {
                 $player->getHungerManager()->setFood(20);
             }
-            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("plot") and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("plot") and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {

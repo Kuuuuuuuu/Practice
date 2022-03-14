@@ -33,15 +33,19 @@ class TbanCommand extends Command
 
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
-        if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-            if ($args == null) {
-                $this->openPlayerListUI($sender);
+        if ($sender instanceof Player) {
+            if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                if ($args == null) {
+                    $this->openPlayerListUI($sender);
+                } else {
+                    Loader::getInstance()->targetPlayer[$sender->getName()] = $args[0];
+                    $this->openTbanUI($sender);
+                }
             } else {
-                Loader::getInstance()->targetPlayer[$sender->getName()] = $args[0];
-                $this->openTbanUI($sender);
+                $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou cannot execute this command.");
             }
         } else {
-            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou cannot execute this command.");
+            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou can only use this command in-game!");
         }
     }
 

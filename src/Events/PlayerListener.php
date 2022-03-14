@@ -24,7 +24,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerCreationEvent;
@@ -181,6 +180,8 @@ class PlayerListener implements Listener
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
         $player->teleport(new Vector3(255, 6, 255));
         ArenaUtils::getInstance()->DeviceCheck($player);
+        Loader::$cps->initPlayerClickData($player);
+        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
     }
 
     public function onPlayerLog(PlayerPreLoginEvent $event)
@@ -195,14 +196,11 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
+        $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         $player->getEffects()->clear();
-        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eLoading Player Data");
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
-        $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
-        Loader::$cps->initPlayerClickData($player);
-        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aWelcome back to the game!");
-        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 20);
+        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
     }
 
@@ -212,32 +210,17 @@ class PlayerListener implements Listener
         $message = $event->getMessage();
         $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getName() . "§6 > §f" . $message);
         if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
-            if (time() - Loader::getInstance()->ChatCooldown[$player->getName()] < Loader::getInstance()->ChatCooldownSec) {
+            if (Loader::getInstance()->ChatCooldown[$player->getName()] > 0) {
                 $event->cancel();
-                $time = Loader::getInstance()->ChatCooldownSec - (time() - Loader::getInstance()->ChatCooldown[$player->getName()]);
-                $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", $time], Loader::getInstance()->message["CooldownMessage"]));
-            } else {
-                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-                $msg = new DiscordWebhookUtils();
-                $msg2 = str_replace(["@here", "@everyone"], "", $message);
-                $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
-                $web->send($msg);
+                $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$player->getName()]], Loader::getInstance()->message["CooldownMessage"]));
             }
         } else {
-            Loader::getInstance()->ChatCooldown[$player->getName()] = (time() + Loader::getInstance()->ChatCooldownSec);
-        }
-    }
-
-    public function onChangeSkin(PlayerChangeSkinEvent $event)
-    {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if (isset(Loader::getInstance()->SkinCooldown[$name]) and Loader::getInstance()->SkinCooldown[$name] > 0) {
-            $event->cancel();
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou can't change skin for " . floor(Loader::getInstance()->SkinCooldown[$name]) . " seconds!");
-        } else {
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSkin changed!");
-            Loader::getInstance()->SkinCooldown[$name] = 10;
+            $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+            $msg = new DiscordWebhookUtils();
+            $msg2 = str_replace(["@here", "@everyone"], "", $message);
+            $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
+            $web->send($msg);
+            Loader::getInstance()->ChatCooldown[$player->getName()] = 1.5;
         }
     }
 
@@ -255,21 +238,13 @@ class PlayerListener implements Listener
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             unset(Loader::getInstance()->BoxingPoint[$name]);
         }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            unset(Loader::getInstance()->CombatTimer[$name]);
-        }
         if (isset(Loader::getInstance()->opponent[$name])) {
             Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name]] = 0;
             unset(Loader::getInstance()->opponent[$name]);
         }
-        if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
-            unset(Loader::getInstance()->ChatCooldown[$player->getName()]);
-        }
-        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
-            unset(Loader::getInstance()->SkillCooldown[$name]);
-        }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             $player->kill();
+            unset(Loader::getInstance()->CombatTimer[$name]);
         }
     }
 

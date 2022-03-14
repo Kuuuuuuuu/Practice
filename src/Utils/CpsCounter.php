@@ -21,7 +21,7 @@ class CpsCounter
         if (!isset($this->clicksData[mb_strtolower($p->getName())])) {
             $this->initPlayerClickData($p);
         } else {
-            array_unshift($this->clicksData[mb_strtolower($p->getName()) ?? null], microtime(true));
+            array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
         }
     }
 

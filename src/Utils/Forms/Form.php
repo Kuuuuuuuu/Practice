@@ -7,11 +7,12 @@ namespace Kohaku\Core\Utils\Forms;
 
 use pocketmine\form\Form as IForm;
 use pocketmine\player\Player;
+use ReturnTypeWillChange;
 
 abstract class Form implements IForm{
 
     /** @var array */
-    protected $data = [];
+    protected array $data = [];
     /** @var callable|null */
     private $callable;
 
@@ -51,7 +52,7 @@ abstract class Form implements IForm{
     public function processData(&$data) : void {
     }
 
-    public function jsonSerialize(){
+    #[ReturnTypeWillChange] public function jsonSerialize(){
         return $this->data;
     }
 }

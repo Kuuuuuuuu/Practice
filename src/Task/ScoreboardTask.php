@@ -28,11 +28,9 @@ class ScoreboardTask extends Task
             $this->titleIndex++;
             if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $this->sb($this->player);
-            }
-            if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            } else if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $this->sb2($this->player);
-            }
-            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            } else if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $this->Parkour($this->player);
             }
         }

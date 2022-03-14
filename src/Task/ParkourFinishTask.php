@@ -16,7 +16,7 @@ class ParkourFinishTask extends Task
     private Player $player;
     private World $world;
     private array $fallingBlocks = [];
-    private int $amount = 30;
+    private int $amount = 40;
 
     public function __construct(Player $player, World $world)
     {
@@ -30,7 +30,7 @@ class ParkourFinishTask extends Task
             $location = $this->player->getLocation();
             $fallingWool = ArenaUtils::generateFallingWoolBlock($location);
             $this->fallingBlocks[] = $fallingWool;
-            ArenaUtils::playSound("liquid.lavapop", $this->player);
+            ArenaUtils::playSound("block.bamboo.break", $this->player);
             $this->amount--;
             return;
         }

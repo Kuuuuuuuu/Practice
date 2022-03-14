@@ -21,13 +21,16 @@ class ArenaManager
     public function onJoinParkour(Player $player)
     {
         $world = Loader::$arenafac->getParkourArena();
-        if ($world == null) return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cParkour Arena is not set!");
+        if ($world == null) {
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
+        }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getParkourArena());
         $item2 = ItemFactory::getInstance()->get(345, 0, 1);
         $item3 = ItemFactory::getInstance()->get(288, 0, 1);
         $item2->setCustomName("§r§aStop Timer §f| §bClick to use");
         $item3->setCustomName("§r§aBack to Checkpoint §f| §bClick to use");
         $player->getInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
         $player->getInventory()->setItem(0, $item2);
         $player->getInventory()->setItem(8, $item3);
@@ -39,11 +42,14 @@ class ArenaManager
     public function onJoinBoxing(Player $player)
     {
         $world = Loader::$arenafac->getBoxingArena();
-        if ($world == null) return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cBoxing Arena is not set!");
+        if ($world == null) {
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
+        }
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 3, false));
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getBoxingArena());
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         return true;
@@ -52,9 +58,12 @@ class ArenaManager
     public function onJoinFist(Player $player)
     {
         $world = Loader::$arenafac->getFistArena();
-        if ($world == null) return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cFist Arena is not set!");
+        if ($world == null) {
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
+        }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getFistArena());
         $player->getInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
@@ -64,10 +73,13 @@ class ArenaManager
     public function onJoinCombo(Player $player)
     {
         $world = Loader::$arenafac->getFistArena();
-        if ($world == null) return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cCombo Arena is not set!");
+        if ($world == null) {
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
+        }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getComboArena());
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
+        $player->getEffects()->clear();
         $item = ItemFactory::getInstance()->get(466, 0, 3);
         $player->getInventory()->addItem($item);
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())->getSafeSpawn());
@@ -78,9 +90,13 @@ class ArenaManager
     public function onJoinKnockback(Player $player)
     {
         $world = Loader::$arenafac->getKnockbackArena();
-        if ($world == null) return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cKnockback Arena is not set!");
+        if ($world == null) {
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
+        }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getKnockbackArena());
         $player->getInventory()->clearAll();
+        $player->getArmorInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 99999, 3, false));
         $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 99999, 4, false));
         $arrow = ItemFactory::getInstance()->get(262, 0, 1);
@@ -105,26 +121,28 @@ class ArenaManager
     public function onJoinKitpvp(Player $player)
     {
         if (Loader::$arenafac->getKitPVPArena() == null) {
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§l§cArena is not ready!");
-            return;
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getKitPVPArena());
         $player->getInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getSafeSpawn());
         ArenaUtils::getInstance()->randomSpawn($player);
+        return true;
     }
 
     public function onJoinResistance(Player $player)
     {
         if (Loader::$arenafac->getKitPVPArena() == null) {
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§l§cArena is not ready!");
-            return;
+            return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getResistanceArena());
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getSafeSpawn());
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 99999, 3, false));
+        $player->getEffects()->clear();
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())->getSafeSpawn());
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 3, false));
+        return true;
     }
 }

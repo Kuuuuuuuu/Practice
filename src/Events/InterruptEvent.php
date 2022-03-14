@@ -18,7 +18,6 @@ class InterruptEvent implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $player = $event->getEntity();
-
         if ($event->getCause() == EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
             $damager = $event->getDamager();
             if ($event instanceof EntityDamageByChildEntityEvent) {

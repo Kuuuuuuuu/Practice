@@ -15,50 +15,46 @@ class ArenaFactory
 
     public function getPlayers(mixed $arena): string
     {
-        if (!Server::getInstance()->getWorldManager()->getWorldByName($arena)) {
-            return "§4Unknown Arena";
-        } else {
-            return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers());
-        }
+        return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers()) ?? "Error";
     }
 
-    public function getResistanceArena()
+    public function getResistanceArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Resistance");
     }
 
-    public function getFistArena()
+    public function getFistArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Fist");
     }
 
-    public function getBoxingArena()
+    public function getBoxingArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Boxing");
     }
 
-    public function getParkourArena()
+    public function getParkourArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Parkour");
     }
 
-    public function getComboArena()
+    public function getComboArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Combo");
     }
 
-    public function getKnockbackArena()
+    public function getKnockbackArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("Knockback");
     }
 
-    public function getKitPVPArena()
+    public function getKitPVPArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         return $data->get("KitPVP");

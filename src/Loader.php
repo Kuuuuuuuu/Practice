@@ -38,17 +38,13 @@ class Loader extends PluginBase
     public array $JumpCount = [];
     public array $targetPlayer = [];
     public array $ChatCooldown = [];
-    public int $ChatCooldownSec = 1;
     public array $BoxingPoint = [];
-    public array $AutoClickWarn = [];
     public int $MaximumCPS = 20;
-    public array $ClearChunksWorlds = [];
     public array $ToolboxCheck = [];
     public array $PlayerDevice = [];
     public array $PlayerOS = [];
     public array $PlayerControl = [];
     public array $SkillCooldown = [];
-    public array $SkinCooldown = [];
     public int $RestartTime = 31;
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];

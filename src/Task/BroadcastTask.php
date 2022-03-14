@@ -10,12 +10,7 @@ use pocketmine\scheduler\Task;
 class BroadcastTask extends Task
 {
 
-    private int $line;
-
-    public function __construct()
-    {
-        $this->line = -1;
-    }
+    private int $line = -1;
 
     public function onRun(): void
     {
@@ -25,6 +20,8 @@ class BroadcastTask extends Task
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $online) {
             $online->sendMessage($msg);
         }
-        if ($this->line === count($cast) - 1) $this->line = -1;
+        if ($this->line === count($cast) - 1) {
+            $this->line = -1;
+        }
     }
 }

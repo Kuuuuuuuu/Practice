@@ -10,7 +10,7 @@ use pocketmine\form\FormValidationException;
 class ModalForm extends Form {
 
     /** @var string */
-    private $content = "";
+    private string $content = "";
 
     /**
      * @param callable|null $callable

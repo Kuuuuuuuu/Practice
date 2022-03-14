@@ -26,7 +26,7 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
-            $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
+            $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleported to Hub!");
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();

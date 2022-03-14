@@ -18,7 +18,6 @@ use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\ClearLag;
-use Kohaku\Core\Task\PlayerCooldownTask;
 use Kohaku\Core\Task\PlayerTask;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
@@ -216,7 +215,6 @@ class ArenaUtils
     {
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ClearLag(), 2500);
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerCooldownTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 11000);
     }
 

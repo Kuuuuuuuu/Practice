@@ -19,7 +19,7 @@ class PlayerData
 
     public function __construct(string $player)
     {
-        $this->player = $player;
+        $this->player = $player ?? null;
         $path = $this->getPath();
         if (is_file($path)) {
             $data = yaml_parse_file($path);
