@@ -74,10 +74,10 @@ class ScoreboardTask extends Task
             2 => "§bOnline§f: §6$on",
             3 => "§bPing§f: §6$ping",
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            5 => "§7---------------"
+            6 => "§7---------------"
         ];
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-            $line[6] = "§bSkillCD§f: §6$skill";
+            $lines[5] = "§bSkillCD§f: §6$skill";
         }
         if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
         Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);

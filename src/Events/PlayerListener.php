@@ -111,8 +111,6 @@ class PlayerListener implements Listener
                         if ($p->getName() !== $name) {
                             $player->teleport($p->getPosition()->asVector3());
                             Loader::getInstance()->SkillCooldown[$name] = 10;
-                        } else {
-                            $player->sendMessage(Loader::getInstance()->message["NoPlayer"]);
                         }
                     }
                 }
