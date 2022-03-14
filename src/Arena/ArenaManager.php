@@ -102,15 +102,6 @@ class ArenaManager
         return true;
     }
 
-    public function onJoinRelax(Player $player)
-    {
-        Server::getInstance()->getWorldManager()->loadWorld("plot");
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName("plot")->getSafeSpawn());
-        $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
-    }
-
     public function onJoinKitpvp(Player $player)
     {
         if (Loader::$arenafac->getKitPVPArena() == null) {

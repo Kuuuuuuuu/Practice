@@ -40,21 +40,18 @@ class FormUtils
                     Loader::$arena->onJoinBoxing($player);
                     break;
                 case 2:
-                    Loader::$arena->onJoinRelax($player);
-                    break;
-                case 3:
                     Loader::$arena->onJoinFist($player);
                     break;
-                case 4:
+                case 3:
                     Loader::$arena->onJoinCombo($player);
                     break;
-                case 5:
+                case 4:
                     Loader::$arena->onJoinKnockback($player);
                     break;
-                case 6:
+                case 5:
                     Loader::$arena->onJoinResistance($player);
                     break;
-                case 7:
+                case 6:
                     $this->formkit($player);
                     break;
                 default:
@@ -66,7 +63,6 @@ class FormUtils
         $form->setTitle("§bHorizon §eMenu");
         $form->addButton("§aParkour\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
         $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
-        $form->addButton("§aCreative\n§bPlayers: §f" . Loader::$arenafac->getPlayers("plot"), 0, "textures/items/diamond.png");
         $form->addButton("§aFist\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getFistArena() ?? null) ?? 0, 0, "textures/items/snowball.png");
         $form->addButton("§aCombo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getComboArena() ?? null) ?? 0, 0, "textures/items/apple.png");
         $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
