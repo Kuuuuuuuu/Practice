@@ -125,9 +125,6 @@ class PlayerListener implements Listener
                 $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-        } else if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-            return;
         }
         if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
