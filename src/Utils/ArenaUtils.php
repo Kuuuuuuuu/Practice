@@ -214,7 +214,7 @@ class ArenaUtils
 
     private function registerTasks(): void
     {
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerTask(), 5);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ClearLag(), 2500);
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerCooldownTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 11000);
