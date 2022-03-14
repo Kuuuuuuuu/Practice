@@ -17,7 +17,7 @@ class PlayerData
     private int $deaths = 0;
     private mixed $data = null;
 
-    public function __construct($player)
+    public function __construct(string $player)
     {
         $this->player = $player;
         $path = $this->getPath();

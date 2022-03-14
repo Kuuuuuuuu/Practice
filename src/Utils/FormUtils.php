@@ -190,32 +190,15 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    {
-                        if (!isset(Loader::getInstance()->Sprinting[$player->getName()])) {
-                            Loader::getInstance()->Sprinting[$player->getName()] = true;
-                            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprinting §aenabled");
-                        } else {
-                            if (Loader::getInstance()->Sprinting[$player->getName()] === true) {
-                                Loader::getInstance()->Sprinting[$player->getName()] = false;
-                                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprinting §cdisabled");
-                            } else {
-                                Loader::getInstance()->Sprinting[$player->getName()] = true;
-                                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprinting §aenabled");
-                            }
-                        }
-                    }
-                    break;
-                case 1:
                     $this->NickForm($player);
                     break;
-                case 2:
+                case 1:
                     $this->reportForm($player);
                     break;
             }
             return true;
         });
         $form->setTitle("§bHorizon §eMenu");
-        $form->addButton("§bAuto §aSprint", 0, "textures/items/name_tag.png");
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $player->sendForm($form);

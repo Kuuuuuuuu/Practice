@@ -7,7 +7,8 @@ namespace Kohaku\Core\Entity;
 use pocketmine\entity\object\FallingBlock;
 use pocketmine\nbt\tag\CompoundTag;
 
-class FallingWool extends FallingBlock {
+class FallingWool extends FallingBlock
+{
 
     protected function initEntity(CompoundTag $nbt): void
     {
@@ -26,6 +27,7 @@ class FallingWool extends FallingBlock {
         if (!$this->isFlaggedForDespawn()) {
             if ($this->onGround) {
                 $this->flagForDespawn();
+                $this->close();
             }
         }
         return true;

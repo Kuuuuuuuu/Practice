@@ -13,13 +13,12 @@ use pocketmine\Server;
 class ScoreboardTask extends Task
 {
 
-    public int $titleIndex = 0;
+    private int $titleIndex = 0;
     private Player $player;
     private array $titles = ["§bH", "§bHo", "§bHor", "§bHori", "§bHoriz", "§bHorizo", "§bHorizon", "§k§f&&&&&&&&&&"];
 
     public function __construct(Player $player)
     {
-        $this->titleIndex = 0;
         $this->player = $player;
     }
 
@@ -42,14 +41,7 @@ class ScoreboardTask extends Task
     public function sb(Player $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $tpsColor = "§a";
         $server = Server::getInstance();
-        if ($server->getTicksPerSecond() < 17) {
-            $tpsColor = "§e";
-        }
-        if ($server->getTicksPerSecond() < 12) {
-            $tpsColor = "§c";
-        }
         $data = ArenaUtils::getInstance()->getData($player->getName());
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
@@ -60,7 +52,7 @@ class ScoreboardTask extends Task
             2 => "§bOnline§f: §6$on",
             3 => "§d",
             4 => "§bPing§f: §6$ping",
-            5 => "§bTPS§f: $tpsColor{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
+            5 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             6 => "§a",
             7 => "§bK§f: §6$kills",
             8 => "§bD§f: §6$deaths",
@@ -76,20 +68,13 @@ class ScoreboardTask extends Task
     public function sb2(Player $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $tpsColor = "§a";
         $server = Server::getInstance();
-        if ($server->getTicksPerSecond() < 17) {
-            $tpsColor = "§e";
-        }
-        if ($server->getTicksPerSecond() < 12) {
-            $tpsColor = "§c";
-        }
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
             2 => "§bOnline§f: §6$on",
             3 => "§bPing§f: §6$ping",
-            4 => "§bTPS§f: $tpsColor{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
+            4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
         if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;

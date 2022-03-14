@@ -20,22 +20,17 @@ class HorizonPlayer extends Player
             return;
         }
         $attackSpeed = $source->getAttackCooldown();
-        if ($attackSpeed < 0) {
-            $attackSpeed = 0;
-        }
+        if ($attackSpeed < 0) $attackSpeed = 0;
         if ($source instanceof EntityDamageByEntityEvent) {
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
                     $attackSpeed = 1;
-                }
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
                     $attackSpeed = 8;
-                }
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
                     $attackSpeed = 7;
-                }
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                     $attackSpeed = 7;
                 }
             }
@@ -48,16 +43,13 @@ class HorizonPlayer extends Player
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
             $this->xzKB = 0.233;
             $this->yKb = 0.166;
-        }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             $this->xzKB = 0.33;
             $this->yKb = 0.29;
-        }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
             $this->xzKB = 0.32;
             $this->yKb = 0.311;
-        }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
             $this->xzKB = 0.32;
             $this->yKb = 0.311;
         }

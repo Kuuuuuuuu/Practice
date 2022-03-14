@@ -41,6 +41,7 @@ class ParkourFinishTask extends Task
             }
             if (!$fallingBlock->isFlaggedForDespawn()) {
                 $fallingBlock->flagForDespawn();
+                $fallingBlock->close();
             }
         }
     }
@@ -49,8 +50,6 @@ class ParkourFinishTask extends Task
     {
         $player = $this->player;
         $amount = $this->amount;
-        return ($amount >= 1) &&
-            ($player->isOnline()) &&
-            ($player->getWorld() === $this->world);
+        return ($amount >= 1) && ($player->isOnline()) && ($player->getWorld() === $this->world);
     }
 }

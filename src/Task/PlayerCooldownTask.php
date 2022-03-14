@@ -3,7 +3,6 @@
 namespace Kohaku\Core\Task;
 
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\scheduler\Task;

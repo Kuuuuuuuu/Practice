@@ -6,7 +6,6 @@ namespace Kohaku\Core\Task;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
-use pocketmine\item\ItemIds;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
 use pocketmine\scheduler\Task;
@@ -82,25 +81,6 @@ class PlayerTask extends Task
             }
             if ($player->getHungerManager()->getFood() < 20) {
                 $player->getHungerManager()->setFood(20);
-            }
-            if ($player->getInventory()->getItemInHand()->getId() === ItemIds::TNT or $player->getInventory()->getItemInHand()->getId() === ItemIds::BUCKET) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cThis Item is not allowed in this world!");
-                $player->getCursorInventory()->clearAll();
-            }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("plot")) {
-                if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                    if ($player->getGamemode() !== GameMode::CREATIVE()) {
-                        $player->setGamemode(GameMode::CREATIVE());
-                        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aNow you are in §eCreative Mode§a!");
-                    }
-                }
-            } else {
-                if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                    if ($player->getGamemode() !== GameMode::ADVENTURE()) {
-                        $player->setGamemode(GameMode::ADVENTURE());
-                        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aNow you are in §eAdventure Mode§a!");
-                    }
-                }
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("plot") and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("plot") and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));

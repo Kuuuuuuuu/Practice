@@ -35,7 +35,6 @@ class Loader extends PluginBase
     public array $BanCommand = ["hub"];
     public array $CombatTimer = [];
     public array $opponent = [];
-    public array $Sprinting = [];
     public array $TimerData = [];
     public array $TimerTask = [];
     public array $JumpCount = [];

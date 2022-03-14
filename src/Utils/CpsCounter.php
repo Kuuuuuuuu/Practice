@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use pocketmine\player\Player;
-use pocketmine\Server;
 use function array_filter;
 use function array_unshift;
 use function count;
@@ -17,20 +16,19 @@ class CpsCounter
 
     public array $clicksData = [];
 
+    public function addClick(Player $p): void
+    {
+        if (!isset($this->clicksData[mb_strtolower($p->getName())])) {
+            $this->initPlayerClickData($p);
+        } else {
+            array_unshift($this->clicksData[mb_strtolower($p->getName()) ?? null], microtime(true));
+        }
+    }
+
     public function initPlayerClickData(Player $p): void
     {
         $this->clicksData[mb_strtolower($p->getName())] = [];
     }
-
-    public function addClick(Player $p): void
-    {
-        try {
-            array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
-        } catch (\Exception $e) {
-            Server::getInstance()->getLogger()->error($e);
-        }
-    }
-
 
     public function getClicks(Player $player, float $deltaTime = 1.0, int $roundPrecision = 1): float
     {

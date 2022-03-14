@@ -10,7 +10,7 @@ use pocketmine\Server;
 class DiscordWebhook
 {
 
-    protected string $url;
+    private string $url;
 
     public function __construct(string $url)
     {

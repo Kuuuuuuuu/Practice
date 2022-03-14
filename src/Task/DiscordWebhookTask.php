@@ -12,8 +12,8 @@ use pocketmine\scheduler\AsyncTask;
 class DiscordWebhookTask extends AsyncTask
 {
 
-    protected DiscordWebhook $webhook;
-    protected DiscordWebhookUtils $message;
+    private DiscordWebhook $webhook;
+    private DiscordWebhookUtils $message;
 
     public function __construct(DiscordWebhook $webhook, DiscordWebhookUtils $message)
     {

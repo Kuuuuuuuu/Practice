@@ -10,7 +10,7 @@ use DateTimeZone;
 class DiscordWebhookEmbed
 {
 
-    protected array $data = [];
+    private array $data = [];
 
     public function asArray(): array
     {

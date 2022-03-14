@@ -10,7 +10,7 @@ use ReturnTypeWillChange;
 class DiscordWebhookUtils implements JsonSerializable
 {
 
-    protected array $data = [];
+    private array $data = [];
 
     public function setContent(string $content): void
     {

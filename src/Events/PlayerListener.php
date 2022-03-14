@@ -332,13 +332,6 @@ class PlayerListener implements Listener
                 $player->kill();
             }
         }
-        if (isset(Loader::getInstance()->Sprinting[$player->getName()])) {
-            if (Loader::getInstance()->Sprinting[$player->getName()] === true and !$player->isSprinting()) {
-                $player->toggleSprint(true);
-            }
-        } else {
-            Loader::getInstance()->Sprinting[$player->getName()] = false;
-        }
         $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y - 0.5, $player->getPosition()->asPosition()->z));
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
