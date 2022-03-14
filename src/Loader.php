@@ -30,7 +30,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    public $message;
+    public mixed $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
     public array $CombatTimer = [];
