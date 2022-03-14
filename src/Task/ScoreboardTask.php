@@ -67,6 +67,7 @@ class ScoreboardTask extends Task
     {
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
+        $skill = Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0;
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
@@ -75,6 +76,9 @@ class ScoreboardTask extends Task
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+            $line[6] = "§bSkillCD§f: §6$skill";
+        }
         if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
         Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
         foreach ($lines as $line => $content)
