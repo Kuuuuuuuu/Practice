@@ -26,8 +26,6 @@ class InterruptEvent implements Listener
             }
             if ($player instanceof Player and $damager instanceof Player) {
                 if ($damager->getGamemode() === 1 or $player->getGamemode() === 1) return;
-                if ($damager->getGamemode() === 1 and $player->getGamemode() === 1) return;
-                if ($damager->getGamemode() === 1 and $player->getGamemode() === 0) return;
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) return;
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) return;
                 if (isset(Loader::getInstance()->inSumo[$damager->getName()]) and Loader::getInstance()->inSumo[$damager->getName()] === true) return;
@@ -61,16 +59,13 @@ class InterruptEvent implements Listener
                                 }
                             }
                         }
-                    }
-                    if (isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
+                    } else if (isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getInstance()->getPrefixCore() . "§cDon't Interrupt!");
-                    }
-                    if (!isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()])) {
+                    } else if (!isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()])) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getInstance()->getPrefixCore() . "§cDon't Interrupt!");
-                    }
-                    if (isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()]) and Loader::getInstance()->opponent[$player->getName()] !== $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] !== $player->getName()) {
+                    } else if (isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()]) and Loader::getInstance()->opponent[$player->getName()] !== $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] !== $player->getName()) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYour Opponent is " . Loader::getInstance()->opponent[$damager->getName() ?? null] ?? null);
                     }
