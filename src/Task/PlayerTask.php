@@ -68,8 +68,7 @@ class PlayerTask extends Task
             if (isset(Loader::getInstance()->TimerTask[$name])) {
                 if (isset(Loader::getInstance()->TimerData[$name])) {
                     if (Loader::getInstance()->TimerTask[$name] === "yes") {
-                        $now = Loader::getInstance()->TimerData[$name] + 5;
-                        Loader::getInstance()->TimerData[$name] = $now;
+                        Loader::getInstance()->TimerData[$name] = Loader::getInstance()->TimerData[$name] + 5;
                     } else {
                         Loader::getInstance()->TimerData[$name] = 0;
                     }

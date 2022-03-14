@@ -16,9 +16,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CpsCounter;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
-use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use SQLite3;
 
@@ -77,11 +75,6 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
-        foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
-            if ($interface instanceof RakLibInterface) {
-                $interface->setPacketLimit(9999999999);
-            }
-        }
         ArenaUtils::getInstance()->Start();
         $this->saveResource("config.yml");
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");

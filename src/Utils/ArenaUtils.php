@@ -29,6 +29,7 @@ use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
+use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
@@ -135,6 +136,11 @@ class ArenaUtils
         $this->registerEvents();
         $this->registerTasks();
         $this->registerEntity();
+        foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
+            if ($interface instanceof RakLibInterface) {
+                $interface->setPacketLimit(9999999999);
+            }
+        }
     }
 
     public function loadallworlds()
