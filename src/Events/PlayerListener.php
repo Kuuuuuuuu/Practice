@@ -202,7 +202,7 @@ class PlayerListener implements Listener
         $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         Loader::$cps->initPlayerClickData($player);
         $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aWelcome back to the game!");
-        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 40);
+        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 20);
         ArenaUtils::getInstance()->GiveItem($player);
     }
 
