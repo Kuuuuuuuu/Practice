@@ -52,12 +52,9 @@ class FormUtils
                     Loader::$arena->onJoinKnockback($player);
                     break;
                 case 6:
-                    ArenaUtils::getInstance()->JoinRandomArenaSumo($player);
-                    break;
-                case 7:
                     Loader::$arena->onJoinResistance($player);
                     break;
-                case 8:
+                case 7:
                     $this->formkit($player);
                     break;
                 default:
@@ -73,7 +70,6 @@ class FormUtils
         $form->addButton("§aFist\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getFistArena() ?? null) ?? 0, 0, "textures/items/snowball.png");
         $form->addButton("§aCombo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getComboArena() ?? null) ?? 0, 0, "textures/items/apple.png");
         $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
-        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers("sumo"), 0, "textures/items/ender_pearl.png");
         $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/diamond_axe.png");
         $player->sendForm($form);

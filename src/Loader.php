@@ -9,17 +9,18 @@ declare(strict_types=1);
 namespace Kohaku\Core;
 
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CpsCounter;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
-use Kohaku\Core\Utils\SumoYamlProvider;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use SQLite3;
 
 class Loader extends PluginBase
 {
@@ -29,9 +30,8 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    private static ?SumoYamlProvider $SumoLoader;
     public $message;
-    public \SQLite3 $db;
+    public SQLite3 $db;
     public array $BanCommand = ["hub"];
     public string $CantUseWhenCombat = "§b§bHorizon§f » §r§cYou can't use this command while in combat!";
     public string $StartCombatMessage = "§b§bHorizon§f » §r§aYou Started combat!";
@@ -54,19 +54,12 @@ class Loader extends PluginBase
     public int $MaximumCPS = 20;
     public array $ClearChunksWorlds = [];
     public string $AntiCheatName = "§bGuardian §f» ";
-    public array $SumoTimer = [];
     public array $ToolboxCheck = [];
     public array $PlayerDevice = [];
     public array $PlayerOS = [];
     public array $PlayerControl = [];
     public array $SkillCooldown = [];
-    public array $LeapCooldown = [];
-    public array $SumoArena = [];
-    public array $SumoSetup = [];
-    public array $SumoData = [];
-    public array $inSumo = [];
     public array $SkinCooldown = [];
-    public array $PlayerSleep = [];
     public int $RestartTime = 31;
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
@@ -89,7 +82,6 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$SumoLoader = new SumoYamlProvider();
     }
 
     public function onEnable(): void
@@ -100,18 +92,16 @@ class Loader extends PluginBase
             }
         }
         ArenaUtils::getInstance()->Start();
-        self::$SumoLoader->loadArenas();
         $this->saveResource("config.yml");
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     #[Pure] public function onDisable(): void
     {
-        self::$SumoLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
     }
 

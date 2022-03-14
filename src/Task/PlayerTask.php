@@ -19,9 +19,6 @@ class PlayerTask extends Task
     {
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            if (!isset(Loader::getInstance()->inSumo[$name])) {
-                Loader::getInstance()->inSumo[$name] = false;
-            }
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
             $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
@@ -50,20 +47,10 @@ class PlayerTask extends Task
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->setScoreTag($tagparkour);
             } else {
-                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("sumo")) {
+                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
                     $player->setScoreTag($tagpvp);
                 } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                     $player->setScoreTag($untagpvp);
-                }
-            }
-            if (isset(Loader::getInstance()->inSumo[$name]) and Loader::getInstance()->inSumo[$name] === true) {
-                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    Loader::getInstance()->inSumo[$name] = false;
-                }
-                if ($player->getPosition()->getY() < 20) {
-                    Loader::getInstance()->inSumo[$name] = false;
-                    $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
-                    ArenaUtils::getInstance()->addDeath($player);
                 }
             }
             if (isset(Loader::getInstance()->AutoClickWarn[$name])) {

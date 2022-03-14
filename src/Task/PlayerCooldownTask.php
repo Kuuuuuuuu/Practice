@@ -15,17 +15,6 @@ class PlayerCooldownTask extends Task
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            if (isset(Loader::getInstance()->PlayerSleep[$name])) {
-                if (Loader::getInstance()->PlayerSleep[$name] > 0) {
-                    Loader::getInstance()->PlayerSleep[$name] -= 0.05;
-                } else {
-                    $player->setImmobile(false);
-                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aWelcome back to the game!");
-                    Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 40);
-                    ArenaUtils::getInstance()->GiveItem($player);
-                    unset(Loader::getInstance()->PlayerSleep[$name]);
-                }
-            }
             if (isset(Loader::getInstance()->SkinCooldown[$name])) {
                 if (Loader::getInstance()->SkinCooldown[$name] > 0) {
                     Loader::getInstance()->SkinCooldown[$name] -= 0.05;

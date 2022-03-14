@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\RestartCommand;
-use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
@@ -35,6 +33,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
+use SQLite3;
 
 class ArenaUtils
 {
@@ -161,7 +160,7 @@ class ArenaUtils
         if (!file_exists(Loader::getInstance()->getDataFolder() . "bantext.yml")) {
             ArenaUtils::getInstance()->reloadConfigs();
         }
-        Loader::getInstance()->db = new \SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
+        Loader::getInstance()->db = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
         Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
         Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "bantext.yml", Config::YAML))->getAll();
     }
@@ -198,7 +197,6 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("tcheck", new TcheckCommand());
         Server::getInstance()->getCommandMap()->register("tps", new TpsCommand());
         Server::getInstance()->getCommandMap()->register("core", new CoreCommand());
-        Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("Restart", new RestartCommand());
     }
 
@@ -266,9 +264,6 @@ class ArenaUtils
             if (isset(Loader::getInstance()->CombatTimer[$dname])) {
                 unset(Loader::getInstance()->CombatTimer[$dname]);
             }
-            if (isset(Loader::getInstance()->LeapCooldown[$name])) {
-                unset(Loader::getInstance()->LeapCooldown[$name]);
-            }
             if (isset(Loader::getInstance()->SkillCooldown[$name])) {
                 unset(Loader::getInstance()->SkillCooldown[$name]);
             }
@@ -330,49 +325,5 @@ class ArenaUtils
             $item = ItemFactory::getInstance()->get(466, 0, 3);
             $player->getInventory()->addItem($item);
         }
-    }
-
-    public function JoinRandomArenaSumo(Player $player)
-    {
-        $arena = $this->getRandomSumoArena();
-        if (!is_null($arena)) {
-            $arena->joinToArena($player);
-            return;
-        }
-        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§e All the arenas are full!");
-    }
-
-    public function getRandomSumoArena(): ?SumoHandler
-    {
-        $availableArenas = [];
-        foreach (Loader::getInstance()->SumoArena as $index => $arena) {
-            $availableArenas[$index] = $arena;
-        }
-        foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 || $arena->setup) {
-                unset($availableArenas[$index]);
-            }
-        }
-        $arenasByPlayers = [];
-        foreach ($availableArenas as $index => $arena) {
-            $arenasByPlayers[$index] = count($arena->players);
-        }
-        arsort($arenasByPlayers);
-        $top = -1;
-        $availableArenas = [];
-        foreach ($arenasByPlayers as $index => $players) {
-            if ($top == -1) {
-                $top = $players;
-                $availableArenas[] = $index;
-            } else {
-                if ($top == $players) {
-                    $availableArenas[] = $index;
-                }
-            }
-        }
-        if (empty($availableArenas)) {
-            return null;
-        }
-        return Loader::getInstance()->SumoArena[$availableArenas[array_rand($availableArenas)]];
     }
 }

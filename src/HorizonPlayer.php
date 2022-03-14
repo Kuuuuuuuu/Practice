@@ -38,9 +38,6 @@ class HorizonPlayer extends Player
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                     $attackSpeed = 7;
                 }
-                if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("sumo")) {
-                    $attackSpeed = 7;
-                }
             }
         }
         $this->attackTime = $attackSpeed;
@@ -61,10 +58,6 @@ class HorizonPlayer extends Player
             $this->yKb = 0.311;
         }
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
-        }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("sumo")) {
             $this->xzKB = 0.32;
             $this->yKb = 0.311;
         }

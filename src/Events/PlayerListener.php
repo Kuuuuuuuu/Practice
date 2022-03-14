@@ -8,9 +8,11 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Events;
 
+use JsonException;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
+use Kohaku\Core\Task\ScoreboardTask;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
@@ -65,75 +67,68 @@ class PlayerListener implements Listener
         if ($item->getCustomName() === "§r§bPlay") {
             Loader::$form->Form1($player);
         }
-        if ($item->getCustomName() === "§r§6Reaper") {
-            if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-                return;
-            }
-            $player->sendMessage(Loader::getInstance()->StartSkillMessage);
-            foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-                if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-                    if ($p->getName() !== $name) {
-                        if ($player->getPosition()->distance($p->getPosition()) <= 10) {
-                            $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
-                            $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
-                            $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
-                            $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
-                            Loader::getInstance()->SkillCooldown[$name] = 10;
+        if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
+            if ($item->getCustomName() === "§r§6Reaper") {
+                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                foreach (Server::getInstance()->getOnlinePlayers() as $p) {
+                    if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+                        if ($p->getName() !== $name) {
+                            if ($player->getPosition()->distance($p->getPosition()) <= 10) {
+                                $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
+                                $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
+                                $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
+                                $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+                                Loader::getInstance()->SkillCooldown[$name] = 10;
+                            }
                         }
                     }
                 }
             }
-        }
-        if ($item->getCustomName() === "§r§6Ultimate Tank") {
-            if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-                return;
+            if ($item->getCustomName() === "§r§6Ultimate Tank") {
+                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 60, 1, false));
+                Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-            $player->sendMessage(Loader::getInstance()->StartSkillMessage);
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 60, 1, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 60, 1, false));
-            Loader::getInstance()->SkillCooldown[$name] = 10;
-        }
-        if ($item->getCustomName() === "§r§6Ultimate Boxing") {
-            if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-                return;
+            if ($item->getCustomName() === "§r§6Ultimate Boxing") {
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
+                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-            $player->sendMessage(Loader::getInstance()->StartSkillMessage);
-            Loader::getInstance()->SkillCooldown[$name] = 10;
-        }
-        if ($item->getCustomName() === "§r§6Ultimate Bower") {
-            if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-                return;
+            if ($item->getCustomName() === "§r§6Ultimate Bower") {
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 60, 3, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 60, 3, false));
+                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 60, 3, false));
-            $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 60, 3, false));
-            $player->sendMessage(Loader::getInstance()->StartSkillMessage);
-            Loader::getInstance()->SkillCooldown[$name] = 10;
-        }
-        if ($item->getCustomName() === "§r§6Teleport") {
-            if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
-                return;
-            }
-            $player->sendMessage(Loader::getInstance()->StartSkillMessage);
-            foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-                if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-                    if ($p->getName() !== $name) {
-                        $player->teleport($p->getPosition()->asVector3());
-                        Loader::getInstance()->SkillCooldown[$name] = 10;
-                    } else {
-                        $player->sendMessage(Loader::getInstance()->NoPlayer);
+            if ($item->getCustomName() === "§r§6Teleport") {
+                $player->sendMessage(Loader::getInstance()->StartSkillMessage);
+                foreach (Server::getInstance()->getOnlinePlayers() as $p) {
+                    if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+                        if ($p->getName() !== $name) {
+                            $player->teleport($p->getPosition()->asVector3());
+                            Loader::getInstance()->SkillCooldown[$name] = 10;
+                        } else {
+                            $player->sendMessage(Loader::getInstance()->NoPlayer);
+                        }
                     }
                 }
             }
+            if ($item->getCustomName() === "§r§eLeap§r") {
+                $directionvector = $player->getDirectionVector()->multiply(4 / 2);
+                $dx = $directionvector->getX();
+                $dy = $directionvector->getY();
+                $dz = $directionvector->getZ();
+                $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
+                Loader::getInstance()->SkillCooldown[$name] = 10;
+            }
+        } else if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
+            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§cYou can't use this skill for " . floor(Loader::getInstance()->SkillCooldown[$name]) . " §cseconds");
+            return;
         }
         if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
@@ -148,17 +143,6 @@ class PlayerListener implements Listener
             $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
             $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleport to Checkpoint");
             $player->teleport(new Vector3($config->get("X"), $config->get("Y"), $config->get("Z")));
-        }
-        if ($item->getCustomName() === "§r§eLeap§r") {
-            if (!isset(Loader::getInstance()->LeapCooldown[$name])) Loader::getInstance()->LeapCooldown[$name] = 0;
-            if (Loader::getInstance()->LeapCooldown[$name] <= time()) {
-                $directionvector = $player->getDirectionVector()->multiply(4 / 2);
-                $dx = $directionvector->getX();
-                $dy = $directionvector->getY();
-                $dz = $directionvector->getZ();
-                $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
-                Loader::getInstance()->LeapCooldown[$name] = time() + 5;
-            } else $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eWait 10 Secs to use leap again!");
         }
     }
 
@@ -211,77 +195,21 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
-        $player->setImmobile(true);
         $player->getEffects()->clear();
         $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eLoading Player Data");
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         Loader::$cps->initPlayerClickData($player);
-        Loader::getInstance()->PlayerSleep[$player->getName()] = 1.5;
+        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aWelcome back to the game!");
+        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 40);
+        ArenaUtils::getInstance()->GiveItem($player);
     }
 
     public function onChat(PlayerChatEvent $event)
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
-        if (isset(Loader::getInstance()->SumoSetup[$player->getName()])) {
-            $event->cancel();
-            $args = explode(" ", $event->getMessage());
-            $arena = Loader::getInstance()->SumoSetup[$player->getName()];
-            $arena->data["level"] = $player->getWorld()->getFolderName();
-            switch ($args[0]) {
-                case "help":
-                    $player->sendMessage("§aSumo setup help (1/1):\n" .
-                        "§7help : Displays list of available setup commands\n" .
-                        "§7level : Set arena level\n" .
-                        "§7setspawn : Set arena spawns\n" .
-                        "§7joinsign : Set arena joinsign\n" .
-                        "§7enable : Enable the arena");
-                    break;
-                case "setspawn":
-                    if (!isset($args[1])) {
-                        $player->sendMessage("§cUsage: §7setspawn <int: spawn>");
-                        break;
-                    }
-                    if (!is_numeric($args[1])) {
-                        $player->sendMessage("§cType number!");
-                        break;
-                    }
-                    if ((int)$args[1] > $arena->data["slots"]) {
-                        $player->sendMessage("§cThere are only {$arena->data["slots"]} slots!");
-                        break;
-                    }
-                    $arena->data["spawns"]["spawn-{$args[1]}"]["x"] = $player->getPosition()->getX();
-                    $arena->data["spawns"]["spawn-{$args[1]}"]["y"] = $player->getPosition()->getY();
-                    $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
-                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
-                    break;
-                case "enable":
-                    if (!$arena->setup) {
-                        $player->sendMessage("§6Arena is already enabled!");
-                        break;
-                    }
-                    if (!$arena->enable()) {
-                        $player->sendMessage("§cCould not load arena, there are missing information!");
-                        break;
-                    }
-                    $player->sendMessage("§aArena enabled!");
-                    break;
-                case "done":
-                    $player->sendMessage("§aYou are successfully leaved setup mode!");
-                    unset(Loader::getInstance()->SumoSetup[$player->getName()]);
-                    if (isset(Loader::getInstance()->SumoData[$player->getName()])) {
-                        unset(Loader::getInstance()->SumoData[$player->getName()]);
-                    }
-                    break;
-                default:
-                    $player->sendMessage("§6You are in setup mode.\n" .
-                        "§7- use §lhelp §r§7to display available commands\n" .
-                        "§7- or §ldone §r§7to leave setup mode");
-                    break;
-            }
-        }
         $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getName() . "§6 > §f" . $message);
         if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
             if (time() - Loader::getInstance()->ChatCooldown[$player->getName()] < Loader::getInstance()->ChatCooldownSec) {
@@ -342,9 +270,6 @@ class PlayerListener implements Listener
         }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             $player->kill();
-        }
-        if (isset(Loader::getInstance()->inSumo[$name])) {
-            unset(Loader::getInstance()->inSumo[$name]);
         }
     }
 
@@ -457,7 +382,7 @@ class PlayerListener implements Listener
                 $config->set("Z", $player->getPosition()->getZ());
                 try {
                     $config->save();
-                } catch (\JsonException $e) {
+                } catch (JsonException $e) {
                     $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cError while saving the file");
                     Loader::getInstance()->getLogger()->info($e);
                 }

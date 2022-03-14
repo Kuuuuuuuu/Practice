@@ -27,17 +27,11 @@ class ScoreboardTask extends Task
     {
         if ($this->player->isOnline()) {
             $this->titleIndex++;
-            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("world")) {
+            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $this->sb($this->player);
             }
-            if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("dboxing") and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("sumo") and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("world") and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $this->sb2($this->player);
-            }
-            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("sumo") and isset(Loader::getInstance()->inSumo[$this->player->getName()]) and Loader::getInstance()->inSumo[$this->player->getName()] === false) {
-                $this->sumo($this->player);
-            }
-            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("sumo") and isset(Loader::getInstance()->inSumo[$this->player->getName()]) and Loader::getInstance()->inSumo[$this->player->getName()] === true) {
-                $this->sumo($this->player);
             }
             if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $this->Parkour($this->player);
@@ -97,34 +91,6 @@ class ScoreboardTask extends Task
             3 => "§bPing§f: §6$ping",
             4 => "§bTPS§f: $tpsColor{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
-        ];
-        if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
-        Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
-        foreach ($lines as $line => $content)
-            Loader::$score->setLine($player, $line, $content);
-    }
-
-    public function sumo(Player $player): void
-    {
-        $ping = $player->getNetworkSession()->getPing();
-        $tpsColor = "§a";
-        $server = Server::getInstance();
-        if ($server->getTicksPerSecond() < 17) {
-            $tpsColor = "§e";
-        }
-        if ($server->getTicksPerSecond() < 12) {
-            $tpsColor = "§c";
-        }
-        $time = ArenaUtils::getInstance()->calculateTime(Loader::getInstance()->SumoTimer[$player->getName()] ?? 0) ?? "00:00";
-        $on = count(Server::getInstance()->getOnlinePlayers());
-        $lines = [
-            1 => "§7---------------§0",
-            2 => "§bOnline§f: §6$on",
-            3 => "§bPing§f: §6$ping",
-            4 => "§bTPS§f: $tpsColor{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            5 => "§b",
-            6 => "§bTime left§f: §6$time",
-            7 => "§7---------------"
         ];
         if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
         Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
