@@ -247,9 +247,9 @@ class ArenaUtils
             unset(Loader::getInstance()->ArrowOITC[$dname]);
             unset(Loader::getInstance()->ArrowOITC[$name]);
             $dplayer->getInventory()->clearAll();
-            $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-            $player->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-            $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 20))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+            $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
+            $dplayer->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+            $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 20))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
         }
         if ($arena === "Boxing") {

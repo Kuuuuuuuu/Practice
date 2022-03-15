@@ -24,6 +24,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
+use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -139,6 +140,11 @@ class PlayerListener implements Listener
             $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleport to Checkpoint");
             $player->teleport(new Vector3($config->get("X"), $config->get("Y"), $config->get("Z")));
         }
+    }
+
+    public function onArrow(ProjectileHitBlockEvent $event) {
+        $entity = $event->getEntity();
+        $entity->kill();
     }
 
     public function onBow(EntityShootBowEvent $event)
