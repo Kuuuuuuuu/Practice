@@ -22,8 +22,8 @@ use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -38,7 +38,6 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
-use pocketmine\item\Arrow;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
@@ -142,13 +141,12 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onBow(ProjectileHitEvent $event)
+    public function onBow(EntityShootBowEvent $event)
     {
         $entity = $event->getEntity();
-        $player = $entity->getOwningEntity();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-            if ($entity instanceof Arrow) {
-                Loader::getInstance()->ArrowOITC[$player->getName()] = 3;
+        if ($entity instanceof Player) {
+            if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                Loader::getInstance()->ArrowOITC[$entity->getName()] = 3;
             }
         }
     }
