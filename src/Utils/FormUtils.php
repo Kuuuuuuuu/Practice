@@ -312,8 +312,8 @@ class FormUtils
             return true;
         });
         $form->setTitle("§bHorizon §eCapes");
-        $form->addButton("§0Remove your Cape", 1);
-        $form->addButton("§eChoose a Cape", 2);
+        $form->addButton("§0Remove your Cape");
+        $form->addButton("§eChoose a Cape");
         $player->sendForm($form);
     }
 
