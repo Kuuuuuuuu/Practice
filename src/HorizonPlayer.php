@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kohaku\Core;
 
-use pocketmine\{player\Player, Server};
+use JsonException;
+use Kohaku\Core\Utils\CapeUtils;
+use pocketmine\{entity\Skin, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class HorizonPlayer extends Player
@@ -75,6 +77,24 @@ class HorizonPlayer extends Player
                 $motion->y = $this->yKb;
             }
             $this->setMotion($motion);
+        }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function LoadCape()
+    {
+        Loader::getInstance()->PlayerSkin[$this->getName()] = $this->getSkin();
+        if (file_exists(Loader::getInstance()->getDataFolder() . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
+            $oldSkin = $this->getSkin();
+            $capeData = CapeUtils::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
+            $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+            $this->setSkin($setCape);
+            $this->sendSkin();
+        } else {
+            Loader::getInstance()->CapeData->remove($this->getName());
+            Loader::getInstance()->CapeData->save();
         }
     }
 }

@@ -26,6 +26,7 @@ use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerCreationEvent;
@@ -142,7 +143,8 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onArrow(ProjectileHitBlockEvent $event) {
+    public function onArrow(ProjectileHitBlockEvent $event)
+    {
         $entity = $event->getEntity();
         $entity->kill();
     }
@@ -205,6 +207,9 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
@@ -214,6 +219,15 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
+        if ($player instanceof HorizonPlayer) {
+            $player->LoadCape();
+        }
+    }
+
+    public function onChangeSkin(PlayerChangeSkinEvent $event)
+    {
+        $player = $event->getPlayer();
+        Loader::getInstance()->PlayerSkin[$player->getName()] = $player->getSkin();
     }
 
     public function onChat(PlayerChatEvent $event)

@@ -13,6 +13,7 @@ use Kohaku\Core\Utils\Forms\CustomForm;
 use Kohaku\Core\Utils\Forms\SimpleForm;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\Skin;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
@@ -195,12 +196,16 @@ class FormUtils
                 case 1:
                     $this->reportForm($player);
                     break;
+                case 2:
+                    $this->openCapesUI($player);
+                    break;
             }
             return true;
         });
         $form->setTitle("§bHorizon §eMenu");
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
+        $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
         $player->sendForm($form);
     }
 
@@ -254,9 +259,7 @@ class FormUtils
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
             $list[] = $p->getName();
         }
-
         $this->players[$player->getName()] = $list;
-
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data === null) {
                 $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cReport submit Failed");
@@ -280,6 +283,68 @@ class FormUtils
         $form->addLabel("§aReport");
         $form->addDropdown("§eSelect a player", $this->players[$player->getName()]);
         $form->addInput("§bReason", "Type a reason");
+        $player->sendForm($form);
+    }
+
+    public function openCapesUI($player)
+    {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            $result = $data;
+            if (is_null($result)) {
+                return true;
+            }
+            switch ($result) {
+                case 0:
+                    $oldSkin = $player->getSkin();
+                    $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), "", $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                    $player->setSkin($setCape);
+                    $player->sendSkin();
+                    if (Loader::getInstance()->CapeData->get($player->getName()) !== null) {
+                        Loader::getInstance()->CapeData->remove($player->getName());
+                        Loader::getInstance()->CapeData->save();
+                    }
+                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aCape Removed!");
+                    break;
+                case 1:
+                    $this->openCapeListUI($player);
+                    break;
+            }
+            return true;
+        });
+        $form->setTitle("§bHorizon §eCapes");
+        $form->addButton("§0Remove your Cape", 1);
+        $form->addButton("§eChoose a Cape", 2);
+        $player->sendForm($form);
+    }
+
+    public function openCapeListUI($player)
+    {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            $result = $data;
+            if (is_null($result)) {
+                return true;
+            }
+            $cape = $data;
+            if (!file_exists(Loader::getInstance()->getDataFolder() . $data . ".png")) {
+                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cCape not found!");
+            } else {
+                $oldSkin = $player->getSkin();
+                $capeData = CapeUtils::getInstance()->createCape($cape);
+                $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                $player->setSkin($setCape);
+                $player->sendSkin();
+                $msg = Loader::getInstance()->getPrefixCore() . "§aCape set to {name}!";
+                $msg = str_replace("{name}", $cape, $msg);
+                $player->sendMessage($msg);
+                Loader::getInstance()->CapeData->set($player->getName(), $cape);
+                Loader::getInstance()->CapeData->save();
+            }
+            return true;
+        });
+        $form->setTitle("§bHorizon §eCapes");
+        foreach (CapeUtils::getInstance()->getCapes() as $capes) {
+            $form->addButton("$capes", -1, "", $capes);
+        }
         $player->sendForm($form);
     }
 }

@@ -17,6 +17,7 @@ use Kohaku\Core\Utils\CpsCounter;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use SQLite3;
 
@@ -47,8 +48,10 @@ class Loader extends PluginBase
     public array $SkillCooldown = [];
     public int $RestartTime = 31;
     public array $ArrowOITC = [];
+    public array $PlayerSkin = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
+    public Config $CapeData;
 
     public static function getInstance(): Loader
     {
@@ -73,7 +76,6 @@ class Loader extends PluginBase
     public function onEnable(): void
     {
         ArenaUtils::getInstance()->Start();
-        $this->saveResource("config.yml");
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
     }
