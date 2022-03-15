@@ -124,7 +124,7 @@ class ArenaUtils
 
     public function randomSpawn(Player $p)
     {
-        $x = $z = mt_rand(0, 50);
+        $x = $z = mt_rand(0, 15);
         $y = $p->getWorld()->getHighestBlockAt($p->getPosition()->getFloorX(), $p->getPosition()->getFloorZ() + 1);
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
