@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\RestartCommand;
@@ -137,7 +136,6 @@ class ArenaUtils
     }
 
     /**
-     * @throws JsonException
      */
     public function Start()
     {
@@ -169,23 +167,12 @@ class ArenaUtils
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     private function registerConfigs(): void
     {
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
         @mkdir(Loader::getInstance()->getDataFolder() . "pkdata/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
-        $config = new Config(Loader::getInstance()->getDataFolder() . "config.yml", Config::YAML);
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
-        if (is_array($config->get("standard_capes"))) {
-            foreach ($config->get("standard_capes") as $cape) {
-                Loader::getInstance()->saveResource("$cape.png");
-            }
-            $config->set("standard_capes", "done");
-            $config->save();
-        }
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
             "StartCombat" => "§bHorizon§f » §r§aYou Started combat!",
