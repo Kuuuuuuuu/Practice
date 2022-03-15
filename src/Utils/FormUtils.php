@@ -325,7 +325,7 @@ class FormUtils
                 return true;
             }
             $cape = $data;
-            if (!file_exists(Loader::getInstance()->getDataFolder() . $data . ".png")) {
+            if (!file_exists(Loader::getInstance()->getDataFolder() . "capes/" . $data . ".png")) {
                 $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cCape not found!");
             } else {
                 $oldSkin = $player->getSkin();
