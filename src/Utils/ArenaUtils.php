@@ -24,7 +24,8 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
-use pocketmine\item\Item;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
@@ -68,6 +69,11 @@ class ArenaUtils
         $pk->y = $location->y;
         $pk->z = $location->z;
         $player->getNetworkSession()->sendDataPacket($pk, true);
+    }
+
+    #[Pure] public static function getInstance(): ArenaUtils
+    {
+        return new ArenaUtils();
     }
 
     #[Pure] public function getPlayerControls(Player $player): string
@@ -191,11 +197,6 @@ class ArenaUtils
         Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
     }
 
-    #[Pure] public static function getInstance(): ArenaUtils
-    {
-        return new ArenaUtils();
-    }
-
     private function registerCommands(): void
     {
         Server::getInstance()->getCommandMap()->register("hub", new HubCommand());
@@ -245,6 +246,10 @@ class ArenaUtils
         if ($arena === "OITC") {
             unset(Loader::getInstance()->ArrowOITC[$dname]);
             unset(Loader::getInstance()->ArrowOITC[$name]);
+            $dplayer->getInventory()->clearAll();
+            $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
+            $player->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+            $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 20))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
         }
         if ($arena === "Boxing") {
