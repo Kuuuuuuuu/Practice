@@ -15,7 +15,7 @@ class CapeUtils
 
     public function createCape($capeName): string
     {
-        $path = Loader::getInstance()->getDataFolder() . "$capeName.png";
+        $path = Loader::getInstance()->getDataFolder() . "capes/" . "$capeName.png";
         $img = @imagecreatefrompng($path);
         $bytes = '';
         $l = (int)@getimagesize($path)[1];
@@ -36,7 +36,7 @@ class CapeUtils
     public function getCapes(): array
     {
         $list = array();
-        foreach (array_diff(scandir(Loader::getInstance()->getDataFolder()), ["..", "."]) as $data) {
+        foreach (array_diff(scandir(Loader::getInstance()->getDataFolder() . "capes/")) as $data) {
             $dat = explode(".", $data);
             if ($dat[1] == "png") {
                 $list[] = $dat[0];

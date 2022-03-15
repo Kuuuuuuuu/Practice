@@ -136,6 +136,9 @@ class ArenaUtils
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
 
+    /**
+     * @throws JsonException
+     */
     public function Start()
     {
         $this->loadallworlds();
@@ -175,7 +178,7 @@ class ArenaUtils
         @mkdir(Loader::getInstance()->getDataFolder() . "pkdata/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
         $config = new Config(Loader::getInstance()->getDataFolder() . "config.yml", Config::YAML);
-        Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "data.yml", Config::YAML);
+        Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         if (is_array($config->get("standard_capes"))) {
             foreach ($config->get("standard_capes") as $cape) {
                 Loader::getInstance()->saveResource("$cape.png");
