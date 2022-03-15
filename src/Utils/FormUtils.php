@@ -199,6 +199,20 @@ class FormUtils
                 case 2:
                     $this->openCapesUI($player);
                     break;
+                case 3:
+                    if (!isset(Loader::getInstance()->PlayerSprint[$player->getName()])) {
+                        Loader::getInstance()->PlayerSprint[$player->getName()] = true;
+                        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprint enabled");
+                    } else {
+                        if (Loader::getInstance()->PlayerSprint[$player->getName()] === true) {
+                            Loader::getInstance()->PlayerSprint[$player->getName()] = false;
+                            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cSprint disabled");
+                        } else {
+                            Loader::getInstance()->PlayerSprint[$player->getName()] = true;
+                            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprint enabled");
+                        }
+                    }
+                    break;
             }
             return true;
         });
@@ -206,6 +220,7 @@ class FormUtils
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
+        $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
         $player->sendForm($form);
     }
 
