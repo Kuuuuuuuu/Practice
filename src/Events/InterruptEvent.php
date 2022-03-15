@@ -27,6 +27,7 @@ class InterruptEvent implements Listener
                 if ($damager->getGamemode() === 1 or $player->getGamemode() === 1) return;
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) return;
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) return;
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) return;
                 if (!isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                     Loader::getInstance()->opponent[$player->getName()] = $damager->getName();
                     Loader::getInstance()->opponent[$damager->getName()] = $player->getName();
