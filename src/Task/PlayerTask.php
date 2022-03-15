@@ -72,8 +72,6 @@ class PlayerTask extends Task
             if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
                 if (!$player->isSprinting()) {
                     $player->toggleSprint(true);
-                } else {
-                    $player->toggleSprint(false);
                 }
             }
             if (isset(Loader::getInstance()->SkillCooldown[$name])) {
