@@ -70,15 +70,10 @@ class PlayerTask extends Task
                 Loader::getInstance()->TimerTask[$name] = "no";
             }
             if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
-                $f = $player->getPosition();
-                $tx = (int)$f->getX() - 0.5;
-                $tz = (int)$f->getZ();
-                $fx = (int)$f->getX();
-                $fz = (int)$f->getZ() - 0.5;
-                if ($tx != $fx || $tz != $fz) {
-                    if (!$player->isSprinting()) {
-                        $player->setSprinting(true);
-                    }
+                if (!$player->isSprinting()) {
+                    $player->toggleSprint(true);
+                } else {
+                    $player->toggleSprint(false);
                 }
             }
             if (isset(Loader::getInstance()->SkillCooldown[$name])) {
