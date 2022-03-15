@@ -24,7 +24,9 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
+use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
@@ -239,6 +241,11 @@ class ArenaUtils
         }
         if (isset(Loader::getInstance()->opponent[$dname])) {
             unset(Loader::getInstance()->opponent[$dname]);
+        }
+        if ($arena === "OITC") {
+            unset(Loader::getInstance()->ArrowOITC[$dname]);
+            unset(Loader::getInstance()->ArrowOITC[$name]);
+            $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
         }
         if ($arena === "Boxing") {
             $player->getInventory()->clearAll();

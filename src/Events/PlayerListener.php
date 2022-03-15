@@ -23,6 +23,7 @@ use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
+use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -37,6 +38,7 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\item\Arrow;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
@@ -137,6 +139,17 @@ class PlayerListener implements Listener
             $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
             $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleport to Checkpoint");
             $player->teleport(new Vector3($config->get("X"), $config->get("Y"), $config->get("Z")));
+        }
+    }
+
+    public function onBow(ProjectileHitBlockEvent $event)
+    {
+        $entity = $event->getEntity();
+        $player = $entity->getOwningEntity();
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+            if ($entity instanceof Arrow) {
+                Loader::getInstance()->ArrowOITC[$player->getName()] = 3;
+            }
         }
     }
 
@@ -367,7 +380,11 @@ class PlayerListener implements Listener
         if ($cause instanceof EntityDamageByEntityEvent) {
             $damager = $cause->getDamager();
             if ($damager instanceof Player) {
-                ArenaUtils::getInstance()->DeathReset($player, $damager);
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                    ArenaUtils::getInstance()->DeathReset($player, $damager, "OITC");
+                } else {
+                    ArenaUtils::getInstance()->DeathReset($player, $damager);
+                }
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     $p->sendMessage(Loader::getInstance()->getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
                 }

@@ -46,6 +46,7 @@ class Loader extends PluginBase
     public array $PlayerControl = [];
     public array $SkillCooldown = [];
     public int $RestartTime = 31;
+    public array $ArrowOITC = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
 

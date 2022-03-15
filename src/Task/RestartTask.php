@@ -42,6 +42,7 @@ class RestartTask extends Task
                     break;
                 case 0:
                     Server::getInstance()->forceShutdown();
+                    $this->getHandler()->cancel();
                     break;
             }
         }

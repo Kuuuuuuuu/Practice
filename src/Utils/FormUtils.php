@@ -54,6 +54,9 @@ class FormUtils
                 case 6:
                     $this->formkit($player);
                     break;
+                case 7:
+                    Loader::$arena->onJoinOITC($player);
+                    break;
                 default:
                     print "Error";
             }
@@ -68,6 +71,7 @@ class FormUtils
         $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
         $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/diamond_axe.png");
+        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow.png");
         $player->sendForm($form);
     }
 

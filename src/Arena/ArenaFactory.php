@@ -30,6 +30,12 @@ class ArenaFactory
         return $data->get("Fist");
     }
 
+    public function getOITCArena(): string
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        return $data->get("OTIC");
+    }
+
     public function getBoxingArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
@@ -68,6 +74,18 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Fist", $world);
+        $data->save();
+        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aThe Arena was saved");
+    }
+
+    /**
+     * @throws JsonException
+     */
+
+    public function setOITCArena(Player $player, string $world)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->set("OITC", $world);
         $data->save();
         $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aThe Arena was saved");
     }
@@ -139,6 +157,17 @@ class ArenaFactory
         $data->set("Knockback", $world);
         $data->save();
         $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aThe Arena was saved");
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function removeOITC(Player $player)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->remove("OITC");
+        $data->save();
+        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "OITC removed arena");
     }
 
     /**

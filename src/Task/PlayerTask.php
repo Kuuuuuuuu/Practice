@@ -102,6 +102,16 @@ class PlayerTask extends Task
                     unset(Loader::getInstance()->ChatCooldown[$name]);
                 }
             }
+            if (isset(Loader::getInstance()->ArrowOITC[$name])) {
+                if (Loader::getInstance()->ArrowOITC[$name] > 0) {
+                    Loader::getInstance()->ArrowOITC[$name] -= 0.05;
+                } else {
+                    if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                        $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                    }
+                    unset(Loader::getInstance()->ArrowOITC[$name]);
+                }
+            }
             if ($player->getHungerManager()->getFood() < 20) {
                 $player->getHungerManager()->setFood(20);
             }
