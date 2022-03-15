@@ -33,7 +33,7 @@ class ArenaFactory
     public function getOITCArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
-        return $data->get("OTIC");
+        return $data->get("OITC");
     }
 
     public function getBoxingArena(): string
