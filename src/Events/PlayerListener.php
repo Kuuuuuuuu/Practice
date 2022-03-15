@@ -23,7 +23,7 @@ use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\entity\ProjectileHitBlockEvent;
+use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -142,7 +142,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onBow(ProjectileHitBlockEvent $event)
+    public function onBow(ProjectileHitEvent $event)
     {
         $entity = $event->getEntity();
         $player = $entity->getOwningEntity();
