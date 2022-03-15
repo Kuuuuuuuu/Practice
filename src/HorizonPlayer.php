@@ -86,7 +86,7 @@ class HorizonPlayer extends Player
     public function LoadCape()
     {
         Loader::getInstance()->PlayerSkin[$this->getName()] = $this->getSkin();
-        if (file_exists(Loader::getInstance()->getDataFolder() . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
+        if (file_exists(Loader::getInstance()->getDataFolder() . "capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
             $capeData = CapeUtils::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
