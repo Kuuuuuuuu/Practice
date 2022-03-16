@@ -34,6 +34,8 @@ class ScoreboardTask extends Task
                 } else if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                     $this->Parkour($this->player);
                 }
+            } else {
+                $this->bed($this->player);
             }
         }
     }
@@ -103,5 +105,11 @@ class ScoreboardTask extends Task
         Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
         foreach ($lines as $line => $content)
             Loader::$score->setLine($player, $line, $content);
+    }
+
+    public function bed(Player $player): void
+    {
+        if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
+        Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
     }
 }
