@@ -7,7 +7,6 @@ namespace Kohaku\Core\Events;
 use Kohaku\Core\Loader;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\entity\EntityBlockChangeEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
@@ -18,7 +17,6 @@ use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\permission\DefaultPermissions;
-use pocketmine\player\Player;
 use pocketmine\Server;
 
 class BaseListener implements Listener
@@ -34,7 +32,7 @@ class BaseListener implements Listener
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
     }
@@ -42,7 +40,7 @@ class BaseListener implements Listener
     public function onPlace(BlockPlaceEvent $ev)
     {
         $player = $ev->getPlayer();
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
     }
