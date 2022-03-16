@@ -19,6 +19,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\ClearLag;
 use Kohaku\Core\Task\PlayerTask;
+use Kohaku\Core\Task\ScoreboardTask;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\EntityDataHelper;
@@ -343,5 +344,9 @@ class ArenaUtils
             $item = ItemFactory::getInstance()->get(466, 0, 3);
             $player->getInventory()->addItem($item);
         }
+    }
+
+    public function lazy(Player $player) {
+        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
     }
 }
