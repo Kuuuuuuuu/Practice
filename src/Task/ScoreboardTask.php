@@ -35,7 +35,7 @@ class ScoreboardTask extends Task
                     $this->Parkour($this->player);
                 }
             } else {
-                $this->bed($this->player);
+                $this->getHandler()->cancel();
             }
         }
     }
