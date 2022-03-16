@@ -32,7 +32,7 @@ class BaseListener implements Listener
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
     }
@@ -40,7 +40,7 @@ class BaseListener implements Listener
     public function onPlace(BlockPlaceEvent $ev)
     {
         $player = $ev->getPlayer();
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
     }
