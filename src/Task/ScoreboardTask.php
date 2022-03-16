@@ -26,17 +26,15 @@ class ScoreboardTask extends Task
     {
         if ($this->player->isOnline()) {
             $this->titleIndex++;
-            if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
-                if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    $this->sb($this->player);
-                } else if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                    $this->sb2($this->player);
-                } else if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                    $this->Parkour($this->player);
-                }
-            } else {
+            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
                 Loader::$score->remove($this->player);
                 $this->getHandler()->cancel();
+            } else if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                $this->sb($this->player);
+            } else if ($this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                $this->sb2($this->player);
+            } else if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                $this->Parkour($this->player);
             }
         }
     }

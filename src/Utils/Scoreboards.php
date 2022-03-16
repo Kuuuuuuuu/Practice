@@ -36,7 +36,7 @@ class Scoreboards
     {
         $objectiveName = $this->getObjectiveName($player);
         $pk = new RemoveObjectivePacket();
-        $pk->objectiveName = $objectiveName;
+        $pk->objectiveName = $objectiveName ?? "Unknown";
         $player->getNetworkSession()->sendDataPacket($pk);
         unset($this->scoreboards[$player->getName()]);
     }
