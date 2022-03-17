@@ -51,7 +51,9 @@ class SumoScheduler extends Task
                         $player->setImmobile(false);
                     }
                     if ($this->plugin->inGame($player)) {
-                        if ($player->getWorld() !== $this->plugin->level) {
+                        if ($player->getPosition()->getY() <= 30) {
+                            $this->plugin->disconnectPlayer($player);
+                        } else if ($player->getWorld() !== $this->plugin->level) {
                             $this->plugin->disconnectPlayer($player);
                         }
                     }
