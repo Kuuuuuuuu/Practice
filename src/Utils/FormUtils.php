@@ -57,6 +57,9 @@ class FormUtils
                 case 7:
                     Loader::$arena->onJoinOITC($player);
                     break;
+                case 8:
+                    ArenaUtils::getInstance()->JoinRandomArenaSumo($player);
+                    break;
                 default:
                     print "Error";
             }
@@ -72,6 +75,7 @@ class FormUtils
         $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/diamond_axe.png");
         $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow.png");
+        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         $player->sendForm($form);
     }
 

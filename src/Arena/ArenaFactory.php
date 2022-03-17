@@ -35,6 +35,12 @@ class ArenaFactory
         return $data->get("Fist");
     }
 
+    public function getSumoDArena(): string
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        return $data->get("SumoD");
+    }
+
     public function getOITCArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
@@ -102,6 +108,17 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Resistance", $world);
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function setSumoD(Player $player, string $world)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->set("SumoD", $world);
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
     }
@@ -206,6 +223,17 @@ class ArenaFactory
         $data->remove("Parkour");
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "Parkour removed arena");
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function removeSumoD(Player $player)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->remove("SumoD");
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "SumoD removed arena");
     }
 
     /**

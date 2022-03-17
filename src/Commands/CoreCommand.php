@@ -40,17 +40,17 @@ class CoreCommand extends Command
                     $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
-                    $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                    $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                     break;
                 case "make":
                 case "create":
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                     }
                     if (!isset($args[2])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                     }
                     switch ($args[1]) {
                         case "fist":
@@ -125,16 +125,25 @@ class CoreCommand extends Command
                                 Loader::$arenafac->setOITCArena($sender, $args[2]);
                             }
                             break;
+                        case "SumoD":
+                            if (!file_exists(Server::getInstance()->getDataPath() . "worlds/" . $args[2])) {
+                                $sender->sendMessage(Color::RED . "World " . $args[2] . " not found");
+                            } else {
+                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                Loader::$arenafac->setSumoD($sender, $args[2]);
+                            }
+                            break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                             break;
                     }
                     break;
                 case "remove":
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                     }
                     switch ($args[1]) {
                         case "fist":
@@ -161,9 +170,12 @@ class CoreCommand extends Command
                         case "OITC":
                             Loader::$arenafac->removeOITC($sender);
                             break;
+                        case "SumoD":
+                            Loader::$arenafac->removeSumoD($sender);
+                            break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                             break;
                     }
                     break;

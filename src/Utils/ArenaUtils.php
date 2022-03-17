@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
+use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\RestartCommand;
+use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
@@ -211,6 +213,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("tps", new TpsCommand());
         Server::getInstance()->getCommandMap()->register("core", new CoreCommand());
         Server::getInstance()->getCommandMap()->register("Restart", new RestartCommand());
+        Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
     }
 
     private function registerEvents(): void
@@ -350,5 +353,49 @@ class ArenaUtils
     public function lazy(Player $player)
     {
         Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
+    }
+
+    public function JoinRandomArenaSumo(Player $player)
+    {
+        $arena = $this->getRandomSumoArena();
+        if (!is_null($arena)) {
+            $arena->joinToArena($player);
+            return;
+        }
+        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
+    }
+
+    public function getRandomSumoArena(): ?SumoHandler
+    {
+        $availableArenas = [];
+        foreach (Loader::getInstance()->SumoArena as $index => $arena) {
+            $availableArenas[$index] = $arena;
+        }
+        foreach ($availableArenas as $index => $arena) {
+            if ($arena->phase !== 0 || $arena->setup) {
+                unset($availableArenas[$index]);
+            }
+        }
+        $arenasByPlayers = [];
+        foreach ($availableArenas as $index => $arena) {
+            $arenasByPlayers[$index] = count($arena->players);
+        }
+        arsort($arenasByPlayers);
+        $top = -1;
+        $availableArenas = [];
+        foreach ($arenasByPlayers as $index => $players) {
+            if ($top == -1) {
+                $top = $players;
+                $availableArenas[] = $index;
+            } else {
+                if ($top == $players) {
+                    $availableArenas[] = $index;
+                }
+            }
+        }
+        if (empty($availableArenas)) {
+            return null;
+        }
+        return Loader::getInstance()->SumoArena[$availableArenas[array_rand($availableArenas)]];
     }
 }
