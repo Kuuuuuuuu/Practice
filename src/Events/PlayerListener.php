@@ -234,7 +234,7 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
-        $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getName() . "§6 > §f" . $message);
+        $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getDisplayName() . "§6 > §f" . $message);
         if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
             if (Loader::getInstance()->ChatCooldown[$player->getName()] > 0) {
                 $event->cancel();

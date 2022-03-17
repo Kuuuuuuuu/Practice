@@ -258,9 +258,13 @@ class FormUtils
             if ($result === null) {
                 return true;
             }
-            $player->setDisplayName($data[0]);
-            $player->setNameTag($data[0]);
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
+            if (strlen($data[0]) > 13) {
+                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYour nickname is too long!");
+            } else {
+                $player->setDisplayName($data[0]);
+                $player->setNameTag($data[0]);
+                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
+            }
             return true;
         });
         $form->setTitle("§bHorizon §eNick");

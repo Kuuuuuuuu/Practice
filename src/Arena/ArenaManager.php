@@ -46,7 +46,7 @@ class ArenaManager
         if ($world == null) {
             return $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cArena is not set!");
         }
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 3, false));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
         Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getBoxingArena());
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -158,7 +158,7 @@ class ArenaManager
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())->getSafeSpawn());
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 3, false));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
         return true;
     }
 }

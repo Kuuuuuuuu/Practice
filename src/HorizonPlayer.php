@@ -36,6 +36,8 @@ class HorizonPlayer extends Player
                     $attackSpeed = 7;
                 } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())) {
                     $attackSpeed = 7;
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+                    $attackSpeed = 8;
                 }
             }
         }
@@ -57,6 +59,9 @@ class HorizonPlayer extends Player
             $this->xzKB = 0.32;
             $this->yKb = 0.311;
         } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())) {
+            $this->xzKB = 0.32;
+            $this->yKb = 0.311;
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $this->xzKB = 0.32;
             $this->yKb = 0.311;
         }
