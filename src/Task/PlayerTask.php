@@ -20,10 +20,20 @@ class PlayerTask extends Task
             $nowcps = Loader::$cps->getClicks($player);
             $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
             $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-            $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name ?? null] ?? "0", $tagparkour);
-            $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name ?? null] % 100) ?? 0, $tagparkour);
-            $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name ?? null] / 100) % 60) ?? 0, $tagparkour);
-            $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name ?? null] / 6000) ?? null, $tagparkour);
+            if (isset(Loader::getInstance()->JumpCount[$name])) {
+                $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
+            } else {
+                $tagparkour = str_replace("{jump}", "0", $tagparkour);
+            }
+            if (isset(Loader::getInstance()->TimerData[$name])) {
+                $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
+                $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
+                $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
+            } else {
+                $tagparkour = str_replace("{mili}", "0", $tagparkour);
+                $tagparkour = str_replace("{secs}", "0", $tagparkour);
+                $tagparkour = str_replace("{mins}", "0", $tagparkour);
+            }
             $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
             $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
             $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
