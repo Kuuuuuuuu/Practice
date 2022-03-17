@@ -74,8 +74,8 @@ class FormUtils
         $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
         $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/diamond_axe.png");
-        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow.png");
-        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
+        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/diamond_hoe.png");
+        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         $player->sendForm($form);
     }
 
