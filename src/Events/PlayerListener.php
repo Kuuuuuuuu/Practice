@@ -87,20 +87,20 @@ class PlayerListener implements Listener
                 }
             } else if ($item->getCustomName() === "§r§6Ultimate Tank") {
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 60, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 120, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 120, 1, false));
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             } else if ($item->getCustomName() === "§r§6Ultimate Boxing") {
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             } else if ($item->getCustomName() === "§r§6Ultimate Bower") {
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 60, 3, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 60, 3, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 120, 3, false));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 120, 3, false));
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             } else if ($item->getCustomName() === "§r§6Teleport") {
@@ -127,10 +127,10 @@ class PlayerListener implements Listener
             Loader::getInstance()->TimerData[$name] = 0;
             Loader::getInstance()->TimerTask[$name] = "no";
             $player->teleport(new Vector3(275, 66, 212));
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aYou Has been reset!");
+            $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
         } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §bClick to use") {
             $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleport to Checkpoint");
+            $player->sendMessage(Loader::getPrefixCore() . "§aTeleport to Checkpoint");
             $player->teleport(new Vector3($config->get("X"), $config->get("Y"), $config->get("Z")));
         }
     }
@@ -138,7 +138,8 @@ class PlayerListener implements Listener
     public function onArrow(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        $entity->kill();
+        $entity->flagForDespawn();
+        $entity->close();
     }
 
     public function onBow(EntityShootBowEvent $event)
@@ -212,7 +213,7 @@ class PlayerListener implements Listener
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
-        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eLoading Player Data");
+        $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
         if ($player instanceof HorizonPlayer) {
             $player->LoadCape();
@@ -275,32 +276,29 @@ class PlayerListener implements Listener
         $world = $entity->getWorld();
         if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
             $event->cancel();
-        }
-        if ($event instanceof EntityDamageByChildEntityEvent) {
+        } else if ($event instanceof EntityDamageByChildEntityEvent) {
             $owner = $event->getChild()->getOwningEntity();
             if ($owner instanceof Player and $entity instanceof Player) {
                 $name = $owner->getName();
                 if ($name === $entity->getName()) {
                     $event->cancel();
-                    $entity->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou can't attack yourself!");
+                    $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
                 }
             }
-        }
-        if ($event->getCause() === EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
+        } else if ($event->getCause() === EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
             $damager = $event->getDamager();
             $world->addParticle(new Position($entity->getPosition()->getX(), $entity->getPosition()->getY() - 1, $entity->getPosition()->getZ(), $entity->getWorld()), new LavaParticle());
             if ($entity instanceof Player and $damager instanceof Player) {
                 $dis = floor($entity->getLocation()->asVector3()->distance($damager->getPosition()->asVector3()));
                 $name = $damager->getName();
                 if ($damager->getGamemode() !== Gamemode::CREATIVE() and $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockBackArena())) {
-                    if ($dis > 5.5) {
+                    if ($dis >= 5.5) {
                         $event->cancel();
                         $message = (Loader::getInstance()->message["AntiCheatName"] . "§c" . $name . " §eHas " . $dis . " §cDistance" . "§f(§a" . $damager->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($damager) . "§f)");
                         Server::getInstance()->broadcastMessage($message);
                         $damager->kill();
                     }
-                }
-                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                } else if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     $event->cancel();
                 }
             }
@@ -346,7 +344,7 @@ class PlayerListener implements Listener
                     $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
                     $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
                     $mili = Loader::getInstance()->TimerData[$name] % 100;
-                    $prefix = Loader::getInstance()->getPrefixCore();
+                    $prefix = Loader::getPrefixCore();
                     $message = ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili);
                     Server::getInstance()->broadcastMessage($prefix . $message);
                     Loader::getInstance()->TimerTask[$name] = "no";
@@ -367,8 +365,8 @@ class PlayerListener implements Listener
                 try {
                     $config->save();
                 } catch (JsonException $e) {
-                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cError while saving the file");
-                    Loader::getInstance()->getLogger()->info($e);
+                    $player->sendMessage(Loader::getPrefixCore() . "§cError while saving the file");
+                    Loader::getInstance()->getLogger()->error($e);
                 }
             }
         }
@@ -390,11 +388,13 @@ class PlayerListener implements Listener
             if ($damager instanceof Player) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
                     ArenaUtils::getInstance()->DeathReset($player, $damager, "OITC");
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    ArenaUtils::getInstance()->DeathReset($player, $damager, "Boxing");
                 } else {
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
-                    $p->sendMessage(Loader::getInstance()->getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                    $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
                 }
                 $damager->setHealth(20);
             }

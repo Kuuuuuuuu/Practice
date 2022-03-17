@@ -28,14 +28,14 @@ class HubCommand extends Command
     {
         if ($sender instanceof Player) {
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleported to Hub!");
+            $sender->sendMessage(Loader::getPrefixCore() . "§aTeleported to Hub!");
             $sender->setGamemode(GameMode::ADVENTURE());
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
             ArenaUtils::getInstance()->GiveItem($sender);
         } else {
-            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
         }
     }
 }

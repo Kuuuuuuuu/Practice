@@ -105,10 +105,4 @@ class ScoreboardTask extends Task
         foreach ($lines as $line => $content)
             Loader::$score->setLine($player, $line, $content);
     }
-
-    public function bed(Player $player): void
-    {
-        if (!isset($this->titles[$this->titleIndex])) $this->titleIndex = 0;
-        Loader::$score->new($player, "ObjectiveName", $this->titles[$this->titleIndex]);
-    }
 }

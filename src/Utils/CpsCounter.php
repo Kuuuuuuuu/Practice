@@ -14,7 +14,7 @@ use function round;
 class CpsCounter
 {
 
-    public array $clicksData = [];
+    private array $clicksData = [];
 
     public function addClick(Player $p): void
     {

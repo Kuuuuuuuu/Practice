@@ -120,7 +120,7 @@ class ArenaUtils
         }
         $check = strtoupper($name[0]);
         if ($check !== $name[0]) {
-            Server::getInstance()->broadcastMessage(Loader::getInstance()->getPrefixCore() . "§e" . $username . " §cUsing §aToolbox. Please Avoid that Player!");
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cUsing §aToolbox. Please Avoid that Player!");
             Loader::getInstance()->ToolboxCheck[strtolower($username)] = "Toolbox";
         }
     }
@@ -255,10 +255,9 @@ class ArenaUtils
             unset(Loader::getInstance()->ArrowOITC[$name]);
             $dplayer->getInventory()->clearAll();
             $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-            $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 20))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+            $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-        }
-        if ($arena === "Boxing") {
+        } else if ($arena === "Boxing") {
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $this->addKill($dplayer);
@@ -330,12 +329,12 @@ class ArenaUtils
         $loser = $this->getData($death->getName());
         $oldStreak = $loser->getStreak();
         if ($oldStreak >= 5) {
-            $death->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
+            $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
+            $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
         }
         $newStreak = $killer->getStreak();
         if (is_int($newStreak / 5)) {
-            Server::getInstance()->broadcastMessage(Loader::getInstance()->getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
         }
     }
 

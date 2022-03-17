@@ -39,7 +39,7 @@ class PlayerData
         }
     }
 
-    #[Pure] public function getPath(): string
+    #[Pure] private function getPath(): string
     {
         return Loader::getInstance()->getDataFolder() . "players/" . strtolower($this->player) . ".yml";
     }
@@ -71,7 +71,7 @@ class PlayerData
         $this->save();
     }
 
-    public function save()
+    private function save()
     {
         yaml_emit_file($this->getPath(), ["name" => $this->player, "kills" => $this->kills, "killstreak" => $this->killStreak, "kdr" => $this->getKdr(), "deaths" => $this->deaths]);
     }
@@ -91,5 +91,4 @@ class PlayerData
         $this->killStreak = 0;
         $this->save();
     }
-
 }

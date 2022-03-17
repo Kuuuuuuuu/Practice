@@ -23,8 +23,7 @@ use pocketmine\player\Player;
 class FormUtils
 {
 
-    public array $players = [];
-    public int $count = 0;
+    private array $players = [];
 
     public function Form1($player)
     {
@@ -202,14 +201,14 @@ class FormUtils
                 case 3:
                     if (!isset(Loader::getInstance()->PlayerSprint[$player->getName()])) {
                         Loader::getInstance()->PlayerSprint[$player->getName()] = true;
-                        $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprint enabled");
+                        $player->sendMessage(Loader::getPrefixCore() . "§aSprint enabled");
                     } else {
                         if (Loader::getInstance()->PlayerSprint[$player->getName()] === true) {
                             Loader::getInstance()->PlayerSprint[$player->getName()] = false;
-                            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cSprint disabled");
+                            $player->sendMessage(Loader::getPrefixCore() . "§cSprint disabled");
                         } else {
                             Loader::getInstance()->PlayerSprint[$player->getName()] = true;
-                            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aSprint enabled");
+                            $player->sendMessage(Loader::getPrefixCore() . "§aSprint enabled");
                         }
                     }
                     break;
@@ -238,7 +237,7 @@ class FormUtils
                 case 1:
                     $player->setDisplayName($player->getName());
                     $player->setNameTag($player->getName());
-                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§eYour nickname has been resetted!");
+                    $player->sendMessage(Loader::getPrefixCore() . "§eYour nickname has been resetted!");
                     break;
             }
             return true;
@@ -259,11 +258,11 @@ class FormUtils
                 return true;
             }
             if (strlen($data[0]) > 13) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYour nickname is too long!");
+                $player->sendMessage(Loader::getPrefixCore() . "§cYour nickname is too long!");
             } else {
                 $player->setDisplayName($data[0]);
                 $player->setNameTag($data[0]);
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
+                $player->sendMessage(Loader::getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
             }
             return true;
         });
@@ -281,7 +280,7 @@ class FormUtils
         $this->players[$player->getName()] = $list;
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data === null) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cReport submit Failed");
+                $player->sendMessage(Loader::getPrefixCore() . "§cReport submit Failed");
                 return true;
             }
             $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
@@ -295,7 +294,7 @@ class FormUtils
             $e->setDescription("{$player->getName()} Report {$this->players[$player->getName()][$index]}  | Reason: $data[2]");
             $msg->addEmbed($e);
             $web->send($msg);
-            $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aReport was submitted!");
+            $player->sendMessage(Loader::getPrefixCore() . "§aReport was submitted!");
             return true;
         });
         $form->setTitle("§bHorizon §eReport");
@@ -322,7 +321,7 @@ class FormUtils
                         Loader::getInstance()->CapeData->remove($player->getName());
                         Loader::getInstance()->CapeData->save();
                     }
-                    $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aCape Removed!");
+                    $player->sendMessage(Loader::getPrefixCore() . "§aCape Removed!");
                     break;
                 case 1:
                     $this->openCapeListUI($player);
@@ -345,14 +344,14 @@ class FormUtils
             }
             $cape = $data;
             if (!file_exists(Loader::getInstance()->getDataFolder() . "capes/" . $data . ".png")) {
-                $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cCape not found!");
+                $player->sendMessage(Loader::getPrefixCore() . "§cCape not found!");
             } else {
                 $oldSkin = $player->getSkin();
                 $capeData = CapeUtils::getInstance()->createCape($cape);
                 $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                 $player->setSkin($setCape);
                 $player->sendSkin();
-                $msg = Loader::getInstance()->getPrefixCore() . "§aCape set to {name}!";
+                $msg = Loader::getPrefixCore() . "§aCape set to {name}!";
                 $msg = str_replace("{name}", $cape, $msg);
                 $player->sendMessage($msg);
                 Loader::getInstance()->CapeData->set($player->getName(), $cape);

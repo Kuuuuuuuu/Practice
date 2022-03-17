@@ -32,10 +32,10 @@ class TcheckCommand extends Command
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 $this->openTcheckUI($sender);
             } else {
-                $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou cannot execute this command.");
+                $sender->sendMessage(Loader::getPrefixCore() . "§cYou cannot execute this command.");
             }
         } else {
-            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
         }
     }
 

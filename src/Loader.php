@@ -59,7 +59,7 @@ class Loader extends PluginBase
         return self::$plugin;
     }
 
-    public function getPrefixCore(): string
+    public static function getPrefixCore(): string
     {
         return "§b§bHorizon§f » §r";
     }

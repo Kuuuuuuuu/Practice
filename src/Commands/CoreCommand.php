@@ -37,7 +37,7 @@ class CoreCommand extends Command
         if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             switch ($args[0]) {
                 case "help":
-                    $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getInstance()->getPrefixCore());
+                    $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
                     $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
@@ -45,11 +45,11 @@ class CoreCommand extends Command
                 case "make":
                 case "create":
                     if (!isset($args[1])) {
-                        $sender->sendMessage(Loader::getInstance()->getPrefixCore() . Color::RED . "use /core make <mode> <world>");
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
                     }
                     if (!isset($args[2])) {
-                        $sender->sendMessage(Loader::getInstance()->getPrefixCore() . Color::RED . "use /core make <mode> <world>");
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
                     }
                     switch ($args[1]) {
@@ -126,14 +126,14 @@ class CoreCommand extends Command
                             }
                             break;
                         default:
-                            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . Color::RED . "use /core make <mode> <world>");
+                            $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
                             $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
                             break;
                     }
                     break;
                 case "remove":
                     if (!isset($args[1])) {
-                        $sender->sendMessage(Loader::getInstance()->getPrefixCore() . Color::RED . "use /core remove <mode>");
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
                     }
                     switch ($args[1]) {
@@ -162,17 +162,17 @@ class CoreCommand extends Command
                             Loader::$arenafac->removeOITC($sender);
                             break;
                         default:
-                            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . Color::RED . "use /core remove <mode>");
+                            $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
                             $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC");
                             break;
                     }
                     break;
                 default:
-                    $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§e/core help");
+                    $sender->sendMessage(Loader::getPrefixCore() . "§e/core help");
                     break;
             }
         } else {
-            $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§cYou don't have permission to use this command.");
+            $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
         }
     }
 }

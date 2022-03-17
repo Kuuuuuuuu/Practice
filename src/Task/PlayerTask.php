@@ -20,26 +20,13 @@ class PlayerTask extends Task
             $nowcps = Loader::$cps->getClicks($player);
             $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
             $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-            if (isset(Loader::getInstance()->JumpCount[$name])) {
-                $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
-            } else {
-                $tagparkour = str_replace("{jump}", "0", $tagparkour);
-            }
-            if (isset(Loader::getInstance()->TimerData[$name])) {
-                $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
-                $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
-                $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
-            } else {
-                $tagparkour = str_replace("{mili}", "0", $tagparkour);
-                $tagparkour = str_replace("{secs}", "0", $tagparkour);
-                $tagparkour = str_replace("{mins}", "0", $tagparkour);
-            }
-            /*-------------------------------------------------------------------------- tag PVP --------------------------------------------------------------------------*/
-            $tagpvp = "§b{hp}§fHP§f | §b{ping}§fms §f| §aCPS §f: §b{cps}";
+            $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name ?? null] ?? "0", $tagparkour);
+            $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name ?? null] % 100) ?? 0, $tagparkour);
+            $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name ?? null] / 100) % 60) ?? 0, $tagparkour);
+            $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name ?? null] / 6000) ?? null, $tagparkour);
+            $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
             $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
-            $tagpvp = str_replace("{hp}", (string)round($player->getHealth(), 1), $tagpvp);
             $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
-            /*-------------------------------------------------------------------------- Untag PVP --------------------------------------------------------------------------*/
             $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->setScoreTag($tagparkour);
@@ -53,19 +40,6 @@ class PlayerTask extends Task
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                 Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
-            }
-            if (isset(Loader::getInstance()->TimerTask[$name])) {
-                if (isset(Loader::getInstance()->TimerData[$name])) {
-                    if (Loader::getInstance()->TimerTask[$name] === "yes") {
-                        Loader::getInstance()->TimerData[$name] += 5;
-                    } else {
-                        Loader::getInstance()->TimerData[$name] = 0;
-                    }
-                } else {
-                    Loader::getInstance()->TimerData[$name] = 0;
-                }
-            } else {
-                Loader::getInstance()->TimerTask[$name] = "no";
             }
             if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
                 if (!$player->isSprinting()) {
@@ -90,12 +64,18 @@ class PlayerTask extends Task
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 if (isset(Loader::getInstance()->TimerTask[$name])) {
                     if (Loader::getInstance()->TimerTask[$name] === "yes") {
+                        if (isset(Loader::getInstance()->TimerData[$name])) {
+                            Loader::getInstance()->TimerData[$name] += 5;
+                        } else {
+                            Loader::getInstance()->TimerData[$name] = 0;
+                        }
                         $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
                         $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
                         $mili = Loader::getInstance()->TimerData[$name] % 100;
                         $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
                     } else {
                         $player->sendTip("§a0 : 0 : 0");
+                        Loader::getInstance()->TimerData[$name] = 0;
                     }
                 } else {
                     Loader::getInstance()->TimerTask[$name] = "no";

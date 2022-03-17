@@ -14,7 +14,7 @@ class BroadcastTask extends Task
 
     public function onRun(): void
     {
-        $cast = [Loader::getInstance()->getPrefixCore() . "§eติดตามข่าวสารเซิฟได้ที่ Omlet Arcade. notkungz1", Loader::getInstance()->getPrefixCore() . "§eเข้า Discord ได้ที่: §bhttps://discord.gg/pPUEYm9N9P"];
+        $cast = [Loader::getPrefixCore() . "§eติดตามข่าวสารเซิฟได้ที่ Omlet Arcade. notkungz1", Loader::getPrefixCore() . "§eเข้า Discord ได้ที่: §bhttps://discord.gg/pPUEYm9N9P"];
         $this->line++;
         $msg = $cast[$this->line];
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $online) {

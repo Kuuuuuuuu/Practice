@@ -15,7 +15,7 @@ class Scoreboards
 {
 
     public static $instance;
-    public array $scoreboards = [];
+    private array $scoreboards = [];
 
     public function new(Player $player, string $objectiveName, string $displayName): void
     {
@@ -41,7 +41,7 @@ class Scoreboards
         unset($this->scoreboards[$player->getName()]);
     }
 
-    #[Pure] public function getObjectiveName(Player $player): ?string
+    #[Pure] private function getObjectiveName(Player $player): ?string
     {
         return $this->scoreboards[$player->getName()] ?? null;
     }
