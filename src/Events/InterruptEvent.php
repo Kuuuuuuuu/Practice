@@ -26,15 +26,15 @@ class InterruptEvent implements Listener
                 if (!isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                     Loader::getInstance()->opponent[$player->getName()] = $damager->getName();
                     Loader::getInstance()->opponent[$damager->getName()] = $player->getName();
-                    Loader::getInstance()->CombatTimer[$player->getName()] = 15;
-                    Loader::getInstance()->CombatTimer[$damager->getName()] = 15;
+                    Loader::getInstance()->CombatTimer[$player->getName()] = 10;
+                    Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
                     $player->sendMessage(Loader::getInstance()->message["StartCombat"]);
                     $damager->sendMessage(Loader::getInstance()->message["StartCombat"]);
                 } else {
                     if (isset(Loader::getInstance()->opponent[$damager->getName()]) and isset(Loader::getInstance()->opponent[$player->getName()])) {
                         if (Loader::getInstance()->opponent[$player->getName()] === $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] === $player->getName()) {
-                            Loader::getInstance()->CombatTimer[$player->getName()] = 15;
-                            Loader::getInstance()->CombatTimer[$damager->getName()] = 15;
+                            Loader::getInstance()->CombatTimer[$player->getName()] = 10;
+                            Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
                             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                                 if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
                                     Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
