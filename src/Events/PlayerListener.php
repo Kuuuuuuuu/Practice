@@ -346,7 +346,6 @@ class PlayerListener implements Listener
             }
         } else if ($event->getCause() === EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
             $damager = $event->getDamager();
-            $world->addParticle(new Position($entity->getPosition()->getX(), $entity->getPosition()->getY() - 1, $entity->getPosition()->getZ(), $entity->getWorld()), new LavaParticle());
             if ($entity instanceof Player and $damager instanceof Player) {
                 $dis = floor($entity->getLocation()->asVector3()->distance($damager->getPosition()->asVector3()));
                 $name = $damager->getName();
@@ -357,7 +356,8 @@ class PlayerListener implements Listener
                         Server::getInstance()->broadcastMessage($message);
                         $damager->kill();
                     }
-                } else if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                }
+                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     $event->cancel();
                 }
             }
