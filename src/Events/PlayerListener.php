@@ -453,7 +453,9 @@ class PlayerListener implements Listener
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
-                    $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                    if ($p->getWorld() === $damager->getWorld()) {
+                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                    }
                 }
                 $damager->setHealth(20);
             }

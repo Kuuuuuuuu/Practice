@@ -30,7 +30,7 @@ class PlayerCooldownTask extends Task
             }
             if (isset(Loader::getInstance()->CombatTimer[$name])) {
                 if (Loader::getInstance()->CombatTimer[$name] > 0) {
-                    $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                    $percent = floor(floatval(Loader::getInstance()->CombatTimer[$name] / 10));
                     $player->getXpManager()->setXpProgress($percent);
                     Loader::getInstance()->CombatTimer[$name] -= 1;
                 } else {
