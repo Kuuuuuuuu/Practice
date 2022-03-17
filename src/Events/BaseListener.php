@@ -70,8 +70,7 @@ class BaseListener implements Listener
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::$cps->addClick($player);
             }
-        }
-        if ($event->getPacket()->pid() === AnimatePacket::NETWORK_ID) {
+        } else if ($event->getPacket()->pid() === AnimatePacket::NETWORK_ID) {
             Server::getInstance()->broadcastPackets($player->getViewers(), [$event->getPacket()]);
             $event->cancel();
         }

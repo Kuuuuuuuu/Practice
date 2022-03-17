@@ -8,6 +8,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -28,6 +29,7 @@ class HubCommand extends Command
         if ($sender instanceof Player) {
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             $sender->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleported to Hub!");
+            $sender->setGamemode(GameMode::ADVENTURE());
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();

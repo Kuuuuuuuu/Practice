@@ -13,8 +13,8 @@ class RestartTask extends Task
 
     public function onRun(): void
     {
+        Loader::getInstance()->RestartTime--;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            Loader::getInstance()->RestartTime--;
             switch (Loader::getInstance()->RestartTime) {
                 case 30:
                     $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§cServer will restart in §e30 §cseconds");

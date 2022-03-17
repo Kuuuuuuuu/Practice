@@ -6,7 +6,7 @@ namespace Kohaku\Core\Events;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
-use pocketmine\event\entity\{EntityDamageByChildEntityEvent, EntityDamageEvent};
+use pocketmine\event\entity\{EntityDamageEvent};
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -20,15 +20,9 @@ class InterruptEvent implements Listener
         $player = $event->getEntity();
         if ($event->getCause() == EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
             $damager = $event->getDamager();
-            if ($event instanceof EntityDamageByChildEntityEvent) {
-                $event->cancel();
-            }
             if ($player instanceof Player and $damager instanceof Player) {
                 if ($damager->getGamemode() === 1 or $player->getGamemode() === 1) return;
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) return;
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) return;
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) return;
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
                 if (!isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                     Loader::getInstance()->opponent[$player->getName()] = $damager->getName();
                     Loader::getInstance()->opponent[$damager->getName()] = $player->getName();

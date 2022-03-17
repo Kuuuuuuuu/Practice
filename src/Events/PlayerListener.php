@@ -85,29 +85,25 @@ class PlayerListener implements Listener
                         }
                     }
                 }
-            }
-            if ($item->getCustomName() === "§r§6Ultimate Tank") {
+            } else if ($item->getCustomName() === "§r§6Ultimate Tank") {
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 60, 1, false));
                 Loader::getInstance()->SkillCooldown[$name] = 10;
-            }
-            if ($item->getCustomName() === "§r§6Ultimate Boxing") {
+            } else if ($item->getCustomName() === "§r§6Ultimate Boxing") {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
-            }
-            if ($item->getCustomName() === "§r§6Ultimate Bower") {
+            } else if ($item->getCustomName() === "§r§6Ultimate Bower") {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 60, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 60, 3, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 60, 3, false));
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 Loader::getInstance()->SkillCooldown[$name] = 10;
-            }
-            if ($item->getCustomName() === "§r§6Teleport") {
+            } else if ($item->getCustomName() === "§r§6Teleport") {
                 $player->sendMessage(Loader::getInstance()->message["StartSkillMessage"]);
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
@@ -117,8 +113,7 @@ class PlayerListener implements Listener
                         }
                     }
                 }
-            }
-            if ($item->getCustomName() === "§r§eLeap§r") {
+            } else if ($item->getCustomName() === "§r§eLeap§r") {
                 $directionvector = $player->getDirectionVector()->multiply(4 / 2);
                 $dx = $directionvector->getX();
                 $dy = $directionvector->getY();
@@ -126,17 +121,14 @@ class PlayerListener implements Listener
                 $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-        }
-        if ($item->getCustomName() === "§r§bSettings") {
+        } else if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
-        }
-        if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
+        } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
             Loader::getInstance()->TimerTask[$name] = "no";
             $player->teleport(new Vector3(275, 66, 212));
             $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aYou Has been reset!");
-        }
-        if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §bClick to use") {
+        } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §bClick to use") {
             $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
             $player->sendMessage(Loader::getInstance()->getPrefixCore() . "§aTeleport to Checkpoint");
             $player->teleport(new Vector3($config->get("X"), $config->get("Y"), $config->get("Z")));
@@ -161,8 +153,11 @@ class PlayerListener implements Listener
 
     public function onPlayerDropItem(PlayerDropItemEvent $event): void
     {
+        $player = $event->getPlayer();
         if ($event->isCancelled()) return;
-        $event->cancel();
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+            $event->cancel();
+        }
     }
 
     public function onPlayerLogin(PlayerLoginEvent $event)
@@ -186,16 +181,16 @@ class PlayerListener implements Listener
                 $remainingSec = $minuteSec % 60;
                 $second = ceil($remainingSec);
                 $player->kick(str_replace(["{day}", "{hour}", "{minute}", "{second}", "{reason}", "{staff}"], [$day, $hour, $minute, $second, $reason, $staff], Loader::getInstance()->message["LoginBanMessage"]));
-                $event->cancel();
             } else {
                 Loader::getInstance()->db->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
             }
+        } else {
+            $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+            $player->teleport(new Vector3(255, 6, 255));
+            ArenaUtils::getInstance()->DeviceCheck($player);
+            Loader::$cps->initPlayerClickData($player);
+            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
         }
-        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-        $player->teleport(new Vector3(255, 6, 255));
-        ArenaUtils::getInstance()->DeviceCheck($player);
-        Loader::$cps->initPlayerClickData($player);
-        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
     }
 
     public function onPlayerLog(PlayerPreLoginEvent $event)
@@ -328,29 +323,25 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $name = $player->getName();
+        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y - 0.5, $player->getPosition()->asPosition()->z));
         if ($player->getPosition()->getY() <= 0) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) {
                 $player->kill();
             }
-        }
-        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y - 0.5, $player->getPosition()->asPosition()->z));
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
             }
-        }
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
             if ($block->getId() === 25) {
                 if (Loader::getInstance()->TimerTask[$name] === "no") {
                     Loader::getInstance()->TimerTask[$name] = "yes";
                 }
-            }
-            if ($block->getId() === 243) {
+            } else if ($block->getId() === 243) {
                 if (Loader::getInstance()->TimerTask[$name] === "yes") {
                     Loader::getInstance()->TimerTask[$name] = "no";
                 }
-            }
-            if ($block->getId() === 124) {
+            } else if ($block->getId() === 124) {
                 if (Loader::getInstance()->TimerTask[$name] === "yes") {
                     $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
                     $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
@@ -368,8 +359,7 @@ class PlayerListener implements Listener
                     $config->set("Y", 76);
                     $config->set("Z", 255);
                 }
-            }
-            if ($block->getId() === 188) {
+            } else if ($block->getId() === 188) {
                 $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
                 $config->set("X", $player->getPosition()->getX());
                 $config->set("Y", $player->getPosition()->getY());
