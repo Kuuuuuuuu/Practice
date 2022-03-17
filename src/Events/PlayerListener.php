@@ -232,18 +232,76 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $message = $event->getMessage();
         $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getDisplayName() . "§6 > §f" . $message);
-        if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
-            if (Loader::getInstance()->ChatCooldown[$player->getName()] > 0) {
-                $event->cancel();
-                $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$player->getName()]], Loader::getInstance()->message["CooldownMessage"]));
+        if (isset(Loader::getInstance()->SumoSetup[$player->getName()])) {
+            $event->cancel();
+            $args = explode(" ", $event->getMessage());
+            $arena = Loader::getInstance()->SumoSetup[$player->getName()];
+            $arena->data["level"] = $player->getWorld()->getFolderName();
+            switch ($args[0]) {
+                case "help":
+                    $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup help (1/1):\n" .
+                        "§7help : Displays list of available setup commands\n" .
+                        "§7level : Set arena level\n" .
+                        "§7setspawn : Set arena spawns\n" .
+                        "§7joinsign : Set arena joinsign\n" .
+                        "§7enable : Enable the arena");
+                    break;
+                case "setspawn":
+                    if (!isset($args[1])) {
+                        $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7setspawn <int: spawn>");
+                        break;
+                    }
+                    if (!is_numeric($args[1])) {
+                        $player->sendMessage(Loader::getPrefixCore() . "§cType number!");
+                        break;
+                    }
+                    if ((int)$args[1] > $arena->data["slots"]) {
+                        $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
+                        break;
+                    }
+                    $arena->data["spawns"]["spawn-{$args[1]}"]["x"] = $player->getPosition()->getX();
+                    $arena->data["spawns"]["spawn-{$args[1]}"]["y"] = $player->getPosition()->getY();
+                    $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
+                    $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
+                    break;
+                case "enable":
+                    if (!$arena->setup) {
+                        $player->sendMessage(Loader::getPrefixCore() . "§6Arena is already enabled!");
+                        break;
+                    }
+                    if (!$arena->enable()) {
+                        $player->sendMessage(Loader::getPrefixCore() . "§cCould not load arena, there are missing information!");
+                        break;
+                    }
+                    $player->sendMessage(Loader::getPrefixCore() . "§aArena enabled!");
+                    break;
+                case "done":
+                    $player->sendMessage(Loader::getPrefixCore() . "§aYou are successfully leaved setup mode!");
+                    unset(Loader::getInstance()->SumoSetup[$player->getName()]);
+                    if (isset(Loader::getInstance()->SumoData[$player->getName()])) {
+                        unset(Loader::getInstance()->SumoData[$player->getName()]);
+                    }
+                    break;
+                default:
+                    $player->sendMessage(Loader::getPrefixCore() . "§6You are in setup mode.\n" .
+                        "§7- use §lhelp §r§7to display available commands\n" .
+                        "§7- or §ldone §r§7to leave setup mode");
+                    break;
             }
         } else {
-            $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-            $msg = new DiscordWebhookUtils();
-            $msg2 = str_replace(["@here", "@everyone"], "", $message);
-            $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
-            $web->send($msg);
-            Loader::getInstance()->ChatCooldown[$player->getName()] = 1.5;
+            if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
+                if (Loader::getInstance()->ChatCooldown[$player->getName()] > 0) {
+                    $event->cancel();
+                    $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$player->getName()]], Loader::getInstance()->message["CooldownMessage"]));
+                }
+            } else {
+                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+                $msg = new DiscordWebhookUtils();
+                $msg2 = str_replace(["@here", "@everyone"], "", $message);
+                $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
+                $web->send($msg);
+                Loader::getInstance()->ChatCooldown[$player->getName()] = 1.5;
+            }
         }
     }
 

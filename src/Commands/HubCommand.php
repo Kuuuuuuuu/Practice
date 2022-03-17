@@ -34,6 +34,9 @@ class HubCommand extends Command
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
             ArenaUtils::getInstance()->GiveItem($sender);
+            if ($sender->isImmobile()) {
+                $sender->setImmobile(false);
+            }
         } else {
             $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
         }
