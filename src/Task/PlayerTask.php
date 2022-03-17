@@ -56,6 +56,14 @@ class PlayerTask extends Task
                     $player->toggleSprint(true);
                 }
             }
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                if (Loader::getInstance()->CombatTimer[$name]) {
+                    unset(Loader::getInstance()->CombatTimer[$name]);
+                }
+                if (Loader::getInstance()->opponent[$name]) {
+                    unset(Loader::getInstance()->opponent[$name]);
+                }
+            }
             if ($player->getHungerManager()->getFood() < 20) {
                 $player->getHungerManager()->setFood(20);
             }
