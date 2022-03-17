@@ -57,10 +57,10 @@ class PlayerTask extends Task
                 }
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if (Loader::getInstance()->CombatTimer[$name]) {
+                if (isset(Loader::getInstance()->CombatTimer[$name])) {
                     unset(Loader::getInstance()->CombatTimer[$name]);
                 }
-                if (Loader::getInstance()->opponent[$name]) {
+                if (isset(Loader::getInstance()->opponent[$name])) {
                     unset(Loader::getInstance()->opponent[$name]);
                 }
             }
