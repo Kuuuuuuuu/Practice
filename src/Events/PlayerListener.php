@@ -121,7 +121,8 @@ class PlayerListener implements Listener
                 $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
-        } else if ($item->getCustomName() === "§r§bSettings") {
+        }
+        if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
