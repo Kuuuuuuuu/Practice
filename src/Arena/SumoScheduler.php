@@ -68,6 +68,7 @@ class SumoScheduler extends Task
                     $player->getArmorInventory()->clearAll();
                     $player->getEffects()->clear();
                     ArenaUtils::getInstance()->GiveItem($player);
+                    ArenaUtils::getInstance()->addKill($player);
                     $player->setGamemode($this->plugin->plugin->getServer()->getGamemode());
                 }
                 $this->plugin->players = [];

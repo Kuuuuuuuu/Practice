@@ -225,6 +225,7 @@ class SumoHandler implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setImmobile(false);
+        ArenaUtils::getInstance()->addDeath($player);
         ArenaUtils::getInstance()->GiveItem($player);
         $player->teleport($this->plugin->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
         $player->sendMessage(Loader::getPrefixCore() . "§r§e$quitMsg");
