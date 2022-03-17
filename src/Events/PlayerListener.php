@@ -126,7 +126,7 @@ class PlayerListener implements Listener
             Loader::$form->settingsForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
-            Loader::getInstance()->TimerTask[$name] = "no";
+            Loader::getInstance()->TimerTask[$name] = false;
             $player->teleport(new Vector3(275, 66, 212));
             $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
         } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §bClick to use") {
@@ -333,22 +333,22 @@ class PlayerListener implements Listener
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
             if ($block->getId() === 25) {
-                if (Loader::getInstance()->TimerTask[$name] === "no") {
-                    Loader::getInstance()->TimerTask[$name] = "yes";
+                if (Loader::getInstance()->TimerTask[$name] === false) {
+                    Loader::getInstance()->TimerTask[$name] = true;
                 }
             } else if ($block->getId() === 243) {
-                if (Loader::getInstance()->TimerTask[$name] === "yes") {
-                    Loader::getInstance()->TimerTask[$name] = "no";
+                if (Loader::getInstance()->TimerTask[$name] === true) {
+                    Loader::getInstance()->TimerTask[$name] = false;
                 }
             } else if ($block->getId() === 124) {
-                if (Loader::getInstance()->TimerTask[$name] === "yes") {
+                if (Loader::getInstance()->TimerTask[$name] === true) {
                     $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
                     $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
                     $mili = Loader::getInstance()->TimerData[$name] % 100;
                     $prefix = Loader::getPrefixCore();
                     $message = ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili);
                     Server::getInstance()->broadcastMessage($prefix . $message);
-                    Loader::getInstance()->TimerTask[$name] = "no";
+                    Loader::getInstance()->TimerTask[$name] = false;
                     $config = new Config(Loader::getInstance()->getDataFolder() . "pkdata/" . $name . ".yml", CONFIG::YAML);
                     $player->teleport(new Vector3(275, 66, 212));
                     Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(

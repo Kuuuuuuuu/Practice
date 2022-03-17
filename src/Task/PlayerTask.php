@@ -64,7 +64,7 @@ class PlayerTask extends Task
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-                    $point = Loader::getInstance()->BoxingPoint[$name ?? null] ?? 0;
+                    $point = Loader::getInstance()->BoxingPoint[$name];
                     $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
                     $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
                 } else {
@@ -73,7 +73,7 @@ class PlayerTask extends Task
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 if (isset(Loader::getInstance()->TimerTask[$name])) {
-                    if (Loader::getInstance()->TimerTask[$name] === "yes") {
+                    if (Loader::getInstance()->TimerTask[$name] === true) {
                         if (isset(Loader::getInstance()->TimerData[$name])) {
                             Loader::getInstance()->TimerData[$name] += 5;
                         } else {
@@ -88,7 +88,7 @@ class PlayerTask extends Task
                         Loader::getInstance()->TimerData[$name] = 0;
                     }
                 } else {
-                    Loader::getInstance()->TimerTask[$name] = "no";
+                    Loader::getInstance()->TimerTask[$name] = false;
                 }
             }
         }
