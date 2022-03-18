@@ -26,12 +26,12 @@ class SumoHandler implements Listener
     public const PHASE_RESTART = 2;
 
     public Loader $plugin;
-    public SumoScheduler $scheduler;
     public int $phase = 0;
     public array $data = [];
     public bool $setup = false;
     public array $players = [];
     public ?World $level;
+    private SumoScheduler $scheduler;
 
     public function __construct(Loader $plugin, array $arenaFileData)
     {
@@ -52,9 +52,11 @@ class SumoHandler implements Listener
     {
         if (empty($this->data)) {
             return false;
-        } else if ($this->data["level"] == null) {
+        }
+        if ($this->data["level"] == null) {
             return false;
-        } else if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data["level"])) {
+        }
+        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data["level"])) {
             return false;
         } else {
             if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"]))
@@ -63,9 +65,11 @@ class SumoHandler implements Listener
         }
         if (!is_int($this->data["slots"])) {
             return false;
-        } else if (!is_array($this->data["spawns"])) {
+        }
+        if (!is_array($this->data["spawns"])) {
             return false;
-        } else if (count($this->data["spawns"]) != $this->data["slots"]) {
+        }
+        if (count($this->data["spawns"]) != $this->data["slots"]) {
             return false;
         }
         $this->data["enabled"] = true;
@@ -136,17 +140,16 @@ class SumoHandler implements Listener
 
     public function inGame(Player $player): bool
     {
-        switch ($this->phase) {
-            case self::PHASE_LOBBY:
-                $inGame = false;
-                foreach ($this->players as $players) {
-                    if ($players->getId() === $player->getId()) {
-                        $inGame = true;
-                    }
+        if ($this->phase === static::PHASE_LOBBY) {
+            $inGame = false;
+            foreach ($this->players as $players) {
+                if ($players->getId() === $player->getId()) {
+                    $inGame = true;
                 }
-                return $inGame;
-            default:
-                return isset($this->players[$player->getName()]);
+            }
+            return $inGame;
+        } else {
+            return isset($this->players[$player->getName()]);
         }
     }
 
@@ -166,7 +169,7 @@ class SumoHandler implements Listener
         foreach ($this->players as $p) {
             $player = $p;
         }
-        if ($player instanceof Player && $player->isOnline()) {
+        if ($player instanceof Player and $player->isOnline()) {
             $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
         }
         $this->phase = self::PHASE_RESTART;
@@ -201,21 +204,18 @@ class SumoHandler implements Listener
 
     public function disconnectPlayer(Player $player, string $quitMsg = "You left the Game")
     {
-        switch ($this->phase) {
-            case SumoHandler::PHASE_LOBBY:
-                $index = "";
-                foreach ($this->players as $i => $p) {
-                    if ($p->getId() == $player->getId()) {
-                        $index = $i;
-                    }
+        if ($this->phase === self::PHASE_LOBBY) {
+            $index = "";
+            foreach ($this->players as $i => $p) {
+                if ($p->getId() === $player->getId()) {
+                    $index = $i;
                 }
-                if ($index != "") {
-                    unset($this->players[$index]);
-                }
-                break;
-            default:
-                unset($this->players[$player->getName()]);
-                break;
+            }
+            if ($index != "") {
+                unset($this->players[$index]);
+            }
+        } else {
+            unset($this->players[$player->getName()]);
         }
         $player->getEffects()->clear();
         $player->setGamemode($this->plugin->getServer()->getGamemode());

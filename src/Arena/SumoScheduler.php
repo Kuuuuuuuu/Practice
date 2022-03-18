@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Arena;
 
-use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
+use pocketmine\world\sound\AnvilUseSound;
+use pocketmine\world\sound\ClickSound;
 
 class SumoScheduler extends Task
 {
@@ -29,11 +30,15 @@ class SumoScheduler extends Task
                     if ($this->startTime > 0) {
                         $this->startTime--;
                         foreach ($this->plugin->players as $player) {
-                            $player->sendMessage(Loader::getPrefixCore() . "§cThe game will start in §e" . $this->startTime . "§c seconds!");
+                            /** @var $player Player */
+                            $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
+                            $this->plugin->level->addSound($player->getPosition()->asVector3(), new ClickSound());
                         }
-                    }
-                    if ($this->startTime == 0) {
+                    } else if ($this->startTime === 0) {
                         $this->plugin->startGame();
+                        foreach ($this->plugin->players as $player) {
+                            $this->plugin->level->addSound($player->getPosition()->asVector3(), new AnvilUseSound());
+                        }
                     }
                 } else {
                     $this->startTime = 4;
@@ -42,7 +47,7 @@ class SumoScheduler extends Task
             } else if ($this->plugin->phase === SumoHandler::PHASE_GAME) {
                 if ($this->gameTime > 0) {
                     $this->gameTime--;
-                } else if ($this->gameTime < 0) {
+                } else {
                     $this->plugin->startRestart();
                 }
                 if ($this->plugin->checkEnd()) {
