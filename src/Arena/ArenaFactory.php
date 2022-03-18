@@ -89,6 +89,30 @@ class ArenaFactory
         $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
     }
 
+    public function getRandomSpawnOitc(): array
+    {
+        // random array
+        $spawns = [
+            [
+                "x" => 246,
+                "y" => 67,
+                "z" => 180
+            ],
+            [
+                "x" => 187,
+                "y" => 65,
+                "z" => 180
+            ],
+            [
+                "x" => 260,
+                "y" => 65,
+                "z" => 271
+            ]
+        ];
+        $random = array_rand($spawns);
+        return $spawns[$random];
+    }
+
     /**
      * @throws JsonException
      */
