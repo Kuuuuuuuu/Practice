@@ -16,7 +16,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CpsCounter;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
-use Kohaku\Core\Utils\SumoYamlProvider;
+use Kohaku\Core\Utils\YamlDataProvider;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
@@ -30,7 +30,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    private static SumoYamlProvider $sumoloader;
+    private static YamlDataProvider $sumoloader;
     public mixed $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
@@ -77,7 +77,7 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$sumoloader = new SumoYamlProvider();
+        self::$sumoloader = new YamlDataProvider();
     }
 
     public function onEnable(): void
