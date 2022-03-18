@@ -149,7 +149,7 @@ class ArenaManager
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())->getSafeSpawn());
-            $player->teleport(new Vector3($random["X"], $random["Y"], $random["Z"]));
+            $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
             $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
             $player->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
             $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
