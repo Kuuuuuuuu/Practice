@@ -140,7 +140,7 @@ class SumoHandler implements Listener
             case self::PHASE_LOBBY:
                 $inGame = false;
                 foreach ($this->players as $players) {
-                    if ($players->getId() == $player->getId()) {
+                    if ($players->getId() === $player->getId()) {
                         $inGame = true;
                     }
                 }
@@ -166,11 +166,9 @@ class SumoHandler implements Listener
         foreach ($this->players as $p) {
             $player = $p;
         }
-        if (!$player instanceof Player || (!$player->isOnline())) {
-            $this->phase = self::PHASE_RESTART;
-            return;
+        if ($player instanceof Player && $player->isOnline()) {
+            $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
         }
-        $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
         $this->phase = self::PHASE_RESTART;
     }
 
@@ -189,7 +187,7 @@ class SumoHandler implements Listener
                 } else {
                     $index = null;
                     foreach ($this->players as $i => $p) {
-                        if ($p->getId() == $player->getId()) {
+                        if ($p->getId() === $player->getId()) {
                             $index = $i;
                         }
                     }

@@ -69,13 +69,13 @@ class FormUtils
         $form->setTitle("§bHorizon §eMenu");
         $form->addButton("§aParkour\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
         $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
-        $form->addButton("§aFist\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getFistArena() ?? null) ?? 0, 0, "textures/items/snowball.png");
-        $form->addButton("§aCombo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getComboArena() ?? null) ?? 0, 0, "textures/items/apple.png");
+        $form->addButton("§aFist\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
+        $form->addButton("§aCombo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getComboArena() ?? null) ?? 0, 0, "textures/items/apple_golden.png");
         $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
-        $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
-        $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/diamond_axe.png");
-        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/diamond_hoe.png");
-        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
+        $form->addButton("§aResistance\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getResistanceArena() ?? null) ?? 0, 0, "textures/items/resistance_effect.png");
+        $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getKitPVPArena() ?? null) ?? 0, 0, "textures/items/recipe_book_icon.png");
+        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
+        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/blaze_rod.png");
         $player->sendForm($form);
     }
 

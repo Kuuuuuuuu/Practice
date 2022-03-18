@@ -45,6 +45,9 @@ class SumoScheduler extends Task
                 } else if ($this->gameTime < 0) {
                     $this->plugin->startRestart();
                 }
+                if ($this->plugin->checkEnd()) {
+                    $this->plugin->startRestart();
+                }
                 foreach ($this->plugin->players as $player) {
                     /** @var $player Player */
                     if ($player->isImmobile()) {
@@ -57,9 +60,6 @@ class SumoScheduler extends Task
                             $this->plugin->disconnectPlayer($player);
                         }
                     }
-                }
-                if ($this->plugin->checkEnd()) {
-                    $this->plugin->startRestart();
                 }
             } else if ($this->plugin->phase === SumoHandler::PHASE_RESTART) {
                 foreach ($this->plugin->players as $player) {
