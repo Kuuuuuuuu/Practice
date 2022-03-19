@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use DateTime;
+use JsonException;
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
@@ -216,6 +218,8 @@ class FormUtils
                         }
                     }
                     break;
+                case 4:
+                    $this->getArtifactForm($player);
             }
             return true;
         });
@@ -224,6 +228,7 @@ class FormUtils
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
         $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
+        $form->addButton("§bArtifacts", 0, "textures/items/diamond_sword.png");
         $player->sendForm($form);
     }
 
@@ -339,6 +344,9 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @throws JsonException
+     */
     public function openCapeListUI($player)
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
@@ -351,7 +359,7 @@ class FormUtils
                 $player->sendMessage(Loader::getPrefixCore() . "§cCape not found!");
             } else {
                 $oldSkin = $player->getSkin();
-                $capeData = CapeUtils::getInstance()->createCape($cape);
+                $capeData = CosmeticHandler::getInstance()->createCape($cape);
                 $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                 $player->setSkin($setCape);
                 $player->sendSkin();
@@ -364,9 +372,47 @@ class FormUtils
             return true;
         });
         $form->setTitle("§bHorizon §eCapes");
-        foreach (CapeUtils::getInstance()->getCapes() as $capes) {
+        foreach (CosmeticHandler::getInstance()->getCapes() as $capes) {
             $form->addButton("$capes", -1, "", $capes);
         }
         $player->sendForm($form);
+    }
+
+    public static function getArtifactForm(Player $player): bool
+    {
+
+        $form = new SimpleForm(function (Player $event, $data = null) {
+            if ($event instanceof HorizonPlayer) {
+                if ($data !== null) {
+                    if ($data === "None") return;
+                    $cosmetic = CosmeticHandler::getInstance();
+                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
+                        if (str_contains($data, 'SP-')) {
+                            $event->setCape('');
+                            $event->setStuff('');
+                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
+                        } else {
+                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
+                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
+                        }
+                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
+                    }
+                }
+            }
+        });
+
+        $form->setTitle("Artifact");
+        /** @var $player HorizonPlayer */
+        $validstuffs = $player->getValidStuffs();
+        if (count($validstuffs) <= 1) {
+            $form->addButton("None", -1, "", "None");
+            $player->sendForm($form);
+        }
+        foreach ($validstuffs as $stuff) {
+            if ($stuff === "None") continue;
+            $form->addButton($stuff, -1, "", $stuff);
+        }
+        $player->sendForm($form);
+        return true;
     }
 }

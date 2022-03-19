@@ -14,11 +14,13 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Task\ScoreboardTask;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -50,8 +52,6 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\particle\HeartParticle;
-use pocketmine\world\particle\LavaParticle;
-use pocketmine\world\Position;
 
 class PlayerListener implements Listener
 {
@@ -162,9 +162,13 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onPlayerLogin(PlayerLoginEvent $event)
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $banplayer = $player->getName();
         $banInfo = Loader::getInstance()->db->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -210,6 +214,7 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
@@ -217,14 +222,80 @@ class PlayerListener implements Listener
         $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
         if ($player instanceof HorizonPlayer) {
+            $cosmetic = CosmeticHandler::getInstance();
+            if (strlen($player->getSkin()->getSkinData()) >= 131072 || strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
+                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                $cosmetic->resetSkin($player);
+            } else {
+                $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
+            }
             $player->LoadCape();
+            $player->setCosmetic();
+            $player->setValidStuffs('AngelWing');
+            $player->setValidStuffs('AngelWingV2');
+            $player->setValidStuffs('Antler');
+            $player->setValidStuffs('Axe');
+            $player->setValidStuffs('BackCap');
+            $player->setValidStuffs('Backpack');
+            $player->setValidStuffs('BackStabKnife');
+            $player->setValidStuffs('Bald Headband');
+            $player->setValidStuffs('Banana');
+            $player->setValidStuffs('Adidas');
+            $player->setValidStuffs('Boxing');
+            $player->setValidStuffs('Nike');
+            $player->setValidStuffs('LouisVuitton');
+            $player->setValidStuffs('BlackAngleSet');
+            $player->setValidStuffs('BlazeRod');
+            $player->setValidStuffs('BlueWing');
+            $player->setValidStuffs('Bubble');
+            $player->setValidStuffs('Creeper');
+            $player->setValidStuffs('Crown');
+            $player->setValidStuffs('CrownV2');
+            $player->setValidStuffs('DevilHaloWing');
+            $player->setValidStuffs('DragonWing');
+            $player->setValidStuffs('EnderWing');
+            $player->setValidStuffs('HeadphoneNote');
+
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onChangeSkin(PlayerChangeSkinEvent $event)
     {
+        $case = 0;
         $player = $event->getPlayer();
-        Loader::getInstance()->PlayerSkin[$player->getName()] = $player->getSkin();
+        $name = $player->getName();
+        $cosmetic = CosmeticHandler::getInstance();
+        if ($player instanceof HorizonPlayer) {
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                $cosmetic->resetSkin($player);
+                $case = 1;
+            } else {
+                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
+            }
+            if ($player->getStuff() !== "") {
+                $cosmetic->setSkin($player, $player->getStuff());
+            } else if ($player->getCape() !== "") {
+                $capedata = $cosmetic->createCape($player->getCape());
+                if ($case === 1) {
+                    $player->setSkin(new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), $capedata, $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), ''));
+                } else {
+                    $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), $capedata, $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
+                }
+            } else {
+                if ($case === 1) {
+                    $player->setSkin(new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), ''));
+                } else {
+                    $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
+                }
+            }
+            Loader::getInstance()->PlayerSkin[$player->getName()] = $player->getSkin();
+        }
     }
 
     public function onChat(PlayerChatEvent $event)

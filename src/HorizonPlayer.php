@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core;
 
 use JsonException;
-use Kohaku\Core\Utils\CapeUtils;
+use Kohaku\Core\Utils\CosmeticHandler;
 use pocketmine\{entity\Skin, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
@@ -14,6 +14,9 @@ class HorizonPlayer extends Player
 
     private float|int $xzKB = 0.32;
     private float|int $yKb = 0.34;
+    private string $cape = '';
+    private string $stuff = '';
+    private array $validstuffs = [];
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -98,13 +101,56 @@ class HorizonPlayer extends Player
         Loader::getInstance()->PlayerSkin[$this->getName()] = $this->getSkin();
         if (file_exists(Loader::getInstance()->getDataFolder() . "capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
-            $capeData = CapeUtils::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
+            $capeData = CosmeticHandler::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
             $this->setSkin($setCape);
             $this->sendSkin();
         } else {
             Loader::getInstance()->CapeData->remove($this->getName());
             Loader::getInstance()->CapeData->save();
+        }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function setCosmetic(): void
+    {
+        if ($this->getStuff() !== "") {
+            CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
+        }
+    }
+
+    public function getStuff(): string
+    {
+        return $this->stuff;
+    }
+
+    public function setStuff(string $stuff): string
+    {
+        return $this->stuff = $stuff;
+    }
+
+    public function getCape(): string
+    {
+        return $this->cape;
+    }
+
+    public function setCape(string $cape): string
+    {
+        return $this->cape = $cape;
+    }
+
+    public function getValidStuffs(): array
+    {
+        return $this->validstuffs;
+    }
+
+    public function setValidStuffs(string $stuff): void
+    {
+        $key = in_array($stuff, $this->validstuffs);
+        if ($key === false) {
+            $this->validstuffs[] = $stuff;
         }
     }
 }
