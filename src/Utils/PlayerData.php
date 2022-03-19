@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils;
 
+use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Loader;
 
@@ -16,6 +17,7 @@ class PlayerData
     private int|float $kdr = 0;
     private int $deaths = 0;
     private mixed $data = null;
+    private int $elo = 1000;
 
     public function __construct(string $player)
     {
@@ -34,6 +36,11 @@ class PlayerData
                 $this->kdr = $data["kdr"];
             } else {
                 $this->kdr = 0;
+            }
+            if (isset($data["elo"])) {
+                $this->elo = $data["elo"];
+            } else {
+                $this->elo = 1000;
             }
             $this->deaths = $data["deaths"];
         }
@@ -83,6 +90,26 @@ class PlayerData
         } else {
             return 1;
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addElo()
+    {
+        $random = random_int(0, 30);
+        $this->elo -= $random;
+        $this->save();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function removeElo()
+    {
+        $random = random_int(0, 30);
+        $this->elo -= $random;
+        $this->save();
     }
 
     public function addDeath()

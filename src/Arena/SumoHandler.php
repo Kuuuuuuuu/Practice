@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Arena;
 
+use Exception;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ScoreboardUtils;
@@ -182,6 +183,9 @@ class SumoHandler implements Listener
         return count($this->players) <= 1;
     }
 
+    /**
+     * @throws Exception
+     */
     public function onMove(PlayerMoveEvent $event)
     {
         if ($this->phase === self::PHASE_LOBBY) {
@@ -204,6 +208,9 @@ class SumoHandler implements Listener
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function disconnectPlayer(Player $player, string $quitMsg = "You left the Game")
     {
         if ($this->phase === self::PHASE_LOBBY) {
@@ -232,6 +239,9 @@ class SumoHandler implements Listener
         $player->sendMessage(Loader::getPrefixCore() . "§r§e$quitMsg");
     }
 
+    /**
+     * @throws Exception
+     */
     public function onLeft(PlayerQuitEvent $event)
     {
         $player = $event->getPlayer();

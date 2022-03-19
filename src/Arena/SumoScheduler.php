@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Arena;
 
+use Exception;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\player\Player;
@@ -21,6 +22,9 @@ class SumoScheduler extends Task
         $this->plugin = $plugin;
     }
 
+    /**
+     * @throws Exception
+     */
     public function onRun(): void
     {
         if ($this->plugin->setup) return;
@@ -62,6 +66,7 @@ class SumoScheduler extends Task
                 if ($this->plugin->inGame($player)) {
                     if ($player->getPosition()->getY() <= 50) {
                         $this->plugin->disconnectPlayer($player);
+                        ArenaUtils::getInstance()->getData($player->getName())->removeElo();
                     } else if ($player->getWorld() !== $this->plugin->level) {
                         $this->plugin->disconnectPlayer($player);
                     }
@@ -77,6 +82,7 @@ class SumoScheduler extends Task
                 ArenaUtils::getInstance()->GiveItem($player);
                 ArenaUtils::getInstance()->addKill($player);
                 ScoreboardUtils::getInstance()->sb($player);
+                ArenaUtils::getInstance()->getData($player->getName())->addElo();
                 $player->setGamemode($this->plugin->plugin->getServer()->getGamemode());
             }
             $this->plugin->players = [];

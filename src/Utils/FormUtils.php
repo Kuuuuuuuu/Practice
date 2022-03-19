@@ -20,7 +20,9 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\Player;
+use pocketmine\Server;
 
 class FormUtils
 {
@@ -265,8 +267,7 @@ class FormUtils
             $result = $data;
             if ($result === null) {
                 return true;
-            }
-            if (strlen($data[0]) > 13) {
+            } else if (strlen($data[0]) >= 15) {
                 $player->sendMessage(Loader::getPrefixCore() . "§cYour nickname is too long!");
             } else {
                 $player->setDisplayName($data[0]);
@@ -288,22 +289,25 @@ class FormUtils
         }
         $this->players[$player->getName()] = $list;
         $form = new CustomForm(function (Player $player, array $data = null) {
-            if ($data === null) {
-                $player->sendMessage(Loader::getPrefixCore() . "§cReport submit Failed");
-                return true;
+            if ($data !== null) {
+                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+                $msg = new DiscordWebhookUtils();
+                $e = new DiscordWebhookEmbed();
+                $index = $data[1];
+                $e->setTitle("Player Report");
+                $e->setFooter("Made By KohakuChan");
+                $e->setTimestamp(new Datetime());
+                $e->setColor(0x00ff00);
+                $e->setDescription("{$player->getName()} Report {$this->players[$player->getName()][$index]}  | Reason: $data[2]");
+                $msg->addEmbed($e);
+                $web->send($msg);
+                $player->sendMessage(Loader::getPrefixCore() . "§aReport Sent!");
+                foreach (Server::getInstance()->getOnlinePlayers() as $p) {
+                    if ($p->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                        $p->sendMessage(Loader::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$index]} §e| Reason: §a$data[2]");
+                    }
+                }
             }
-            $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-            $msg = new DiscordWebhookUtils();
-            $e = new DiscordWebhookEmbed();
-            $index = $data[1];
-            $e->setTitle("Player Report");
-            $e->setFooter("Made By KohakuChan");
-            $e->setTimestamp(new Datetime());
-            $e->setColor(0x00ff00);
-            $e->setDescription("{$player->getName()} Report {$this->players[$player->getName()][$index]}  | Reason: $data[2]");
-            $msg->addEmbed($e);
-            $web->send($msg);
-            $player->sendMessage(Loader::getPrefixCore() . "§aReport was submitted!");
             return true;
         });
         $form->setTitle("§bHorizon §eReport");
@@ -380,7 +384,6 @@ class FormUtils
 
     public static function getArtifactForm(Player $player): bool
     {
-
         $form = new SimpleForm(function (Player $event, $data = null) {
             if ($event instanceof HorizonPlayer) {
                 if ($data !== null) {
@@ -410,7 +413,7 @@ class FormUtils
         }
         foreach ($validstuffs as $stuff) {
             if ($stuff === "None") continue;
-            $form->addButton($stuff, -1, "", $stuff);
+            $form->addButton("§b" . $stuff, -1, "", $stuff);
         }
         $player->sendForm($form);
         return true;

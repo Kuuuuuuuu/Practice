@@ -6,7 +6,8 @@ namespace Kohaku\Core;
 
 use JsonException;
 use Kohaku\Core\Utils\CosmeticHandler;
-use pocketmine\{entity\Skin, player\Player, Server};
+use Kohaku\Core\Utils\KnockbackManager;
+use pocketmine\{entity\Skin, player\Player};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class HorizonPlayer extends Player
@@ -29,20 +30,8 @@ class HorizonPlayer extends Player
         if ($source instanceof EntityDamageByEntityEvent) {
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
-                    $attackSpeed = 1;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-                    $attackSpeed = 8;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
-                    $attackSpeed = 7;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                    $attackSpeed = 7;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())) {
-                    $attackSpeed = 7;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
-                    $attackSpeed = 8;
-                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena())) {
-                    $attackSpeed = 7;
+                if (KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                    $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
                 }
             }
         }
@@ -51,27 +40,9 @@ class HorizonPlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
-            $this->xzKB = 0.233;
-            $this->yKb = 0.166;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-            $this->xzKB = 0.33;
-            $this->yKb = 0.29;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena())) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.311;
+        if (KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+            $this->xzKB = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["hkb"];
+            $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
@@ -151,7 +122,8 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function getAllCape() {
+    public function getAllCape()
+    {
         $this->setValidStuffs('AngelWing');
         $this->setValidStuffs('AngelWingV2');
         $this->setValidStuffs('Antler');

@@ -302,7 +302,7 @@ class CosmeticHandler
                     $pixelColor = @imagecolorat($img, $x, $y);
                     $a = ((~($pixelColor >> 24)) << 1) & 0xff;
                     $r = ($pixelColor >> 16) & 0xff;
-                    $g = ($pixelColor >> 8) & 0xff;
+                    $g = ($pixelColor >> 8) & 0xfddf;
                     $b = $pixelColor & 0xff;
                     $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
                 }

@@ -8,6 +8,7 @@ namespace Kohaku\Core\Commands;
 
 use JsonException;
 use Kohaku\Core\Loader;
+use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\Server;
@@ -40,6 +41,7 @@ class CoreCommand extends Command
                     $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                     $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
+                    $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb");
                     $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                     break;
                 case "make":
@@ -139,6 +141,42 @@ class CoreCommand extends Command
                             $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                             break;
                     }
+                    break;
+                case "setatkspd":
+                    if (!isset($args[1])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core setatkspd <world> <speed> ");
+                    }
+                    if (!isset($args[2])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core setatkspd <world> <speed>");
+                    }
+                    KnockbackManager::getInstance()->setAttackspeed($args[1], $args[2]);
+                    break;
+                case "removeatkspd":
+                    if (!isset($args[1])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removeatkspd <world>");
+                    }
+                    KnockbackManager::getInstance()->removeAttackspeed($sender, $args[1]);
+                    break;
+                case "addkb":
+                    if (!isset($args[1])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                    }
+                    if (!isset($args[2])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                    }
+                    if (!isset($args[3])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                    }
+                    KnockbackManager::getInstance()->setKnockback($sender, $args[1], (float)$args[2], (float)$args[3]);
+                    break;
+                case "removekb":
+                    if (!isset($args[1])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removekb <world>");
+                    }
+                    if (!isset($args[2])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removekb <world>");
+                    }
+                    KnockbackManager::getInstance()->removeKnockback($sender, $args[1]);
                     break;
                 case "remove":
                     if (!isset($args[1])) {

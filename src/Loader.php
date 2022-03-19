@@ -13,7 +13,7 @@ use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\CpsCounter;
+use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlDataProvider;
@@ -25,7 +25,7 @@ use SQLite3;
 class Loader extends PluginBase
 {
     public static self $plugin;
-    public static ?CpsCounter $cps;
+    public static ?ClickHandler $cps;
     public static ?Scoreboards $score;
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
@@ -72,7 +72,7 @@ class Loader extends PluginBase
     public function onLoad(): void
     {
         self::$plugin = $this;
-        self::$cps = new CpsCounter();
+        self::$cps = new ClickHandler();
         self::$score = new Scoreboards();
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
