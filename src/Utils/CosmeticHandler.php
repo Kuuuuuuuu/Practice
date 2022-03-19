@@ -57,7 +57,7 @@ class CosmeticHandler
         $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->steveSkin = null;
-        $this->stevePng = $this->resourcesFolder . 'steve.png';
+        $this->stevePng = $this->resourcesFolder . 'steve.json';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
@@ -333,8 +333,7 @@ class CosmeticHandler
             $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
 
         if ($skin !== null) {
-            $skin = new Skin($skin->getSkinId(), $skin->getSkinData(),
-                '', $skin->getGeometryName(), $this->steveSkin->getGeometryData());
+            $skin = new Skin($skin->getSkinId(), $skin->getSkinData(), '', $skin->getGeometryName(), $this->steveSkin->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         }
