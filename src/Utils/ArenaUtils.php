@@ -26,7 +26,6 @@ use Kohaku\Core\Task\PlayerTask;
 use Kohaku\Core\Task\ScoreboardTask;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
-use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
@@ -36,7 +35,6 @@ use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
@@ -251,7 +249,6 @@ class ArenaUtils
     {
         $name = $player->getName();
         $dname = $dplayer->getName();
-        $this->spawnLightningBolt($player);
         if (isset(Loader::getInstance()->opponent[$name])) {
             unset(Loader::getInstance()->opponent[$name]);
         }
@@ -303,22 +300,6 @@ class ArenaUtils
             $this->addKill($dplayer);
             $this->handleStreak($dplayer, $player);
         }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function spawnLightningBolt(Player $player): void
-    {
-        $packet = new AddActorPacket();
-        $packet->type = "minecraft:lightning_bolt";
-        $packet->actorRuntimeId = Entity::nextRuntimeId();
-        $packet->actorUniqueId = 1;
-        $packet->metadata = [];
-        $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
-        $packet->yaw = $player->getLocation()->getYaw();
-        $packet->pitch = $player->getLocation()->getPitch();
-        Server::getInstance()->broadcastPackets($player->getWorld()->getPlayers(), [$packet]);
     }
 
     public function addKill(Player $player)
