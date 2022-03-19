@@ -23,7 +23,7 @@ class PlayerTask extends Task
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            if ($this->tick % 10 === 0) {
+            if ($this->tick % 15 === 0) {
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
@@ -54,7 +54,7 @@ class PlayerTask extends Task
                     }
                 }
             }
-            if ($this->tick % 15 === 0) {
+            if ($this->tick % 20 === 0) {
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                     Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
@@ -71,8 +71,6 @@ class PlayerTask extends Task
                         unset(Loader::getInstance()->opponent[$name]);
                     }
                 }
-            }
-            if ($this->tick % 20 === 0) {
                 if (isset(Loader::getInstance()->SkillCooldown[$name])) {
                     if (Loader::getInstance()->SkillCooldown[$name] > 0) {
                         Loader::getInstance()->SkillCooldown[$name] -= 1;
