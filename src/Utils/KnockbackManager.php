@@ -51,13 +51,13 @@ class KnockbackManager
     public function getKnockback(string $world): ?array
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/kb.yml", Config::YAML);
-        return $data->get($world) ?? ["hkb" => 0.33, "ykb" => 0.32];
+        return $data->get($world) ?? null;
     }
 
-    public function getAttackspeed(string $world): int
+    public function getAttackspeed(string $world): ?int
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/speed.yml", Config::YAML);
-        return $data->get($world) ?? 7;
+        return $data->get($world) ?? null;
     }
 
     /**
