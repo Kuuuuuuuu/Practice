@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils;
 
+use Exception;
 use GdImage;
 use InvalidArgumentException;
 use JsonException;
@@ -77,28 +78,6 @@ class CosmeticHandler
         }
         $this->cosmeticAvailable = $checkFileAvailable;
         sort($this->cosmeticAvailable);
-    }
-
-    /**
-     * @throws JsonException
-     */
-    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
-    {
-        $img = @imagecreatefrompng($imagePath);
-        $size = getimagesize($imagePath);
-        $skinBytes = "";
-        for ($y = 0; $y < $size[1]; $y++) {
-            for ($x = 0; $x < $size[0]; $x++) {
-                $pixelColor = @imagecolorat($img, $x, $y);
-                $a = ((~($pixelColor >> 24)) << 1) & 0xff;
-                $r = ($pixelColor >> 16) & 0xff;
-                $g = ($pixelColor >> 8) & 0xff;
-                $b = $pixelColor & 0xff;
-                $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
-            }
-        }
-        @imagedestroy($img);
-        return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
     }
 
     private function getCubes(array $geometryData): array
@@ -284,6 +263,32 @@ class CosmeticHandler
         imagesavealpha($dst, true);
         imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
         return $dst;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
+    {
+        $img = @imagecreatefrompng($imagePath);
+        $size = getimagesize($imagePath);
+        $skinBytes = "";
+        try {
+            for ($y = 0; $y < $size[1]; $y++) {
+                for ($x = 0; $x < $size[0]; $x++) {
+                    $pixelColor = @imagecolorat($img, $x, $y);
+                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
+                    $r = ($pixelColor >> 16) & 0xff;
+                    $g = ($pixelColor >> 8) & 0xff;
+                    $b = $pixelColor & 0xff;
+                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
+                }
+            }
+        } catch (Exception $e) {
+            Loader::getInstance()->getLogger()->error($e);
+        }
+        @imagedestroy($img);
+        return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
     }
 
     public function createCape($capeName): string
