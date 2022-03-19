@@ -11,6 +11,7 @@ use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
+use Kohaku\Core\Commands\PlayerInfoCommand;
 use Kohaku\Core\Commands\RestartCommand;
 use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
@@ -105,6 +106,14 @@ class ArenaUtils
             return "Unknown";
         }
         return Loader::getInstance()->ControlList[Loader::getInstance()->PlayerControl[strtolower($player->getName())]];
+    }
+
+    #[Pure] public function getPlayerDevices(Player $player): string
+    {
+        if (!isset(Loader::getInstance()->PlayerDevice[strtolower($player->getName())]) or Loader::getInstance()->PlayerDevice[strtolower($player->getName())] == null) {
+            return "Unknown";
+        }
+        return Loader::getInstance()->PlayerDevice[strtolower($player->getName())];
     }
 
     #[Pure] public function getPlayerOs(Player $player): string
@@ -232,6 +241,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("Restart", new RestartCommand());
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
+        Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
     }
 
     private function registerEvents(): void
