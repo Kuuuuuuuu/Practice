@@ -302,16 +302,16 @@ class ArenaUtils
         }
     }
 
-    public function spawnLightningBolt($player, $viewers): void
+    public function spawnLightningBolt(Player $player, Player $viewers): void
     {
         $packet = new AddActorPacket();
         $packet->type = "minecraft:lightning_bolt";
         $packet->actorRuntimeId = Entity::nextRuntimeId();
         $packet->metadata = [];
         $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
-        $packet->yaw = $player->getYaw();
-        $packet->pitch = $player->getPitch();
-        $player->getServer()->broadcastPacket($viewers, $packet);
+        $packet->yaw = $player->getLocation()->getYaw();
+        $packet->pitch = $player->getLocation()->getPitch();
+        $player->getServer()->broadcastPackets([$player, $viewers], [$packet]);
     }
 
     public function addKill(Player $player)
