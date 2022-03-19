@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils;
 
+use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
@@ -303,12 +304,15 @@ class ArenaUtils
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function spawnLightningBolt(Player $player, Player $viewers): void
     {
         $packet = new AddActorPacket();
         $packet->type = "minecraft:lightning_bolt";
         $packet->actorRuntimeId = Entity::nextRuntimeId();
-        $packet->actorUniqueId = Uuid::uuid4();
+        $packet->actorUniqueId = random_int(1, 5);
         $packet->metadata = [];
         $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
         $packet->yaw = $player->getLocation()->getYaw();
