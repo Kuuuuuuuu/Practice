@@ -149,7 +149,7 @@ class CoreCommand extends Command
                     if (!isset($args[2])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core setatkspd <world> <speed>");
                     }
-                    KnockbackManager::getInstance()->setAttackspeed($sender, $args[1], $args[2]);
+                    KnockbackManager::getInstance()->setAttackspeed($sender, $args[1], (int)$args[2]);
                     break;
                 case "removeatkspd":
                     if (!isset($args[1])) {
