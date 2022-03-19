@@ -501,7 +501,8 @@ class PlayerListener implements Listener
                     $config->save();
                 } catch (JsonException $e) {
                     $player->sendMessage(Loader::getPrefixCore() . "§cError while saving the file");
-                    Loader::getInstance()->getLogger()->error($e);
+                    ArenaUtils::getLogger((string)$e);
+                    return null;
                 }
             }
         }

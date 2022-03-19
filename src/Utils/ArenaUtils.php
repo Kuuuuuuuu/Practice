@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils;
 
+use DateTime;
 use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
@@ -24,6 +25,9 @@ use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\ClearLag;
 use Kohaku\Core\Task\PlayerTask;
 use Kohaku\Core\Task\ScoreboardTask;
+use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
+use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
+use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\EntityDataHelper;
@@ -79,6 +83,20 @@ class ArenaUtils
     #[Pure] public static function getInstance(): ArenaUtils
     {
         return new ArenaUtils();
+    }
+
+    public static function getLogger(string $err)
+    {
+        $e = new DiscordWebhookEmbed();
+        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+        $msg = new DiscordWebhookUtils();
+        $e->setTitle("Error");
+        $e->setFooter("Made By KohakuChan");
+        $e->setTimestamp(new Datetime());
+        $e->setColor(0x00ff00);
+        $e->setDescription("Error: " . $err);
+        $msg->addEmbed($e);
+        $web->send($msg);
     }
 
     #[Pure] public function getPlayerControls(Player $player): string

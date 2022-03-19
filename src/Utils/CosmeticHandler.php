@@ -80,45 +80,55 @@ class CosmeticHandler
         sort($this->cosmeticAvailable);
     }
 
-    private function getCubes(array $geometryData): array
+    private function getCubes(array $geometryData): ?array
     {
-        $cubes = [];
-        foreach ($geometryData['bones'] as $bone) {
-            if (!isset($bone['cubes'])) {
-                continue;
-            }
+        try {
+            $cubes = [];
+            foreach ($geometryData['bones'] as $bone) {
+                if (!isset($bone['cubes'])) {
+                    continue;
+                }
 
-            if ($bone['mirror'] ?? false) {
-                throw new InvalidArgumentException('Unsupported geometry data');
+                if ($bone['mirror'] ?? false) {
+                    throw new InvalidArgumentException('Unsupported geometry data');
+                }
+                foreach ($bone['cubes'] as $cubeData) {
+                    $cube = [];
+                    $cube['x'] = $cubeData['size'][0];
+                    $cube['y'] = $cubeData['size'][1];
+                    $cube['z'] = $cubeData['size'][2];
+                    $cube['uvX'] = $cubeData['uv'][0];
+                    $cube['uvY'] = $cubeData['uv'][1];
+                    $cubes[] = $cube;
+                }
             }
-            foreach ($bone['cubes'] as $cubeData) {
-                $cube = [];
-                $cube['x'] = $cubeData['size'][0];
-                $cube['y'] = $cubeData['size'][1];
-                $cube['z'] = $cubeData['size'][2];
-                $cube['uvX'] = $cubeData['uv'][0];
-                $cube['uvY'] = $cubeData['uv'][1];
-                $cubes[] = $cube;
-            }
+            return $cubes;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        return $cubes;
     }
 
-    private function getSkinBounds(array $cubes, float $scale = 1.0): array
+    private function getSkinBounds(array $cubes, float $scale = 1.0): ?array
     {
-        $bounds = [];
-        foreach ($cubes as $cube) {
-            $x = (int)($scale * $cube['x']);
-            $y = (int)($scale * $cube['y']);
-            $z = (int)($scale * $cube['z']);
-            $uvX = (int)($scale * $cube['uvX']);
-            $uvY = (int)($scale * $cube['uvY']);
-            $bounds[] = ['min' => ['x' => $uvX + $z, 'y' => $uvY],
-                'max' => ['x' => $uvX + $z + (2 * $x) - 1, 'y' => $uvY + $z - 1]];
-            $bounds[] = ['min' => ['x' => $uvX, 'y' => $uvY + $z],
-                'max' => ['x' => $uvX + (2 * ($z + $x)) - 1, 'y' => $uvY + $z + $y - 1]];
+        try {
+            $bounds = [];
+            foreach ($cubes as $cube) {
+                $x = (int)($scale * $cube['x']);
+                $y = (int)($scale * $cube['y']);
+                $z = (int)($scale * $cube['z']);
+                $uvX = (int)($scale * $cube['uvX']);
+                $uvY = (int)($scale * $cube['uvY']);
+                $bounds[] = ['min' => ['x' => $uvX + $z, 'y' => $uvY],
+                    'max' => ['x' => $uvX + $z + (2 * $x) - 1, 'y' => $uvY + $z - 1]];
+                $bounds[] = ['min' => ['x' => $uvX, 'y' => $uvY + $z],
+                    'max' => ['x' => $uvX + (2 * ($z + $x)) - 1, 'y' => $uvY + $z + $y - 1]];
+            }
+            return $bounds;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        return $bounds;
     }
 
     public static function getInstance(): CosmeticHandler
@@ -140,125 +150,145 @@ class CosmeticHandler
 
     public function saveSkin(string $skin, string $name)
     {
-        $path = $this->dataFolder;
-        if (!file_exists($path . "skin")) {
-            mkdir($path . "skin");
+        try {
+            $path = $this->dataFolder;
+            if (!file_exists($path . "skin")) {
+                mkdir($path . "skin");
+            }
+            $img = $this->skinDataToImage($skin);
+            if ($img == null) {
+                return;
+            }
+            imagepng($img, $path . "skin/" . $name . ".png");
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        $img = $this->skinDataToImage($skin);
-        if ($img == null) {
-            return;
-        }
-        imagepng($img, $path . "skin/" . $name . ".png");
     }
 
     public function skinDataToImage(string $skinData): ?GdImage
     {
-        $size = strlen($skinData);
-
-        $width = $this->skin_widght_map[$size];
-        $height = $this->skin_height_map[$size];
-        $skinPos = 0;
-        $image = imagecreatetruecolor($width, $height);
-        if ($image === false) {
+        try {
+            $size = strlen($skinData);
+            $width = $this->skin_widght_map[$size];
+            $height = $this->skin_height_map[$size];
+            $skinPos = 0;
+            $image = imagecreatetruecolor($width, $height);
+            if ($image === false) {
+                return null;
+            }
+            imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 127));
+            for ($y = 0; $y < $height; $y++) {
+                for ($x = 0; $x < $width; $x++) {
+                    $r = ord($skinData[$skinPos]);
+                    $skinPos++;
+                    $g = ord($skinData[$skinPos]);
+                    $skinPos++;
+                    $b = ord($skinData[$skinPos]);
+                    $skinPos++;
+                    $a = 127 - intdiv(ord($skinData[$skinPos]), 2);
+                    $skinPos++;
+                    $col = imagecolorallocatealpha($image, $r, $g, $b, $a);
+                    imagesetpixel($image, $x, $y, $col);
+                }
+            }
+            imagesavealpha($image, true);
+            return $image;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
             return null;
         }
-        imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 127));
-        for ($y = 0; $y < $height; $y++) {
-            for ($x = 0; $x < $width; $x++) {
-                $r = ord($skinData[$skinPos]);
-                $skinPos++;
-                $g = ord($skinData[$skinPos]);
-                $skinPos++;
-                $b = ord($skinData[$skinPos]);
-                $skinPos++;
-                $a = 127 - intdiv(ord($skinData[$skinPos]), 2);
-                $skinPos++;
-                $col = imagecolorallocatealpha($image, $r, $g, $b, $a);
-                imagesetpixel($image, $x, $y, $col);
-            }
-        }
-        imagesavealpha($image, true);
-        return $image;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function setSkin(Player $player, string $stuffName)
     {
-        $imagePath = $this->getSaveSkin($player->getName());
-        $skin = $this->loadSkinAndApplyStuff(
-            $stuffName,
-            $imagePath,
-            $player->getSkin()->getSkinId()
-        );
-
-        $cape = $player instanceof HorizonPlayer ? $player->getCape() : "";
-        $capeData = $cape !== "" ? $this->createCape($cape) : "";
-        $skin = new Skin($skin->getSkinId(), $skin->getSkinData(),
-            $capeData, $skin->getGeometryName(), $skin->getGeometryData());
-        $player->setSkin($skin);
-        $player->sendSkin();
+        try {
+            $imagePath = $this->getSaveSkin($player->getName());
+            $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
+            $cape = $player instanceof HorizonPlayer ? $player->getCape() : "";
+            $capeData = $cape !== "" ? $this->createCape($cape) : "";
+            $skin = new Skin($skin->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData());
+            $player->setSkin($skin);
+            $player->sendSkin();
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
+        }
     }
 
     public function getSaveSkin(string $name): string
     {
         return $this->saveSkin . $name . '.png';
     }
-    
+
     private function loadSkinAndApplyStuff(string $stuffName, string $imagePath, string $skinID): ?Skin
     {
-        $size = getimagesize($imagePath);
-        $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
-        $geometryPath = $this->artifactFolder . $stuffName . ".json";
-        return $this->loadSkin($imagePath, $geometryPath, $skinID, "geometry.cosmetic/artifact");
-    }
-
-    private function exportSkinToImage($skinPath, string $stuffName, array $size): string
-    {
-        $path = $this->artifactFolder;
-        $down = imagecreatefrompng($skinPath);
-        if ($size[0] * $size[1] * $size[2] == 65536) {
-            $upper = $this->resizeImage($path . $stuffName . ".png", 128, 128);
-        } else {
-            $upper = $this->resizeImage($path . $stuffName . ".png", 64, 64);
+        try {
+            $size = getimagesize($imagePath);
+            $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
+            $geometryPath = $this->artifactFolder . $stuffName . ".json";
+            return $this->loadSkin($imagePath, $geometryPath, $skinID, "geometry.cosmetic/artifact");
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        imagecolortransparent($upper, imagecolorallocatealpha($upper, 0, 0, 0, 127));
-        imagealphablending($down, true);
-        imagesavealpha($down, true);
-        imagecopymerge($down, $upper, 0, 0, 0, 0, $size[0], $size[1], 100);
-        imagepng($down, $this->dataFolder . 'temp.png');
-        return $this->dataFolder . 'temp.png';
     }
 
-    private function resizeImage($file, $w, $h, $crop = false): GdImage|bool
+    private function exportSkinToImage($skinPath, string $stuffName, array $size): ?string
     {
-        [$width, $height] = getimagesize($file);
-        $r = $width / $height;
-        if ($crop) {
-            if ($width > $height) {
-                $width = ceil($width - ($width * abs($r - $w / $h)));
+        try {
+            $path = $this->artifactFolder;
+            $down = imagecreatefrompng($skinPath);
+            if ($size[0] * $size[1] * $size[2] == 65536) {
+                $upper = $this->resizeImage($path . $stuffName . ".png", 128, 128);
             } else {
-                $height = ceil($height - ($height * abs($r - $w / $h)));
+                $upper = $this->resizeImage($path . $stuffName . ".png", 64, 64);
             }
-            $newwidth = $w;
-            $newheight = $h;
-        } else {
-            if ($w / $h > $r) {
-                $newwidth = $h * $r;
+            imagecolortransparent($upper, imagecolorallocatealpha($upper, 0, 0, 0, 127));
+            imagealphablending($down, true);
+            imagesavealpha($down, true);
+            imagecopymerge($down, $upper, 0, 0, 0, 0, $size[0], $size[1], 100);
+            imagepng($down, $this->dataFolder . 'temp.png');
+            return $this->dataFolder . 'temp.png';
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
+        }
+    }
+
+    private function resizeImage($file, $w, $h, $crop = false): GdImage|bool|null
+    {
+        try {
+            [$width, $height] = getimagesize($file);
+            $r = $width / $height;
+            if ($crop) {
+                if ($width > $height) {
+                    $width = ceil($width - ($width * abs($r - $w / $h)));
+                } else {
+                    $height = ceil($height - ($height * abs($r - $w / $h)));
+                }
+                $newwidth = $w;
                 $newheight = $h;
             } else {
-                $newheight = $w / $r;
-                $newwidth = $w;
+                if ($w / $h > $r) {
+                    $newwidth = $h * $r;
+                    $newheight = $h;
+                } else {
+                    $newheight = $w / $r;
+                    $newwidth = $w;
+                }
             }
+            $src = imagecreatefrompng($file);
+            $dst = imagecreatetruecolor($w, $h);
+            imagecolortransparent($dst, imagecolorallocatealpha($dst, 0, 0, 0, 127));
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+            return $dst;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        $src = imagecreatefrompng($file);
-        $dst = imagecreatetruecolor($w, $h);
-        imagecolortransparent($dst, imagecolorallocatealpha($dst, 0, 0, 0, 127));
-        imagealphablending($dst, false);
-        imagesavealpha($dst, true);
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-        return $dst;
     }
 
     private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
@@ -280,28 +310,34 @@ class CosmeticHandler
             @imagedestroy($img);
             return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
             return null;
         }
     }
 
-    public function createCape($capeName): string
+    public function createCape($capeName): ?string
     {
-        $path = Loader::getInstance()->getDataFolder() . "capes/" . "$capeName.png";
-        $img = @imagecreatefrompng($path);
-        $bytes = '';
-        $l = (int)@getimagesize($path)[1];
-        for ($y = 0; $y < $l; $y++) {
-            for ($x = 0; $x < 64; $x++) {
-                $rgba = @imagecolorat($img, $x, $y);
-                $a = ((~($rgba >> 24)) << 1) & 0xff;
-                $r = ($rgba >> 16) & 0xff;
-                $g = ($rgba >> 8) & 0xff;
-                $b = $rgba & 0xff;
-                $bytes .= chr($r) . chr($g) . chr($b) . chr($a);
+        try {
+            $path = Loader::getInstance()->getDataFolder() . "capes/" . "$capeName.png";
+            $img = @imagecreatefrompng($path);
+            $bytes = '';
+            $l = (int)@getimagesize($path)[1];
+            for ($y = 0; $y < $l; $y++) {
+                for ($x = 0; $x < 64; $x++) {
+                    $rgba = @imagecolorat($img, $x, $y);
+                    $a = ((~($rgba >> 24)) << 1) & 0xff;
+                    $r = ($rgba >> 16) & 0xff;
+                    $g = ($rgba >> 8) & 0xff;
+                    $b = $rgba & 0xff;
+                    $bytes .= chr($r) . chr($g) . chr($b) . chr($a);
+                }
             }
+            @imagedestroy($img);
+            return $bytes;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        @imagedestroy($img);
-        return $bytes;
     }
 
     public function setCostume(Player $player, string $stuffName): void
@@ -332,44 +368,49 @@ class CosmeticHandler
         }
     }
 
-    public function getSkinTransparencyPercentage(string $skinData): int
+    public function getSkinTransparencyPercentage(string $skinData): ?int
     {
-        switch (strlen($skinData)) {
-            case 8192:
-                $maxX = 64;
-                $maxY = 32;
-                $bounds = $this->skinBounds[self::BOUNDS_64_32];
-                break;
-            case 16384:
-                $maxX = 64;
-                $maxY = 64;
-                $bounds = $this->skinBounds[self::BOUNDS_64_64];
-                break;
-            case 65536:
-                $maxX = 128;
-                $maxY = 128;
-                $bounds = $this->skinBounds[self::BOUNDS_128_128];
-                break;
-            default:
-                throw new InvalidArgumentException('Inappropriate skin data length: ' . strlen($skinData));
-        }
-        $transparentPixels = $pixels = 0;
-        foreach ($bounds as $bound) {
-            if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
-                continue;
+        try {
+            switch (strlen($skinData)) {
+                case 8192:
+                    $maxX = 64;
+                    $maxY = 32;
+                    $bounds = $this->skinBounds[self::BOUNDS_64_32];
+                    break;
+                case 16384:
+                    $maxX = 64;
+                    $maxY = 64;
+                    $bounds = $this->skinBounds[self::BOUNDS_64_64];
+                    break;
+                case 65536:
+                    $maxX = 128;
+                    $maxY = 128;
+                    $bounds = $this->skinBounds[self::BOUNDS_128_128];
+                    break;
+                default:
+                    throw new InvalidArgumentException('Inappropriate skin data length: ' . strlen($skinData));
             }
-            for ($y = $bound['min']['y']; $y <= $bound['max']['y']; $y++) {
-                for ($x = $bound['min']['x']; $x <= $bound['max']['x']; $x++) {
-                    $key = (($maxX * $y) + $x) * 4;
-                    $a = ord($skinData[$key + 3]);
+            $transparentPixels = $pixels = 0;
+            foreach ($bounds as $bound) {
+                if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
+                    continue;
+                }
+                for ($y = $bound['min']['y']; $y <= $bound['max']['y']; $y++) {
+                    for ($x = $bound['min']['x']; $x <= $bound['max']['x']; $x++) {
+                        $key = (($maxX * $y) + $x) * 4;
+                        $a = ord($skinData[$key + 3]);
 
-                    if ($a < 127) {
-                        ++$transparentPixels;
+                        if ($a < 127) {
+                            ++$transparentPixels;
+                        }
+                        ++$pixels;
                     }
-                    ++$pixels;
                 }
             }
+            return (int)round($transparentPixels * 100 / max(1, $pixels));
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
         }
-        return (int)round($transparentPixels * 100 / max(1, $pixels));
     }
 }
