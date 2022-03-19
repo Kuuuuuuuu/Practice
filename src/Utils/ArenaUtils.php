@@ -307,6 +307,7 @@ class ArenaUtils
         $packet = new AddActorPacket();
         $packet->type = "minecraft:lightning_bolt";
         $packet->actorRuntimeId = Entity::nextRuntimeId();
+        $packet->actorUniqueId = Uuid::uuid4();
         $packet->metadata = [];
         $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
         $packet->yaw = $player->getLocation()->getYaw();
