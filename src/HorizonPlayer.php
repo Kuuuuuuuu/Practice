@@ -36,7 +36,7 @@ class HorizonPlayer extends Player
                         $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
                     }
                 } catch (Exception $e) {
-                    $attackSpeed = 7;
+                    $attackSpeed = 10;
                 }
             }
         }
@@ -51,8 +51,8 @@ class HorizonPlayer extends Player
                 $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
             }
         } catch (Exception $e) {
-            $this->xzKB = 0.32;
-            $this->yKb = 0.34;
+            $this->xzKB = 0.4;
+            $this->yKb = 0.4;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
