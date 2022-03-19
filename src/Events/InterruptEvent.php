@@ -41,9 +41,10 @@ class InterruptEvent implements Listener
                     Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                         if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
-                            if (Loader::getInstance()->BoxingPoint[$damager->getName()] <= 100) {
+                            if (Loader::getInstance()->BoxingPoint[$damager->getName()] < 100) {
                                 Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
-                            } else if (Loader::getInstance()->BoxingPoint[$damager->getName()] === 100) {
+                            }
+                            if (Loader::getInstance()->BoxingPoint[$damager->getName()] === 100) {
                                 $pos = $player->getPosition();
                                 $world = $player->getWorld();
                                 $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
