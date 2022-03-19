@@ -27,7 +27,7 @@ class BroadcastCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
-            if ($args[0] === null) {
+            if ($args == null) {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cPlease enter a message");
                 return;
             }
