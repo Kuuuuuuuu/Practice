@@ -6,6 +6,7 @@ namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
+use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\RestartCommand;
@@ -25,6 +26,7 @@ use Kohaku\Core\Task\PlayerTask;
 use Kohaku\Core\Task\ScoreboardTask;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
+use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
@@ -34,6 +36,7 @@ use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
@@ -139,8 +142,6 @@ class ArenaUtils
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
 
-    /**
-     */
     public function Start()
     {
         $this->loadallworlds();
@@ -214,6 +215,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("core", new CoreCommand());
         Server::getInstance()->getCommandMap()->register("Restart", new RestartCommand());
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
+        Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
     }
 
     private function registerEvents(): void
@@ -228,7 +230,6 @@ class ArenaUtils
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ClearLag(), 2500);
         Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 11000);
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerCooldownTask(), 20);
     }
 
     private function registerEntity(): void
@@ -247,6 +248,7 @@ class ArenaUtils
     {
         $name = $player->getName();
         $dname = $dplayer->getName();
+        $this->spawnLightningBolt($player, $dplayer);
         if (isset(Loader::getInstance()->opponent[$name])) {
             unset(Loader::getInstance()->opponent[$name]);
         }
@@ -298,6 +300,18 @@ class ArenaUtils
             $this->addKill($dplayer);
             $this->handleStreak($dplayer, $player);
         }
+    }
+
+    public function spawnLightningBolt($player, $viewers): void
+    {
+        $packet = new AddActorPacket();
+        $packet->type = "minecraft:lightning_bolt";
+        $packet->actorRuntimeId = Entity::nextRuntimeId();
+        $packet->metadata = [];
+        $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
+        $packet->yaw = $player->getYaw();
+        $packet->pitch = $player->getPitch();
+        $player->getServer()->broadcastPacket($viewers, $packet);
     }
 
     public function addKill(Player $player)
@@ -384,11 +398,11 @@ class ArenaUtils
         $top = -1;
         $availableArenas = [];
         foreach ($arenasByPlayers as $index => $players) {
-            if ($top == -1) {
+            if ($top === -1) {
                 $top = $players;
                 $availableArenas[] = $index;
             } else {
-                if ($top == $players) {
+                if ($top === $players) {
                     $availableArenas[] = $index;
                 }
             }
