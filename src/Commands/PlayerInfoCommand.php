@@ -28,6 +28,7 @@ class PlayerInfoCommand extends Command
             } else {
                 $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
                 $sender->sendMessage(Loader::getPrefixCore() . "§7Player: §a" . $playerinfo->getName());
+                $sender->sendMessage("\n");
                 $sender->sendMessage(Loader::getPrefixCore() . "§7Device: §a" . ArenaUtils::getInstance()->getPlayerDevices($playerinfo));
                 $sender->sendMessage(Loader::getPrefixCore() . "§7OS: §a" . ArenaUtils::getInstance()->getPlayerOS($playerinfo));
                 $sender->sendMessage(Loader::getPrefixCore() . "§7Control: §a" . ArenaUtils::getInstance()->getPlayerControls($playerinfo));
