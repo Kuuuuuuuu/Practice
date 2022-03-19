@@ -30,13 +30,13 @@ class SumoScheduler extends Task
                     foreach ($this->plugin->players as $player) {
                         /** @var $player Player */
                         $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
-                        ArenaUtils::getInstance()->playSound("ui.button.click", $player);
+                        ArenaUtils::getInstance()->playSound("random.click", $player);
                     }
                 }
                 if ($this->startTime === 0) {
                     $this->plugin->startGame();
                     foreach ($this->plugin->players as $player) {
-                        ArenaUtils::getInstance()->playSound("block.anvil.use", $player);
+                        ArenaUtils::getInstance()->playSound("random.anvil_use", $player);
                     }
                 }
             } else {
