@@ -44,6 +44,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
+use Ramsey\Uuid\Uuid;
 
 class ArenaUtils
 {
