@@ -214,8 +214,7 @@ class CosmeticHandler
         $size = getimagesize($imagePath);
         $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
         $geometryPath = $this->artifactFolder . $stuffName . ".json";
-        return $this->loadSkin($imagePath, $geometryPath,
-            $skinID, "geometry.cosmetic/artifact");
+        return $this->loadSkin($imagePath, $geometryPath, $skinID, "geometry.cosmetic/artifact");
     }
 
     private function exportSkinToImage($skinPath, string $stuffName, array $size): string
@@ -270,10 +269,10 @@ class CosmeticHandler
      */
     private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
-        $img = @imagecreatefrompng($imagePath);
-        $size = getimagesize($imagePath);
-        $skinBytes = "";
         try {
+            $img = @imagecreatefrompng($imagePath);
+            $size = getimagesize($imagePath);
+            $skinBytes = "";
             for ($y = 0; $y < $size[1]; $y++) {
                 for ($x = 0; $x < $size[0]; $x++) {
                     $pixelColor = @imagecolorat($img, $x, $y);
@@ -284,11 +283,12 @@ class CosmeticHandler
                     $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
                 }
             }
+            @imagedestroy($img);
+            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
             Loader::getInstance()->getLogger()->error($e);
+            return null;
         }
-        @imagedestroy($img);
-        return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
     }
 
     public function createCape($capeName): string
@@ -334,9 +334,7 @@ class CosmeticHandler
     {
         $name = $player->getName();
         $imagePath = $this->getSaveSkin($name);
-        $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json',
-            $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
-
+        $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
         if ($skin !== null) {
             $skin = new Skin($skin->getSkinId(), $skin->getSkinData(), '', $skin->getGeometryName(), $this->steveSkin->getGeometryData());
             $player->setSkin($skin);
