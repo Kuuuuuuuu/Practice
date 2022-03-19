@@ -23,7 +23,7 @@ class PlayerTask extends Task
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            if ($this->tick === 5) {
+            if ($this->tick % 5 === 0) {
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
@@ -54,7 +54,7 @@ class PlayerTask extends Task
                     }
                 }
             }
-            if ($this->tick === 15) {
+            if ($this->tick % 10 === 0) {
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                     Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
@@ -72,7 +72,7 @@ class PlayerTask extends Task
                     }
                 }
             }
-            if ($this->tick >= 20) {
+            if ($this->tick % 20 === 0) {
                 if (isset(Loader::getInstance()->SkillCooldown[$name])) {
                     if (Loader::getInstance()->SkillCooldown[$name] > 0) {
                         Loader::getInstance()->SkillCooldown[$name] -= 1;
@@ -118,36 +118,34 @@ class PlayerTask extends Task
                 }
                 $this->tick = 0;
             }
-            if ($this->tick === 2) {
-                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                    $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                    if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-                        $point = Loader::getInstance()->BoxingPoint[$name];
-                        $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
-                        $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
-                    } else {
-                        Loader::getInstance()->BoxingPoint[$name] = 0;
-                    }
-                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                    if (isset(Loader::getInstance()->TimerTask[$name])) {
-                        if (Loader::getInstance()->TimerTask[$name] === true) {
-                            if (isset(Loader::getInstance()->TimerData[$name])) {
-                                Loader::getInstance()->TimerData[$name] += 5;
-                            } else {
-                                Loader::getInstance()->TimerData[$name] = 0;
-                            }
-                            $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                            $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                            $mili = Loader::getInstance()->TimerData[$name] % 100;
-                            $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+                    $point = Loader::getInstance()->BoxingPoint[$name];
+                    $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
+                    $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
+                } else {
+                    Loader::getInstance()->BoxingPoint[$name] = 0;
+                }
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                if (isset(Loader::getInstance()->TimerTask[$name])) {
+                    if (Loader::getInstance()->TimerTask[$name] === true) {
+                        if (isset(Loader::getInstance()->TimerData[$name])) {
+                            Loader::getInstance()->TimerData[$name] += 5;
                         } else {
-                            $player->sendTip("§a0 : 0 : 0");
                             Loader::getInstance()->TimerData[$name] = 0;
                         }
+                        $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                        $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                        $mili = Loader::getInstance()->TimerData[$name] % 100;
+                        $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
                     } else {
-                        Loader::getInstance()->TimerTask[$name] = false;
+                        $player->sendTip("§a0 : 0 : 0");
+                        Loader::getInstance()->TimerData[$name] = 0;
                     }
+                } else {
+                    Loader::getInstance()->TimerTask[$name] = false;
                 }
             }
         }
