@@ -6,6 +6,7 @@ namespace Kohaku\Core\Commands;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;
@@ -33,6 +34,7 @@ class HubCommand extends Command
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
+            ScoreboardUtils::getInstance()->sb($sender);
             ArenaUtils::getInstance()->GiveItem($sender);
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);

@@ -18,6 +18,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -164,9 +165,13 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onPlayerLogin(PlayerLoginEvent $event)
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $banplayer = $player->getName();
         $banInfo = Loader::getInstance()->db->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -193,7 +198,18 @@ class PlayerListener implements Listener
             $player->teleport(new Vector3(255, 6, 255));
             ArenaUtils::getInstance()->DeviceCheck($player);
             Loader::$cps->initPlayerClickData($player);
-            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
+            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 50);
+            if ($player instanceof HorizonPlayer) {
+                $cosmetic = CosmeticHandler::getInstance();
+                if (strlen($player->getSkin()->getSkinData()) >= 131072 || strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
+                    copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                    $cosmetic->resetSkin($player);
+                } else {
+                    $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+                    $cosmetic->saveSkin($skin->getSkinData(), $name);
+                }
+                $player->getAllCape();
+            }
         }
     }
 
@@ -212,7 +228,6 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
@@ -220,38 +235,6 @@ class PlayerListener implements Listener
         $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
         if ($player instanceof HorizonPlayer) {
-            $cosmetic = CosmeticHandler::getInstance();
-            if (strlen($player->getSkin()->getSkinData()) >= 131072 || strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
-                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
-                $cosmetic->resetSkin($player);
-            } else {
-                $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-                $cosmetic->saveSkin($skin->getSkinData(), $name);
-            }
-            $player->setValidStuffs('AngelWing');
-            $player->setValidStuffs('AngelWingV2');
-            $player->setValidStuffs('Antler');
-            $player->setValidStuffs('Axe');
-            $player->setValidStuffs('BackCap');
-            $player->setValidStuffs('Backpack');
-            $player->setValidStuffs('BackStabKnife');
-            $player->setValidStuffs('Bald Headband');
-            $player->setValidStuffs('Banana');
-            $player->setValidStuffs('Adidas');
-            $player->setValidStuffs('Boxing');
-            $player->setValidStuffs('Nike');
-            $player->setValidStuffs('LouisVuitton');
-            $player->setValidStuffs('BlackAngleSet');
-            $player->setValidStuffs('BlazeRod');
-            $player->setValidStuffs('BlueWing');
-            $player->setValidStuffs('Bubble');
-            $player->setValidStuffs('Creeper');
-            $player->setValidStuffs('Crown');
-            $player->setValidStuffs('CrownV2');
-            $player->setValidStuffs('DevilHaloWing');
-            $player->setValidStuffs('DragonWing');
-            $player->setValidStuffs('EnderWing');
-            $player->setValidStuffs('HeadphoneNote');
             $player->LoadCape();
             $player->setCosmetic();
         }
@@ -549,6 +532,7 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->getInventory()->clearAll();
         ArenaUtils::getInstance()->GiveItem($player);
+        ScoreboardUtils::getInstance()->sb($player);
     }
 
     public function onTeleport(EntityTeleportEvent $event)

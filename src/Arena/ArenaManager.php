@@ -6,6 +6,7 @@ namespace Kohaku\Core\Arena;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -26,6 +27,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getParkourArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $item2 = ItemFactory::getInstance()->get(345, 0, 1);
             $item3 = ItemFactory::getInstance()->get(288, 0, 1);
             $item2->setCustomName("§r§aStop Timer §f| §bClick to use");
@@ -48,6 +50,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getBoxingArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
@@ -65,6 +68,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getFistArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
@@ -81,6 +85,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getComboArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
@@ -99,6 +104,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getKnockbackArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
@@ -130,6 +136,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getKitPVPArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
@@ -145,6 +152,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             $random = Loader::$arenafac->getRandomSpawnOitc();
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
@@ -163,6 +171,7 @@ class ArenaManager
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getResistanceArena());
+            ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();

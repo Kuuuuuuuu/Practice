@@ -111,9 +111,6 @@ class HorizonPlayer extends Player
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function setCosmetic(): void
     {
         if ($this->getStuff() !== "") {
@@ -152,5 +149,32 @@ class HorizonPlayer extends Player
         if ($key === false) {
             $this->validstuffs[] = $stuff;
         }
+    }
+
+    public function getAllCape() {
+        $this->setValidStuffs('AngelWing');
+        $this->setValidStuffs('AngelWingV2');
+        $this->setValidStuffs('Antler');
+        $this->setValidStuffs('Axe');
+        $this->setValidStuffs('BackCap');
+        $this->setValidStuffs('Backpack');
+        $this->setValidStuffs('BackStabKnife');
+        $this->setValidStuffs('Bald Headband');
+        $this->setValidStuffs('Banana');
+        $this->setValidStuffs('Adidas');
+        $this->setValidStuffs('Boxing');
+        $this->setValidStuffs('Nike');
+        $this->setValidStuffs('LouisVuitton');
+        $this->setValidStuffs('BlackAngleSet');
+        $this->setValidStuffs('BlazeRod');
+        $this->setValidStuffs('BlueWing');
+        $this->setValidStuffs('Bubble');
+        $this->setValidStuffs('Creeper');
+        $this->setValidStuffs('Crown');
+        $this->setValidStuffs('CrownV2');
+        $this->setValidStuffs('DevilHaloWing');
+        $this->setValidStuffs('DragonWing');
+        $this->setValidStuffs('EnderWing');
+        $this->setValidStuffs('HeadphoneNote');
     }
 }

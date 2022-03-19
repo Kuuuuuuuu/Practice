@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 
@@ -75,6 +76,7 @@ class SumoScheduler extends Task
                 $player->getEffects()->clear();
                 ArenaUtils::getInstance()->GiveItem($player);
                 ArenaUtils::getInstance()->addKill($player);
+                ScoreboardUtils::getInstance()->sb($player);
                 $player->setGamemode($this->plugin->plugin->getServer()->getGamemode());
             }
             $this->plugin->players = [];

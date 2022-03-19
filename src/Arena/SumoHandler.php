@@ -6,6 +6,7 @@ namespace Kohaku\Core\Arena;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Listener;
@@ -136,6 +137,7 @@ class SumoHandler implements Listener
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999999 * 20, 10, false));
         $player->setGamemode(Gamemode::ADVENTURE());
         $player->setHealth(20);
+        ScoreboardUtils::getInstance()->sb2($player);
     }
 
     public function inGame(Player $player): bool
@@ -225,6 +227,7 @@ class SumoHandler implements Listener
         $player->setImmobile(false);
         ArenaUtils::getInstance()->addDeath($player);
         ArenaUtils::getInstance()->GiveItem($player);
+        ScoreboardUtils::getInstance()->sb($player);
         $player->teleport($this->plugin->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
         $player->sendMessage(Loader::getPrefixCore() . "§r§e$quitMsg");
     }
