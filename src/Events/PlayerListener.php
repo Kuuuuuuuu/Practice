@@ -409,6 +409,7 @@ class PlayerListener implements Listener
                 $dis = floor($entity->getLocation()->asVector3()->distance($damager->getPosition()->asVector3()));
                 $name = $damager->getName();
                 if ($damager->getGamemode() !== Gamemode::CREATIVE() and $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockBackArena())) {
+                    Loader::getInstance()->getLogger()->info($damager->getName() . " reach" . $dis);
                     if ($dis >= 5.5) {
                         $event->cancel();
                         $message = (Loader::getInstance()->message["AntiCheatName"] . "§c" . $name . " §eHas " . $dis . " §cDistance" . "§f(§a" . $damager->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($damager) . "§f)");
