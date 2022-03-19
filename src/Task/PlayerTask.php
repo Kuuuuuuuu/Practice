@@ -23,7 +23,7 @@ class PlayerTask extends Task
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            if ($this->tick === 10) {
+            if ($this->tick === 12) {
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
@@ -120,8 +120,7 @@ class PlayerTask extends Task
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-            }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 if (isset(Loader::getInstance()->BoxingPoint[$name])) {
                     $point = Loader::getInstance()->BoxingPoint[$name];
                     $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
@@ -129,8 +128,7 @@ class PlayerTask extends Task
                 } else {
                     Loader::getInstance()->BoxingPoint[$name] = 0;
                 }
-            }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 if (isset(Loader::getInstance()->TimerTask[$name])) {
                     if (Loader::getInstance()->TimerTask[$name] === true) {
                         if (isset(Loader::getInstance()->TimerData[$name])) {
