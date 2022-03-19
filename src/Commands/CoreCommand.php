@@ -41,7 +41,7 @@ class CoreCommand extends Command
                         $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
-                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd");
+                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                         break;
                     case "make":
@@ -145,40 +145,40 @@ class CoreCommand extends Command
                     case "setatkspd":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core setatkspd <world> <speed> ");
+                            return false;
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core setatkspd <world> <speed>");
+                            return false;
                         }
-                        if (isset($args[1]) and isset($args[2])) {
-                            KnockbackManager::getInstance()->setAttackspeed($sender, $args[1], (int)$args[2]);
-                        }
+                        KnockbackManager::getInstance()->setAttackspeed($sender, $args[1], (int)$args[2]);
                         break;
                     case "removeatkspd":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removeatkspd <world>");
+                            return false;
                         }
                         KnockbackManager::getInstance()->removeAttackspeed($sender, $args[1]);
                         break;
                     case "addkb":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                            return false;
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                            return false;
                         }
                         if (!isset($args[3])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core addkb <world> <hkb> <ykb>");
+                            return false;
                         }
-                        if (isset($args[1]) and isset($args[2]) and isset($args[3])) {
-                            KnockbackManager::getInstance()->setKnockback($sender, $args[1], (float)$args[2], (float)$args[3]);
-                        }
+                        KnockbackManager::getInstance()->setKnockback($sender, $args[1], (float)$args[2], (float)$args[3]);
                         break;
                     case "removekb":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removekb <world>");
-                        }
-                        if (!isset($args[2])) {
-                            $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core removekb <world>");
+                            return false;
                         }
                         KnockbackManager::getInstance()->removeKnockback($sender, $args[1]);
                         break;
@@ -186,6 +186,7 @@ class CoreCommand extends Command
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
                             $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                            return false;
                         }
                         switch ($args[1]) {
                             case "fist":
@@ -229,5 +230,6 @@ class CoreCommand extends Command
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
         }
+        return true;
     }
 }
