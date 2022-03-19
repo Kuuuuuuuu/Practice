@@ -47,7 +47,7 @@ class InterruptEvent implements Listener
                             if (Loader::getInstance()->BoxingPoint[$damager->getName()] === 100) {
                                 $pos = $player->getPosition();
                                 $world = $player->getWorld();
-                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                                $player->kill();
                                 $world->addParticle($pos, new HeartParticle(3));
                                 ArenaUtils::getInstance()->DeathReset($player, $damager, "Boxing");
                                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
