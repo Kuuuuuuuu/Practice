@@ -21,28 +21,27 @@ class PlayerTask extends Task
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
-            $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-            if (isset(Loader::getInstance()->JumpCount[$name])) {
-                $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
-            } else {
-                $tagparkour = str_replace("{jump}", "0", $tagparkour);
-            }
-            if (isset(Loader::getInstance()->TimerData[$name])) {
-                $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
-                $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
-                $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
-            } else {
-                $tagparkour = str_replace("{mili}", "0", $tagparkour);
-                $tagparkour = str_replace("{secs}", "0", $tagparkour);
-                $tagparkour = str_replace("{mins}", "0", $tagparkour);
-            }
-            $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
-            $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
-            $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
-            $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
-
-            if ($this->tick === 5) {
+            if ($this->tick === 10) {
+                $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
+                $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
+                if (isset(Loader::getInstance()->JumpCount[$name])) {
+                    $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
+                } else {
+                    $tagparkour = str_replace("{jump}", "0", $tagparkour);
+                }
+                if (isset(Loader::getInstance()->TimerData[$name])) {
+                    $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
+                    $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
+                    $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
+                } else {
+                    $tagparkour = str_replace("{mili}", "0", $tagparkour);
+                    $tagparkour = str_replace("{secs}", "0", $tagparkour);
+                    $tagparkour = str_replace("{mins}", "0", $tagparkour);
+                }
+                $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
+                $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
+                $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
+                $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
                 if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                     $player->setScoreTag($tagparkour);
                 } else {
@@ -53,7 +52,7 @@ class PlayerTask extends Task
                     }
                 }
             }
-            if ($this->tick === 10) {
+            if ($this->tick === 15) {
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                     Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
