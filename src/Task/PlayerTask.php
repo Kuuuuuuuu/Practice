@@ -12,8 +12,11 @@ use pocketmine\Server;
 class PlayerTask extends Task
 {
 
+    private int $tick = 0;
+
     public function onRun(): void
     {
+        $this->tick++;
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
@@ -38,34 +41,38 @@ class PlayerTask extends Task
             $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
             $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
             $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                $player->setScoreTag($tagparkour);
-            } else {
-                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) {
-                    $player->setScoreTag($tagpvp);
-                } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
-                    $player->setScoreTag($untagpvp);
+
+            if ($this->tick === 5) {
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                    $player->setScoreTag($tagparkour);
+                } else {
+                    if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())) {
+                        $player->setScoreTag($tagpvp);
+                    } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
+                        $player->setScoreTag($untagpvp);
+                    }
                 }
             }
-            if ($nowcps > Loader::getInstance()->MaximumCPS) {
-                $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
-                Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
-            }
-            if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
-                if (!$player->isSprinting()) {
-                    $player->toggleSprint(true);
+            if ($this->tick === 10) {
+                if ($nowcps > Loader::getInstance()->MaximumCPS) {
+                    $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
+                    Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
+                }
+                if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
+                    if (!$player->isSprinting()) {
+                        $player->toggleSprint(true);
+                    }
+                }
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                        unset(Loader::getInstance()->CombatTimer[$name]);
+                    } else if (isset(Loader::getInstance()->opponent[$name])) {
+                        unset(Loader::getInstance()->opponent[$name]);
+                    }
                 }
             }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if (isset(Loader::getInstance()->CombatTimer[$name])) {
-                    unset(Loader::getInstance()->CombatTimer[$name]);
-                }
-                if (isset(Loader::getInstance()->opponent[$name])) {
-                    unset(Loader::getInstance()->opponent[$name]);
-                }
-            }
-            if ($player->getHungerManager()->getFood() < 20) {
-                $player->getHungerManager()->setFood(20);
+            if ($this->tick >= 20) {
+                $this->tick = 0;
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));

@@ -34,6 +34,7 @@ use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerJumpEvent;
@@ -256,7 +257,15 @@ class PlayerListener implements Listener
             $player->setValidStuffs('DragonWing');
             $player->setValidStuffs('EnderWing');
             $player->setValidStuffs('HeadphoneNote');
+        }
+    }
 
+    public function onExhaust(PlayerExhaustEvent $event)
+    {
+        $player = $event->getPlayer();
+        if ($player->getHungerManager()->getFood() < 20) {
+            $event->cancel();
+            $player->getHungerManager()->setFood(20);
         }
     }
 
