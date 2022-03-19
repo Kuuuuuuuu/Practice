@@ -23,7 +23,7 @@ class PlayerTask extends Task
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            if ($this->tick === 12) {
+            if ($this->tick === 5) {
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
@@ -118,34 +118,36 @@ class PlayerTask extends Task
                 }
                 $this->tick = 0;
             }
-            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-                    $point = Loader::getInstance()->BoxingPoint[$name];
-                    $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
-                    $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
-                } else {
-                    Loader::getInstance()->BoxingPoint[$name] = 0;
-                }
-            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                if (isset(Loader::getInstance()->TimerTask[$name])) {
-                    if (Loader::getInstance()->TimerTask[$name] === true) {
-                        if (isset(Loader::getInstance()->TimerData[$name])) {
-                            Loader::getInstance()->TimerData[$name] += 5;
+            if ($this->tick === 2) {
+                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+                        $point = Loader::getInstance()->BoxingPoint[$name];
+                        $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->opponent[$name ?? null] ?? null] ?? 0;
+                        $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
+                    } else {
+                        Loader::getInstance()->BoxingPoint[$name] = 0;
+                    }
+                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                    if (isset(Loader::getInstance()->TimerTask[$name])) {
+                        if (Loader::getInstance()->TimerTask[$name] === true) {
+                            if (isset(Loader::getInstance()->TimerData[$name])) {
+                                Loader::getInstance()->TimerData[$name] += 5;
+                            } else {
+                                Loader::getInstance()->TimerData[$name] = 0;
+                            }
+                            $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                            $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                            $mili = Loader::getInstance()->TimerData[$name] % 100;
+                            $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
                         } else {
+                            $player->sendTip("§a0 : 0 : 0");
                             Loader::getInstance()->TimerData[$name] = 0;
                         }
-                        $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                        $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                        $mili = Loader::getInstance()->TimerData[$name] % 100;
-                        $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
                     } else {
-                        $player->sendTip("§a0 : 0 : 0");
-                        Loader::getInstance()->TimerData[$name] = 0;
+                        Loader::getInstance()->TimerTask[$name] = false;
                     }
-                } else {
-                    Loader::getInstance()->TimerTask[$name] = false;
                 }
             }
         }
