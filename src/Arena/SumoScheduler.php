@@ -22,7 +22,7 @@ class SumoScheduler extends Task
 
     public function onRun(): void
     {
-        if (!$this->plugin->setup) return;
+        if ($this->plugin->setup) return;
         if ($this->plugin->phase === SumoHandler::PHASE_LOBBY) {
             if (count($this->plugin->players) >= 2) {
                 if ($this->startTime > 0) {
