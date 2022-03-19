@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core;
 
+use Exception;
 use JsonException;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\KnockbackManager;
@@ -30,8 +31,12 @@ class HorizonPlayer extends Player
         if ($source instanceof EntityDamageByEntityEvent) {
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
-                if (KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                    $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
+                try {
+                    if (KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                        $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
+                    }
+                } catch (Exception $e) {
+                    $attackSpeed = 7;
                 }
             }
         }
@@ -40,9 +45,14 @@ class HorizonPlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        if (KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-            $this->xzKB = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["hkb"];
-            $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
+        try {
+            if (KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+                $this->xzKB = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["hkb"];
+                $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
+            }
+        } catch (Exception $e) {
+            $this->xzKB = 0.32;
+            $this->yKb = 0.34;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
