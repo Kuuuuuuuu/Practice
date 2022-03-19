@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Events;
 
+use Exception;
 use JsonException;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
@@ -163,13 +164,9 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onPlayerLogin(PlayerLoginEvent $event)
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         $banplayer = $player->getName();
         $banInfo = Loader::getInstance()->db->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -231,8 +228,6 @@ class PlayerListener implements Listener
                 $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
                 $cosmetic->saveSkin($skin->getSkinData(), $name);
             }
-            $player->LoadCape();
-            $player->setCosmetic();
             $player->setValidStuffs('AngelWing');
             $player->setValidStuffs('AngelWingV2');
             $player->setValidStuffs('Antler');
@@ -257,6 +252,8 @@ class PlayerListener implements Listener
             $player->setValidStuffs('DragonWing');
             $player->setValidStuffs('EnderWing');
             $player->setValidStuffs('HeadphoneNote');
+            $player->LoadCape();
+            $player->setCosmetic();
         }
     }
 
@@ -339,8 +336,8 @@ class PlayerListener implements Listener
                         $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
                         break;
                     }
-                    $arena->data["spawns"]["spawn-{$args[1]}"]["x"] = $player->getPosition()->getX();
-                    $arena->data["spawns"]["spawn-{$args[1]}"]["y"] = $player->getPosition()->getY();
+                    $arena->data["spawns"]["spawn-$args[1]"]["x"] = $player->getPosition()->getX();
+                    $arena->data["spawns"]["spawn-$args[1]"]["y"] = $player->getPosition()->getY();
                     $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
                     $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
                     break;
@@ -412,7 +409,6 @@ class PlayerListener implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
-        $world = $entity->getWorld();
         if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
             $event->cancel();
         } else if ($event instanceof EntityDamageByChildEntityEvent) {
@@ -511,6 +507,9 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function onDeath(PlayerDeathEvent $event): void
     {
         $event->setDeathMessage("");

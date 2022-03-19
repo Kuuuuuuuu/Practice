@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Events;
 
+use Exception;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\event\entity\{EntityDamageEvent};
@@ -15,6 +16,9 @@ use pocketmine\world\particle\HeartParticle;
 class InterruptEvent implements Listener
 {
 
+    /**
+     * @throws Exception
+     */
     public function onDamage(EntityDamageEvent $event)
     {
         $player = $event->getEntity();
@@ -53,13 +57,19 @@ class InterruptEvent implements Listener
                                 }
                             }
                         }
-                    } else if (isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
+                        return;
+                    }
+                    if (isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                    } else if (!isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()])) {
+                        return;
+                    }
+                    if (!isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()])) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                    } else if (isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()]) and Loader::getInstance()->opponent[$player->getName()] !== $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] !== $player->getName()) {
+                        return;
+                    }
+                    if (isset(Loader::getInstance()->opponent[$player->getName()]) and isset(Loader::getInstance()->opponent[$damager->getName()]) and Loader::getInstance()->opponent[$player->getName()] !== $damager->getName() and Loader::getInstance()->opponent[$damager->getName()] !== $player->getName()) {
                         $event->cancel();
                         $damager->sendMessage(Loader::getPrefixCore() . "§cYour Opponent is " . Loader::getInstance()->opponent[$damager->getName() ?? null] ?? null);
                     }

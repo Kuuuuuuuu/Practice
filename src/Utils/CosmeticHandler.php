@@ -205,10 +205,7 @@ class CosmeticHandler
     {
         return $this->saveSkin . $name . '.png';
     }
-
-    /**
-     * @throws JsonException
-     */
+    
     private function loadSkinAndApplyStuff(string $stuffName, string $imagePath, string $skinID): ?Skin
     {
         $size = getimagesize($imagePath);
@@ -264,9 +261,6 @@ class CosmeticHandler
         return $dst;
     }
 
-    /**
-     * @throws JsonException
-     */
     private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
         try {
@@ -286,7 +280,6 @@ class CosmeticHandler
             @imagedestroy($img);
             return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
-            Loader::getInstance()->getLogger()->error($e);
             return null;
         }
     }
@@ -311,9 +304,6 @@ class CosmeticHandler
         return $bytes;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function setCostume(Player $player, string $stuffName): void
     {
         $imagePath = $this->artifactFolder . $stuffName . ".png";

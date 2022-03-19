@@ -22,7 +22,6 @@ use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\ClearLag;
-use Kohaku\Core\Task\PlayerCooldownTask;
 use Kohaku\Core\Task\PlayerTask;
 use Kohaku\Core\Task\ScoreboardTask;
 use pocketmine\block\BlockFactory;
@@ -45,7 +44,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
-use Ramsey\Uuid\Uuid;
 
 class ArenaUtils
 {
@@ -246,11 +244,14 @@ class ArenaUtils
             }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
     }
 
+    /**
+     * @throws Exception
+     */
     public function DeathReset(Player $player, Player $dplayer, $arena = null): void
     {
         $name = $player->getName();
         $dname = $dplayer->getName();
-        $this->spawnLightningBolt($player, $dplayer);
+        $this->spawnLightningBolt($player);
         if (isset(Loader::getInstance()->opponent[$name])) {
             unset(Loader::getInstance()->opponent[$name]);
         }
@@ -307,17 +308,17 @@ class ArenaUtils
     /**
      * @throws Exception
      */
-    public function spawnLightningBolt(Player $player, Player $viewers): void
+    public function spawnLightningBolt(Player $player): void
     {
         $packet = new AddActorPacket();
         $packet->type = "minecraft:lightning_bolt";
         $packet->actorRuntimeId = Entity::nextRuntimeId();
-        $packet->actorUniqueId = random_int(1, 5);
+        $packet->actorUniqueId = 1;
         $packet->metadata = [];
         $packet->position = new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ());
         $packet->yaw = $player->getLocation()->getYaw();
         $packet->pitch = $player->getLocation()->getPitch();
-        $player->getServer()->broadcastPackets([$player, $viewers], [$packet]);
+        Server::getInstance()->broadcastPackets($player->getWorld()->getPlayers(), [$packet]);
     }
 
     public function addKill(Player $player)
