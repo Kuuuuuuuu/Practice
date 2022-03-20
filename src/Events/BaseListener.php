@@ -28,8 +28,6 @@ class BaseListener implements Listener
         $world->setTime(0);
         $world->stopTime();
     }
-
-
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();

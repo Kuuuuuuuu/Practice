@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
+use Kohaku\Core\Loader;
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
@@ -14,13 +15,6 @@ use pocketmine\Server;
 class DeleteBlocksHandler
 {
 
-    private array $buildBlocks;
-
-    public function __construct()
-    {
-        $this->buildBlocks = [];
-    }
-
     #[Pure] public static function getInstance(): DeleteBlocksHandler
     {
         return new DeleteBlocksHandler();
@@ -29,16 +23,16 @@ class DeleteBlocksHandler
     public function setBlockBuild(Block $block, bool $break = false): void
     {
         $pos = $block->getPosition()->getX() . ':' . $block->getPosition()->getY() . ':' . $block->getPosition()->getZ() . ':' . $block->getPosition()->getWorld()->getFolderName();
-        if ($break && isset($this->buildBlocks[$pos])) {
-            unset($this->buildBlocks[$pos]);
+        if ($break && isset(Loader::getInstance()->buildBlocks[$pos])) {
+            unset(Loader::getInstance()->buildBlocks[$pos]);
         } else {
-            $this->buildBlocks[$pos] = 10;
+            Loader::getInstance()->buildBlocks[$pos] = 10;
         }
     }
 
     public function update(): void
     {
-        foreach ($this->buildBlocks as $pos => $sec) {
+        foreach (Loader::getInstance()->buildBlocks as $pos => $sec) {
             if ($sec <= 0) {
                 $block = explode(':', $pos);
                 $x = $block[0];
@@ -46,9 +40,10 @@ class DeleteBlocksHandler
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
                 $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR));
-                unset($this->buildBlocks[$pos]);
+                unset(Loader::getInstance()->buildBlocks[$pos]);
             } else {
-                $this->buildBlocks[$pos]--;
+                Loader::getInstance()->getLogger()->info(Loader::getInstance()->buildBlocks[$pos]);
+                Loader::getInstance()->buildBlocks[$pos]--;
             }
         }
     }
