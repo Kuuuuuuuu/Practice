@@ -94,9 +94,9 @@ class Loader extends PluginBase
      */
     #[Pure] public function onDisable(): void
     {
+        ArenaUtils::getInstance()->loadMap("BUild");
         self::$sumoloader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
-        ArenaUtils::getInstance()->loadMap("BUild");
     }
 
     /*public function deleteDir($dirPath): void
