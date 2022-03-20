@@ -14,6 +14,7 @@ use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -197,12 +198,14 @@ class ArenaManager
             $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
             $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2));
             $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 64));
+            $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::DIAMOND_PICKAXE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000)));
             $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())->getSafeSpawn());
             $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
+            $player->setGamemode(GameMode::SURVIVAL());
             return true;
         }
     }
