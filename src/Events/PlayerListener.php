@@ -515,6 +515,8 @@ class PlayerListener implements Listener
                     ArenaUtils::getInstance()->DeathReset($player, $damager, "OITC");
                 } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                     ArenaUtils::getInstance()->DeathReset($player, $damager, "Boxing");
+                } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                    ArenaUtils::getInstance()->DeathReset($player, $damager, "Build");
                 } else {
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }

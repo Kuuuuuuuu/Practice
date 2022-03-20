@@ -9,6 +9,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\event\entity\{EntityDamageByEntityEvent};
 use pocketmine\event\Listener;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\particle\HeartParticle;
@@ -24,7 +25,7 @@ class InterruptEvent implements Listener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($player instanceof Player and $damager instanceof Player) {
-            if ($damager->getGamemode() == 1 or $player->getGamemode() == 1) return;
+            if ($damager->getGamemode() === GameMode::CREATIVE() or $player->getGamemode() === GameMode::CREATIVE()) return;
             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
             if (!isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                 Loader::getInstance()->opponent[$player->getName()] = $damager->getName();
