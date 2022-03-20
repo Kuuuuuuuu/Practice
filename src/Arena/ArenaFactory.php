@@ -47,6 +47,12 @@ class ArenaFactory
         return $data->get("OITC");
     }
 
+    public function getBuildArena(): string
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        return $data->get("Build");
+    }
+
     public function getBoxingArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
@@ -113,6 +119,30 @@ class ArenaFactory
         return $spawns[$random];
     }
 
+    public function getRandomSpawnBuild(): array
+    {
+        // random array
+        $spawns = [
+            [
+                "x" => 263,
+                "y" => 80,
+                "z" => 269
+            ],
+            [
+                "x" => 238,
+                "y" => 81,
+                "z" => 249
+            ],
+            [
+                "x" => 219,
+                "y" => 79,
+                "z" => 287
+            ]
+        ];
+        $random = array_rand($spawns);
+        return $spawns[$random];
+    }
+
     /**
      * @throws JsonException
      */
@@ -121,6 +151,18 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("OITC", $world);
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
+    }
+
+    /**
+     * @throws JsonException
+     */
+
+    public function setBuildArena(Player $player, string $world)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->set("Build", $world);
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
     }
@@ -214,6 +256,17 @@ class ArenaFactory
         $data->remove("OITC");
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "OITC removed arena");
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function removeBuild(Player $player)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->remove("Build");
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "Build removed arena");
     }
 
     /**

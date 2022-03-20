@@ -6,6 +6,7 @@ namespace Kohaku\Core\Task;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\DeleteBlocksHandler;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\scheduler\Task;
@@ -19,6 +20,9 @@ class PlayerTask extends Task
     public function onRun(): void
     {
         $this->tick++;
+        if ($this->tick % 20 === 0) {
+            DeleteBlocksHandler::getInstance()->update();
+        }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();

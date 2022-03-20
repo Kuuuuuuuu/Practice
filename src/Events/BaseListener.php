@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Events;
 
 use Kohaku\Core\Loader;
+use Kohaku\Core\Utils\DeleteBlocksHandler;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
@@ -40,6 +41,10 @@ class BaseListener implements Listener
     public function onPlace(BlockPlaceEvent $ev)
     {
         $player = $ev->getPlayer();
+        $block = $ev->getBlock();
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            DeleteBlocksHandler::getInstance()->setBlockBuild($block, false);
+        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
