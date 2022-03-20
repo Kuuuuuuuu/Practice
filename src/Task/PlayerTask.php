@@ -20,14 +20,12 @@ class PlayerTask extends Task
     public function onRun(): void
     {
         $this->tick++;
-        if ($this->tick % 13 === 0) {
-            DeleteBlocksHandler::getInstance()->update();
-        }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            if ($this->tick % 15 === 0) {
+            if ($this->tick % 20 === 0) {
+                DeleteBlocksHandler::getInstance()->update();
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
@@ -57,8 +55,6 @@ class PlayerTask extends Task
                         $player->setScoreTag($untagpvp);
                     }
                 }
-            }
-            if ($this->tick % 20 === 0) {
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
                     Loader::getInstance()->PlayerSleep[$name] = 3;
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
@@ -127,7 +123,6 @@ class PlayerTask extends Task
                         unset(Loader::getInstance()->ArrowOITC[$name]);
                     }
                 }
-                $this->tick = 0;
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));

@@ -443,7 +443,7 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y - 0.5, $player->getPosition()->asPosition()->z));
+        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                 $player->kill();
