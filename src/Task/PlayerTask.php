@@ -58,6 +58,7 @@ class PlayerTask extends Task
             }
             if ($this->tick % 20 === 0) {
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
+                    Loader::getInstance()->PlayerSleep[$name] = 3;
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                     Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
                 }
@@ -82,6 +83,14 @@ class PlayerTask extends Task
                         }
                         $player->sendMessage(Loader::getInstance()->message["SkillCleared"]);
                         unset(Loader::getInstance()->SkillCooldown[$name]);
+                    }
+                }
+                if (isset(Loader::getInstance()->PlayerSleep[$name])) {
+                    if (Loader::getInstance()->PlayerSleep[$name] > 0) {
+                        Loader::getInstance()->PlayerSleep[$name] -= 1;
+                    } else {
+                        $player->setImmobile(false);
+                        unset(Loader::getInstance()->PlayerSleep[$name]);
                     }
                 }
                 if (isset(Loader::getInstance()->CombatTimer[$name])) {
