@@ -43,7 +43,6 @@ class DeleteBlocksHandler
                 unset(Loader::getInstance()->buildBlocks[$pos]);
             } else {
                 Loader::getInstance()->getLogger()->info(Loader::getInstance()->buildBlocks[$pos]);
-                Loader::getInstance()->buildBlocks[$pos]--;
             }
         }
     }
