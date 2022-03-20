@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\utils;
 
-use JetBrains\PhpStorm\Pure;
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;
@@ -41,7 +40,7 @@ class Scoreboards
         unset($this->scoreboards[$player->getName()]);
     }
 
-    #[Pure] private function getObjectiveName(Player $player): ?string
+    private function getObjectiveName(Player $player): ?string
     {
         return $this->scoreboards[$player->getName()] ?? null;
     }

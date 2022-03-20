@@ -30,7 +30,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    private static YamlDataProvider $sumoloader;
+    private static YamlDataProvider $YamlLoader;
     public mixed $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
@@ -56,6 +56,7 @@ class Loader extends PluginBase
     public array $SumoSetup = [];
     public array $SumoData = [];
     public array $buildBlocks = [];
+    public array $ParkourCheckPoint = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
     public Config $CapeData;
@@ -78,13 +79,13 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$sumoloader = new YamlDataProvider();
+        self::$YamlLoader = new YamlDataProvider();
     }
 
     public function onEnable(): void
     {
         ArenaUtils::getInstance()->Start();
-        self::$sumoloader->loadArenas();
+        self::$YamlLoader->loadArenas();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
     }
@@ -95,7 +96,7 @@ class Loader extends PluginBase
     #[Pure] public function onDisable(): void
     {
         ArenaUtils::getInstance()->loadMap("BUild");
-        self::$sumoloader->saveArenas();
+        self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
     }
 

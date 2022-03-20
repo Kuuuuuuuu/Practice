@@ -20,12 +20,10 @@ use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Entity\FallingWool;
 use Kohaku\Core\Events\BaseListener;
-use Kohaku\Core\Events\InterruptEvent;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
-use Kohaku\Core\Task\ClearLag;
-use Kohaku\Core\Task\PlayerTask;
+use Kohaku\Core\Task\HorizonTask;
 use Kohaku\Core\Task\ScoreboardTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
@@ -93,7 +91,7 @@ class ArenaUtils
         $web->send($msg);
     }
 
-    #[Pure] public function getPlayerControls(Player $player): string
+    public function getPlayerControls(Player $player): string
     {
         if (!isset(Loader::getInstance()->PlayerControl[strtolower($player->getName())]) or Loader::getInstance()->PlayerControl[strtolower($player->getName())] == null) {
             return "Unknown";
@@ -101,7 +99,7 @@ class ArenaUtils
         return Loader::getInstance()->ControlList[Loader::getInstance()->PlayerControl[strtolower($player->getName())]];
     }
 
-    #[Pure] public function getPlayerDevices(Player $player): string
+    public function getPlayerDevices(Player $player): string
     {
         if (!isset(Loader::getInstance()->PlayerDevice[strtolower($player->getName())]) or Loader::getInstance()->PlayerDevice[strtolower($player->getName())] == null) {
             return "Unknown";
@@ -109,7 +107,7 @@ class ArenaUtils
         return Loader::getInstance()->PlayerDevice[strtolower($player->getName())];
     }
 
-    #[Pure] public function getPlayerOs(Player $player): string
+    public function getPlayerOs(Player $player): string
     {
         if (!isset(Loader::getInstance()->PlayerOS[strtolower($player->getName())]) or Loader::getInstance()->PlayerOS[strtolower($player->getName())] == null) {
             return "Unknown";
@@ -117,7 +115,7 @@ class ArenaUtils
         return Loader::getInstance()->OSList[Loader::getInstance()->PlayerOS[strtolower($player->getName())]];
     }
 
-    #[Pure] public function getToolboxCheck(Player $player): string
+    public function getToolboxCheck(Player $player): string
     {
         return Loader::getInstance()->ToolboxCheck[strtolower($player->getName())] ?? "Unknown";
     }
@@ -193,7 +191,6 @@ class ArenaUtils
     private function registerConfigs(): void
     {
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
-        @mkdir(Loader::getInstance()->getDataFolder() . "pkdata/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
@@ -240,14 +237,12 @@ class ArenaUtils
     private function registerEvents(): void
     {
         Server::getInstance()->getPluginManager()->registerEvents(new PlayerListener(), Loader::getInstance());
-        Server::getInstance()->getPluginManager()->registerEvents(new InterruptEvent(), Loader::getInstance());
         Server::getInstance()->getPluginManager()->registerEvents(new BaseListener(), Loader::getInstance());
     }
 
     private function registerTasks(): void
     {
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new PlayerTask(), 1);
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ClearLag(), 2500);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new HorizonTask(), 1);
         Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 11000);
     }
 

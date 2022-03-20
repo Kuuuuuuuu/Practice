@@ -137,7 +137,7 @@ class CosmeticHandler
     public function getCapes(): array
     {
         $list = array();
-        foreach (array_diff(scandir(Loader::getInstance()->getDataFolder() . "capes/")) as $data) {
+        foreach (array_diff(scandir(Loader::getInstance()->getDataFolder() . "cosmetic/capes/")) as $data) {
             $dat = explode(".", $data);
             if ($dat[1] === "png") {
                 $list[] = $dat[0];
@@ -316,7 +316,7 @@ class CosmeticHandler
     public function createCape($capeName): ?string
     {
         try {
-            $path = Loader::getInstance()->getDataFolder() . "capes/" . "$capeName.png";
+            $path = Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . "$capeName.png";
             $img = @imagecreatefrompng($path);
             $bytes = '';
             $l = (int)@getimagesize($path)[1];

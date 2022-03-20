@@ -19,6 +19,7 @@ class HorizonPlayer extends Player
     private string $cape = '';
     private string $stuff = '';
     private array $validstuffs = [];
+    private string $lastDamagePlayer = "Unknown";
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -80,7 +81,7 @@ class HorizonPlayer extends Player
     public function LoadCape()
     {
         Loader::getInstance()->PlayerSkin[$this->getName()] = $this->getSkin();
-        if (file_exists(Loader::getInstance()->getDataFolder() . "capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
+        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
             $capeData = CosmeticHandler::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
@@ -196,5 +197,15 @@ class HorizonPlayer extends Player
         $this->setValidStuffs("White Heart");
         $this->setValidStuffs("Witchhat");
         $this->setValidStuffs("Wither Head");
+    }
+
+    public function setLastDamagePlayer(string $name): void
+    {
+        $this->lastDamagePlayer = $name;
+    }
+
+    public function getLastDamagePlayer(): string
+    {
+        return $this->lastDamagePlayer;
     }
 }
