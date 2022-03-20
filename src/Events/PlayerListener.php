@@ -22,6 +22,7 @@ use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -142,8 +143,10 @@ class PlayerListener implements Listener
     public function onArrow(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        $entity->flagForDespawn();
-        $entity->close();
+        if ($entity instanceof Arrow) {
+            $entity->flagForDespawn();
+            $entity->close();
+        }
     }
 
     public function onBow(EntityShootBowEvent $event)
