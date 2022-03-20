@@ -21,12 +21,13 @@ class CosmeticHandler
     public const BOUNDS_64_64 = 0;
     public const BOUNDS_64_32 = self::BOUNDS_64_64;
     public const BOUNDS_128_128 = 1;
+
     public string $dataFolder;
     public string $resourcesFolder;
-    public mixed $artifactFolder;
+    public string $artifactFolder;
     public string $humanoidFile;
-    public mixed $stevePng;
-    public mixed $saveSkin;
+    public string $stevePng;
+    public string $saveSkin;
     public array $skinBounds = [];
     public array $cosmeticAvailable = [];
 
@@ -54,7 +55,6 @@ class CosmeticHandler
             mkdir($this->dataFolder);
             mkdir($this->saveSkin);
         }
-
         $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->steveSkin = null;
@@ -63,7 +63,6 @@ class CosmeticHandler
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
         $this->skinBounds[self::BOUNDS_128_128] = $this->getSkinBounds($cubes, 2.0);
-
         $checkFileAvailable = [];
         $allFiles = scandir($this->artifactFolder);
         foreach ($allFiles as $allFilesName) {
@@ -88,7 +87,6 @@ class CosmeticHandler
                 if (!isset($bone['cubes'])) {
                     continue;
                 }
-
                 if ($bone['mirror'] ?? false) {
                     throw new InvalidArgumentException('Unsupported geometry data');
                 }
@@ -141,7 +139,7 @@ class CosmeticHandler
         $list = array();
         foreach (array_diff(scandir(Loader::getInstance()->getDataFolder() . "capes/")) as $data) {
             $dat = explode(".", $data);
-            if ($dat[1] == "png") {
+            if ($dat[1] === "png") {
                 $list[] = $dat[0];
             }
         }
@@ -156,7 +154,7 @@ class CosmeticHandler
                 mkdir($path . "skin");
             }
             $img = $this->skinDataToImage($skin);
-            if ($img == null) {
+            if ($img === null) {
                 return;
             }
             imagepng($img, $path . "skin/" . $name . ".png");
@@ -207,7 +205,7 @@ class CosmeticHandler
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
             $cape = $player instanceof HorizonPlayer ? $player->getCape() : "";
             $capeData = $cape !== "" ? $this->createCape($cape) : "";
-            $skin = new Skin($skin->getSkinId() ?? null, $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData());
+            $skin = (new Skin($skin->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData())) ?? null;
             $player->setSkin($skin);
             $player->sendSkin();
         } catch (Exception $e) {
@@ -344,9 +342,7 @@ class CosmeticHandler
     {
         $imagePath = $this->artifactFolder . $stuffName . ".png";
         $geometryPath = $this->artifactFolder . $stuffName . ".json";
-        $skin = $this->loadSkin($imagePath, $geometryPath,
-            $player->getSkin()->getSkinId(), "geometry.cosmetic/artifact");
-
+        $skin = $this->loadSkin($imagePath, $geometryPath, $player->getSkin()->getSkinId(), "geometry.cosmetic/artifact");
         if ($skin !== null) {
             $player->setSkin($skin);
             $player->sendSkin();
@@ -399,7 +395,6 @@ class CosmeticHandler
                     for ($x = $bound['min']['x']; $x <= $bound['max']['x']; $x++) {
                         $key = (($maxX * $y) + $x) * 4;
                         $a = ord($skinData[$key + 3]);
-
                         if ($a < 127) {
                             ++$transparentPixels;
                         }
