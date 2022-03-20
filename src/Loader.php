@@ -96,6 +96,7 @@ class Loader extends PluginBase
     {
         self::$sumoloader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+        ArenaUtils::getInstance()->loadMap("BUild");
     }
 
     /*public function deleteDir($dirPath): void

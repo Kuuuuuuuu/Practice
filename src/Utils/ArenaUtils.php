@@ -47,6 +47,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
+use ZipArchive;
 
 class ArenaUtils
 {
@@ -431,5 +432,25 @@ class ArenaUtils
             return null;
         }
         return Loader::getInstance()->SumoArena[$availableArenas[array_rand($availableArenas)]];
+    }
+
+    public function loadMap(string $folderName)
+    {
+        if (!Server::getInstance()->getWorldManager()->getWorldByName($folderName)) {
+            return null;
+        }
+        if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
+            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
+        }
+        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
+        if (!file_exists($zipPath)) {
+            Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found");
+            return null;
+        }
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($zipPath);
+        $zipArchive->extractTo(Server::getInstance()->getDataPath() . "worlds");
+        $zipArchive->close();
+        Server::getInstance()->getWorldManager()->loadWorld($folderName);
     }
 }
