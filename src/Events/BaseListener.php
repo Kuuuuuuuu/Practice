@@ -6,6 +6,7 @@ namespace Kohaku\Core\Events;
 
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
@@ -28,13 +29,17 @@ class BaseListener implements Listener
         $world->setTime(0);
         $world->stopTime();
     }
+
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
-            return;
+            if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
+                $ev->cancel();
+            } else {
+                DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
+            }
         }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
