@@ -13,6 +13,8 @@ use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
@@ -34,10 +36,13 @@ class BaseListener implements Listener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
+        $item = $ev->getDrops();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
             if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
                 $ev->cancel();
             } else {
+                $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
+                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
                 DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
             }
         } else {
