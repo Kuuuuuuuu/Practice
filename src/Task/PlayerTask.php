@@ -20,12 +20,14 @@ class PlayerTask extends Task
     public function onRun(): void
     {
         $this->tick++;
+        if ($this->tick % 13 === 0) {
+            DeleteBlocksHandler::getInstance()->update();
+        }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
             if ($this->tick % 15 === 0) {
-                DeleteBlocksHandler::getInstance()->update();
                 $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
                 $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
                 if (isset(Loader::getInstance()->JumpCount[$name])) {
