@@ -42,7 +42,7 @@ class DeleteBlocksHandler
                 $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0));
                 unset(Loader::getInstance()->buildBlocks[$pos]);
             } else {
-                Loader::getInstance()->getLogger()->info(Loader::getInstance()->buildBlocks[$pos]);
+                Loader::getInstance()->buildBlocks[$pos]--;
             }
         }
     }
