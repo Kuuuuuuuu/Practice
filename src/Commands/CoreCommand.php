@@ -136,6 +136,15 @@ class CoreCommand extends Command
                                     Loader::$arenafac->setSumoD($sender, $args[2]);
                                 }
                                 break;
+                            case "Build":
+                                if (!file_exists(Server::getInstance()->getDataPath() . "worlds/" . $args[2])) {
+                                    $sender->sendMessage(Color::RED . "World " . $args[2] . " not found");
+                                } else {
+                                    Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                    $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                    Loader::$arenafac->setBuildArena($sender, $args[2]);
+                                }
+                                break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
                                 $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
@@ -215,6 +224,9 @@ class CoreCommand extends Command
                                 break;
                             case "SumoD":
                                 Loader::$arenafac->removeSumoD($sender);
+                                break;
+                            case "Build":
+                                Loader::$arenafac->removeBuild($sender);
                                 break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
