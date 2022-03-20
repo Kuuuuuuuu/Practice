@@ -33,6 +33,11 @@ class BaseListener implements Listener
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();
+        $block = $ev->getBlock();
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
+            return;
+        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
         }
