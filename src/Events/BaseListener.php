@@ -42,8 +42,9 @@ class BaseListener implements Listener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            DeleteBlocksHandler::getInstance()->setBlockBuild($block, false);
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            DeleteBlocksHandler::getInstance()->setBlockBuild($block);
+            return;
         }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $ev->cancel();
