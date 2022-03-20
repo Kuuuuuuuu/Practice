@@ -45,7 +45,7 @@ class DeleteBlocksHandler
                 $y = $block[1];
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-                if ($level !== null) $level->setBlock(new Vector3($x, $y, $z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR));
+                if ($level !== null) $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR));
                 unset($this->buildBlocks[$pos]);
             } else {
                 $this->buildBlocks[$pos]--;

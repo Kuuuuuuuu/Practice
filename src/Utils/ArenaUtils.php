@@ -54,7 +54,7 @@ class ArenaUtils
     public static function generateFallingWoolBlock(Location $location): FallingWool
     {
         $fallingBlock = new FallingWool($location, BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, rand(0, 15)));
-        $fallingBlock->setMotion(new Vector3((string)-sin(mt_rand(1, 360) / 60 * M_PI), (string)0.95, (string)cos(mt_rand(1, 360) / 60 * M_PI)));
+        $fallingBlock->setMotion(new Vector3(-sin(mt_rand(1, 360) / 60 * M_PI), 0.95, cos(mt_rand(1, 360) / 60 * M_PI)));
         $fallingBlock->spawnToAll();
         return $fallingBlock;
     }
@@ -155,7 +155,7 @@ class ArenaUtils
     {
         $x = $z = mt_rand(0, 15);
         $y = $p->getWorld()->getHighestBlockAt($p->getPosition()->getFloorX(), $p->getPosition()->getFloorZ() + 1);
-        $p->teleport(new Vector3((string)$x, (string)$y, (string)$z));
+        $p->teleport(new Vector3($x, $y + 10, $z));
     }
 
     public function Start()
