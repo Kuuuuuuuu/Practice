@@ -40,9 +40,10 @@ class BaseListener implements Listener
             } else {
                 DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
             }
-        }
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
-            $ev->cancel();
+        } else {
+            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+                $ev->cancel();
+            }
         }
     }
 
