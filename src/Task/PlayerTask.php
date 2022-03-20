@@ -20,9 +20,6 @@ class PlayerTask extends Task
     public function onRun(): void
     {
         $this->tick++;
-        if ($this->tick % 20 === 0) {
-            DeleteBlocksHandler::getInstance()->update();
-        }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $ping = $player->getNetworkSession()->getPing();
@@ -59,6 +56,7 @@ class PlayerTask extends Task
                 }
             }
             if ($this->tick % 20 === 0) {
+                DeleteBlocksHandler::getInstance()->update();
                 if ($nowcps > Loader::getInstance()->MaximumCPS) {
                     $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                     Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
