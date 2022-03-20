@@ -67,8 +67,7 @@ class PlayerTask extends Task
                 if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     if (isset(Loader::getInstance()->CombatTimer[$name])) {
                         unset(Loader::getInstance()->CombatTimer[$name]);
-                    }
-                    if (isset(Loader::getInstance()->opponent[$name])) {
+                    } else if (isset(Loader::getInstance()->opponent[$name])) {
                         unset(Loader::getInstance()->opponent[$name]);
                     }
                 }
@@ -115,6 +114,7 @@ class PlayerTask extends Task
                         unset(Loader::getInstance()->ArrowOITC[$name]);
                     }
                 }
+                $this->tick = 0;
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
