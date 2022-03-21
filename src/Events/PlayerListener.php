@@ -573,11 +573,6 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        $player->getEffects()->clear();
-        $player->getArmorInventory()->clearAll();
-        $player->getInventory()->clearAll();
-        ArenaUtils::getInstance()->GiveItem($player);
-        ScoreboardUtils::getInstance()->sb($player);
         if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
             if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "OITC-PG") {
                 Loader::$arena->onJoinOITC($player);
@@ -596,6 +591,12 @@ class PlayerListener implements Listener
             } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "kbffa1") {
                 Loader::$arena->onJoinKnockback($player);
             }
+        } else {
+            $player->getEffects()->clear();
+            $player->getArmorInventory()->clearAll();
+            $player->getInventory()->clearAll();
+            ArenaUtils::getInstance()->GiveItem($player);
+            ScoreboardUtils::getInstance()->sb($player);
         }
     }
 

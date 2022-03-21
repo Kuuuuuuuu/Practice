@@ -168,7 +168,7 @@ class ArenaManager
 
     public function onJoinResistance(Player $player)
     {
-        if (Loader::$arenafac->getKitPVPArena() == null) {
+        if (Loader::$arenafac->getResistanceArena() == null) {
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getResistanceArena());
@@ -184,7 +184,7 @@ class ArenaManager
 
     public function onJoinBuild(Player $player)
     {
-        if (Loader::$arenafac->getKitPVPArena() == null) {
+        if (Loader::$arenafac->getBuildArena() == null) {
             return $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
         } else {
             $random = Loader::$arenafac->getRandomSpawnBuild();
