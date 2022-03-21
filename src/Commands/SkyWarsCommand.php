@@ -22,13 +22,13 @@ class SkyWarsCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if (!isset($args[0])) {
-            $sender->sendMessage("§cUsage: §7/sw help");
+            $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sw help");
             return;
         }
         if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             switch ($args[0]) {
                 case "help":
-                    $sender->sendMessage("§a> SkyWars commands:\n" .
+                    $sender->sendMessage(Loader::getPrefixCore() . "SkyWars commands:\n" .
                         "§7/sw help : Displays list of SkyWars commands\n" .
                         "§7/sw create : Create SkyWars arena\n" .
                         "§7/sw remove : Remove SkyWars arena\n" .
@@ -38,63 +38,59 @@ class SkyWarsCommand extends Command
                     break;
                 case "create":
                     if (!isset($args[1])) {
-                        $sender->sendMessage("§cUsage: §7/sw create <arenaName>");
+                        $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sw create <arenaName>");
                         break;
                     }
-                    if (isset(Loader::getInstance()->arenas[$args[1]])) {
-                        $sender->sendMessage("§c> SkywarsHandler $args[1] already exists!");
+                    if (isset(Loader::getInstance()->SkywarArenas[$args[1]])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . "$args[1] already exists!");
                         break;
                     }
                     Loader::getInstance()->SkywarArenas[$args[1]] = new SkywarsHandler(Loader::getInstance(), []);
-                    $sender->sendMessage("§a> SkywarsHandler $args[1] created!");
+                    $sender->sendMessage(Loader::getPrefixCore() . "$args[1] created!");
                     break;
                 case "remove":
-                    if (!$sender->hasPermission("sw.cmd.remove")) {
-                        $sender->sendMessage("§cYou have not permissions to use this command!");
-                        break;
-                    }
                     if (!isset($args[1])) {
-                        $sender->sendMessage("§cUsage: §7/sw remove <arenaName>");
+                        $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sw remove <arenaName>");
                         break;
                     }
-                    if (!isset(Loader::getInstance()->arenas[$args[1]])) {
-                        $sender->sendMessage("§c> SkywarsHandler $args[1] was not found!");
+                    if (!isset(Loader::getInstance()->SkywarArenas[$args[1]])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . "$args[1] was not found!");
                         break;
                     }
                     /** @var SkywarsHandler $arena */
-                    $arena = Loader::getInstance()->arenas[$args[1]];
+                    $arena = Loader::getInstance()->SkywarArenas[$args[1]];
                     foreach ($arena->players as $player) {
                         $player->teleport(Loader::getInstance()->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
                     }
-                    if (is_file($file = Loader::getInstance()->getDataFolder() . "arenas" . DIRECTORY_SEPARATOR . $args[1] . ".yml")) unlink($file);
-                    unset(Loader::getInstance()->arenas[$args[1]]);
-                    $sender->sendMessage("§a> SkywarsHandler removed!");
+                    if (is_file($file = Loader::getInstance()->getDataFolder() . "SkywarsArenas" . DIRECTORY_SEPARATOR . $args[1] . ".yml")) unlink($file);
+                    unset(Loader::getInstance()->SkywarArenas[$args[1]]);
+                    $sender->sendMessage(Loader::getPrefixCore() . "removed!");
                     break;
                 case "set":
                     if (!$sender instanceof Player) {
-                        $sender->sendMessage("§c> This command can be used only in-game!");
+                        $sender->sendMessage(Loader::getPrefixCore() . "This command can be used only in-game!");
                         break;
                     }
                     if (!isset($args[1])) {
-                        $sender->sendMessage("§cUsage: §7/sw set <arenaName>");
+                        $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sw set <arenaName>");
                         break;
                     }
-                    if (isset(Loader::getInstance()->setters[$sender->getName()])) {
-                        $sender->sendMessage("§c> You are already in setup mode!");
+                    if (isset(Loader::getInstance()->SkywarSetup[$sender->getName()])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . "You are already in setup mode!");
                         break;
                     }
-                    if (!isset(Loader::getInstance()->arenas[$args[1]])) {
-                        $sender->sendMessage("§c> SkywarsHandler $args[1] does not found!");
+                    if (!isset(Loader::getInstance()->SkywarArenas[$args[1]])) {
+                        $sender->sendMessage(Loader::getPrefixCore() . "$args[1] does not found!");
                         break;
                     }
-                    $sender->sendMessage("§a> You are joined setup mode.\n" .
+                    $sender->sendMessage(Loader::getPrefixCore() . "You are joined setup mode.\n" .
                         "§7- use §lhelp §r§7to display available commands\n" .
                         "§7- or §ldone §r§7to leave setup mode");
-                    Loader::getInstance()->SumoSetup[$sender->getName()] = Loader::getInstance()->arenas[$args[1]];
+                    Loader::getInstance()->SkywarSetup[$sender->getName()] = Loader::getInstance()->SkywarArenas[$args[1]];
                     break;
                 case "arenas":
                     if (count(Loader::getInstance()->SkywarArenas) === 0) {
-                        $sender->sendMessage("§6> There are 0 arenas.");
+                        $sender->sendMessage(Loader::getPrefixCore() . "There are 0 arenas.");
                         break;
                     }
                     $list = "§7> Arenas:\n";
@@ -108,13 +104,11 @@ class SkyWarsCommand extends Command
                     $sender->sendMessage($list);
                     break;
                 default:
-                    if (!$sender->hasPermission("sw.cmd.help")) {
-                        $sender->sendMessage("§cYou have not permissions to use this command!");
-                        break;
-                    }
-                    $sender->sendMessage("§cUsage: §7/sw help");
+                    $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sw help");
                     break;
             }
+        } else {
+            $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
         }
     }
 }
