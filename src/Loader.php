@@ -98,7 +98,8 @@ class Loader extends PluginBase
      */
     #[Pure] public function onDisable(): void
     {
-        MapReset::getInstance()->loadMap("BUild");
+        $reset = new MapReset();
+        $reset->loadMap("BUild");
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
     }

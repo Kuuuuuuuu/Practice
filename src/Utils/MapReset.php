@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Loader;
 use pocketmine\Server;
 use pocketmine\world\World;
@@ -13,11 +12,6 @@ use ZipArchive;
 
 class MapReset
 {
-
-    #[Pure] public static function getInstance(): MapReset
-    {
-        return new MapReset();
-    }
 
     public function saveMap(World $world): bool
     {
@@ -30,7 +24,6 @@ class MapReset
         }
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             $dir = opendir($worldPath);
-
             while ($file = readdir($dir)) {
                 if (is_file($worldPath . $file)) {
                     $zip->addFile($worldPath . $file, $file);
