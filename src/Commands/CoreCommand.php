@@ -30,7 +30,7 @@ class CoreCommand extends Command
     /**
      * @throws JsonException
      */
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
         if (!isset($args[0])) {
             $sender->sendMessage(Color::BOLD . Color::WHITE . ">> " . Color::RESET . Color::RED . "use /core help");
@@ -42,17 +42,17 @@ class CoreCommand extends Command
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd");
-                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                         break;
                     case "make":
                     case "create":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                         }
                         switch ($args[1]) {
                             case "fist":
@@ -145,9 +145,18 @@ class CoreCommand extends Command
                                     Loader::$arenafac->setBuildArena($sender, $args[2]);
                                 }
                                 break;
+                            case "Skywars":
+                                if (!file_exists(Server::getInstance()->getDataPath() . "worlds/" . $args[2])) {
+                                    $sender->sendMessage(Color::RED . "World " . $args[2] . " not found");
+                                } else {
+                                    Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                    $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                    Loader::$arenafac->setSkywarsArena($sender, $args[2]);
+                                }
+                                break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                                 break;
                         }
                         break;
@@ -194,7 +203,7 @@ class CoreCommand extends Command
                     case "remove":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                             return false;
                         }
                         switch ($args[1]) {
@@ -228,9 +237,12 @@ class CoreCommand extends Command
                             case "Build":
                                 Loader::$arenafac->removeBuild($sender);
                                 break;
+                            case "Skywars":
+                                Loader::$arenafac->removeSkywars($sender);
+                                break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
+                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
                                 break;
                         }
                         break;
