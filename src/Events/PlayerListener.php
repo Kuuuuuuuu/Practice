@@ -243,12 +243,16 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
+        $skin = $player->getSkin();
         $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
+        if ($skin->getGeometryName() === "geometry.humanoid.custom") {
+            CosmeticHandler::getInstance()->setSteveSkin($player);
+        }
         if ($player instanceof HorizonPlayer) {
             $player->LoadCape();
             $player->setCosmetic();

@@ -236,7 +236,7 @@ class CosmeticHandler
         try {
             $path = $this->artifactFolder;
             $down = imagecreatefrompng($skinPath);
-            if ($size[0] * $size[1] * $size[2] == 65536) {
+            if ($size[0] * $size[1] * $size[2] === 65536) {
                 $upper = $this->resizeImage($path . $stuffName . ".png", 128, 128);
             } else {
                 $upper = $this->resizeImage($path . $stuffName . ".png", 64, 64);
@@ -406,5 +406,29 @@ class CosmeticHandler
             ArenaUtils::getLogger((string)$e);
             return null;
         }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function setSteveSkin(Player $player)
+    {
+        $path = $this->resourcesFolder . 'steve.png';
+        $img = @imagecreatefrompng($path);
+        $bytes = '';
+        $l = (int)@getimagesize($path)[1];
+        for ($y = 0; $y < $l; $y++) {
+            for ($x = 0; $x < 64; $x++) {
+                $rgba = @imagecolorat($img, $x, $y);
+                $a = ((~(($rgba >> 24))) << 1) & 0xff;
+                $r = ($rgba >> 16) & 0xff;
+                $g = ($rgba >> 8) & 0xff;
+                $b = $rgba & 0xff;
+                $bytes .= chr($r) . chr($g) . chr($b) . chr($a);
+            }
+        }
+        @imagedestroy($img);
+        $player->setSkin(new Skin("Standard_CustomSlim", $bytes));
+        $player->sendSkin();
     }
 }
