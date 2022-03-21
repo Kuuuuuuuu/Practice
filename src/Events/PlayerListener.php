@@ -250,7 +250,7 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
-        if ($skin->getGeometryName() === "geometry.humanoid.custom") {
+        if ($skin->getGeometryName() === "geometry.humanoid.custom" or $skin->getGeometryName() === "Standard_Custom") {
             CosmeticHandler::getInstance()->setSteveSkin($player);
         }
         if ($player instanceof HorizonPlayer) {
@@ -276,7 +276,11 @@ class PlayerListener implements Listener
         $case = 0;
         $player = $event->getPlayer();
         $name = $player->getName();
+        $skin = $event->getNewSkin();
         $cosmetic = CosmeticHandler::getInstance();
+        if ($skin->getGeometryName() === "geometry.humanoid.custom" or $skin->getGeometryName() === "Standard_Custom") {
+            CosmeticHandler::getInstance()->setSteveSkin($player);
+        }
         if ($player instanceof HorizonPlayer) {
             if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
                 copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
