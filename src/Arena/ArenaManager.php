@@ -36,6 +36,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
+            $player->setHealth(20);
             $player->getInventory()->setItem(0, $item2);
             $player->getInventory()->setItem(8, $item3);
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())->getSafeSpawn());
@@ -54,6 +55,7 @@ class ArenaManager
             ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
+            $player->setHealth(20);
             $player->getEffects()->clear();
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())->getSafeSpawn());
@@ -72,6 +74,7 @@ class ArenaManager
             ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
+            $player->setHealth(20);
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
@@ -90,6 +93,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
+            $player->setHealth(20);
             $item = ItemFactory::getInstance()->get(466, 0, 3);
             $player->getInventory()->addItem($item);
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())->getSafeSpawn());
@@ -109,6 +113,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
+            $player->setHealth(20);
             $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 99999, 3, false));
             $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 99999, 4, false));
             $arrow = ItemFactory::getInstance()->get(262, 0, 1);
@@ -139,6 +144,7 @@ class ArenaManager
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getKitPVPArena());
             ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
+            $player->setHealth(20);
             $player->getEffects()->clear();
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getSafeSpawn());
@@ -156,6 +162,7 @@ class ArenaManager
             ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
+            $player->setHealth(20);
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())->getSafeSpawn());
             $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
@@ -174,6 +181,7 @@ class ArenaManager
             Server::getInstance()->getWorldManager()->loadWorld(Loader::$arenafac->getResistanceArena());
             ScoreboardUtils::getInstance()->sb2($player);
             $player->getInventory()->clearAll();
+            $player->setHealth(20);
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())->getSafeSpawn());
@@ -193,6 +201,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
+            $player->setHealth(20);
             $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
             $player->getInventory()->setItem(0, $item);
             $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));

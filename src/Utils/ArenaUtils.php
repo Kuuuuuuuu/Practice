@@ -275,12 +275,15 @@ class ArenaUtils
             unset(Loader::getInstance()->ArrowOITC[$dname]);
             unset(Loader::getInstance()->ArrowOITC[$name]);
             $dplayer->getInventory()->clearAll();
+            $dplayer->getArmorInventory()->clearAll();
+            $dplayer->setHealth(20);
             $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
             $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
         } else if ($arena === "Build") {
             $dplayer->getInventory()->clearAll();
             $dplayer->getArmorInventory()->clearAll();
+            $dplayer->setHealth(20);
             $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
             $dplayer->getInventory()->setItem(0, $item);
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
@@ -294,6 +297,7 @@ class ArenaUtils
             $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         } else if ($arena === "Boxing") {
             $player->getInventory()->clearAll();
+            $dplayer->setHealth(20);
             $player->getArmorInventory()->clearAll();
             $this->addKill($dplayer);
             $this->addDeath($player);
