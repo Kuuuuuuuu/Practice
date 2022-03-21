@@ -26,7 +26,7 @@ class MapReset
     {
         $level->save(true);
         $levelPath = Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $level->getFolderName();
-        $zipPath = Loader::getInstance()->getDataFolder() . "saves" . DIRECTORY_SEPARATOR . $level->getFolderName() . ".zip";
+        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $level->getFolderName() . ".zip";
         $zip = new ZipArchive();
         if (is_file($zipPath)) {
             unlink($zipPath);
