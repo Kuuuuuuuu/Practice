@@ -55,7 +55,7 @@ class YamlDataProvider
         foreach (Loader::getInstance()->SkywarArenas as $fileName => $arena) {
             if ($arena->level instanceof World) {
                 foreach ($arena->players as $player) {
-                    $player->teleport($player->getServer()->getDefaultLevel()->getSpawnLocation());
+                    $player->teleport($player->getServer()->getWorldManager()->getDefaultLevel()->getSpawnLocation());
                 }
                 $arena->mapReset->loadMap($arena->level->getFolderName(), true);
             }

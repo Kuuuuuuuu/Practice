@@ -125,7 +125,7 @@ class SkywarsHandler implements Listener
         $players = [];
         foreach ($this->players as $player) {
             $players[$player->getName()] = $player;
-            $player->setGamemode($player::SURVIVAL);
+            $player->setGamemode(GameMode::SURVIVAL());
         }
         $this->players = $players;
         $this->phase = 1;
