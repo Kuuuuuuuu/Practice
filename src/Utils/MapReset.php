@@ -9,9 +9,6 @@ use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Loader;
 use pocketmine\Server;
 use pocketmine\world\World;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 use ZipArchive;
 
 class MapReset
@@ -22,26 +19,28 @@ class MapReset
         return new MapReset();
     }
 
-    public function saveMap(World $level)
+    public function saveMap(World $world): bool
     {
-        $level->save(true);
-        $levelPath = Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $level->getFolderName();
-        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $level->getFolderName() . ".zip";
+        $worldPath = Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $world->getFolderName();
+        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $world->getFolderName() . ".zip";
         $zip = new ZipArchive();
-        if (is_file($zipPath)) {
+        if (file_exists($zipPath)) {
+            Loader::getInstance()->getLogger()->notice("File already exists, proceed to overwrite: $zipPath");
             unlink($zipPath);
         }
-        $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(realpath($levelPath)), RecursiveIteratorIterator::LEAVES_ONLY);
-        /** @var SplFileInfo $file */
-        foreach ($files as $file) {
-            if ($file->isFile()) {
-                $filePath = $file->getPath() . DIRECTORY_SEPARATOR . $file->getBasename();
-                $localPath = substr($filePath, strlen(Server::getInstance()->getDataPath() . "worlds"));
-                $zip->addFile($filePath, $localPath);
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $dir = opendir($worldPath);
+
+            while ($file = readdir($dir)) {
+                if (is_file($worldPath . $file)) {
+                    $zip->addFile($worldPath . $file, $file);
+                }
             }
+            $zip->close();
+            return true;
         }
         $zip->close();
+        return false;
     }
 
     public function loadMap(string $folderName): ?World
@@ -51,7 +50,7 @@ class MapReset
         }
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$folderName");
+            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $folderName);
         }
         $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
         if (!file_exists($zipPath)) {
