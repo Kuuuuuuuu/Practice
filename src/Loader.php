@@ -77,18 +77,19 @@ class Loader extends PluginBase
 
     public function onLoad(): void
     {
-        self::$YamlLoader->loadArenas();
         self::$plugin = $this;
         self::$cps = new ClickHandler();
         self::$score = new Scoreboards();
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$YamlLoader = new YamlDataProvider();
+
     }
 
     public function onEnable(): void
     {
+        self::$YamlLoader = new YamlDataProvider();
+        self::$YamlLoader->loadArenas();
         ArenaUtils::getInstance()->Start();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
