@@ -73,12 +73,6 @@ class SkywarsHandler implements Listener
         if (count($this->data["spawns"]) != $this->data["slots"]) {
             return false;
         }
-        if (!is_array($this->data["joinsign"])) {
-            return false;
-        }
-        if (count($this->data["joinsign"]) !== 2) {
-            return false;
-        }
         $this->data["enabled"] = true;
         $this->setup = false;
         if ($loadArena) $this->loadArena();
