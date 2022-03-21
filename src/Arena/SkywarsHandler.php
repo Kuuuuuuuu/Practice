@@ -61,8 +61,12 @@ class SkywarsHandler implements Listener
         if ($this->data["level"] == null) {
             return false;
         }
-        if (!$this->plugin->getServer()->getWorldManager()->isWorldGenerated($this->data["level"])) {
+        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data["level"])) {
             return false;
+        } else {
+            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"]))
+                Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
+            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data["level"]);
         }
         if (!is_int($this->data["slots"])) {
             return false;
