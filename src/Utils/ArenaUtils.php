@@ -166,25 +166,11 @@ class ArenaUtils
         $this->registerTasks();
         $this->registerEntity();
         $this->loadallworlds();
+        Loader::$YamlLoader = new YamlDataProvider();
         foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
             if ($interface instanceof RakLibInterface) {
                 $interface->setPacketLimit(9999999999);
             }
-        }
-    }
-
-    public function loadallworlds()
-    {
-        foreach (glob(Server::getInstance()->getDataPath() . "worlds/*") as $world) {
-            $world = str_replace(Server::getInstance()->getDataPath() . "worlds/", "", $world);
-            if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
-                continue;
-            }
-            Server::getInstance()->getWorldManager()->loadWorld($world);
-        }
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            $world->setTime(0);
-            $world->stopTime();
         }
     }
 
@@ -257,6 +243,21 @@ class ArenaUtils
                     $nbt
                 );
             }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
+    }
+
+    public function loadallworlds()
+    {
+        foreach (glob(Server::getInstance()->getDataPath() . "worlds/*") as $world) {
+            $world = str_replace(Server::getInstance()->getDataPath() . "worlds/", "", $world);
+            if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
+                continue;
+            }
+            Server::getInstance()->getWorldManager()->loadWorld($world);
+        }
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            $world->setTime(0);
+            $world->stopTime();
+        }
     }
 
     /**

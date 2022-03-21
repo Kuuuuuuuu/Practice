@@ -371,8 +371,7 @@ class PlayerListener implements Listener
                     if (Server::getInstance()->getWorldManager()->isWorldGenerated($arena->data["level"])) {
                         if (!Server::getInstance()->getWorldManager()->isWorldLoaded($arena->data["level"]))
                             Server::getInstance()->getWorldManager()->loadWorld($arena->data["level"]);
-                        if (!$arena->mapReset instanceof MapReset)
-                            $arena->mapReset = new MapReset();
+                        $arena->mapReset = new MapReset();
                         $arena->mapReset->saveMap(Server::getInstance()->getWorldManager()->getWorldByName($arena->data["level"]));
                     }
                     $arena->loadArena(false);

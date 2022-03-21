@@ -31,7 +31,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    private static YamlDataProvider $YamlLoader;
+    public static YamlDataProvider $YamlLoader;
     public mixed $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
@@ -87,7 +87,6 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
-        self::$YamlLoader = new YamlDataProvider();
         ArenaUtils::getInstance()->Start();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
