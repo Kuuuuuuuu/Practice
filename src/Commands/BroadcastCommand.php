@@ -33,7 +33,7 @@ class BroadcastCommand extends Command
             }
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                    $message = $args[0];
+                    $message = implode($args);
                     $player->sendMessage(Loader::getPrefixCore() . $message);
                 }
             } else {

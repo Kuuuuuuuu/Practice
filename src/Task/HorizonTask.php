@@ -25,6 +25,8 @@ class HorizonTask extends Task
         if ($this->tick % 20 === 0) {
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
+        }
+        if ($this->tick % 2000 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
                 foreach ($level->getEntities() as $entity) {
                     if ($entity instanceof ItemEntity or $entity instanceof Arrow) {
