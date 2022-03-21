@@ -152,7 +152,7 @@ class PlayerListener implements Listener
         if ($entity instanceof EnderPearl) {
             if ($owner instanceof Player) {
                 if ($owner->getWorld() !== $entity->getWorld()) {
-                    $entity->kill();
+                    $entity->close();
                 }
             }
         } else if ($entity instanceof Arrow) {
@@ -411,6 +411,10 @@ class PlayerListener implements Listener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($player instanceof Player and $damager instanceof Player) {
+            /* @var HorizonPlayer $damager */
+            /* @var HorizonPlayer $player */
+            $damager->setLastDamagePlayer($player->getName());
+            $player->setLastDamagePlayer($damager->getName());
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             }
@@ -548,6 +552,10 @@ class PlayerListener implements Listener
                 } else {
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
+                /* @var HorizonPlayer $damager */
+                /* @var HorizonPlayer $player */
+                $player->setLastDamagePlayer("Unknown");
+                $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === $damager->getWorld()) {
                         $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
