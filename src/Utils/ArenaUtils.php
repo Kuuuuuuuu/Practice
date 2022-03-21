@@ -474,4 +474,26 @@ class ArenaUtils
         }
         rmdir($dirPath);
     }
+
+    public function ArenaRespawn(Player $player)
+    {
+        $name = $player->getName();
+        if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getOITCArena()) {
+            Loader::$arena->onJoinOITC($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getBuildArena()) {
+            Loader::$arena->onJoinBuild($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getBoxingArena()) {
+            Loader::$arena->onJoinBoxing($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getFistArena()) {
+            Loader::$arena->onJoinFist($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getResistanceArena()) {
+            Loader::$arena->onJoinResistance($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getKitPVPArena()) {
+            Loader::$arena->onJoinKitpvp($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getComboArena()) {
+            Loader::$arena->onJoinCombo($player);
+        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getKnockbackArena()) {
+            Loader::$arena->onJoinKnockback($player);
+        }
+    }
 }

@@ -418,6 +418,24 @@ class PlayerListener implements Listener
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             }
+            $name = $player->getName();
+            if ($event->getFinalDamage() >= $player->getHealth()) {
+                if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
+                    $event->cancel();
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                        ArenaUtils::getInstance()->DeathReset($player, $damager, "OITC");
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                        ArenaUtils::getInstance()->DeathReset($player, $damager, "Boxing");
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                        ArenaUtils::getInstance()->DeathReset($player, $damager, "Build");
+                    } else {
+                        ArenaUtils::getInstance()->DeathReset($player, $damager);
+                    }
+                    $player->setLastDamagePlayer("Unknown");
+                    $damager->setLastDamagePlayer("Unknown");
+                    ArenaUtils::getInstance()->ArenaRespawn($player);
+                }
+            }
             if (!isset(Loader::getInstance()->opponent[$player->getName()]) and !isset(Loader::getInstance()->opponent[$damager->getName()])) {
                 if ($damager->getGamemode() === GameMode::CREATIVE() or $player->getGamemode() === GameMode::CREATIVE() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
                 Loader::getInstance()->opponent[$player->getName()] = $damager->getName();
@@ -465,6 +483,15 @@ class PlayerListener implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
+        if ($event->getCause() === EntityDamageEvent::CAUSE_VOID) {
+            if ($entity instanceof Player) {
+                $name = $entity->getName();
+                if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
+                    $event->cancel();
+                    ArenaUtils::getInstance()->ArenaRespawn($entity);
+                }
+            }
+        }
         if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
             $event->cancel();
         } else if ($event instanceof EntityDamageByChildEntityEvent) {
@@ -572,32 +599,11 @@ class PlayerListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
-        if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
-            if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "OITC-PG") {
-                Loader::$arena->onJoinOITC($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "BUild") {
-                Loader::$arena->onJoinBuild($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "Boxing") {
-                Loader::$arena->onJoinBoxing($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "fist") {
-                Loader::$arena->onJoinFist($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "resis") {
-                Loader::$arena->onJoinResistance($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "kitpvp") {
-                Loader::$arena->onJoinKitpvp($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "combo") {
-                Loader::$arena->onJoinCombo($player);
-            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "kbffa1") {
-                Loader::$arena->onJoinKnockback($player);
-            }
-        } else {
-            $player->getEffects()->clear();
-            $player->getArmorInventory()->clearAll();
-            $player->getInventory()->clearAll();
-            ArenaUtils::getInstance()->GiveItem($player);
-            ScoreboardUtils::getInstance()->sb($player);
-        }
+        $player->getEffects()->clear();
+        $player->getArmorInventory()->clearAll();
+        $player->getInventory()->clearAll();
+        ArenaUtils::getInstance()->GiveItem($player);
+        ScoreboardUtils::getInstance()->sb($player);
     }
 
     public function onTeleport(EntityTeleportEvent $event)
