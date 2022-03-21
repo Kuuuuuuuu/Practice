@@ -541,7 +541,8 @@ class PlayerListener implements Listener
         $world->addParticle($pos, new HeartParticle(3));
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
-            $damager = $cause->getDamager();
+            /* @var HorizonPlayer $player */
+            $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($damager instanceof Player) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
                     ArenaUtils::getInstance()->DeathReset($player, $damager, "OITC");
@@ -553,7 +554,6 @@ class PlayerListener implements Listener
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
                 /* @var HorizonPlayer $damager */
-                /* @var HorizonPlayer $player */
                 $player->setLastDamagePlayer("Unknown");
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
