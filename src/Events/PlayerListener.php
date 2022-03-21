@@ -554,6 +554,9 @@ class PlayerListener implements Listener
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
                 /* @var HorizonPlayer $damager */
+                if (isset(Loader::getInstance()->ArenaRespawn[$player->getName()]) and Loader::getInstance()->ArenaRespawn[$player->getName()] === true) {
+                    Loader::getInstance()->LastArena[$player->getName()] = $player->getWorld()->getFolderName();
+                }
                 $player->setLastDamagePlayer("Unknown");
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
@@ -569,11 +572,31 @@ class PlayerListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
         $player->getInventory()->clearAll();
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
+        if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
+            if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "OITC-PG") {
+                Loader::$arena->onJoinOITC($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "BUild") {
+                Loader::$arena->onJoinBuild($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "Boxing") {
+                Loader::$arena->onJoinBoxing($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "fist") {
+                Loader::$arena->onJoinFist($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "resis") {
+                Loader::$arena->onJoinResistance($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "kitpvp") {
+                Loader::$arena->onJoinKitpvp($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "combo") {
+                Loader::$arena->onJoinCombo($player);
+            } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === "kbffa1") {
+                Loader::$arena->onJoinKnockback($player);
+            }
+        }
     }
 
     public function onTeleport(EntityTeleportEvent $event)

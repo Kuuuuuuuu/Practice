@@ -226,6 +226,21 @@ class FormUtils
                     break;
                 case 4:
                     $this->getArtifactForm($player);
+                    break;
+                case 5:
+                    if (!isset(Loader::getInstance()->ArenaRespawn[$player->getName()])) {
+                        Loader::getInstance()->ArenaRespawn[$player->getName()] = true;
+                        $player->sendMessage(Loader::getPrefixCore() . "§aArenaRespawn enabled");
+                    } else {
+                        if (Loader::getInstance()->ArenaRespawn[$player->getName()] === true) {
+                            Loader::getInstance()->ArenaRespawn[$player->getName()] = false;
+                            $player->sendMessage(Loader::getPrefixCore() . "§cArenaRespawn disabled");
+                        } else {
+                            Loader::getInstance()->ArenaRespawn[$player->getName()] = true;
+                            $player->sendMessage(Loader::getPrefixCore() . "§aArenaRespawn enabled");
+                        }
+                    }
+                    break;
             }
             return true;
         });
@@ -234,7 +249,8 @@ class FormUtils
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
         $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
-        $form->addButton("§bArtifacts", 0, "textures/items/diamond_sword.png");
+        $form->addButton("§bArtifacts", 0, "textures/items/diamond_axe.png");
+        $form->addButton("§bArena §aRespawn", 0, "textures/items/diamond_shovel.png");
         $player->sendForm($form);
     }
 
