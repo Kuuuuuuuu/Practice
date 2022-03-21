@@ -42,6 +42,7 @@ class SkywarsHandler implements Listener
     {
         $this->plugin = $plugin;
         $this->data = $arenaFileData;
+        $this->mapReset = MapReset::getInstance();
         $this->setup = !$this->enable(false);
         $this->plugin->getScheduler()->scheduleRepeatingTask($this->scheduler = new SkywarsScheduler($this), 20);
         if ($this->setup) {
@@ -89,7 +90,6 @@ class SkywarsHandler implements Listener
             $this->plugin->getLogger()->error("Can not load arena: SkywarsHandler is not enabled!");
             return;
         }
-        $this->mapReset = MapReset::getInstance();
         if (!$restart) {
             $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         } else {
