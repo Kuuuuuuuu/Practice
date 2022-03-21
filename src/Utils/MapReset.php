@@ -43,7 +43,6 @@ class MapReset
         }
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $folderName);
         }
         $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
         if (!file_exists($zipPath)) {
@@ -56,24 +55,5 @@ class MapReset
         $zipArchive->close();
         Server::getInstance()->getWorldManager()->loadWorld($folderName);
         return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
-    }
-
-    public function deleteDir($dirPath)
-    {
-        if (!is_dir($dirPath)) {
-            throw new InvalidArgumentException("$dirPath must be a directory");
-        }
-        if (!str_ends_with($dirPath, '/')) {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                self::deleteDir($file);
-            } else {
-                unlink($file);
-            }
-        }
-        rmdir($dirPath);
     }
 }

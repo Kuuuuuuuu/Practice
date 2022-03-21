@@ -89,7 +89,9 @@ class SkywarsHandler implements Listener
             $this->plugin->getLogger()->error("Can not load arena: SkywarsHandler is not enabled!");
             return;
         }
-        $this->mapReset = new MapReset();
+        if (!$this->mapReset instanceof MapReset) {
+            $this->mapReset = new MapReset();
+        }
         if (!$restart) {
             $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         } else {
