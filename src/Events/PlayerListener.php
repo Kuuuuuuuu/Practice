@@ -10,7 +10,6 @@ namespace Kohaku\Core\Events;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Arena\MapReset;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
@@ -19,6 +18,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kohaku\Core\Utils\MapReset;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;

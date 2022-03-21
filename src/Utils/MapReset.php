@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Arena;
+namespace Kohaku\Core\Utils;
 
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;

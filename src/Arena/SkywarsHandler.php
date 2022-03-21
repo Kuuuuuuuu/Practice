@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Kohaku\Core\Loader;
+use Kohaku\Core\Utils\MapReset;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\tile\Chest;
 use pocketmine\event\Listener;
