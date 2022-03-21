@@ -319,8 +319,6 @@ class PlayerListener implements Listener
                         "§7slots : Updates arena slots\n" .
                         "§7level : Sets arena level\n" .
                         "§7spawn : Sets arena spawns\n" .
-                        "§7joinsign : Sets arena join sign\n" .
-                        "§7savelevel : Saves the arena level\n" .
                         "§7enable : Enables the arena");
                     break;
                 case "slots":
