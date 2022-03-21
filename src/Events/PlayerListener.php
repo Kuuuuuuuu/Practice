@@ -31,6 +31,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
+use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
@@ -144,7 +145,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onArrow(ProjectileHitBlockEvent $event)
+    public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
         $owner = $entity->getOwningEntity();
@@ -577,6 +578,19 @@ class PlayerListener implements Listener
             }
             if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
                 unset(Loader::getInstance()->TimerData[$player->getName()]);
+            }
+        }
+    }
+
+    public function onLaunch(ProjectileLaunchEvent $event)
+    {
+        $entity = $event->getEntity();
+        $owner = $entity->getOwningEntity();
+        if ($entity instanceof EnderPearl) {
+            if ($owner instanceof Player) {
+                if ($owner->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    $entity->kill();
+                }
             }
         }
     }
