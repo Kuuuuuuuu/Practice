@@ -152,7 +152,7 @@ class PlayerListener implements Listener
         if ($entity instanceof EnderPearl) {
             if ($owner instanceof Player) {
                 if ($owner->getWorld() !== $entity->getWorld()) {
-                    $entity->close();
+                    $entity->kill();
                 }
             }
         } else if ($entity instanceof Arrow) {
