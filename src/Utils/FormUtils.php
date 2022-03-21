@@ -67,9 +67,6 @@ class FormUtils
                 case 9:
                     Loader::$arena->onJoinBuild($player);
                     break;
-                case 10:
-                    ArenaUtils::getInstance()->JoinRandomArenaSkywars($player);
-                    break;
                 default:
                     print "Error";
             }
@@ -87,7 +84,6 @@ class FormUtils
         $form->addButton("§aOITC\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
         $form->addButton("§aSumo\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSumoDArena() ?? null) ?? 0, 0, "textures/items/blaze_rod.png");
         $form->addButton("§aBuild\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
-        $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::$arenafac->getPlayers(Loader::$arenafac->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         $player->sendForm($form);
     }
 

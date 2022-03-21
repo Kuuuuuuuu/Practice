@@ -37,12 +37,14 @@ class BaseListener implements Listener
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
+            if ($block->getId() !== BlockLegacyIds::SANDSTONE or $block->getId() !== BlockLegacyIds::COBWEB) {
                 $ev->cancel();
             } else {
-                $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
-                DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
+                if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
+                    $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
+                    DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
+                }
             }
         } else {
             if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {

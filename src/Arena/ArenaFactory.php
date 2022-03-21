@@ -65,12 +65,6 @@ class ArenaFactory
         return $data->get("Parkour");
     }
 
-    public function getSkywarsArena(): string
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
-        return $data->get("Skywars");
-    }
-
     public function getComboArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
