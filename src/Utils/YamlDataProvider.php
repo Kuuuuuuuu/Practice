@@ -19,6 +19,7 @@ class YamlDataProvider
 
     public function __construct()
     {
+        $this->loadArenas();
         if (!is_dir($this->getDataFolder())) {
             @mkdir($this->getDataFolder());
         }

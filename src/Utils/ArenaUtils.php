@@ -160,12 +160,12 @@ class ArenaUtils
 
     public function Start()
     {
-        $this->loadallworlds();
         $this->registerConfigs();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
         $this->registerEntity();
+        $this->loadallworlds();
         foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
             if ($interface instanceof RakLibInterface) {
                 $interface->setPacketLimit(9999999999);
