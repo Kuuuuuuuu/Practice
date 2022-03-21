@@ -488,15 +488,34 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
+        /* @var HorizonPlayer $entity */
+        $damager = Server::getInstance()->getPlayerByPrefix($entity->getLastDamagePlayer());
         if ($event->getCause() === EntityDamageEvent::CAUSE_SUICIDE or $event->getCause() === EntityDamageEvent::CAUSE_VOID or $event->getCause() === EntityDamageEvent::CAUSE_CUSTOM) {
             if ($entity instanceof Player) {
                 $name = $entity->getName();
                 if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
                     Loader::getInstance()->LastArena[$name] = $entity->getWorld()->getFolderName();
                     ArenaUtils::getInstance()->ArenaRespawn($entity);
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                        ArenaUtils::getInstance()->DeathReset($entity, $damager, "OITC");
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                        ArenaUtils::getInstance()->DeathReset($entity, $damager, "Boxing");
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                        ArenaUtils::getInstance()->DeathReset($entity, $damager, "Build");
+                    } else {
+                        ArenaUtils::getInstance()->DeathReset($entity, $damager);
+                    }
+                    foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
+                        if ($p->getWorld() === $damager->getWorld()) {
+                            $p->sendMessage(Loader::getPrefixCore() . "§a" . $entity->getName() . " §fhas been killed by §c" . $damager->getName());
+                        }
+                    }
                     $event->cancel();
                 }
             }
