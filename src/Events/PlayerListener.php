@@ -18,7 +18,6 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kohaku\Core\Utils\MapReset;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
@@ -308,89 +307,6 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $message = $event->getMessage();
         $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getDisplayName() . "§6 > §f" . $message);
-        if (isset(Loader::getInstance()->SkywarSetup[$player->getName()])) {
-            $event->cancel();
-            $args = explode(" ", $event->getMessage());
-            $arena = Loader::getInstance()->SkywarSetup[$player->getName()];
-            switch ($args[0]) {
-                case "help":
-                    $player->sendMessage("§a> SkyWars setup\n" .
-                        "§7help : Displays list of available setup commands\n" .
-                        "§7slots : Updates arena slots\n" .
-                        "§7level : Sets arena level\n" .
-                        "§7spawn : Sets arena spawns\n" .
-                        "§7enable : Enables the arena");
-                    break;
-                case "slots":
-                    if (!isset($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7slots <int: slots>");
-                        break;
-                    }
-                    $arena->data["slots"] = (int)$args[1];
-                    $player->sendMessage(Loader::getPrefixCore() . "Slots updated to $args[1]!");
-                    break;
-                case "level":
-                    if (!isset($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7level <levelName>");
-                        break;
-                    }
-                    if (!Server::getInstance()->getWorldManager()->isWorldGenerated($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "Level $args[1] does not found!");
-                        break;
-                    }
-                    $player->sendMessage(Loader::getPrefixCore() . "level updated to $args[1]!");
-                    $arena->data["level"] = $args[1];
-                    break;
-                case "spawn":
-                    if (!isset($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7setspawn <int: spawn>");
-                        break;
-                    }
-                    if (!is_numeric($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cType number!");
-                        break;
-                    }
-                    if ((int)$args[1] > $arena->data["slots"]) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
-                        break;
-                    }
-                    $arena->data["spawns"]["spawn-$args[1]"]["x"] = $player->getPosition()->getX();
-                    $arena->data["spawns"]["spawn-$args[1]"]["y"] = $player->getPosition()->getY();
-                    $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
-                    $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
-                    break;
-                case "enable":
-                    if (!$arena->setup) {
-                        $player->sendMessage(Loader::getPrefixCore() . "SkywarsHandler is already enabled!");
-                        break;
-                    }
-                    if (!$arena->enable(false)) {
-                        $player->sendMessage(Loader::getPrefixCore() . "Could not load arena, there are missing information!");
-                        break;
-                    }
-                    if (Server::getInstance()->getWorldManager()->isWorldGenerated($arena->data["level"])) {
-                        if (!Server::getInstance()->getWorldManager()->isWorldLoaded($arena->data["level"]))
-                            Server::getInstance()->getWorldManager()->loadWorld($arena->data["level"]);
-                        $arena->mapReset = new MapReset();
-                        $arena->mapReset->saveMap(Server::getInstance()->getWorldManager()->getWorldByName($arena->data["level"]));
-                    }
-                    $arena->loadArena(false);
-                    $player->sendMessage(Loader::getPrefixCore() . "enabled!");
-                    break;
-                case "done":
-                    $player->sendMessage(Loader::getPrefixCore() . "You have successfully left setup mode!");
-                    unset(Loader::getInstance()->SkywarSetup[$player->getName()]);
-                    if (isset(Loader::getInstance()->SkywarData[$player->getName()])) {
-                        unset(Loader::getInstance()->SkywarData[$player->getName()]);
-                    }
-                    break;
-                default:
-                    $player->sendMessage(Loader::getPrefixCore() . "You are in setup mode.\n" .
-                        "§7- use §lhelp §r§7to display available commands\n" .
-                        "§7- or §ldone §r§7to leave setup mode");
-                    break;
-            }
-        }
         if (isset(Loader::getInstance()->SumoSetup[$player->getName()])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());

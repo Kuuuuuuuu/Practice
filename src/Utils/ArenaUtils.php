@@ -7,14 +7,12 @@ namespace Kohaku\Core\Utils;
 use DateTime;
 use Exception;
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\Arena\SkywarsHandler;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\PlayerInfoCommand;
 use Kohaku\Core\Commands\RestartCommand;
-use Kohaku\Core\Commands\SkyWarsCommand;
 use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
@@ -47,6 +45,8 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
+use UnexpectedValueException;
+use ZipArchive;
 
 class ArenaUtils
 {
@@ -166,7 +166,6 @@ class ArenaUtils
         $this->registerTasks();
         $this->registerEntity();
         $this->loadallworlds();
-        Loader::$YamlLoader = new YamlDataProvider();
         foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
             if ($interface instanceof RakLibInterface) {
                 $interface->setPacketLimit(9999999999);
@@ -218,7 +217,6 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
-        Server::getInstance()->getCommandMap()->register("skywars", new SkyWarsCommand());
     }
 
     private function registerEvents(): void
@@ -252,7 +250,7 @@ class ArenaUtils
             if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
                 continue;
             }
-            Server::getInstance()->getWorldManager()->loadWorld($world);
+            Server::getInstance()->getWorldManager()->loadWorld($world, true);
         }
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             $world->setTime(0);
@@ -433,47 +431,47 @@ class ArenaUtils
         return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
     }
 
-    public function JoinRandomArenaSkywars(Player $player)
+    public function loadMap(string $folderName, bool $justSave = false): ?World
     {
-        $arena = $this->getRandomSkyWarsArenas();
-        if (!is_null($arena)) {
-            $arena->joinToArena($player);
-            return;
-        }
-        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
-    }
-
-    public function getRandomSkyWarsArenas(): ?SkywarsHandler
-    {
-        $availableArenas = [];
-        foreach (Loader::getInstance()->SkywarArenas as $index => $arena) {
-            $availableArenas[$index] = $arena;
-        }
-        foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 || $arena->setup) {
-                unset($availableArenas[$index]);
-            }
-        }
-        $arenasByPlayers = [];
-        foreach ($availableArenas as $index => $arena) {
-            $arenasByPlayers[$index] = count($arena->players);
-        }
-        arsort($arenasByPlayers);
-        $top = -1;
-        $availableArenas = [];
-        foreach ($arenasByPlayers as $index => $players) {
-            if ($top === -1) {
-                $top = $players;
-                $availableArenas[] = $index;
-            } else {
-                if ($top === $players) {
-                    $availableArenas[] = $index;
-                }
-            }
-        }
-        if (empty($availableArenas)) {
+        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($folderName)) {
             return null;
         }
-        return Loader::getInstance()->SkywarArenas[$availableArenas[array_rand($availableArenas)]];
+        if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
+            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
+            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $folderName);
+        }
+        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
+        if (!file_exists($zipPath)) {
+            Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found, try save level in setup mode.");
+            return null;
+        }
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($zipPath);
+        $zipArchive->extractTo(Server::getInstance()->getDataPath() . "worlds");
+        $zipArchive->close();
+        if ($justSave) {
+            return null;
+        }
+        Server::getInstance()->getWorldManager()->loadWorld($folderName, true);
+        return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
+    }
+
+    public function deleteDir($dirPath): void
+    {
+        if (!is_dir($dirPath)) {
+            throw new UnexpectedValueException("dirPath must be a directory");
+        }
+        if (!str_ends_with($dirPath, '/')) {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
     }
 }

@@ -15,7 +15,6 @@ use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\FormUtils;
-use Kohaku\Core\Utils\MapReset;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlDataProvider;
 use pocketmine\plugin\PluginBase;
@@ -31,7 +30,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    public static YamlDataProvider $YamlLoader;
+    private static YamlDataProvider $YamlLoader;
     public mixed $message;
     public SQLite3 $db;
     public array $BanCommand = ["hub"];
@@ -55,10 +54,7 @@ class Loader extends PluginBase
     public array $PlayerSprint = [];
     public array $SumoArenas = [];
     public array $SumoSetup = [];
-    public array $SkywarSetup = [];
-    public array $SkywarArenas = [];
     public array $SumoData = [];
-    public array $SkywarData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
@@ -87,6 +83,7 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
+        self::$YamlLoader = new YamlDataProvider();
         ArenaUtils::getInstance()->Start();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
@@ -97,28 +94,8 @@ class Loader extends PluginBase
      */
     #[Pure] public function onDisable(): void
     {
-        $reset = new MapReset();
-        $reset->loadMap("BUild");
+        ArenaUtils::getInstance()->loadMap("BUild");
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
     }
-
-    /*public function deleteDir($dirPath): void
-    {
-        if (!is_dir($dirPath)) {
-            throw new UnexpectedValueException("dirPath must be a directory");
-        }
-        if (!str_ends_with($dirPath, '/')) {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                $this->deleteDir($file);
-            } else {
-                unlink($file);
-            }
-        }
-        rmdir($dirPath);
-    }*/
 }

@@ -6,11 +6,9 @@ namespace Kohaku\Core\Utils;
 
 use JetBrains\PhpStorm\Pure;
 use JsonException;
-use Kohaku\Core\Arena\SkywarsHandler;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Loader;
 use pocketmine\utils\Config;
-use pocketmine\world\World;
 
 class YamlDataProvider
 {
@@ -38,10 +36,6 @@ class YamlDataProvider
 
     public function loadArenas()
     {
-        foreach (glob($this->getDataFolder() . "SkywarsArenas" . DIRECTORY_SEPARATOR . "*.yml") as $arenaFile) {
-            $config = new Config($arenaFile, Config::YAML);
-            Loader::getInstance()->SkywarArenas[basename($arenaFile, ".yml")] = new SkywarsHandler(Loader::getInstance(), $config->getAll(false));
-        }
         foreach (glob($this->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . "*.yml") as $arenaFile) {
             $config = new Config($arenaFile, Config::YAML);
             Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler(Loader::getInstance(), $config->getAll(false));
@@ -53,17 +47,6 @@ class YamlDataProvider
      */
     public function saveArenas()
     {
-        foreach (Loader::getInstance()->SkywarArenas as $fileName => $arena) {
-            if ($arena->level instanceof World) {
-                foreach ($arena->players as $player) {
-                    $player->teleport($player->getServer()->getWorldManager()->getDefaultLevel()->getSpawnLocation());
-                }
-                $arena->mapReset->loadMap($arena->level->getFolderName(), true);
-            }
-            $config = new Config($this->getDataFolder() . "SkywarsArenas" . DIRECTORY_SEPARATOR . $fileName . ".yml", Config::YAML);
-            $config->setAll($arena->data);
-            $config->save();
-        }
         foreach (Loader::getInstance()->SumoArenas as $fileName => $arena) {
             $config = new Config($this->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . $fileName . ".yml", Config::YAML);
             $config->setAll($arena->data);
