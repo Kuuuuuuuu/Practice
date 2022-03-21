@@ -28,15 +28,15 @@ class SkywarsScheduler extends Task
         if ($this->plugin->phase === SkywarsHandler::PHASE_LOBBY) {
             if (count($this->plugin->players) >= 2) {
                 $this->startTime--;
-                if ($this->startTime == 0) {
+                if ($this->startTime === 0) {
                     $this->plugin->startGame();
                     foreach ($this->plugin->players as $player) {
-                        $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
-                        ArenaUtils::getInstance()->playSound("random.click", $player);
+                        ArenaUtils::getInstance()->playSound("random.anvil_use", $player);
                     }
                 } else {
                     foreach ($this->plugin->players as $player) {
-                        ArenaUtils::getInstance()->playSound("random.anvil_use", $player);
+                        $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
+                        ArenaUtils::getInstance()->playSound("random.click", $player);
                     }
                 }
             } else {
