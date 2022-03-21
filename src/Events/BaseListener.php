@@ -40,7 +40,7 @@ class BaseListener implements Listener
             if ($block->getId() !== BlockLegacyIds::SANDSTONE and $block->getId() !== BlockLegacyIds::COBWEB) {
                 $ev->cancel();
             } else {
-                if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
+                if ($block->getId() === BlockLegacyIds::SANDSTONE) {
                     $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
                     DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
