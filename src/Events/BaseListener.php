@@ -37,7 +37,7 @@ class BaseListener implements Listener
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            if ($block->getId() !== BlockLegacyIds::SANDSTONE or $block->getId() !== BlockLegacyIds::COBWEB) {
+            if ($block->getId() !== BlockLegacyIds::SANDSTONE and $block->getId() !== BlockLegacyIds::COBWEB) {
                 $ev->cancel();
             } else {
                 if ($block->getId() !== BlockLegacyIds::SANDSTONE) {
