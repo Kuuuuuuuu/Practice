@@ -483,10 +483,11 @@ class PlayerListener implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
-        if ($event->getCause() === EntityDamageEvent::CAUSE_VOID) {
+        if ($event->getCause() === EntityDamageEvent::CAUSE_SUICIDE or $event->getCause() === EntityDamageEvent::CAUSE_VOID or $event->getCause() === EntityDamageEvent::CAUSE_CUSTOM) {
             if ($entity instanceof Player) {
                 $name = $entity->getName();
                 if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
+                    Loader::getInstance()->LastArena[$name] = $entity->getWorld()->getFolderName();
                     $event->cancel();
                     ArenaUtils::getInstance()->ArenaRespawn($entity);
                 }
