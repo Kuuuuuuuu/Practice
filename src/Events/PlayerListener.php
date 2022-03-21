@@ -488,8 +488,8 @@ class PlayerListener implements Listener
                 $name = $entity->getName();
                 if (isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === true) {
                     Loader::getInstance()->LastArena[$name] = $entity->getWorld()->getFolderName();
-                    $event->cancel();
                     ArenaUtils::getInstance()->ArenaRespawn($entity);
+                    $event->cancel();
                 }
             }
         }
@@ -525,8 +525,10 @@ class PlayerListener implements Listener
         $name = $player->getName();
         $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-                $player->kill();
+            if ((isset(Loader::getInstance()->ArenaRespawn[$name]) and Loader::getInstance()->ArenaRespawn[$name] === false) or !isset(Loader::getInstance()->ArenaRespawn[$name])) {
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                    $player->kill();
+                }
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
