@@ -77,6 +77,7 @@ class Loader extends PluginBase
 
     public function onLoad(): void
     {
+        self::$YamlLoader->loadArenas();
         self::$plugin = $this;
         self::$cps = new ClickHandler();
         self::$score = new Scoreboards();
@@ -89,7 +90,6 @@ class Loader extends PluginBase
     public function onEnable(): void
     {
         ArenaUtils::getInstance()->Start();
-        self::$YamlLoader->loadArenas();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
     }
