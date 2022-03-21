@@ -40,11 +40,11 @@ class SumoCommand extends Command
                         $sender->sendMessage("§cUsage: §7/sumo make <arenaName>");
                         break;
                     }
-                    if (isset(Loader::getInstance()->SumoArena[$args[1]])) {
+                    if (isset(Loader::getInstance()->SumoArenas[$args[1]])) {
                         $sender->sendMessage(Loader::getPrefixCore() . "§cArena $args[1] already exists!");
                         break;
                     }
-                    Loader::getInstance()->SumoArena[$args[1]] = new SumoHandler(Loader::getInstance(), []);
+                    Loader::getInstance()->SumoArenas[$args[1]] = new SumoHandler(Loader::getInstance(), []);
                     $sender->sendMessage(Loader::getPrefixCore() . "§aArena $args[1] created!");
                     break;
                 case "delete":
@@ -52,16 +52,16 @@ class SumoCommand extends Command
                         $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: §7/sumo delete <arenaName>");
                         break;
                     }
-                    if (!isset(Loader::getInstance()->SumoArena[$args[1]])) {
+                    if (!isset(Loader::getInstance()->SumoArenas[$args[1]])) {
                         $sender->sendMessage(Loader::getPrefixCore() . "§cArena $args[1] was not found!");
                         break;
                     }
-                    $arena = Loader::getInstance()->SumoArena[$args[1]];
+                    $arena = Loader::getInstance()->SumoArenas[$args[1]];
                     foreach ($arena->players as $player) {
                         $player->teleport(Loader::getInstance()->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
                     }
-                    if (is_file($file = Loader::getInstance()->getDataFolder() . "SumoArena" . DIRECTORY_SEPARATOR . $args[1] . ".yml")) unlink($file);
-                    unset(Loader::getInstance()->SumoArena[$args[1]]);
+                    if (is_file($file = Loader::getInstance()->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . $args[1] . ".yml")) unlink($file);
+                    unset(Loader::getInstance()->SumoArenas[$args[1]]);
                     $sender->sendMessage(Loader::getPrefixCore() . "§aArena removed!");
                     break;
                 case "set":
@@ -77,22 +77,22 @@ class SumoCommand extends Command
                         $sender->sendMessage(Loader::getPrefixCore() . "§cYou are already in setup mode!");
                         break;
                     }
-                    if (!isset(Loader::getInstance()->SumoArena[$args[1]])) {
+                    if (!isset(Loader::getInstance()->SumoArenas[$args[1]])) {
                         $sender->sendMessage(Loader::getPrefixCore() . "§cArena $args[1] does not found!");
                         break;
                     }
                     $sender->sendMessage("§aYou joined the setup mode.\n" .
                         "§7- Use §lhelp §r§7to display available commands\n" .
                         "§7- or §ldone §r§7to leave setup mode");
-                    Loader::getInstance()->SumoSetup[$sender->getName()] = Loader::getInstance()->SumoArena[$args[1]];
+                    Loader::getInstance()->SumoSetup[$sender->getName()] = Loader::getInstance()->SumoArenas[$args[1]];
                     break;
                 case "arenas":
-                    if (count(Loader::getInstance()->SumoArena) === 0) {
+                    if (count(Loader::getInstance()->SumoArenas) === 0) {
                         $sender->sendMessage(Loader::getPrefixCore() . "§cThere are 0 arenas.");
                         break;
                     }
                     $list = "§7Arenas:\n";
-                    foreach (Loader::getInstance()->SumoArena as $name => $arena) {
+                    foreach (Loader::getInstance()->SumoArenas as $name => $arena) {
                         if ($arena->setup) {
                             $list .= "§7- $name : §cdisabled\n";
                         } else {

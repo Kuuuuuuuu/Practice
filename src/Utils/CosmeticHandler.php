@@ -206,8 +206,12 @@ class CosmeticHandler
             $cape = $player instanceof HorizonPlayer ? $player->getCape() : "";
             $capeData = $cape !== "" ? $this->createCape($cape) : "";
             $skin = (new Skin($skin->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData())) ?? null;
-            $player->setSkin($skin);
-            $player->sendSkin();
+            if ($skin === null) {
+                return;
+            } else {
+                $player->setSkin($skin);
+                $player->sendSkin();
+            }
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;

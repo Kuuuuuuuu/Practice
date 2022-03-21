@@ -6,7 +6,6 @@ namespace Kohaku\Core\Utils;
 
 use DateTime;
 use Exception;
-use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
@@ -14,6 +13,7 @@ use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\PlayerInfoCommand;
 use Kohaku\Core\Commands\RestartCommand;
+use Kohaku\Core\Commands\SkyWarsCommand;
 use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
@@ -46,7 +46,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
-use ZipArchive;
 
 class ArenaUtils
 {
@@ -232,6 +231,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
+        Server::getInstance()->getCommandMap()->register("skywars", new SkyWarsCommand());
     }
 
     private function registerEvents(): void
@@ -389,7 +389,7 @@ class ArenaUtils
 
     public function JoinRandomArenaSumo(Player $player)
     {
-        $arena = $this->getRandomSumoArena();
+        $arena = $this->getRandomSumoArenas();
         if (!is_null($arena)) {
             $arena->joinToArena($player);
             return;
@@ -397,10 +397,10 @@ class ArenaUtils
         $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
     }
 
-    public function getRandomSumoArena(): ?SumoHandler
+    public function getRandomSumoArenas(): ?SumoHandler
     {
         $availableArenas = [];
-        foreach (Loader::getInstance()->SumoArena as $index => $arena) {
+        foreach (Loader::getInstance()->SumoArenas as $index => $arena) {
             $availableArenas[$index] = $arena;
         }
         foreach ($availableArenas as $index => $arena) {
@@ -428,46 +428,6 @@ class ArenaUtils
         if (empty($availableArenas)) {
             return null;
         }
-        return Loader::getInstance()->SumoArena[$availableArenas[array_rand($availableArenas)]];
-    }
-
-    public function loadMap(string $folderName)
-    {
-        if (!Server::getInstance()->getWorldManager()->getWorldByName($folderName)) {
-            return null;
-        }
-        if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
-            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$folderName");
-        }
-        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
-        if (!file_exists($zipPath)) {
-            Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found");
-            return null;
-        }
-        $zipArchive = new ZipArchive();
-        $zipArchive->open($zipPath);
-        $zipArchive->extractTo(Server::getInstance()->getDataPath() . "worlds");
-        $zipArchive->close();
-        Server::getInstance()->getWorldManager()->loadWorld($folderName);
-    }
-
-    public function deleteDir($dirPath)
-    {
-        if (!is_dir($dirPath)) {
-            throw new InvalidArgumentException("$dirPath must be a directory");
-        }
-        if (!str_ends_with($dirPath, '/')) {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                self::deleteDir($file);
-            } else {
-                unlink($file);
-            }
-        }
-        rmdir($dirPath);
+        return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
     }
 }

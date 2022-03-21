@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
+use Kohaku\Core\Arena\MapReset;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\FormUtils;
@@ -52,9 +53,12 @@ class Loader extends PluginBase
     public array $ArrowOITC = [];
     public array $PlayerSkin = [];
     public array $PlayerSprint = [];
-    public array $SumoArena = [];
+    public array $SumoArenas = [];
     public array $SumoSetup = [];
+    public array $SkywarSetup = [];
+    public array $SkywarArenas = [];
     public array $SumoData = [];
+    public array $SkywarData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
@@ -95,7 +99,7 @@ class Loader extends PluginBase
      */
     #[Pure] public function onDisable(): void
     {
-        ArenaUtils::getInstance()->loadMap("BUild");
+        MapReset::getInstance()->loadMap("BUild");
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
     }
