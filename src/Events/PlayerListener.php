@@ -540,6 +540,9 @@ class PlayerListener implements Listener
         $player->kill();
         $world->addParticle($pos, new HeartParticle(3));
         $cause = $player->getLastDamageCause();
+        if (isset(Loader::getInstance()->ArenaRespawn[$player->getName()]) and Loader::getInstance()->ArenaRespawn[$player->getName()] === true) {
+            Loader::getInstance()->LastArena[$player->getName()] = $player->getWorld()->getFolderName();
+        }
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
@@ -554,9 +557,6 @@ class PlayerListener implements Listener
                     ArenaUtils::getInstance()->DeathReset($player, $damager);
                 }
                 /* @var HorizonPlayer $damager */
-                if (isset(Loader::getInstance()->ArenaRespawn[$player->getName()]) and Loader::getInstance()->ArenaRespawn[$player->getName()] === true) {
-                    Loader::getInstance()->LastArena[$player->getName()] = $player->getWorld()->getFolderName();
-                }
                 $player->setLastDamagePlayer("Unknown");
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
