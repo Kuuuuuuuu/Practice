@@ -31,7 +31,7 @@ class SkywarsHandler implements Listener
 
     public Loader $plugin;
     public SkywarsScheduler $scheduler;
-    public ?MapReset $mapReset;
+    public mixed $mapReset;
     public int $phase = 0;
     public array $data = [];
     public bool $setup = false;

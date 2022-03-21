@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils;
 
-use InvalidArgumentException;
 use Kohaku\Core\Loader;
 use pocketmine\Server;
 use pocketmine\world\World;
