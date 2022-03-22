@@ -561,11 +561,7 @@ class PlayerListener implements Listener
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                $directionvector = $player->getDirectionVector()->multiply(4 / 2);
-                $dx = $directionvector->getX();
-                $dy = $directionvector->getY();
-                $dz = $directionvector->getZ();
-                $player->setMotion(new Vector3($dx, $dy + 2, $dz));
+                $player->setMotion(new Vector3(1, 10, 1));
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
