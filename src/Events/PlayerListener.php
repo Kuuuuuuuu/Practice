@@ -565,7 +565,7 @@ class PlayerListener implements Listener
                 $dx = $directionvector->getX();
                 $dy = $directionvector->getY();
                 $dz = $directionvector->getZ();
-                $player->setMotion(new Vector3($dx, $dy + 4, $dz));
+                $player->setMotion(new Vector3($dx, $dy + 2, $dz));
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
