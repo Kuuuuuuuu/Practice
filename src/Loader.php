@@ -56,8 +56,6 @@ class Loader extends PluginBase
     public array $SumoSetup = [];
     public array $SumoData = [];
     public array $buildBlocks = [];
-    public array $LastArena = [];
-    public array $ArenaRespawn = [];
     public array $ParkourCheckPoint = [];
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];

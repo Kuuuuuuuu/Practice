@@ -42,17 +42,17 @@ class CoreCommand extends Command
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd");
-                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                        $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                         break;
                     case "make":
                     case "create":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                         }
                         switch ($args[1]) {
                             case "fist":
@@ -147,7 +147,7 @@ class CoreCommand extends Command
                                 break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core make <mode> <world>");
-                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                                 break;
                         }
                         break;
@@ -194,7 +194,7 @@ class CoreCommand extends Command
                     case "remove":
                         if (!isset($args[1])) {
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                            $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                             return false;
                         }
                         switch ($args[1]) {
@@ -230,7 +230,7 @@ class CoreCommand extends Command
                                 break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");
-                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Skywars");
+                                $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                                 break;
                         }
                         break;

@@ -265,22 +265,14 @@ class ArenaUtils
     {
         $name = $player->getName();
         $dname = $dplayer->getName();
-        if (isset(Loader::getInstance()->opponent[$name])) {
-            unset(Loader::getInstance()->opponent[$name]);
-        }
-        if (isset(Loader::getInstance()->opponent[$dname])) {
-            unset(Loader::getInstance()->opponent[$dname]);
-        }
-        if ($arena === "OITC") {
-            unset(Loader::getInstance()->ArrowOITC[$dname]);
-            unset(Loader::getInstance()->ArrowOITC[$name]);
+        if ($arena === Loader::$arenafac->getOITCArena()) {
             $dplayer->getInventory()->clearAll();
             $dplayer->getArmorInventory()->clearAll();
             $dplayer->setHealth(20);
             $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
             $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-        } else if ($arena === "Build") {
+        } else if ($arena === Loader::$arenafac->getBuildArena()) {
             $dplayer->getInventory()->clearAll();
             $dplayer->getArmorInventory()->clearAll();
             $dplayer->setHealth(20);
@@ -295,28 +287,12 @@ class ArenaUtils
             $dplayer->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-        } else if ($arena === "Boxing") {
+        } else if ($arena === Loader::$arenafac->getBoxingArena()) {
             $player->getInventory()->clearAll();
             $dplayer->setHealth(20);
             $player->getArmorInventory()->clearAll();
-            $this->addKill($dplayer);
-            $this->addDeath($player);
-            $this->GiveItem($player);
-            $this->handleStreak($dplayer, $player);
             $player->getEffects()->clear();
-            if (isset(Loader::getInstance()->CombatTimer[$name])) {
-                unset(Loader::getInstance()->CombatTimer[$name]);
-            }
-            if (isset(Loader::getInstance()->CombatTimer[$dname])) {
-                Loader::getInstance()->CombatTimer[$dname] = 0.5;
-            }
-            if (isset(Loader::getInstance()->BoxingPoint[$dname])) {
-                unset(Loader::getInstance()->BoxingPoint[$dname]);
-            }
-            if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-                unset(Loader::getInstance()->BoxingPoint[$name]);
-            }
-        } else if ($arena === "Combo") {
+        } else if ($arena === Loader::$arenafac->getComboArena()) {
             $player->getInventory()->clearAll();
             $item = ItemFactory::getInstance()->get(466, 0, 3);
             $player->getInventory()->addItem($item);
@@ -325,35 +301,46 @@ class ArenaUtils
             unset(Loader::getInstance()->CombatTimer[$name]);
         }
         if (isset(Loader::getInstance()->CombatTimer[$dname])) {
-            unset(Loader::getInstance()->CombatTimer[$dname]);
+            Loader::getInstance()->CombatTimer[$dname] = 0.5;
         }
         if (isset(Loader::getInstance()->SkillCooldown[$name])) {
             unset(Loader::getInstance()->SkillCooldown[$name]);
         }
-        if (Loader::getInstance()->ArenaRespawn[$name] === true) {
-            $this->GiveItem($player);
+        if (isset(Loader::getInstance()->opponent[$name])) {
+            unset(Loader::getInstance()->opponent[$name]);
+        }
+        if (isset(Loader::getInstance()->opponent[$dname])) {
+            unset(Loader::getInstance()->opponent[$dname]);
+        }
+        if (isset(Loader::getInstance()->BoxingPoint[$dname])) {
+            unset(Loader::getInstance()->BoxingPoint[$dname]);
+        }
+        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+            unset(Loader::getInstance()->BoxingPoint[$name]);
+        }
+        if (isset(Loader::getInstance()->ArrowOITC[$dname])) {
+            unset(Loader::getInstance()->ArrowOITC[$dname]);
+        }
+        if (isset(Loader::getInstance()->ArrowOITC[$name])) {
+            unset(Loader::getInstance()->ArrowOITC[$name]);
         }
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
+        $player->getOffHandInventory()->clearAll();
         $this->addDeath($player);
+        $this->GiveItem($player);
         $this->addKill($dplayer);
         $this->handleStreak($dplayer, $player);
-    }
-
-    public function addKill(Player $player)
-    {
-        $data = $this->getData($player->getName());
-        $data->addKill();
-    }
-
-    public function getData($name): PlayerData
-    {
-        return new PlayerData($name);
     }
 
     public function addDeath(Player $player)
     {
         $this->getData($player->getName())->addDeath();
+    }
+
+    public function getData($name): PlayerData
+    {
+        return new PlayerData($name);
     }
 
     public function GiveItem(Player $player)
@@ -364,6 +351,12 @@ class ArenaUtils
         $item2->setCustomName("§r§bSettings");
         $player->getInventory()->setItem(4, $item);
         $player->getInventory()->setItem(8, $item2);
+    }
+
+    public function addKill(Player $player)
+    {
+        $data = $this->getData($player->getName());
+        $data->addKill();
     }
 
     public function handleStreak(Player $player, Player $death)
@@ -472,27 +465,5 @@ class ArenaUtils
             }
         }
         rmdir($dirPath);
-    }
-
-    public function ArenaRespawn(Player $player)
-    {
-        $name = $player->getName();
-        if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getOITCArena()) {
-            Loader::$arena->onJoinOITC($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getBuildArena()) {
-            Loader::$arena->onJoinBuild($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getBoxingArena()) {
-            Loader::$arena->onJoinBoxing($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getFistArena()) {
-            Loader::$arena->onJoinFist($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getResistanceArena()) {
-            Loader::$arena->onJoinResistance($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getKitPVPArena()) {
-            Loader::$arena->onJoinKitpvp($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getComboArena()) {
-            Loader::$arena->onJoinCombo($player);
-        } else if (isset(Loader::getInstance()->LastArena[$name]) and Loader::getInstance()->LastArena[$name] === Loader::$arenafac->getKnockbackArena()) {
-            Loader::$arena->onJoinKnockback($player);
-        }
     }
 }

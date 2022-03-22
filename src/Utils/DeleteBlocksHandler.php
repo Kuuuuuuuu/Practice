@@ -26,7 +26,7 @@ class DeleteBlocksHandler
         if ($break && isset(Loader::getInstance()->buildBlocks[$pos])) {
             unset(Loader::getInstance()->buildBlocks[$pos]);
         } else {
-            Loader::getInstance()->buildBlocks[$pos] = 5;
+            Loader::getInstance()->buildBlocks[$pos] = 10;
         }
     }
 
