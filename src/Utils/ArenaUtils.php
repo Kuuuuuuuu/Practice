@@ -316,24 +316,28 @@ class ArenaUtils
             if (isset(Loader::getInstance()->BoxingPoint[$name])) {
                 unset(Loader::getInstance()->BoxingPoint[$name]);
             }
-        } else {
-            if (isset(Loader::getInstance()->CombatTimer[$name])) {
-                unset(Loader::getInstance()->CombatTimer[$name]);
-            }
-            if (isset(Loader::getInstance()->CombatTimer[$dname])) {
-                unset(Loader::getInstance()->CombatTimer[$dname]);
-            }
-            if (isset(Loader::getInstance()->SkillCooldown[$name])) {
-                unset(Loader::getInstance()->SkillCooldown[$name]);
-            }
+        } else if ($arena === "Combo") {
             $player->getInventory()->clearAll();
-            $player->getArmorInventory()->clearAll();
-            $this->ReItem($dplayer);
-            $this->addDeath($player);
-            $this->GiveItem($player);
-            $this->addKill($dplayer);
-            $this->handleStreak($dplayer, $player);
+            $item = ItemFactory::getInstance()->get(466, 0, 3);
+            $player->getInventory()->addItem($item);
         }
+        if (isset(Loader::getInstance()->CombatTimer[$name])) {
+            unset(Loader::getInstance()->CombatTimer[$name]);
+        }
+        if (isset(Loader::getInstance()->CombatTimer[$dname])) {
+            unset(Loader::getInstance()->CombatTimer[$dname]);
+        }
+        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
+            unset(Loader::getInstance()->SkillCooldown[$name]);
+        }
+        if (Loader::getInstance()->ArenaRespawn[$name] === true) {
+            $this->GiveItem($player);
+        }
+        $player->getInventory()->clearAll();
+        $player->getArmorInventory()->clearAll();
+        $this->addDeath($player);
+        $this->addKill($dplayer);
+        $this->handleStreak($dplayer, $player);
     }
 
     public function addKill(Player $player)
@@ -374,15 +378,6 @@ class ArenaUtils
         $newStreak = $killer->getStreak();
         if (is_int($newStreak / 5)) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
-        }
-    }
-
-    public function ReItem(Player $player)
-    {
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
-            $player->getInventory()->clearAll();
-            $item = ItemFactory::getInstance()->get(466, 0, 3);
-            $player->getInventory()->addItem($item);
         }
     }
 

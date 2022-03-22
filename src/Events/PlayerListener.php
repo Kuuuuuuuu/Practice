@@ -438,6 +438,8 @@ class PlayerListener implements Listener
                         ArenaUtils::getInstance()->DeathReset($player, $damager, "Boxing");
                     } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                         ArenaUtils::getInstance()->DeathReset($player, $damager, "Build");
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
+                        ArenaUtils::getInstance()->DeathReset($player, $damager, "Combo");
                     } else {
                         ArenaUtils::getInstance()->DeathReset($player, $damager);
                     }
@@ -511,6 +513,8 @@ class PlayerListener implements Listener
                             ArenaUtils::getInstance()->DeathReset($entity, $damager, "Boxing");
                         } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                             ArenaUtils::getInstance()->DeathReset($entity, $damager, "Build");
+                        } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())) {
+                            ArenaUtils::getInstance()->DeathReset($entity, $damager, "Combo");
                         } else {
                             ArenaUtils::getInstance()->DeathReset($entity, $damager);
                         }
