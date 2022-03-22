@@ -21,6 +21,7 @@ use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\permission\DefaultPermissions;
+use pocketmine\player\GameMode;
 use pocketmine\Server;
 
 class BaseListener implements Listener
@@ -38,7 +39,9 @@ class BaseListener implements Listener
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
             if ($block->getId() !== BlockLegacyIds::SANDSTONE and $block->getId() !== BlockLegacyIds::COBWEB) {
-                $ev->cancel();
+                if ($player->getGamemode() !== GameMode::CREATIVE()) {
+                    $ev->cancel();
+                }
             } else {
                 if ($block->getId() === BlockLegacyIds::SANDSTONE) {
                     $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));

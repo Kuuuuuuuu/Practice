@@ -319,7 +319,9 @@ class PlayerListener implements Listener
             $event->cancel();
             $args = explode(" ", $event->getMessage());
             $arena = Loader::getInstance()->SumoSetup[$player->getName()];
-            $arena->data["level"] = $player->getWorld()->getFolderName();
+            if (Loader::$arenafac->getSumoDArena() === null) {
+                $arena->data["level"] = Loader::$arenafac->getSumoDArena();
+            }
             switch ($args[0]) {
                 case "help":
                     $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup\n" .
@@ -556,6 +558,14 @@ class PlayerListener implements Listener
                 if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                     $player->kill();
                 }
+            }
+        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                $directionvector = $player->getDirectionVector()->multiply(4 / 2);
+                $dx = $directionvector->getX();
+                $dy = $directionvector->getY();
+                $dz = $directionvector->getZ();
+                $player->setMotion(new Vector3($dx, $dy + 4, $dz));
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {

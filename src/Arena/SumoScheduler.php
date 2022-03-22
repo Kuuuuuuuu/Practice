@@ -29,7 +29,7 @@ class SumoScheduler extends Task
     {
         if ($this->plugin->setup) return;
         if ($this->plugin->phase === SumoHandler::PHASE_LOBBY) {
-            if (count($this->plugin->players) >= 2) {
+            if (count($this->plugin->players) === 2) {
                 if ($this->startTime > 0) {
                     $this->startTime--;
                     foreach ($this->plugin->players as $player) {
@@ -37,8 +37,7 @@ class SumoScheduler extends Task
                         $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
                         ArenaUtils::getInstance()->playSound("random.click", $player);
                     }
-                }
-                if ($this->startTime === 0) {
+                } else if ($this->startTime === 0) {
                     $this->plugin->startGame();
                     foreach ($this->plugin->players as $player) {
                         ArenaUtils::getInstance()->playSound("random.anvil_use", $player);
@@ -46,16 +45,15 @@ class SumoScheduler extends Task
                 }
             } else {
                 $this->startTime = 4;
-                $this->gameTime = 5 * 30;
             }
         }
         if ($this->plugin->phase === SumoHandler::PHASE_GAME) {
+            if ($this->plugin->checkEnd()) {
+                $this->plugin->startRestart();
+            }
             if ($this->gameTime > 0) {
                 $this->gameTime--;
             } else {
-                $this->plugin->startRestart();
-            }
-            if ($this->plugin->checkEnd()) {
                 $this->plugin->startRestart();
             }
             foreach ($this->plugin->players as $player) {
