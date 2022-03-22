@@ -293,9 +293,9 @@ class ArenaUtils
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
         } else if ($arena === Loader::$arenafac->getComboArena()) {
-            $player->getInventory()->clearAll();
+            $dplayer->getInventory()->clearAll();
             $item = ItemFactory::getInstance()->get(466, 0, 3);
-            $player->getInventory()->addItem($item);
+            $dplayer->getInventory()->addItem($item);
         }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             unset(Loader::getInstance()->CombatTimer[$name]);
@@ -345,6 +345,10 @@ class ArenaUtils
 
     public function GiveItem(Player $player)
     {
+        $player->getOffHandInventory()->clearAll();
+        $player->getInventory()->clearAll();
+        $player->getArmorInventory()->clearAll();
+        $player->getEffects()->clear();
         $item = ItemFactory::getInstance()->get(279, 0, 1);
         $item->setCustomName("§r§bPlay");
         $item2 = ItemFactory::getInstance()->get(286, 0, 1);

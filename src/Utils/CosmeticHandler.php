@@ -202,9 +202,7 @@ class CosmeticHandler
         try {
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-            $cape = Loader::getInstance()->CapeData->get($player->getName());
-            $capeData = $cape !== null ? $this->createCape($cape) : "";
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData());
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData(), $skin->getCapeData(), $skin->getGeometryName(), $skin->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         } catch (Exception $e) {

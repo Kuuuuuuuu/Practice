@@ -566,7 +566,7 @@ class PlayerListener implements Listener
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($damager instanceof Player) {
                 /* @var HorizonPlayer $damager */
-                ArenaUtils::getInstance()->DeathReset($player, $damager, $player->getWorld()->getFolderName());
+                ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 $player->setLastDamagePlayer("Unknown");
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
