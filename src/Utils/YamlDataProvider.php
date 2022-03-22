@@ -24,9 +24,6 @@ class YamlDataProvider
         if (!is_dir($this->getDataFolder() . "SumoArenas")) {
             @mkdir($this->getDataFolder() . "SumoArenas");
         }
-        if (!is_dir($this->getDataFolder() . "SkywarsArenas")) {
-            @mkdir($this->getDataFolder() . "SkywarsArenas");
-        }
     }
 
     #[Pure] private function getDataFolder(): string
