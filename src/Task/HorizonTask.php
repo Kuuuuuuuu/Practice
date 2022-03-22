@@ -26,6 +26,9 @@ class HorizonTask extends Task
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
         }
+        if ($this->tick % 30 === 0) {
+            $this->updateTag();
+        }
         if ($this->tick % 2000 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
                 foreach ($level->getEntities() as $entity) {
@@ -77,37 +80,7 @@ class HorizonTask extends Task
     {
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            $ping = $player->getNetworkSession()->getPing();
             $nowcps = Loader::$cps->getClicks($player);
-            $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
-            $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-            if (isset(Loader::getInstance()->JumpCount[$name])) {
-                $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
-            } else {
-                $tagparkour = str_replace("{jump}", "0", $tagparkour);
-            }
-            if (isset(Loader::getInstance()->TimerData[$name])) {
-                $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
-                $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
-                $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
-            } else {
-                $tagparkour = str_replace("{mili}", "0", $tagparkour);
-                $tagparkour = str_replace("{secs}", "0", $tagparkour);
-                $tagparkour = str_replace("{mins}", "0", $tagparkour);
-            }
-            $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
-            $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
-            $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
-            $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                $player->setScoreTag($tagparkour);
-            } else {
-                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-                    $player->setScoreTag($tagpvp);
-                } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
-                    $player->setScoreTag($untagpvp);
-                }
-            }
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                 Server::getInstance()->broadcastMessage(Loader::getInstance()->message["AntiCheatName"] . $message);
@@ -165,6 +138,44 @@ class HorizonTask extends Task
                         $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                     }
                     unset(Loader::getInstance()->ArrowOITC[$name]);
+                }
+            }
+        }
+    }
+
+    public function updateTag()
+    {
+        foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
+            $name = $player->getName();
+            $ping = $player->getNetworkSession()->getPing();
+            $nowcps = Loader::$cps->getClicks($player);
+            $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
+            $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
+            if (isset(Loader::getInstance()->JumpCount[$name])) {
+                $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
+            } else {
+                $tagparkour = str_replace("{jump}", "0", $tagparkour);
+            }
+            if (isset(Loader::getInstance()->TimerData[$name])) {
+                $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
+                $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
+                $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
+            } else {
+                $tagparkour = str_replace("{mili}", "0", $tagparkour);
+                $tagparkour = str_replace("{secs}", "0", $tagparkour);
+                $tagparkour = str_replace("{mins}", "0", $tagparkour);
+            }
+            $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
+            $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
+            $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
+            $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                $player->setScoreTag($tagparkour);
+            } else {
+                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                    $player->setScoreTag($tagpvp);
+                } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
+                    $player->setScoreTag($untagpvp);
                 }
             }
         }

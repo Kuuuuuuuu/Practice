@@ -43,8 +43,8 @@ class BaseListener implements Listener
                     $ev->cancel();
                 }
             } else {
+                $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
                 if ($block->getId() === BlockLegacyIds::SANDSTONE) {
-                    $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
                     DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
                 }
