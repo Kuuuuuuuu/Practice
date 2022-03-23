@@ -120,7 +120,11 @@ class HorizonPlayer extends Player
 
     public function getCape(): string|null
     {
-        return Loader::getInstance()->CapeData->get($this->getName()) ?? null;
+        $cape = Loader::getInstance()->CapeData->get($this->getName());
+        if ($cape === null) {
+            return null;
+        }
+        return Loader::getInstance()->CapeData->get($this->getName());
     }
 
     public function getValidStuffs(): array
