@@ -8,7 +8,7 @@ use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Loader;
 
-class PlayerData
+class DataManager
 {
 
     private string $player;
@@ -98,7 +98,7 @@ class PlayerData
     public function addElo()
     {
         $random = random_int(0, 30);
-        $this->elo -= $random;
+        $this->elo += $random;
         $this->save();
     }
 
@@ -110,6 +110,11 @@ class PlayerData
         $random = random_int(0, 30);
         $this->elo -= $random;
         $this->save();
+    }
+
+    public function getElo(): int
+    {
+        return $this->elo;
     }
 
     public function addDeath()

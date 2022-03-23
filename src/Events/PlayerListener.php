@@ -204,25 +204,26 @@ class PlayerListener implements Listener
                 $remainingSec = $minuteSec % 60;
                 $second = ceil($remainingSec);
                 $player->kick(str_replace(["{day}", "{hour}", "{minute}", "{second}", "{reason}", "{staff}"], [$day, $hour, $minute, $second, $reason, $staff], Loader::getInstance()->MessageData["LoginBanMessage"]));
+                $event->cancel();
+                $player->close();
             } else {
                 Loader::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
             }
         } else {
+            $player->getAllArtifact();
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-            $player->teleport(new Vector3(255, 6, 255));
             ArenaUtils::getInstance()->DeviceCheck($player);
             Loader::$cps->initPlayerClickData($player);
-            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 50);
+            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 60);
             if ($player instanceof HorizonPlayer) {
                 $cosmetic = CosmeticHandler::getInstance();
-                if (strlen($player->getSkin()->getSkinData()) >= 131072 || strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
+                if (strlen($player->getSkin()->getSkinData()) >= 13107 or strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
                     copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
                     $cosmetic->resetSkin($player);
                 } else {
                     $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
                     $cosmetic->saveSkin($skin->getSkinData(), $name);
                 }
-                $player->getAllCape();
             }
         }
     }
@@ -231,7 +232,7 @@ class PlayerListener implements Listener
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() and strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
-                $event->setKickReason(3, "§bGuardian §f» §cThis player is already online!");
+                $event->setKickReason(3, Loader::getInstance()->MessageData["AntiCheatName"] . "§cThis player is already online!");
             }
         }
     }
@@ -242,8 +243,8 @@ class PlayerListener implements Listener
     public function onJoin(PlayerJoinEvent $event)
     {
         $player = $event->getPlayer();
-        $skin = $player->getSkin();
-        $event->setJoinMessage("§f[§a+§f] §a" . $player->getName());
+        $name = $player->getName();
+        $event->setJoinMessage("§f[§a+§f] §a" . $name);
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -271,7 +272,6 @@ class PlayerListener implements Listener
         $case = 0;
         $player = $event->getPlayer();
         $name = $player->getName();
-        $skin = $event->getNewSkin();
         $cosmetic = CosmeticHandler::getInstance();
         if ($player instanceof HorizonPlayer) {
             if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
@@ -317,9 +317,7 @@ class PlayerListener implements Listener
                 case "help":
                     $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup\n" .
                         "§7help : Displays list of available setup commands\n" .
-                        "§7level : Set arena level\n" .
                         "§7setspawn : Set arena spawns\n" .
-                        "§7joinsign : Set arena joinsign\n" .
                         "§7enable : Enable the arena");
                     break;
                 case "setspawn":
@@ -579,13 +577,16 @@ class PlayerListener implements Listener
     public function onTeleport(EntityTeleportEvent $event)
     {
         $player = $event->getEntity();
-        if (!$player instanceof Player) return;
-        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-            if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
-                unset(Loader::getInstance()->TimerTask[$player->getName()]);
-            }
-            if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
-                unset(Loader::getInstance()->TimerData[$player->getName()]);
+        $from = $event->getFrom();
+        $to = $event->getTo();
+        if ($player instanceof Player) {
+            if ($from->getWorld() !== $to->getWorld()) {
+                if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
+                    unset(Loader::getInstance()->TimerTask[$player->getName()]);
+                }
+                if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
+                    unset(Loader::getInstance()->TimerData[$player->getName()]);
+                }
             }
         }
     }

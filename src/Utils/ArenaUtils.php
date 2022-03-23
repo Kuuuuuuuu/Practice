@@ -21,6 +21,7 @@ use Kohaku\Core\Entity\FallingWool;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\Items\EnderPearl;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\HorizonTask;
@@ -36,6 +37,7 @@ use pocketmine\entity\Location;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
@@ -161,6 +163,7 @@ class ArenaUtils
 
     public function Start()
     {
+        $this->registerItems();
         $this->registerConfigs();
         $this->registerCommands();
         $this->registerEvents();
@@ -172,6 +175,11 @@ class ArenaUtils
                 $interface->setPacketLimit(9999999999);
             }
         }
+    }
+
+    private function registerItems()
+    {
+        ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), "Ender Pearl"), true);
     }
 
     private function registerConfigs(): void
@@ -351,9 +359,9 @@ class ArenaUtils
         $this->getData($player->getName())->addDeath();
     }
 
-    public function getData($name): PlayerData
+    public function getData($name): DataManager
     {
-        return new PlayerData($name);
+        return new DataManager($name);
     }
 
     public function GiveItem(Player $player)

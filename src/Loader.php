@@ -32,8 +32,12 @@ class Loader extends PluginBase
     public static ?ArenaManager $arena;
     public static ?YamlDataProvider $YamlLoader;
     public Config|array $MessageData;
+    public Config $CapeData;
+    public Config $ArtifactData;
     public SQLite3 $BanData;
-    public array $BanCommand = ["hub"];
+    public int $RestartTime = 31;
+    public int $DeleteBlockTime = 8;
+    public int $MaximumCPS = 20;
     public array $CombatTimer = [];
     public array $PlayerOpponent = [];
     public array $TimerData = [];
@@ -42,13 +46,11 @@ class Loader extends PluginBase
     public array $targetPlayer = [];
     public array $ChatCooldown = [];
     public array $BoxingPoint = [];
-    public int $MaximumCPS = 20;
     public array $ToolboxCheck = [];
     public array $PlayerDevice = [];
     public array $PlayerOS = [];
     public array $PlayerControl = [];
     public array $SkillCooldown = [];
-    public int $RestartTime = 31;
     public array $ArrowOITC = [];
     public array $PlayerSprint = [];
     public array $SumoArenas = [];
@@ -56,10 +58,32 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
-    public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
-    public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
-    public Config $CapeData;
-    public Config $ArtifactData;
+    public array $BanCommand = [
+        "hub",
+        "kill"
+    ];
+    public array $ControlList = [
+        "Unknown",
+        "Mouse",
+        "Touch",
+        "Controller"
+    ];
+    public array $OSList = [
+        "Unknown",
+        "Android",
+        "iOS",
+        "macOS",
+        "FireOS",
+        "GearVR",
+        "HoloLens",
+        "Windows",
+        "Windows",
+        "EducalVersion",
+        "Dedicated",
+        "PlayStation",
+        "Switch",
+        "XboxOne"
+    ];
 
     public static function getInstance(): Loader
     {
@@ -85,7 +109,7 @@ class Loader extends PluginBase
     {
         self::$YamlLoader = new YamlDataProvider();
         ArenaUtils::getInstance()->Start();
-        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
+        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Practice" . "]\n\n");
         $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
     }
 

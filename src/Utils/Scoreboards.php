@@ -33,21 +33,16 @@ class Scoreboards
 
     public function remove(Player $player): void
     {
-        $objectiveName = $this->getObjectiveName($player);
+        $objectiveName = $this->scoreboards[$player->getName()] ?? null;
         $pk = new RemoveObjectivePacket();
         $pk->objectiveName = $objectiveName ?? "Unknown";
         $player->getNetworkSession()->sendDataPacket($pk);
         unset($this->scoreboards[$player->getName()]);
     }
 
-    private function getObjectiveName(Player $player): ?string
-    {
-        return $this->scoreboards[$player->getName()] ?? null;
-    }
-
     public function setLine(Player $player, int $score, string $message): void
     {
-        $objectiveName = $this->getObjectiveName($player);
+        $objectiveName = $this->scoreboards[$player->getName()] ?? null;
         $entry = new ScorePacketEntry();
         $entry->objectiveName = $objectiveName;
         $entry->type = $entry::TYPE_FAKE_PLAYER;

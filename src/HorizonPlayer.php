@@ -144,7 +144,7 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function getAllCape()
+    public function getAllArtifact()
     {
         $this->setValidStuffs("Adidas");
         $this->setValidStuffs("AngelWing");

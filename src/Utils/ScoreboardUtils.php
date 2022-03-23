@@ -34,11 +34,13 @@ class ScoreboardUtils
             7 => "§bK§f: §6$kills",
             8 => "§bD§f: §6$deaths",
             9 => "§bK/D§f: §6$rate",
-            10 => "§7---------------"
+            10 => "§bElo§f: §6{$data->getElo()}",
+            11 => "§7---------------"
         ];
         Loader::$score->new($player, "ObjectiveName", "§bHorizon");
-        foreach ($lines as $line => $content)
+        foreach ($lines as $line => $content) {
             Loader::$score->setLine($player, $line, $content);
+        }
     }
 
     public function sb2(Player $player): void
@@ -46,6 +48,7 @@ class ScoreboardUtils
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
         $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);
+        $bow = floor(Loader::getInstance()->ArrowOITC[$player->getName() ?? null] ?? 0);
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
@@ -56,10 +59,13 @@ class ScoreboardUtils
         ];
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             $lines[5] = "§bSkillCD§f: §6$skill";
+        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+            $lines[5] = "§bBowCD§f: §6$bow";
         }
         Loader::$score->new($player, "ObjectiveName", "§bHorizon");
-        foreach ($lines as $line => $content)
+        foreach ($lines as $line => $content) {
             Loader::$score->setLine($player, $line, $content);
+        }
     }
 
     public function Parkour(Player $player): void
@@ -75,7 +81,8 @@ class ScoreboardUtils
             5 => "§7---------------"
         ];
         Loader::$score->new($player, "ObjectiveName", "§bHorizon");
-        foreach ($lines as $line => $content)
+        foreach ($lines as $line => $content) {
             Loader::$score->setLine($player, $line, $content);
+        }
     }
 }
