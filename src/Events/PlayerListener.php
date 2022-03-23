@@ -53,7 +53,6 @@ use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
-use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\particle\HeartParticle;
@@ -248,11 +247,10 @@ class PlayerListener implements Listener
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
-        $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         ArenaUtils::getInstance()->GiveItem($player);
         if ($player instanceof HorizonPlayer) {
-            $player->LoadCape();
-            $player->setCosmetic();
+            $player->LoadData();
+            $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         }
     }
 
@@ -453,10 +451,12 @@ class PlayerListener implements Listener
                             Loader::getInstance()->BoxingPoint[$damager->getName()] = 1;
                         }
                     }
-                } else if (isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
+                }
+                if (isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
+                }
+                if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 }

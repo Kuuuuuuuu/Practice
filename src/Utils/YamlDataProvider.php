@@ -26,17 +26,17 @@ class YamlDataProvider
         }
     }
 
-    #[Pure] private function getDataFolder(): string
-    {
-        return Loader::getInstance()->getDataFolder();
-    }
-
     public function loadArenas()
     {
         foreach (glob($this->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . "*.yml") as $arenaFile) {
             $config = new Config($arenaFile, Config::YAML);
             Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler(Loader::getInstance(), $config->getAll(false));
         }
+    }
+
+    #[Pure] private function getDataFolder(): string
+    {
+        return Loader::getInstance()->getDataFolder();
     }
 
     /**

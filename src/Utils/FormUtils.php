@@ -29,6 +29,42 @@ class FormUtils
 
     private array $players = [];
 
+    public static function getArtifactForm(Player $player): bool
+    {
+        $form = new SimpleForm(function (Player $event, $data = null) {
+            if ($event instanceof HorizonPlayer) {
+                if ($data !== null) {
+                    if ($data === "None") return;
+                    $cosmetic = CosmeticHandler::getInstance();
+                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
+                        if (str_contains($data, 'SP-')) {
+                            $event->setStuff('');
+                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
+                        } else {
+                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
+                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
+                        }
+                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
+                    }
+                }
+            }
+        });
+
+        $form->setTitle("Artifact");
+        /** @var $player HorizonPlayer */
+        $validstuffs = $player->getValidStuffs();
+        if (count($validstuffs) <= 1) {
+            $form->addButton("None", -1, "", "None");
+            $player->sendForm($form);
+        }
+        foreach ($validstuffs as $stuff) {
+            if ($stuff === "None") continue;
+            $form->addButton("§b" . $stuff, -1, "", $stuff);
+        }
+        $player->sendForm($form);
+        return true;
+    }
+
     public function Form1($player)
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -385,41 +421,5 @@ class FormUtils
             $form->addButton("$capes", -1, "", $capes);
         }
         $player->sendForm($form);
-    }
-
-    public static function getArtifactForm(Player $player): bool
-    {
-        $form = new SimpleForm(function (Player $event, $data = null) {
-            if ($event instanceof HorizonPlayer) {
-                if ($data !== null) {
-                    if ($data === "None") return;
-                    $cosmetic = CosmeticHandler::getInstance();
-                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
-                        if (str_contains($data, 'SP-')) {
-                            $event->setStuff('');
-                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
-                        } else {
-                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
-                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
-                        }
-                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
-                    }
-                }
-            }
-        });
-
-        $form->setTitle("Artifact");
-        /** @var $player HorizonPlayer */
-        $validstuffs = $player->getValidStuffs();
-        if (count($validstuffs) <= 1) {
-            $form->addButton("None", -1, "", "None");
-            $player->sendForm($form);
-        }
-        foreach ($validstuffs as $stuff) {
-            if ($stuff === "None") continue;
-            $form->addButton("§b" . $stuff, -1, "", $stuff);
-        }
-        $player->sendForm($form);
-        return true;
     }
 }

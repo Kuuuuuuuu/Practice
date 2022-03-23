@@ -7,7 +7,6 @@ namespace Kohaku\Core\Utils;
 use Exception;
 use GdImage;
 use InvalidArgumentException;
-use JsonException;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use pocketmine\entity\Skin;
@@ -43,7 +42,6 @@ class CosmeticHandler
         128 * 128 * 4 => 128,
         128 * 256 * 4 => 128
     ];
-    private ?Skin $steveSkin;
     private string $capeFolder;
 
     public function __construct(Loader $core)
@@ -55,12 +53,10 @@ class CosmeticHandler
             mkdir($this->saveSkin);
         }
         $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
-        $steveGeometry = $this->resourcesFolder . 'steve.json';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
-        $this->steveSkin = $this->loadSkin($this->stevePng, $steveGeometry, "", "geometry.humanoid.customSlim");
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
         $this->skinBounds[self::BOUNDS_128_128] = $this->getSkinBounds($cubes, 2.0);
@@ -227,7 +223,8 @@ class CosmeticHandler
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
             /* @var $player HorizonPlayer */
-            $capeData = /*$player->getCape() !== null ? $this->createCape($player->getCape()) : */$player->getSkin()->getCapeData();
+            $cape = $player->getCape();
+            $capeData = ($cape !== "" and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
             $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
@@ -348,18 +345,19 @@ class CosmeticHandler
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function resetSkin(Player $player)
     {
-        $name = $player->getName();
-        $imagePath = $this->getSaveSkin($name);
-        $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
-        if ($skin !== null) {
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
-            $player->setSkin($skin);
-            $player->sendSkin();
+        try {
+            $name = $player->getName();
+            $imagePath = $this->getSaveSkin($name);
+            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
+            if ($skin !== null) {
+                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
+                $player->setSkin($skin);
+                $player->sendSkin();
+            }
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
         }
     }
 

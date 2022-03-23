@@ -15,6 +15,8 @@ use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 class HorizonPlayer extends Player
 {
 
+    public string $cape = "";
+    public string $artifact = "";
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
     private array $validstuffs = [];
@@ -81,8 +83,13 @@ class HorizonPlayer extends Player
     /**
      * @throws JsonException
      */
-    public function LoadCape()
+    public function setCosmetic(): void
     {
+        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
+            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
+                CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
+            }
+        }
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
             $capeData = CosmeticHandler::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
@@ -95,18 +102,19 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function setCosmetic(): void
+    public function getStuff(): ?string
     {
-        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
-            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
-                CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
-            }
-        }
+        return $this->artifact;
     }
 
-    public function getStuff(): string
+    /**
+     * @throws JsonException
+     */
+    public function LoadData()
     {
-        return Loader::getInstance()->ArtifactData->get($this->getName());
+        $this->cape = Loader::getInstance()->CapeData->get($this->getName());
+        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName());
+        $this->setCosmetic();
     }
 
     /**
@@ -118,13 +126,9 @@ class HorizonPlayer extends Player
         Loader::getInstance()->ArtifactData->save();
     }
 
-    public function getCape(): string|null
+    public function getCape(): ?string
     {
-        $cape = Loader::getInstance()->CapeData->get($this->getName());
-        if ($cape === null) {
-            return "";
-        }
-        return Loader::getInstance()->CapeData->get($this->getName());
+        return $this->cape;
     }
 
     public function getValidStuffs(): array
