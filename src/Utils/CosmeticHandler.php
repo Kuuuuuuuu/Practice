@@ -356,7 +356,7 @@ class CosmeticHandler
         $imagePath = $this->getSaveSkin($name);
         $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
         if ($skin !== null) {
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $this->steveSkin->getGeometryData() ?? $player->getSkin()->getGeometryData());
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         }
