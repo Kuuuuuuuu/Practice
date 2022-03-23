@@ -9,8 +9,10 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
+use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -22,6 +24,20 @@ class HorizonTask extends Task
     public function onRun(): void
     {
         $this->tick++;
+        if ($this->tick % 5 === 0) {
+            foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
+                foreach ($level->getEntities() as $entity) {
+                    if ($entity instanceof EnderPearl) {
+                        $owner = $entity->getOwningEntity();
+                        if ($owner instanceof Player) {
+                            if ($owner->getWorld() !== $entity->getWorld()) {
+                                $entity->kill();
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if ($this->tick % 20 === 0) {
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
