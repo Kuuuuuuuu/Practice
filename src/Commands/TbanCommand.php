@@ -60,8 +60,8 @@ class TbanCommand extends Command
             $this->openTbanUI($player);
             return true;
         });
-        $form->setTitle(Loader::getInstance()->message["PlayerListTitle"]);
-        $form->setContent(Loader::getInstance()->message["PlayerListContent"]);
+        $form->setTitle(Loader::getInstance()->MessageData["PlayerListTitle"]);
+        $form->setContent(Loader::getInstance()->MessageData["PlayerListContent"]);
         foreach (Server::getInstance()->getOnlinePlayers() as $online) {
             $form->addButton($online->getName(), -1, "", $online->getName());
         }
@@ -78,7 +78,7 @@ class TbanCommand extends Command
             }
             if (isset(Loader::getInstance()->targetPlayer[$player->getName()])) {
                 if (Loader::getInstance()->targetPlayer[$player->getName()] == $player->getName()) {
-                    $player->sendMessage(Loader::getInstance()->message["BanMyself"]);
+                    $player->sendMessage(Loader::getInstance()->MessageData["BanMyself"]);
                     return true;
                 }
                 $now = time();
@@ -90,7 +90,7 @@ class TbanCommand extends Command
                     $min = 60;
                 }
                 $banTime = $now + $day + $hour + $min;
-                $banInfo = Loader::getInstance()->db->prepare("INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);");
+                $banInfo = Loader::getInstance()->BanData->prepare("INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);");
                 $banInfo->bindValue(":player", Loader::getInstance()->targetPlayer[$player->getName()]);
                 $banInfo->bindValue(":banTime", $banTime);
                 $banInfo->bindValue(":reason", $data[4]);
@@ -98,14 +98,14 @@ class TbanCommand extends Command
                 $banInfo->execute();
                 $target = Server::getInstance()->getPlayerExact(Loader::getInstance()->targetPlayer[$player->getName()]);
                 if ($target instanceof Player) {
-                    $target->kick(str_replace(["{day}", "{hour}", "{minute}", "{reason}", "{staff}"], [$data[1], $data[2], $data[3], $data[4], $player->getName()], Loader::getInstance()->message["KickBanMessage"]));
+                    $target->kick(str_replace(["{day}", "{hour}", "{minute}", "{reason}", "{staff}"], [$data[1], $data[2], $data[3], $data[4], $player->getName()], Loader::getInstance()->MessageData["KickBanMessage"]));
                 }
                 $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
                 $msg = new DiscordWebhookUtils();
                 $msg2 = str_replace(["@here", "@everyone"], "", $data[4]);
                 $msg->setContent(">>> " . $player->getName() . " has banned " . Loader::getInstance()->targetPlayer[$player->getName()] . " for " . $data[1] . " days, " . $data[2] . " hours, " . $data[3] . " minutes. Reason: " . $msg2);
                 $web->send($msg);
-                Server::getInstance()->broadcastMessage(str_replace(["{player}", "{day}", "{hour}", "{minute}", "{reason}", "{staff}"], [Loader::getInstance()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], Loader::getInstance()->message["BroadcastBanMessage"]));
+                Server::getInstance()->broadcastMessage(str_replace(["{player}", "{day}", "{hour}", "{minute}", "{reason}", "{staff}"], [Loader::getInstance()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], Loader::getInstance()->MessageData["BroadcastBanMessage"]));
                 unset(Loader::getInstance()->targetPlayer[$player->getName()]);
 
             }

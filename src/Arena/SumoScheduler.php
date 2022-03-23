@@ -46,7 +46,6 @@ class SumoScheduler extends Task
                 }
             } else {
                 $this->startTime = 4;
-                $this->gameTime = 5 * 30;
             }
         }
         if ($this->plugin->phase === SumoHandler::PHASE_GAME) {

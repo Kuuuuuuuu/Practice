@@ -178,9 +178,10 @@ class ArenaUtils
     {
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
+        Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . "ArtifactData.yml", Config::YAML);
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
-        Loader::getInstance()->message = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
+        Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
             "StartCombat" => "§bHorizon§f » §r§aYou Started combat!",
             "AntiCheatName" => "§bGuardian §f» ",
             "CooldownMessage" => "§bHorizon§f » §r§cYou can't chat for {cooldown} seconds!",
@@ -203,8 +204,8 @@ class ArenaUtils
             "InfoUIContent" => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             "InfoUIUnBanButton" => "§aUnban",
         )))->getAll();
-        Loader::getInstance()->db = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
-        Loader::getInstance()->db->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
+        Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
+        Loader::getInstance()->BanData->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
     }
 
     private function registerCommands(): void
@@ -312,11 +313,11 @@ class ArenaUtils
         if (isset(Loader::getInstance()->SkillCooldown[$name])) {
             unset(Loader::getInstance()->SkillCooldown[$name]);
         }
-        if (isset(Loader::getInstance()->opponent[$name])) {
-            unset(Loader::getInstance()->opponent[$name]);
+        if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
+            unset(Loader::getInstance()->PlayerOpponent[$name]);
         }
-        if (isset(Loader::getInstance()->opponent[$dname])) {
-            unset(Loader::getInstance()->opponent[$dname]);
+        if (isset(Loader::getInstance()->PlayerOpponent[$dname])) {
+            unset(Loader::getInstance()->PlayerOpponent[$dname]);
         }
         if (isset(Loader::getInstance()->BoxingPoint[$dname])) {
             unset(Loader::getInstance()->BoxingPoint[$dname]);

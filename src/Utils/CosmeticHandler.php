@@ -29,7 +29,6 @@ class CosmeticHandler
     public string $saveSkin;
     public array $skinBounds = [];
     public array $cosmeticAvailable = [];
-
     public array $skin_widght_map = [
         64 * 32 * 4 => 64,
         64 * 64 * 4 => 64,
@@ -37,14 +36,14 @@ class CosmeticHandler
         128 * 256 * 4 => 256
 
     ];
-
     public array $skin_height_map = [
         64 * 32 * 4 => 32,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
         128 * 256 * 4 => 128
     ];
-    private mixed $steveSkin;
+    private ?Skin $steveSkin;
+    private string $capeFolder;
 
     public function __construct(Loader $core)
     {
@@ -55,10 +54,11 @@ class CosmeticHandler
             mkdir($this->saveSkin);
         }
         $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
+        $steveGeometry = $this->resourcesFolder . 'steve.json';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
-        $this->steveSkin = null;
-        $this->stevePng = $this->resourcesFolder . 'steve.json';
-        $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
+        $this->capeFolder = $this->resourcesFolder . 'cape/';
+        $this->stevePng = $this->resourcesFolder . 'steve.png';
+        $this->steveSkin = $this->loadSkin($this->stevePng, $steveGeometry, "", "geometry.humanoid.customSlim");
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
         $this->skinBounds[self::BOUNDS_128_128] = $this->getSkinBounds($cubes, 2.0);
@@ -76,6 +76,30 @@ class CosmeticHandler
         }
         $this->cosmeticAvailable = $checkFileAvailable;
         sort($this->cosmeticAvailable);
+    }
+
+    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
+    {
+        try {
+            $img = @imagecreatefrompng($imagePath);
+            $size = getimagesize($imagePath);
+            $skinBytes = "";
+            for ($y = 0; $y < $size[1]; $y++) {
+                for ($x = 0; $x < $size[0]; $x++) {
+                    $pixelColor = @imagecolorat($img, $x, $y);
+                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
+                    $r = ($pixelColor >> 16) & 0xff;
+                    $g = ($pixelColor >> 8) & 0xff;
+                    $b = $pixelColor & 0xff;
+                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
+                }
+            }
+            @imagedestroy($img);
+            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
+        }
     }
 
     private function getCubes(array $geometryData): ?array
@@ -116,10 +140,8 @@ class CosmeticHandler
                 $z = (int)($scale * $cube['z']);
                 $uvX = (int)($scale * $cube['uvX']);
                 $uvY = (int)($scale * $cube['uvY']);
-                $bounds[] = ['min' => ['x' => $uvX + $z, 'y' => $uvY],
-                    'max' => ['x' => $uvX + $z + (2 * $x) - 1, 'y' => $uvY + $z - 1]];
-                $bounds[] = ['min' => ['x' => $uvX, 'y' => $uvY + $z],
-                    'max' => ['x' => $uvX + (2 * ($z + $x)) - 1, 'y' => $uvY + $z + $y - 1]];
+                $bounds[] = ['min' => ['x' => $uvX + $z, 'y' => $uvY], 'max' => ['x' => $uvX + $z + (2 * $x) - 1, 'y' => $uvY + $z - 1]];
+                $bounds[] = ['min' => ['x' => $uvX, 'y' => $uvY + $z], 'max' => ['x' => $uvX + (2 * ($z + $x)) - 1, 'y' => $uvY + $z + $y - 1]];
             }
             return $bounds;
         } catch (Exception $e) {
@@ -136,7 +158,7 @@ class CosmeticHandler
     public function getCapes(): array
     {
         $list = array();
-        foreach (array_diff(scandir(Loader::getInstance()->getDataFolder() . "cosmetic/capes/")) as $data) {
+        foreach (array_diff(scandir($this->capeFolder)) as $data) {
             $dat = explode(".", $data);
             if ($dat[1] === "png") {
                 $list[] = $dat[0];
@@ -202,7 +224,9 @@ class CosmeticHandler
         try {
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData(), $skin->getCapeData(), $skin->getGeometryName(), $skin->getGeometryData());
+            $cape = Loader::getInstance()->CapeData->get($player->getName());
+            $capeData = $cape !== null ? $this->createCape($cape) : "";
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         } catch (Exception $e) {
@@ -251,27 +275,17 @@ class CosmeticHandler
         }
     }
 
-    private function resizeImage($file, $w, $h, $crop = false): GdImage|bool|null
+    private function resizeImage($file, $w, $h): GdImage|bool|null
     {
         try {
             [$width, $height] = getimagesize($file);
             $r = $width / $height;
-            if ($crop) {
-                if ($width > $height) {
-                    $width = ceil($width - ($width * abs($r - $w / $h)));
-                } else {
-                    $height = ceil($height - ($height * abs($r - $w / $h)));
-                }
-                $newwidth = $w;
+            if ($w / $h > $r) {
+                $newwidth = $h * $r;
                 $newheight = $h;
             } else {
-                if ($w / $h > $r) {
-                    $newwidth = $h * $r;
-                    $newheight = $h;
-                } else {
-                    $newheight = $w / $r;
-                    $newwidth = $w;
-                }
+                $newheight = $w / $r;
+                $newwidth = $w;
             }
             $src = imagecreatefrompng($file);
             $dst = imagecreatetruecolor($w, $h);
@@ -280,30 +294,6 @@ class CosmeticHandler
             imagesavealpha($dst, true);
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
-        } catch (Exception $e) {
-            ArenaUtils::getLogger((string)$e);
-            return null;
-        }
-    }
-
-    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
-    {
-        try {
-            $img = @imagecreatefrompng($imagePath);
-            $size = getimagesize($imagePath);
-            $skinBytes = "";
-            for ($y = 0; $y < $size[1]; $y++) {
-                for ($x = 0; $x < $size[0]; $x++) {
-                    $pixelColor = @imagecolorat($img, $x, $y);
-                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
-                    $r = ($pixelColor >> 16) & 0xff;
-                    $g = ($pixelColor >> 8) & 0xff;
-                    $b = $pixelColor & 0xff;
-                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
-                }
-            }
-            @imagedestroy($img);
-            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;
@@ -404,29 +394,5 @@ class CosmeticHandler
             ArenaUtils::getLogger((string)$e);
             return null;
         }
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function setSteveSkin(Player $player)
-    {
-        $path = $this->resourcesFolder . 'steve.png';
-        $img = @imagecreatefrompng($path);
-        $bytes = '';
-        $l = (int)@getimagesize($path)[1];
-        for ($y = 0; $y < $l; $y++) {
-            for ($x = 0; $x < 64; $x++) {
-                $rgba = @imagecolorat($img, $x, $y);
-                $a = ((~(($rgba >> 24))) << 1) & 0xff;
-                $r = ($rgba >> 16) & 0xff;
-                $g = ($rgba >> 8) & 0xff;
-                $b = $rgba & 0xff;
-                $bytes .= chr($r) . chr($g) . chr($b) . chr($a);
-            }
-        }
-        @imagedestroy($img);
-        $player->setSkin(new Skin("Standard_CustomSlim", $bytes));
-        $player->sendSkin();
     }
 }

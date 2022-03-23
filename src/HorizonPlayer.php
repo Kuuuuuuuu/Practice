@@ -17,7 +17,6 @@ class HorizonPlayer extends Player
     private float|int $xzKB = 0.32;
     private float|int $yKb = 0.34;
     private string $cape = '';
-    private string $stuff = '';
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
 
@@ -80,7 +79,6 @@ class HorizonPlayer extends Player
      */
     public function LoadCape()
     {
-        Loader::getInstance()->PlayerSkin[$this->getName()] = $this->getSkin();
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
             $capeData = CosmeticHandler::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
@@ -102,12 +100,16 @@ class HorizonPlayer extends Player
 
     public function getStuff(): string
     {
-        return $this->stuff;
+        return Loader::getInstance()->CapeData->get($this->getName());
     }
 
-    public function setStuff(string $stuff): string
+    /**
+     * @throws JsonException
+     */
+    public function setStuff(string $stuff): void
     {
-        return $this->stuff = $stuff;
+        Loader::getInstance()->ArtifactData->set($this->getName(), $stuff);
+        Loader::getInstance()->ArtifactData->save();
     }
 
     public function getCape(): string
@@ -199,13 +201,13 @@ class HorizonPlayer extends Player
         $this->setValidStuffs("Wither Head");
     }
 
-    public function setLastDamagePlayer(string $name): void
-    {
-        $this->lastDamagePlayer = $name;
-    }
-
     public function getLastDamagePlayer(): string
     {
         return $this->lastDamagePlayer;
+    }
+
+    public function setLastDamagePlayer(string $name): void
+    {
+        $this->lastDamagePlayer = $name;
     }
 }

@@ -22,6 +22,9 @@ class ClickHandler
             $this->initPlayerClickData($p);
         } else {
             array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
+            if (count($this->clicksData[mb_strtolower($p->getName())]) >= 200) {
+                array_pop($this->clicksData[mb_strtolower($p->getName())]);
+            }
         }
     }
 

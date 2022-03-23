@@ -30,12 +30,12 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    private static YamlDataProvider $YamlLoader;
-    public mixed $message;
-    public SQLite3 $db;
+    public static ?YamlDataProvider $YamlLoader;
+    public Config|array $MessageData;
+    public SQLite3 $BanData;
     public array $BanCommand = ["hub"];
     public array $CombatTimer = [];
-    public array $opponent = [];
+    public array $PlayerOpponent = [];
     public array $TimerData = [];
     public array $TimerTask = [];
     public array $JumpCount = [];
@@ -50,7 +50,6 @@ class Loader extends PluginBase
     public array $SkillCooldown = [];
     public int $RestartTime = 31;
     public array $ArrowOITC = [];
-    public array $PlayerSkin = [];
     public array $PlayerSprint = [];
     public array $SumoArenas = [];
     public array $SumoSetup = [];
@@ -60,6 +59,7 @@ class Loader extends PluginBase
     public array $ControlList = ["Unknown", "Mouse", "Touch", "Controller"];
     public array $OSList = ["Unknown", "Android", "iOS", "macOS", "FireOS", "GearVR", "HoloLens", "Windows", "Windows", "EducalVersion", "Dedicated", "PlayStation", "Switch", "XboxOne"];
     public Config $CapeData;
+    public Config $ArtifactData;
 
     public static function getInstance(): Loader
     {
