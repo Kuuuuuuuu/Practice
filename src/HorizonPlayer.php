@@ -6,6 +6,7 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
+use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\{entity\Skin, player\Player};
@@ -34,9 +35,11 @@ class HorizonPlayer extends Player
                 try {
                     if (KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
+                    } else {
+                        $attackSpeed = 10;
                     }
                 } catch (Exception $e) {
-                    $attackSpeed = 10;
+                    ArenaUtils::getLogger((string)$e);
                 }
             }
         }
@@ -49,10 +52,12 @@ class HorizonPlayer extends Player
             if (KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $this->xzKB = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["hkb"];
                 $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
+            } else {
+                $this->xzKB = 0.4;
+                $this->yKb = 0.4;
             }
         } catch (Exception $e) {
-            $this->xzKB = 0.4;
-            $this->yKb = 0.4;
+            ArenaUtils::getLogger((string)$e);
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
@@ -102,7 +107,7 @@ class HorizonPlayer extends Player
 
     public function getStuff(): string
     {
-        return Loader::getInstance()->CapeData->get($this->getName());
+        return Loader::getInstance()->ArtifactData->get($this->getName());
     }
 
     /**
