@@ -276,17 +276,27 @@ class CosmeticHandler
         }
     }
 
-    private function resizeImage($file, $w, $h): GdImage|bool|null
+    private function resizeImage($file, $w, $h, $crop = false): GdImage|bool|null
     {
         try {
             [$width, $height] = getimagesize($file);
             $r = $width / $height;
-            if ($w / $h > $r) {
-                $newwidth = $h * $r;
+            if ($crop) {
+                if ($width > $height) {
+                    $width = ceil($width - ($width * abs($r - $w / $h)));
+                } else {
+                    $height = ceil($height - ($height * abs($r - $w / $h)));
+                }
+                $newwidth = $w;
                 $newheight = $h;
             } else {
-                $newheight = $w / $r;
-                $newwidth = $w;
+                if ($w / $h > $r) {
+                    $newwidth = $h * $r;
+                    $newheight = $h;
+                } else {
+                    $newheight = $w / $r;
+                    $newwidth = $w;
+                }
             }
             $src = imagecreatefrompng($file);
             $dst = imagecreatetruecolor($w, $h);
