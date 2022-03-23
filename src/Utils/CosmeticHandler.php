@@ -58,6 +58,7 @@ class CosmeticHandler
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'cape/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
+        $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
         $this->steveSkin = $this->loadSkin($this->stevePng, $steveGeometry, "", "geometry.humanoid.customSlim");
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
