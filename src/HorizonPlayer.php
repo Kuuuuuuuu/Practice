@@ -118,9 +118,9 @@ class HorizonPlayer extends Player
         Loader::getInstance()->ArtifactData->save();
     }
 
-    public function getCape(): string
+    public function getCape(): string|null
     {
-        return Loader::getInstance()->CapeData->get($this->getName());
+        return Loader::getInstance()->CapeData->get($this->getName()) ?? null;
     }
 
     public function getValidStuffs(): array
