@@ -8,6 +8,7 @@ use Exception;
 use GdImage;
 use InvalidArgumentException;
 use JsonException;
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
@@ -225,8 +226,8 @@ class CosmeticHandler
         try {
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-            $cape = Loader::getInstance()->CapeData->get($player->getName());
-            $capeData = $cape !== null ? $this->createCape($cape) : "";
+            /* @var $player HorizonPlayer */
+            $capeData = $player->getCape() !== null ? $this->createCape($player->getCape()) : "";
             $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData ?? $player->getSkin()->getSkinData(), $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
