@@ -227,8 +227,8 @@ class CosmeticHandler
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
             /* @var $player HorizonPlayer */
-            $capeData = $player->getCape() !== null ? $this->createCape($player->getCape()) : "";
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData ?? $player->getSkin()->getSkinData(), $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
+            $capeData = /*$player->getCape() !== null ? $this->createCape($player->getCape()) : */$player->getSkin()->getCapeData();
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         } catch (Exception $e) {

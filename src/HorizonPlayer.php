@@ -122,7 +122,7 @@ class HorizonPlayer extends Player
     {
         $cape = Loader::getInstance()->CapeData->get($this->getName());
         if ($cape === null) {
-            return null;
+            return "";
         }
         return Loader::getInstance()->CapeData->get($this->getName());
     }
