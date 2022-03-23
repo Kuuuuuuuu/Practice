@@ -93,8 +93,10 @@ class HorizonPlayer extends Player
 
     public function setCosmetic(): void
     {
-        if ($this->getStuff() !== "" or $this->getStuff() !== null) {
-            CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
+        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
+            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
+                CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
+            }
         }
     }
 
