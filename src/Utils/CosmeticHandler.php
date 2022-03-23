@@ -76,30 +76,6 @@ class CosmeticHandler
         sort($this->cosmeticAvailable);
     }
 
-    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
-    {
-        try {
-            $img = @imagecreatefrompng($imagePath);
-            $size = getimagesize($imagePath);
-            $skinBytes = "";
-            for ($y = 0; $y < $size[1]; $y++) {
-                for ($x = 0; $x < $size[0]; $x++) {
-                    $pixelColor = @imagecolorat($img, $x, $y);
-                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
-                    $r = ($pixelColor >> 16) & 0xff;
-                    $g = ($pixelColor >> 8) & 0xff;
-                    $b = $pixelColor & 0xff;
-                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
-                }
-            }
-            @imagedestroy($img);
-            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
-        } catch (Exception $e) {
-            ArenaUtils::getLogger((string)$e);
-            return null;
-        }
-    }
-
     private function getCubes(array $geometryData): ?array
     {
         try {
@@ -223,7 +199,7 @@ class CosmeticHandler
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
             /* @var $player HorizonPlayer */
-            $cape = $player->getCape();
+            $cape = $player->getCape() ?? null;
             $capeData = ($cape !== "" and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
             $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
@@ -303,6 +279,30 @@ class CosmeticHandler
             imagesavealpha($dst, true);
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
+        }
+    }
+
+    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
+    {
+        try {
+            $img = @imagecreatefrompng($imagePath);
+            $size = getimagesize($imagePath);
+            $skinBytes = "";
+            for ($y = 0; $y < $size[1]; $y++) {
+                for ($x = 0; $x < $size[0]; $x++) {
+                    $pixelColor = @imagecolorat($img, $x, $y);
+                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
+                    $r = ($pixelColor >> 16) & 0xff;
+                    $g = ($pixelColor >> 8) & 0xff;
+                    $b = $pixelColor & 0xff;
+                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
+                }
+            }
+            @imagedestroy($img);
+            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;

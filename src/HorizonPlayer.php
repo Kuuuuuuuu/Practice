@@ -83,6 +83,16 @@ class HorizonPlayer extends Player
     /**
      * @throws JsonException
      */
+    public function LoadData()
+    {
+        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : "";
+        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : "";
+        $this->setCosmetic();
+    }
+
+    /**
+     * @throws JsonException
+     */
     public function setCosmetic(): void
     {
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
@@ -102,19 +112,9 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function getStuff(): ?string
+    public function getStuff(): string
     {
         return $this->artifact;
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function LoadData()
-    {
-        $this->cape = Loader::getInstance()->CapeData->get($this->getName());
-        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName());
-        $this->setCosmetic();
     }
 
     /**
@@ -126,7 +126,7 @@ class HorizonPlayer extends Player
         Loader::getInstance()->ArtifactData->save();
     }
 
-    public function getCape(): ?string
+    public function getCape(): string
     {
         return $this->cape;
     }

@@ -310,7 +310,7 @@ class PlayerListener implements Listener
             $event->cancel();
             $args = explode(" ", $event->getMessage());
             $arena = Loader::getInstance()->SumoSetup[$player->getName()];
-            if (Loader::$arenafac->getSumoDArena() === null) {
+            if (Loader::$arenafac->getSumoDArena() !== null) {
                 $arena->data["level"] = Loader::$arenafac->getSumoDArena();
             }
             switch ($args[0]) {
@@ -326,12 +326,10 @@ class PlayerListener implements Listener
                     if (!isset($args[1])) {
                         $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7setspawn <int: spawn>");
                         break;
-                    }
-                    if (!is_numeric($args[1])) {
+                    } else if (!is_numeric($args[1])) {
                         $player->sendMessage(Loader::getPrefixCore() . "§cType number!");
                         break;
-                    }
-                    if ((int)$args[1] > $arena->data["slots"]) {
+                    } else if ((int)$args[1] > $arena->data["slots"]) {
                         $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
                         break;
                     }
@@ -344,8 +342,7 @@ class PlayerListener implements Listener
                     if (!$arena->setup) {
                         $player->sendMessage(Loader::getPrefixCore() . "§6Arena is already enabled!");
                         break;
-                    }
-                    if (!$arena->enable()) {
+                    } else if (!$arena->enable()) {
                         $player->sendMessage(Loader::getPrefixCore() . "§cCould not load arena, there are missing information!");
                         break;
                     }
@@ -411,35 +408,33 @@ class PlayerListener implements Listener
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if ($player instanceof Player and $damager instanceof Player) {
-            /* @var HorizonPlayer $damager */
-            /* @var HorizonPlayer $player */
+        if ($player instanceof HorizonPlayer and $damager instanceof HorizonPlayer) {
             $damager->setLastDamagePlayer($player->getName());
             $player->setLastDamagePlayer($damager->getName());
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
-            }
-            if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
-                Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
-                Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
-                Loader::getInstance()->CombatTimer[$player->getName()] = 10;
-                Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
-                $player->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
-                $damager->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
+            } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
+                if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+                    Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
+                    Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
+                    Loader::getInstance()->CombatTimer[$player->getName()] = 10;
+                    Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
+                    $damager->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
+                }
             } else if (isset(Loader::getInstance()->PlayerOpponent[$damager->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$player->getName()])) {
                 if (Loader::getInstance()->PlayerOpponent[$player->getName()] !== $damager->getName() and Loader::getInstance()->PlayerOpponent[$damager->getName()] !== $player->getName()) {
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 } else if (Loader::getInstance()->PlayerOpponent[$player->getName()] === $damager->getName() and Loader::getInstance()->PlayerOpponent[$damager->getName()] === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
-                    Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
-                    Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
-                    Loader::getInstance()->CombatTimer[$player->getName()] = 10;
-                    Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+                        Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
+                        Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
+                        Loader::getInstance()->CombatTimer[$player->getName()] = 10;
+                        Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
+                    } else if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                         if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
-                            if (Loader::getInstance()->BoxingPoint[$damager->getName()] < 100) {
+                            if (Loader::getInstance()->BoxingPoint[$damager->getName()] <= 100) {
                                 Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
                             } else if (Loader::getInstance()->BoxingPoint[$damager->getName()] === 100) {
                                 $pos = $player->getPosition();
@@ -452,14 +447,12 @@ class PlayerListener implements Listener
                         }
                     }
                 }
-                if (isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
-                    $event->cancel();
-                    $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                }
-                if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
-                    $event->cancel();
-                    $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                }
+            } else if (isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
+                $event->cancel();
+                $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
+            } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
+                $event->cancel();
+                $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
             }
         }
     }
