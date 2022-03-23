@@ -97,7 +97,7 @@ class DataManager
      */
     public function addElo()
     {
-        $random = random_int(0, 30);
+        $random = random_int(1, 30);
         $this->elo += $random;
         $this->save();
     }
@@ -107,7 +107,7 @@ class DataManager
      */
     public function removeElo()
     {
-        $random = random_int(0, 30);
+        $random = random_int(1, 30);
         $this->elo -= $random;
         $this->save();
     }
