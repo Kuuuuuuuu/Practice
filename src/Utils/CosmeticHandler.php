@@ -227,7 +227,7 @@ class CosmeticHandler
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
             $cape = Loader::getInstance()->CapeData->get($player->getName());
             $capeData = $cape !== null ? $this->createCape($cape) : "";
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData(), $capeData, $skin->getGeometryName(), $skin->getGeometryData());
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData ?? $player->getSkin()->getSkinData(), $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         } catch (Exception $e) {
@@ -356,7 +356,7 @@ class CosmeticHandler
         $imagePath = $this->getSaveSkin($name);
         $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
         if ($skin !== null) {
-            $skin = new Skin($skin->getSkinId(), $skin->getSkinData(), '', $skin->getGeometryName(), $this->steveSkin->getGeometryData());
+            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $this->steveSkin->getGeometryData() ?? $player->getSkin()->getGeometryData());
             $player->setSkin($skin);
             $player->sendSkin();
         }
