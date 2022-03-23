@@ -396,7 +396,6 @@ class FormUtils
                     $cosmetic = CosmeticHandler::getInstance();
                     if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
                         if (str_contains($data, 'SP-')) {
-                            $event->setCape('');
                             $event->setStuff('');
                             $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
                         } else {

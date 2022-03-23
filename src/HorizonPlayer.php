@@ -15,9 +15,8 @@ use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 class HorizonPlayer extends Player
 {
 
-    private float|int $xzKB = 0.32;
-    private float|int $yKb = 0.34;
-    private string $cape = '';
+    private float|int $xzKB = 0.4;
+    private float|int $yKb = 0.4;
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
 
@@ -121,12 +120,7 @@ class HorizonPlayer extends Player
 
     public function getCape(): string
     {
-        return $this->cape;
-    }
-
-    public function setCape(string $cape): string
-    {
-        return $this->cape = $cape;
+        return Loader::getInstance()->CapeData->get($this->getName());
     }
 
     public function getValidStuffs(): array
