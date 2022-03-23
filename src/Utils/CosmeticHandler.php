@@ -56,7 +56,7 @@ class CosmeticHandler
         $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
         $steveGeometry = $this->resourcesFolder . 'steve.json';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
-        $this->capeFolder = $this->resourcesFolder . 'capes';
+        $this->capeFolder = $this->resourcesFolder . 'capes/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
         $this->steveSkin = $this->loadSkin($this->stevePng, $steveGeometry, "", "geometry.humanoid.customSlim");
