@@ -93,7 +93,7 @@ class HorizonPlayer extends Player
 
     public function setCosmetic(): void
     {
-        if ($this->getStuff() !== "") {
+        if ($this->getStuff() !== "" or $this->getStuff() !== null) {
             CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
         }
     }
