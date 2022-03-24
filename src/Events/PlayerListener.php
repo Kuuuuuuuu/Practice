@@ -434,7 +434,8 @@ class PlayerListener implements Listener
                             if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
                                 if (Loader::getInstance()->BoxingPoint[$damager->getName()] <= 100) {
                                     Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
-                                } else if (Loader::getInstance()->BoxingPoint[$damager->getName()] === 100) {
+                                }
+                                if (Loader::getInstance()->BoxingPoint[$damager->getName()] >= 100) {
                                     $pos = $player->getPosition();
                                     $world = $player->getWorld();
                                     $player->kill();

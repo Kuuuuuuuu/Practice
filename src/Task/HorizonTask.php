@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Task;
 
-use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
@@ -108,18 +107,7 @@ class HorizonTask extends Task
                 }
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if (in_array($player->getName(), Loader::getInstance()->EventFighting)) {
-                    /* @var $player HorizonPlayer */
-                    $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-                    $world = Loader::getInstance()->getConfig()->get("EventWorld");
-                    if ($damager instanceof Player) {
-                        Loader::$event->removeFighting($player->getName());
-                        $player->sendMessage(Loader::getPrefixCore() . "§cYou left the event");
-                        if ($damager->getWorld()->getFolderName() === $world) {
-                            Loader::$event->roundOver($player, $damager);
-                        }
-                    }
-                } else if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                if (isset(Loader::getInstance()->CombatTimer[$name])) {
                     unset(Loader::getInstance()->CombatTimer[$name]);
                 } else if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
                     unset(Loader::getInstance()->PlayerOpponent[$name]);
