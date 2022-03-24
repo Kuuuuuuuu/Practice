@@ -7,6 +7,7 @@ namespace Kohaku\Core\Task;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
+use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\EnderPearl;
@@ -30,8 +31,11 @@ class HorizonTask extends Task
             $this->deleteEnderPearl();
             $this->RestartServer();
         }
-        if ($this->tick % 25 === 0) {
+        if ($this->tick % 30 === 0) {
             $this->updateTag();
+        }
+        if ($this->tick % 60 === 0) {
+            $this->updateScoreboard();
         }
         if ($this->tick % 2000 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
@@ -237,6 +241,23 @@ class HorizonTask extends Task
                     $player->setScoreTag($tagpvp);
                 } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                     $player->setScoreTag($untagpvp);
+                }
+            }
+        }
+    }
+
+    private function updateScoreboard()
+    {
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            if ($player->isOnline()) {
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+                    Loader::$score->remove($player);
+                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    ScoreboardUtils::getInstance()->sb($player);
+                } else if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                    ScoreboardUtils::getInstance()->sb2($player);
+                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                    ScoreboardUtils::getInstance()->Parkour($player);
                 }
             }
         }

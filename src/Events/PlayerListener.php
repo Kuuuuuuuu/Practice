@@ -13,7 +13,6 @@ use JsonException;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
-use Kohaku\Core\Task\ScoreboardTask;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
@@ -70,9 +69,6 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $item = $event->getItem();
         $name = $player->getName();
-        if ($item->getCustomName() === "§r§bPlay") {
-            Loader::$form->Form1($player);
-        }
         if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
             if ($item->getCustomName() === "§r§6Reaper") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
@@ -126,7 +122,9 @@ class PlayerListener implements Listener
                 Loader::getInstance()->SkillCooldown[$name] = 10;
             }
         }
-        if ($item->getCustomName() === "§r§bSettings") {
+        if ($item->getCustomName() === "§r§bPlay") {
+            Loader::$form->Form1($player);
+        } else if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
@@ -214,7 +212,6 @@ class PlayerListener implements Listener
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             ArenaUtils::getInstance()->DeviceCheck($player);
             Loader::$cps->initPlayerClickData($player);
-            Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 60);
             if ($player instanceof HorizonPlayer) {
                 $cosmetic = CosmeticHandler::getInstance();
                 if (strlen($player->getSkin()->getSkinData()) >= 13107 or strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
@@ -458,8 +455,7 @@ class PlayerListener implements Listener
     /**
      * @throws Exception
      */
-    public
-    function onDamage(EntityDamageEvent $event)
+    public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
         /* @var HorizonPlayer $entity */
@@ -477,8 +473,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public
-    function onJump(PlayerJumpEvent $event)
+    public function onJump(PlayerJumpEvent $event)
     {
         $player = $event->getPlayer();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
@@ -490,8 +485,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public
-    function onMove(PlayerMoveEvent $event)
+    public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -534,8 +528,7 @@ class PlayerListener implements Listener
     /**
      * @throws Exception
      */
-    public
-    function onDeath(PlayerDeathEvent $event): void
+    public function onDeath(PlayerDeathEvent $event): void
     {
         $event->setDeathMessage("");
         $event->setDrops([]);
@@ -568,8 +561,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public
-    function onRespawn(PlayerRespawnEvent $event): void
+    public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
         $player->getEffects()->clear();
@@ -580,8 +572,7 @@ class PlayerListener implements Listener
         ScoreboardUtils::getInstance()->sb($player);
     }
 
-    public
-    function onTeleport(EntityTeleportEvent $event)
+    public function onTeleport(EntityTeleportEvent $event)
     {
         $player = $event->getEntity();
         $from = $event->getFrom();
@@ -598,8 +589,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public
-    function onLaunch(ProjectileLaunchEvent $event)
+    public function onLaunch(ProjectileLaunchEvent $event)
     {
         $entity = $event->getEntity();
         $owner = $entity->getOwningEntity();
@@ -612,8 +602,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public
-    function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
+    public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
     {
         $player = $event->getPlayer();
         $msg = $event->getMessage();

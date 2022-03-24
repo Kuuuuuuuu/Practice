@@ -112,7 +112,7 @@ class SumoHandler implements Listener
     public function joinToArena(Player $player)
     {
         if (!$this->data["enabled"]) {
-            $player->sendMessage(Loader::getPrefixCore() . "§e The game is in configurating!");
+            $player->sendMessage(Loader::getPrefixCore() . "§eThe game is in configurating!");
             return;
         } else if (count($this->players) >= $this->data["slots"]) {
             $player->sendMessage(Loader::getPrefixCore() . "§eThe game is full!");
@@ -166,6 +166,9 @@ class SumoHandler implements Listener
         $this->phase = 1;
     }
 
+    /**
+     * @throws Exception
+     */
     public function startRestart()
     {
         $player = null;
@@ -174,6 +177,7 @@ class SumoHandler implements Listener
         }
         if ($player instanceof Player and $player->isOnline()) {
             $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
+            ArenaUtils::getInstance()->getData($player->getName())->addElo();
             $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . Loader::getInstance()->LastedElo[$player->getName()] . " Elos!");
         }
         $this->phase = self::PHASE_RESTART;
