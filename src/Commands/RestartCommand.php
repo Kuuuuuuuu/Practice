@@ -23,7 +23,10 @@ class RestartCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new RestartTask(), 20);
+                Loader::getInstance()->Restarted = true;
+                if ($args != null) {
+                    Loader::getInstance()->RestartTime = (int)$args;
+                }
                 $sender->sendMessage(Loader::getPrefixCore() . "§aServer restarting...");
             } else {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");

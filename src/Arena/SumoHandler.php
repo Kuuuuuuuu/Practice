@@ -40,7 +40,7 @@ class SumoHandler implements Listener
         $this->plugin = $plugin;
         $this->data = $arenaFileData;
         $this->setup = !$this->enable(false);
-        $this->plugin->getScheduler()->scheduleRepeatingTask($this->scheduler = new SumoScheduler($this), 20);
+        $this->plugin->getScheduler()->scheduleRepeatingTask($this->scheduler = new SumoScheduler($this), 1);
         if ($this->setup) {
             if (empty($this->data)) {
                 $this->createBasicData();

@@ -60,7 +60,7 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
-    public array $EventFighting = [];
+    public bool $Restarted = false;
     public array $BanCommand = [
         "hub",
         "kill"

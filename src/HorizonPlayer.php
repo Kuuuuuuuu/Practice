@@ -41,6 +41,7 @@ class HorizonPlayer extends Player
                     }
                 } catch (Exception $e) {
                     ArenaUtils::getLogger((string)$e);
+                    $attackSpeed = 10;
                 }
             }
         }

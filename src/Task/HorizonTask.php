@@ -24,23 +24,11 @@ class HorizonTask extends Task
     public function onRun(): void
     {
         $this->tick++;
-        if ($this->tick % 10 === 0) {
-            foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
-                foreach ($level->getEntities() as $entity) {
-                    if ($entity instanceof EnderPearl) {
-                        $owner = $entity->getOwningEntity();
-                        if ($owner instanceof Player) {
-                            if ($owner->getWorld() !== $entity->getWorld()) {
-                                $entity->kill();
-                            }
-                        }
-                    }
-                }
-            }
-        }
         if ($this->tick % 20 === 0) {
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
+            $this->deleteEnderPearl();
+            $this->RestartServer();
         }
         if ($this->tick % 25 === 0) {
             $this->updateTag();
@@ -154,6 +142,60 @@ class HorizonTask extends Task
                         $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                     }
                     unset(Loader::getInstance()->ArrowOITC[$name]);
+                }
+            }
+        }
+    }
+
+    private function deleteEnderPearl()
+    {
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
+            foreach ($level->getEntities() as $entity) {
+                if ($entity instanceof EnderPearl) {
+                    $owner = $entity->getOwningEntity();
+                    if ($owner instanceof Player) {
+                        if ($owner->getWorld() !== $entity->getWorld()) {
+                            $entity->kill();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function RestartServer()
+    {
+        if (Loader::getInstance()->Restarted) {
+            Loader::getInstance()->RestartTime--;
+            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                switch (Loader::getInstance()->RestartTime) {
+                    case 30:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e30 §cseconds");
+                        break;
+                    case 15:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e15 §cseconds");
+                        break;
+                    case 10:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e10 §cseconds");
+                        break;
+                    case 5:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e5 §cseconds");
+                        break;
+                    case 4:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e4 §cseconds");
+                        break;
+                    case 3:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e3 §cseconds");
+                        break;
+                    case 2:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e2 §cseconds");
+                        break;
+                    case 1:
+                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e1 §csecond");
+                        break;
+                    case 0:
+                        Server::getInstance()->shutdown();
+                        break;
                 }
             }
         }
