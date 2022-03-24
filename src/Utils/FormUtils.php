@@ -238,15 +238,12 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    $this->NickForm($player);
-                    break;
-                case 1:
                     $this->reportForm($player);
                     break;
-                case 2:
+                case 1:
                     $this->openCapesUI($player);
                     break;
-                case 3:
+                case 2:
                     if (!isset(Loader::getInstance()->PlayerSprint[$player->getName()])) {
                         Loader::getInstance()->PlayerSprint[$player->getName()] = true;
                         $player->sendMessage(Loader::getPrefixCore() . "§aSprint enabled");
@@ -260,65 +257,17 @@ class FormUtils
                         }
                     }
                     break;
-                case 4:
+                case 3:
                     $this->getArtifactForm($player);
                     break;
             }
             return true;
         });
         $form->setTitle("§bHorizon §eMenu");
-        $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
         $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
         $form->addButton("§bArtifacts", 0, "textures/items/diamond_axe.png");
-        $player->sendForm($form);
-    }
-
-    public function NickForm($player)
-    {
-        $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            switch ($result) {
-                case 0:
-                    $this->CustomNickForm($player);
-                    break;
-                case 1:
-                    $player->setDisplayName($player->getName());
-                    $player->setNameTag($player->getName());
-                    $player->sendMessage(Loader::getPrefixCore() . "§eYour nickname has been resetted!");
-                    break;
-            }
-            return true;
-        });
-        $name = "§eNow Your Name is: §a" . $player->getDisplayName();
-        $form->setTitle("§bHorizon §eNick");
-        $form->setContent($name);
-        $form->addButton("§a§lChange Name\n§r§8Tap to continue", 0, "textures/ui/confirm");
-        $form->addButton("§c§lReset Name\n§r§8Tap to reset", 0, "textures/ui/trash");
-        $player->sendForm($form);
-    }
-
-    public function CustomNickForm($player)
-    {
-        $form = new CustomForm(function (Player $player, array $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            } else if (strlen($data[0]) >= 15) {
-                $player->sendMessage(Loader::getPrefixCore() . "§cYour nickname is too long!");
-            } else {
-                $player->setDisplayName($data[0]);
-                $player->setNameTag($data[0]);
-                $player->sendMessage(Loader::getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
-            }
-            return true;
-        });
-        $form->setTitle("§bHorizon §eNick");
-        $form->addInput("§eEnter New Name Here!");
         $player->sendForm($form);
     }
 

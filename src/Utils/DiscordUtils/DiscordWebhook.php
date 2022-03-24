@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Utils\DiscordUtils;
 
-use Kohaku\Core\Task\DiscordWebhookTask;
+use Kohaku\Core\Task\AsyncWebhookTask;
 use pocketmine\Server;
 
 class DiscordWebhook
@@ -29,6 +29,6 @@ class DiscordWebhook
 
     public function send(DiscordWebhookUtils $message): void
     {
-        Server::getInstance()->getAsyncPool()->submitTask(new DiscordWebhookTask($this, $message));
+        Server::getInstance()->getAsyncPool()->submitTask(new AsyncWebhookTask($this, $message));
     }
 }

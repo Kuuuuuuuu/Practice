@@ -10,7 +10,6 @@ use Kohaku\Core\Loader;
 
 class DataManager
 {
-
     private string $player;
     private int $kills = 0;
     private int $killStreak = 0;
@@ -18,6 +17,7 @@ class DataManager
     private int $deaths = 0;
     private mixed $data = null;
     private int $elo = 1000;
+    private ?string $tag = null;
 
     public function __construct(string $player)
     {
@@ -26,7 +26,16 @@ class DataManager
         if (is_file($path)) {
             $data = yaml_parse_file($path);
             $this->data = $data;
-            $this->kills = $data["kills"];
+            if (isset($data["kills"])) {
+                $this->kills = $data["kills"];
+            } else {
+                $this->kills = 0;
+            }
+            if (isset($data["deaths"])) {
+                $this->deaths = $data["deaths"];
+            } else {
+                $this->deaths = 0;
+            }
             if (isset($data["killstreak"])) {
                 $this->killStreak = $data["killstreak"];
             } else {
@@ -42,7 +51,11 @@ class DataManager
             } else {
                 $this->elo = 1000;
             }
-            $this->deaths = $data["deaths"];
+            if (isset($data["tag"])) {
+                $this->tag = $data["tag"];
+            } else {
+                $this->tag = null;
+            }
         }
     }
 
@@ -80,7 +93,7 @@ class DataManager
 
     private function save()
     {
-        yaml_emit_file($this->getPath(), ["name" => $this->player, "kills" => $this->kills, "killstreak" => $this->killStreak, "kdr" => $this->getKdr(), "deaths" => $this->deaths, "elo" => $this->elo]);
+        yaml_emit_file($this->getPath(), ["name" => $this->player, "kills" => $this->kills, "killstreak" => $this->killStreak, "kdr" => $this->getKdr(), "deaths" => $this->deaths, "elo" => $this->elo, "tag" => $this->tag]);
     }
 
     public function getKdr(): float|int
@@ -123,6 +136,41 @@ class DataManager
     {
         $this->deaths++;
         $this->killStreak = 0;
+        $this->save();
+    }
+
+    public function getRank(): string
+    {
+        $format = "§6Rookie";
+        if ($this->elo >= 1000 && $this->elo < 1200) {
+            $format = "§6Rookie";
+        }
+        if ($this->elo >= 1200 && $this->elo < 1400) {
+            $format = "§fSilver";
+        }
+        if ($this->elo >= 1400 && $this->elo < 1600) {
+            $format = "§eGold";
+        }
+        if ($this->elo >= 1600 && $this->elo < 1800) {
+            $format = "§bDiamond";
+        }
+        if ($this->elo >= 1800 && $this->elo < 2000) {
+            $format = "§cMaster";
+        }
+        return $format;
+    }
+
+    public function getTag(): ?string
+    {
+        if ($this->tag === null) {
+            return null;
+        }
+        return $this->tag;
+    }
+
+    public function setTag(string $tag)
+    {
+        $this->tag = $tag;
         $this->save();
     }
 }

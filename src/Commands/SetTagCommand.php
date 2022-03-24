@@ -9,12 +9,12 @@ use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\Server;
 
-class PlayerInfoCommand extends Command
+class SetTagCommand extends Command
 {
 
     public function __construct()
     {
-        parent::__construct("pinfo", "Check Player info", "/pinfo <player>", ["playerinfo", "pinfo"]);
+        parent::__construct("settag", "settag Player", "/setTag <player> <tag>", []);
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
@@ -23,17 +23,17 @@ class PlayerInfoCommand extends Command
             $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
         } else {
             if ($args == null) {
-                $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: /playerinfo <player>");
+                $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: /setTag <player> <tag>");
                 return false;
             } else {
+                if (!isset($args[1])) {
+                    $sender->sendMessage(Loader::getPrefixCore() . "§cUsage: /setTag <player> <tag>");
+                    return false;
+                }
                 $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
                 if ($playerinfo !== null) {
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Player: §a" . $playerinfo->getName());
-                    $sender->sendMessage("\n");
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Device: §a" . ArenaUtils::getInstance()->getPlayerDevices($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7OS: §a" . ArenaUtils::getInstance()->getPlayerOS($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Control: §a" . ArenaUtils::getInstance()->getPlayerControls($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Toolbox: §a" . ArenaUtils::getInstance()->getToolboxCheck($playerinfo));
+                    ArenaUtils::getInstance()->getData($playerinfo->getName())->setTag($args[1]);
+                    $sender->sendMessage(Loader::getPrefixCore() . "§aTag set to §e" . $args[1]);
                 } else {
                     $sender->sendMessage(Loader::getPrefixCore() . "§cPlayer not found.");
                 }

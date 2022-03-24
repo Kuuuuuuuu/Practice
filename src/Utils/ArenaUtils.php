@@ -13,6 +13,7 @@ use Kohaku\Core\Commands\CoreCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\PlayerInfoCommand;
 use Kohaku\Core\Commands\RestartCommand;
+use Kohaku\Core\Commands\SetTagCommand;
 use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
@@ -25,7 +26,6 @@ use Kohaku\Core\Items\EnderPearl;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\HorizonTask;
-use Kohaku\Core\Task\ScoreboardTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
@@ -227,6 +227,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
+        Server::getInstance()->getCommandMap()->register("settag", new SetTagCommand());
     }
 
     private function registerEvents(): void
@@ -238,7 +239,6 @@ class ArenaUtils
     private function registerTasks(): void
     {
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new HorizonTask(), 1);
-        Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 11000);
     }
 
     private function registerEntity(): void
@@ -399,11 +399,6 @@ class ArenaUtils
         }
     }
 
-    public function lazy(Player $player)
-    {
-        Loader::getinstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player), 35);
-    }
-
     public function JoinRandomArenaSumo(Player $player)
     {
         $arena = $this->getRandomSumoArenas();
@@ -421,7 +416,7 @@ class ArenaUtils
             $availableArenas[$index] = $arena;
         }
         foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 || $arena->setup) {
+            if ($arena->phase !== 0 or $arena->setup) {
                 unset($availableArenas[$index]);
             }
         }

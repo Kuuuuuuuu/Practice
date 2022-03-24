@@ -250,6 +250,11 @@ class PlayerListener implements Listener
             $player->LoadData();
             $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         }
+        if (ArenaUtils::getInstance()->getData($name)->getTag() === null) {
+            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+        } else {
+            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName());
+        }
     }
 
     public function onExhaust(PlayerExhaustEvent $event)
@@ -302,11 +307,16 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
-        $event->setFormat("§e" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §a" . $player->getDisplayName() . "§6 > §f" . $message);
-        if (isset(Loader::getInstance()->SumoSetup[$player->getName()])) {
+        $name = $player->getName();
+        if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
+            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]" . "§6 > §f" . $message);
+        } else {
+            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . "§6 > §f" . $message);
+        }
+        if (isset(Loader::getInstance()->SumoSetup[$name])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());
-            $arena = Loader::getInstance()->SumoSetup[$player->getName()];
+            $arena = Loader::getInstance()->SumoSetup[$name];
             if (Loader::$arenafac->getSumoDArena() !== null) {
                 $arena->data["level"] = Loader::$arenafac->getSumoDArena();
             }
@@ -345,9 +355,9 @@ class PlayerListener implements Listener
                     break;
                 case "done":
                     $player->sendMessage(Loader::getPrefixCore() . "§aYou are successfully leaved setup mode!");
-                    unset(Loader::getInstance()->SumoSetup[$player->getName()]);
-                    if (isset(Loader::getInstance()->SumoData[$player->getName()])) {
-                        unset(Loader::getInstance()->SumoData[$player->getName()]);
+                    unset(Loader::getInstance()->SumoSetup[$name]);
+                    if (isset(Loader::getInstance()->SumoData[$name])) {
+                        unset(Loader::getInstance()->SumoData[$name]);
                     }
                     break;
                 default:
@@ -357,10 +367,10 @@ class PlayerListener implements Listener
                     break;
             }
         } else {
-            if (isset(Loader::getInstance()->ChatCooldown[$player->getName()])) {
-                if (Loader::getInstance()->ChatCooldown[$player->getName()] > 0) {
+            if (isset(Loader::getInstance()->ChatCooldown[$name])) {
+                if (Loader::getInstance()->ChatCooldown[$name] > 0) {
                     $event->cancel();
-                    $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$player->getName()]], Loader::getInstance()->MessageData["CooldownMessage"]));
+                    $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$name]], Loader::getInstance()->MessageData["CooldownMessage"]));
                 }
             } else {
                 $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
@@ -368,7 +378,7 @@ class PlayerListener implements Listener
                 $msg2 = str_replace(["@here", "@everyone"], "", $message);
                 $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
                 $web->send($msg);
-                Loader::getInstance()->ChatCooldown[$player->getName()] = 1.5;
+                Loader::getInstance()->ChatCooldown[$name] = 1.5;
             }
         }
     }
