@@ -89,9 +89,9 @@ class HorizonTask extends Task
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
-                $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
             } else {
-                $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName());
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
             }
             $nowcps = Loader::$cps->getClicks($player);
             if (!isset(Loader::getInstance()->LastedElo[$name])) {

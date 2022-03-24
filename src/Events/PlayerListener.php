@@ -251,9 +251,9 @@ class PlayerListener implements Listener
             $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         }
         if (ArenaUtils::getInstance()->getData($name)->getTag() === null) {
-            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+            $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
         } else {
-            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName());
+            $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
         }
     }
 
@@ -309,9 +309,9 @@ class PlayerListener implements Listener
         $message = $event->getMessage();
         $name = $player->getName();
         if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
-            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]" . "§6 > §f" . $message);
+            $event->setFormat(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]" . "§6 > §f" . $message);
         } else {
-            $player->setDisplayName(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getName() . "§6 > §f" . $message);
+            $event->setFormat(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§6 > §f" . $message);
         }
         if (isset(Loader::getInstance()->SumoSetup[$name])) {
             $event->cancel();
