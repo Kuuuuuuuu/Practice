@@ -17,6 +17,7 @@ class HorizonPlayer extends Player
 
     public string $cape = "";
     public string $artifact = "";
+    public array $kit = [];
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
     private array $validstuffs = [];
@@ -86,6 +87,8 @@ class HorizonPlayer extends Player
      */
     public function LoadData()
     {
+        $this->kit = array(Loader::getInstance()->KitData->get($this->getName()));
+        var_dump($this->kit);
         $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : "";
         $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : "";
         $this->setCosmetic();
@@ -135,6 +138,11 @@ class HorizonPlayer extends Player
     public function getValidStuffs(): array
     {
         return $this->validstuffs;
+    }
+
+    public function getKit(): array
+    {
+        return $this->kit;
     }
 
     public function setValidStuffs(string $stuff): void

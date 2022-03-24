@@ -187,6 +187,7 @@ class ArenaUtils
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
         Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . "ArtifactData.yml", Config::YAML);
+        Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . "KitData.json", Config::JSON);
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(

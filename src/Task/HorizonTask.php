@@ -8,9 +8,12 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\ScoreboardUtils;
+use pocketmine\block\BlockToolType;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\EnderPearl;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
@@ -88,6 +91,13 @@ class HorizonTask extends Task
     {
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                if (count($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getEnchantments()) === 0) {
+                    if ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getBlockToolType() === BlockToolType::SWORD and $player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getBlockToolType() === BlockToolType::PICKAXE) {
+                        $player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
+                    }
+                }
+            }
             if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
                 $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
             } else {

@@ -29,42 +29,6 @@ class FormUtils
 
     private array $players = [];
 
-    public static function getArtifactForm(Player $player): bool
-    {
-        $form = new SimpleForm(function (Player $event, $data = null) {
-            if ($event instanceof HorizonPlayer) {
-                if ($data !== null) {
-                    if ($data === "None") return;
-                    $cosmetic = CosmeticHandler::getInstance();
-                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
-                        if (str_contains($data, 'SP-')) {
-                            $event->setStuff('');
-                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
-                        } else {
-                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
-                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
-                        }
-                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
-                    }
-                }
-            }
-        });
-
-        $form->setTitle("Artifact");
-        /** @var $player HorizonPlayer */
-        $validstuffs = $player->getValidStuffs();
-        if (count($validstuffs) <= 1) {
-            $form->addButton("None", -1, "", "None");
-            $player->sendForm($form);
-        }
-        foreach ($validstuffs as $stuff) {
-            if ($stuff === "None") continue;
-            $form->addButton("§b" . $stuff, -1, "", $stuff);
-        }
-        $player->sendForm($form);
-        return true;
-    }
-
     public function Form1($player)
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -263,6 +227,24 @@ class FormUtils
                 case 4:
                     $this->getArtifactForm($player);
                     break;
+                case 5:
+                    $player->getInventory()->clearAll();
+                    $player->getArmorInventory()->clearAll();
+                    $player->setImmobile(true);
+                    Loader::getInstance()->EditKit[$player->getName()] = true;
+                    $player->sendMessage(Loader::getPrefixCore() . "§aEdit kit enabled");
+                    $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
+                    $player->getInventory()->setItem(0, $item);
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 128));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::COBWEB, 0, 1));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::DIAMOND_PICKAXE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000)));
+                    $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $player->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $player->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    break;
             }
             return true;
         });
@@ -272,6 +254,7 @@ class FormUtils
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
         $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
         $form->addButton("§bArtifacts", 0, "textures/items/diamond_axe.png");
+        $form->addButton("§bEdit §aKit", 0, "textures/items/diamond_pickaxe.png");
         $player->sendForm($form);
     }
 
@@ -421,5 +404,41 @@ class FormUtils
             $form->addButton("$capes", -1, "", $capes);
         }
         $player->sendForm($form);
+    }
+
+    public static function getArtifactForm(Player $player): bool
+    {
+        $form = new SimpleForm(function (Player $event, $data = null) {
+            if ($event instanceof HorizonPlayer) {
+                if ($data !== null) {
+                    if ($data === "None") return;
+                    $cosmetic = CosmeticHandler::getInstance();
+                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
+                        if (str_contains($data, 'SP-')) {
+                            $event->setStuff('');
+                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
+                        } else {
+                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
+                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
+                        }
+                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
+                    }
+                }
+            }
+        });
+
+        $form->setTitle("Artifact");
+        /** @var $player HorizonPlayer */
+        $validstuffs = $player->getValidStuffs();
+        if (count($validstuffs) <= 1) {
+            $form->addButton("None", -1, "", "None");
+            $player->sendForm($form);
+        }
+        foreach ($validstuffs as $stuff) {
+            if ($stuff === "None") continue;
+            $form->addButton("§b" . $stuff, -1, "", $stuff);
+        }
+        $player->sendForm($form);
+        return true;
     }
 }
