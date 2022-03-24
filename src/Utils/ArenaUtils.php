@@ -10,7 +10,6 @@ use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
-use Kohaku\Core\Commands\EventCommand;
 use Kohaku\Core\Commands\HubCommand;
 use Kohaku\Core\Commands\PlayerInfoCommand;
 use Kohaku\Core\Commands\RestartCommand;
@@ -228,7 +227,6 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
-        Server::getInstance()->getCommandMap()->register("event", new EventCommand());
     }
 
     private function registerEvents(): void

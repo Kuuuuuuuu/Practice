@@ -14,7 +14,6 @@ use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
-use Kohaku\Core\Utils\EventManager;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlDataProvider;
@@ -33,7 +32,6 @@ class Loader extends PluginBase
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
     public static ?YamlDataProvider $YamlLoader;
-    public static EventManager $event;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -62,12 +60,7 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
-    public bool $EventArena = false;
-    public bool $EventStarted = false;
-    public bool $EventRound = false;
-    public int $EventRoundCount = 0;
     public array $EventFighting = [];
-    public array $PlayersEvent = [];
     public array $BanCommand = [
         "hub",
         "kill"
@@ -113,7 +106,6 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$event = new EventManager();
     }
 
     public function onEnable(): void
