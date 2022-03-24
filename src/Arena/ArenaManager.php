@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Arena;
 
+use Exception;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
@@ -203,24 +204,26 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->setHealth(20);
-            if ($player instanceof HorizonPlayer and $player->getKit() !== null) {
-                $player->getInventory()->setItem(0, ItemFactory::getInstance()->get($player->getKit()["0"]["0"]["item"], 0, $player->getKit()["0"]["0"]["count"]));
-                $player->getInventory()->setItem(1, ItemFactory::getInstance()->get($player->getKit()["0"]["1"]["item"], 0, $player->getKit()["0"]["1"]["count"]));
-                $player->getInventory()->setItem(2, ItemFactory::getInstance()->get($player->getKit()["0"]["2"]["item"], 0, $player->getKit()["0"]["2"]["count"]));
-                $player->getInventory()->setItem(3, ItemFactory::getInstance()->get($player->getKit()["0"]["3"]["item"], 0, $player->getKit()["0"]["3"]["count"]));
-                $player->getInventory()->setItem(4, ItemFactory::getInstance()->get($player->getKit()["0"]["4"]["item"], 0, $player->getKit()["0"]["4"]["count"]));
-                $player->getInventory()->setItem(5, ItemFactory::getInstance()->get($player->getKit()["0"]["5"]["item"], 0, $player->getKit()["0"]["5"]["count"]));
-                $player->getInventory()->setItem(6, ItemFactory::getInstance()->get($player->getKit()["0"]["6"]["item"], 0, $player->getKit()["0"]["6"]["count"]));
-                $player->getInventory()->setItem(7, ItemFactory::getInstance()->get($player->getKit()["0"]["7"]["item"], 0, $player->getKit()["0"]["7"]["count"]));
-                $player->getInventory()->setItem(8, ItemFactory::getInstance()->get($player->getKit()["0"]["8"]["item"], 0, $player->getKit()["0"]["8"]["count"]));
-            } else {
-                $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-                $player->getInventory()->setItem(0, $item);
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2));
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 128));
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::COBWEB, 0, 1));
-                $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::DIAMOND_PICKAXE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000)));
+            if ($player instanceof HorizonPlayer) {
+                try {
+                    $player->getInventory()->setItem(0, ItemFactory::getInstance()->get($player->getKit()["0"]["0"]["item"], 0, $player->getKit()["0"]["0"]["count"]));
+                    $player->getInventory()->setItem(1, ItemFactory::getInstance()->get($player->getKit()["0"]["1"]["item"], 0, $player->getKit()["0"]["1"]["count"]));
+                    $player->getInventory()->setItem(2, ItemFactory::getInstance()->get($player->getKit()["0"]["2"]["item"], 0, $player->getKit()["0"]["2"]["count"]));
+                    $player->getInventory()->setItem(3, ItemFactory::getInstance()->get($player->getKit()["0"]["3"]["item"], 0, $player->getKit()["0"]["3"]["count"]));
+                    $player->getInventory()->setItem(4, ItemFactory::getInstance()->get($player->getKit()["0"]["4"]["item"], 0, $player->getKit()["0"]["4"]["count"]));
+                    $player->getInventory()->setItem(5, ItemFactory::getInstance()->get($player->getKit()["0"]["5"]["item"], 0, $player->getKit()["0"]["5"]["count"]));
+                    $player->getInventory()->setItem(6, ItemFactory::getInstance()->get($player->getKit()["0"]["6"]["item"], 0, $player->getKit()["0"]["6"]["count"]));
+                    $player->getInventory()->setItem(7, ItemFactory::getInstance()->get($player->getKit()["0"]["7"]["item"], 0, $player->getKit()["0"]["7"]["count"]));
+                    $player->getInventory()->setItem(8, ItemFactory::getInstance()->get($player->getKit()["0"]["8"]["item"], 0, $player->getKit()["0"]["8"]["count"]));
+                } catch (Exception $e) {
+                    ArenaUtils::getLogger((string)$e);
+                    $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 128));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::COBWEB, 0, 1));
+                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::DIAMOND_PICKAXE, 0, 1));
+                }
             }
             $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));

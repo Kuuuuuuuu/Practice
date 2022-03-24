@@ -31,6 +31,8 @@ use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
+use pocketmine\event\inventory\CraftItemEvent;
+use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
@@ -39,6 +41,7 @@ use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
+use pocketmine\event\player\PlayerItemHeldEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerJumpEvent;
@@ -47,11 +50,13 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\inventory\transaction\CraftingTransaction;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\particle\HeartParticle;
@@ -214,13 +219,8 @@ class PlayerListener implements Listener
             Loader::$cps->initPlayerClickData($player);
             if ($player instanceof HorizonPlayer) {
                 $cosmetic = CosmeticHandler::getInstance();
-                if (strlen($player->getSkin()->getSkinData()) >= 13107 or strlen($player->getSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($player->getSkin()->getSkinData()) > 6) {
-                    copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
-                    $cosmetic->resetSkin($player);
-                } else {
-                    $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-                    $cosmetic->saveSkin($skin->getSkinData(), $name);
-                }
+                $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
             }
         }
     }
@@ -299,6 +299,40 @@ class PlayerListener implements Listener
                 } else {
                     $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
                 }
+            }
+        }
+    }
+
+    public function onCraft(CraftItemEvent $event) {
+        $event->cancel();
+    }
+
+    public function onItemMoved(InventoryTransactionEvent $event): void
+    {
+        $transaction = $event->getTransaction();
+        $actions = $transaction->getActions();
+        $player = $transaction->getSource();
+        if ($transaction instanceof CraftingTransaction) {
+            $event->cancel();
+        }
+        foreach ($actions as $action) {
+            if ($player instanceof Player) {
+                if ($player->getGamemode() === GameMode::CREATIVE() or (isset(Loader::getInstance()->EditKit[$player->getName()]) and Loader::getInstance()->EditKit[$player->getName()] === true)) {
+                    return;
+                } else {
+                    $event->cancel();
+                }
+            }
+        }
+    }
+
+    public function onHeld(PlayerItemHeldEvent $event)
+    {
+        $player = $event->getPlayer();
+        $item = $player->getInventory()->getItemInHand();
+        if ($item->getId() === ItemIds::IRON_SWORD or $item->getId() === ItemIds::DIAMOND_PICKAXE) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
             }
         }
     }

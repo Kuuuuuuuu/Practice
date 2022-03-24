@@ -8,12 +8,9 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\ScoreboardUtils;
-use pocketmine\block\BlockToolType;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\EnderPearl;
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
@@ -34,8 +31,9 @@ class HorizonTask extends Task
             $this->deleteEnderPearl();
             $this->RestartServer();
         }
-        if ($this->tick % 30 === 0) {
+        if ($this->tick % 40 === 0) {
             $this->updateTag();
+            $this->updateNameTag();
         }
         if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
@@ -91,18 +89,6 @@ class HorizonTask extends Task
     {
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-                if (count($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getEnchantments()) === 0) {
-                    if ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getBlockToolType() === BlockToolType::SWORD and $player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getBlockToolType() === BlockToolType::PICKAXE) {
-                        $player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-                    }
-                }
-            }
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
-            } else {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
-            }
             $nowcps = Loader::$cps->getClicks($player);
             if (!isset(Loader::getInstance()->LastedElo[$name])) {
                 Loader::getInstance()->LastedElo[$name] = 0;
@@ -252,11 +238,23 @@ class HorizonTask extends Task
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->setScoreTag($tagparkour);
             } else {
-                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                if (isset(Loader::getInstance()->CombatTimer[$name]) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                     $player->setScoreTag($tagpvp);
                 } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                     $player->setScoreTag($untagpvp);
                 }
+            }
+        }
+    }
+
+    private function updateNameTag()
+    {
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            $name = $player->getName();
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+            } else {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
             }
         }
     }
