@@ -2,6 +2,8 @@
 
 namespace Kohaku\Core\Items;
 
+use JetBrains\PhpStorm\Pure;
+use Kohaku\Core\Loader;
 use pocketmine\item\EnderPearl as ItemEnderPearl;
 use pocketmine\item\ItemIdentifier;
 
@@ -13,8 +15,8 @@ class EnderPearl extends ItemEnderPearl
         parent::__construct($id, $name);
     }
 
-    public function getThrowForce(): float
+    #[Pure] public function getThrowForce(): float
     {
-        return 2.0;
+        return Loader::getInstance()->EnderPearlForce;
     }
 }

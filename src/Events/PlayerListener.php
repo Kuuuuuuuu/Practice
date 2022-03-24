@@ -397,6 +397,14 @@ class PlayerListener implements Listener
             $player->kill();
             unset(Loader::getInstance()->CombatTimer[$name]);
         }
+        if (Loader::getInstance()->EventArena) {
+            if (in_array($name, Loader::getInstance()->PlayersEvent)) {
+                Loader::$event->removePlayer($name);
+            }
+            if (in_array($name, Loader::getInstance()->EventFighting)) {
+                Loader::$event->removeFighting($name);
+            }
+        }
     }
 
     /**
@@ -525,6 +533,22 @@ class PlayerListener implements Listener
             } else if ($block->getId() === BlockLegacyIds::REPEATING_COMMAND_BLOCK) {
                 Loader::getInstance()->ParkourCheckPoint[$name] = $player->getPosition()->asVector3();
             }
+        } else if (Loader::getInstance()->EventStarted) {
+            $world = Loader::getInstance()->getConfig()->get("EventWorld");
+            if ($player->getPosition()->getY() < 50) {
+                if (in_array($player->getName(), Loader::getInstance()->EventFighting)) {
+                    /* @var $player HorizonPlayer */
+                    $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
+                    if ($damager instanceof Player) {
+                        $player->kill();
+                        Loader::$event->removeFighting($player->getName());
+                        $player->sendMessage(Loader::getPrefixCore() . "§cYou left the event");
+                        if ($damager->getWorld()->getFolderName() === $world) {
+                            Loader::$event->roundOver($player, $damager);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -536,6 +560,7 @@ class PlayerListener implements Listener
         $event->setDeathMessage("");
         $event->setDrops([]);
         $player = $event->getPlayer();
+        $name = $player->getName();
         $pos = $player->getPosition();
         $world = $player->getWorld();
         $player->getInventory()->clearAll();
@@ -545,6 +570,27 @@ class PlayerListener implements Listener
         $player->kill();
         $world->addParticle($pos, new HeartParticle(3));
         $cause = $player->getLastDamageCause();
+        if (Loader::getInstance()->EventStarted) {
+            $player = $event->getPlayer();
+            $world = Loader::getInstance()->getConfig()->get("EventWorld");
+            if (in_array($name, Loader::getInstance()->EventFighting)) {
+                if (in_array($name, Loader::getInstance()->PlayersEvent)) {
+                    Loader::$event->removePlayer($name);
+                }
+                Loader::$event->removeFighting($name);
+                if ($cause instanceof EntityDamageByEntityEvent) {
+                    $damager = $cause->getDamager();
+                    if ($damager instanceof Player) {
+                        if ($damager->getWorld()->getFolderName() === $world) {
+                            Loader::$event->roundOver($player, $damager);
+                        }
+                        if (in_array($damager->getName(), Loader::getInstance()->EventFighting)) {
+                            Loader::$event->removeFighting($damager->getName());
+                        }
+                    }
+                }
+            }
+        }
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());

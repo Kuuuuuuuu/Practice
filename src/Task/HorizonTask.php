@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Task;
 
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
@@ -24,7 +25,7 @@ class HorizonTask extends Task
     public function onRun(): void
     {
         $this->tick++;
-        if ($this->tick % 5 === 0) {
+        if ($this->tick % 10 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
                 foreach ($level->getEntities() as $entity) {
                     if ($entity instanceof EnderPearl) {
@@ -42,7 +43,7 @@ class HorizonTask extends Task
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
         }
-        if ($this->tick % 30 === 0) {
+        if ($this->tick % 25 === 0) {
             $this->updateTag();
         }
         if ($this->tick % 2000 === 0) {
@@ -107,7 +108,18 @@ class HorizonTask extends Task
                 }
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                if (in_array($player->getName(), Loader::getInstance()->EventFighting)) {
+                    /* @var $player HorizonPlayer */
+                    $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
+                    $world = Loader::getInstance()->getConfig()->get("EventWorld");
+                    if ($damager instanceof Player) {
+                        Loader::$event->removeFighting($player->getName());
+                        $player->sendMessage(Loader::getPrefixCore() . "§cYou left the event");
+                        if ($damager->getWorld()->getFolderName() === $world) {
+                            Loader::$event->roundOver($player, $damager);
+                        }
+                    }
+                } else if (isset(Loader::getInstance()->CombatTimer[$name])) {
                     unset(Loader::getInstance()->CombatTimer[$name]);
                 } else if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
                     unset(Loader::getInstance()->PlayerOpponent[$name]);

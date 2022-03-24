@@ -14,10 +14,12 @@ use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
+use Kohaku\Core\Utils\EventManager;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlDataProvider;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use SQLite3;
@@ -31,6 +33,7 @@ class Loader extends PluginBase
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
     public static ?YamlDataProvider $YamlLoader;
+    public static EventManager $event;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -38,6 +41,7 @@ class Loader extends PluginBase
     public int $RestartTime = 31;
     public int $DeleteBlockTime = 8;
     public int $MaximumCPS = 20;
+    public float $EnderPearlForce = 2.5;
     public array $CombatTimer = [];
     public array $PlayerOpponent = [];
     public array $TimerData = [];
@@ -58,6 +62,12 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
+    public bool $EventArena = false;
+    public bool $EventStarted = false;
+    public bool $EventRound = false;
+    public int $EventRoundCount = 0;
+    public array $EventFighting = [];
+    public array $PlayersEvent = [];
     public array $BanCommand = [
         "hub",
         "kill"
@@ -103,14 +113,15 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
+        self::$event = new EventManager();
     }
 
     public function onEnable(): void
     {
         self::$YamlLoader = new YamlDataProvider();
         ArenaUtils::getInstance()->Start();
-        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Practice" . "]\n\n");
-        $this->getServer()->getNetwork()->setName("§bHorizon §fNetwork");
+        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n\n");
+        Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
     }
 
     /**
