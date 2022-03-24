@@ -35,8 +35,6 @@ class EventManager
         }
         if ($winner->getWorld()->getFolderName() === $world) {
             $winner->teleport(Server::getInstance()->getWorldManager()->getWorldByName($world)->getSafeSpawn());
-            $winner->getInventory()->clearAll();
-            $winner->getArmorInventory()->clearAll();
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $winner->getName() . " §awon the match against§e " . $loser->getName());
             Loader::getInstance()->EventRound = false;
         }
@@ -98,6 +96,7 @@ class EventManager
             foreach (Server::getInstance()->getWorldManager()->getWorldByName($world)->getEntities() as $players) {
                 if ($players instanceof Player) {
                     $players->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                    ArenaUtils::getInstance()->GiveItem($players);
                 }
             }
         }
