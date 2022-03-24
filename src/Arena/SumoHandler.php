@@ -174,6 +174,7 @@ class SumoHandler implements Listener
         }
         if ($player instanceof Player and $player->isOnline()) {
             $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
+            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . Loader::getInstance()->LastedElo[$player->getName()] . " Elos!");
         }
         $this->phase = self::PHASE_RESTART;
     }

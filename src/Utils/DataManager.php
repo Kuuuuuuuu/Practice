@@ -100,6 +100,7 @@ class DataManager
         $random = random_int(1, 30);
         $this->elo += $random;
         $this->save();
+        Loader::getInstance()->LastedElo[$this->player] = $random;
     }
 
     /**
@@ -110,6 +111,7 @@ class DataManager
         $random = random_int(1, 30);
         $this->elo -= $random;
         $this->save();
+        Loader::getInstance()->LastedElo[$this->player] = $random;
     }
 
     public function getElo(): int

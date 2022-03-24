@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Exception;
+use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\player\GameMode;
@@ -74,6 +75,7 @@ class SumoScheduler extends Task
                         if ($player->getPosition()->getY() <= 50) {
                             $this->plugin->disconnectPlayer($player);
                             ArenaUtils::getInstance()->getData($player->getName())->removeElo();
+                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost elo" . Loader::getInstance()->LastedElo[$player->getName()] . " Elos!");
                         } else if ($player->getWorld() !== $this->plugin->level) {
                             $this->plugin->disconnectPlayer($player);
                         }
@@ -89,7 +91,6 @@ class SumoScheduler extends Task
                     ArenaUtils::getInstance()->GiveItem($player);
                     ArenaUtils::getInstance()->addKill($player);
                     ScoreboardUtils::getInstance()->sb($player);
-                    ArenaUtils::getInstance()->getData($player->getName())->addElo();
                     $player->setGamemode(GameMode::ADVENTURE());
                 }
                 $this->plugin->players = [];

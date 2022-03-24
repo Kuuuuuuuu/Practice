@@ -85,6 +85,9 @@ class HorizonTask extends Task
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $nowcps = Loader::$cps->getClicks($player);
+            if (!isset(Loader::getInstance()->LastedElo[$name])) {
+                Loader::getInstance()->LastedElo[$name] = 0;
+            }
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
                 Server::getInstance()->broadcastMessage(Loader::getInstance()->MessageData["AntiCheatName"] . $message);
