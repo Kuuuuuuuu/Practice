@@ -90,12 +90,6 @@ class HorizonTask extends Task
     private function updatePlayer()
     {
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
-            $item = $player->getInventory()->getItemInHand();
-            if ($item->getId() === ItemIds::IRON_SWORD or $item->getId() === ItemIds::DIAMOND_PICKAXE) {
-                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-                    $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-                }
-            }
             $name = $player->getName();
             $nowcps = Loader::$cps->getClicks($player);
             if (!isset(Loader::getInstance()->LastedElo[$name])) {
