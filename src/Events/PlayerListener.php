@@ -249,6 +249,9 @@ class PlayerListener implements Listener
             $player->LoadData();
             $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
         }
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            unset(Loader::getInstance()->EditKit[$name]);
+        }
         if (ArenaUtils::getInstance()->getData($name)->getTag() === null) {
             $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
         } else {
@@ -478,6 +481,9 @@ class PlayerListener implements Listener
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             $player->kill();
             unset(Loader::getInstance()->CombatTimer[$name]);
+        }
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            unset(Loader::getInstance()->EditKit[$name]);
         }
     }
 
