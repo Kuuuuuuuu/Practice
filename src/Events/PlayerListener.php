@@ -326,17 +326,6 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onHeld(PlayerItemHeldEvent $event)
-    {
-        $player = $event->getPlayer();
-        $item = $player->getInventory()->getItemInHand();
-        if ($item->getId() === ItemIds::IRON_SWORD or $item->getId() === ItemIds::DIAMOND_PICKAXE) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-                $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-            }
-        }
-    }
-
     /**
      * @throws JsonException
      */
