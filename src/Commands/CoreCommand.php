@@ -42,7 +42,7 @@ class CoreCommand extends Command
                         $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
-                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd - setleader");
+                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd - setleader - removeleader");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD");
                         break;
                     case "make":
@@ -238,6 +238,16 @@ class CoreCommand extends Command
                     case "setleader":
                         $npc = new Leaderboard($sender->getLocation(), $sender->getSkin());
                         $npc->spawnToAll();
+                        break;
+                    case "removeleader":
+                        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+                            foreach ($world->getEntities() as $entity) {
+                                if ($entity instanceof Leaderboard) {
+                                    $entity->close();
+                                }
+                            }
+                        }
+                        $sender->sendMessage(Loader::getPrefixCore() . "Leaderboard removed!");
                         break;
                     default:
                         $sender->sendMessage(Loader::getPrefixCore() . "§e/core help");
