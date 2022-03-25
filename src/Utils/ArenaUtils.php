@@ -25,7 +25,6 @@ use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Items\EnderPearl;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Task\BroadcastTask;
 use Kohaku\Core\Task\HorizonTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
