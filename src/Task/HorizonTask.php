@@ -33,6 +33,7 @@ class HorizonTask extends Task
         }
         if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
+            $this->updateRank();
         }
         if ($this->tick % 300 === 0) {
             if (Loader::getInstance()->LeaderboardMode === 1) {
@@ -146,6 +147,17 @@ class HorizonTask extends Task
                     }
                     unset(Loader::getInstance()->ArrowOITC[$name]);
                 }
+            }
+        }
+    }
+
+    private function updateRank() {
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            $name = $player->getName();
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
+            } else {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
             }
         }
     }
