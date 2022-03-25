@@ -10,10 +10,8 @@ use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
-use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
-use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -28,12 +26,10 @@ class HorizonTask extends Task
         if ($this->tick % 20 === 0) {
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
-            $this->deleteEnderPearl();
             $this->RestartServer();
         }
         if ($this->tick % 40 === 0) {
             $this->updateTag();
-            $this->updateNameTag();
         }
         if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
@@ -59,9 +55,7 @@ class HorizonTask extends Task
         }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 if (isset(Loader::getInstance()->BoxingPoint[$name])) {
                     $point = Loader::getInstance()->BoxingPoint[$name];
                     $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
@@ -97,9 +91,6 @@ class HorizonTask extends Task
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
             $nowcps = Loader::$cps->getClicks($player);
-            if (!isset(Loader::getInstance()->LastedElo[$name])) {
-                Loader::getInstance()->LastedElo[$name] = 0;
-            }
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $player->kill();
             }
@@ -138,8 +129,6 @@ class HorizonTask extends Task
                     unset(Loader::getInstance()->CombatTimer[$name]);
                     unset(Loader::getInstance()->PlayerOpponent[$name]);
                 }
-            } else {
-                $player->getXpManager()->setXpProgress(0.0);
             }
             if (isset(Loader::getInstance()->ChatCooldown[$name])) {
                 if (Loader::getInstance()->ChatCooldown[$name] > 0) {
@@ -156,22 +145,6 @@ class HorizonTask extends Task
                         $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                     }
                     unset(Loader::getInstance()->ArrowOITC[$name]);
-                }
-            }
-        }
-    }
-
-    private function deleteEnderPearl()
-    {
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
-            foreach ($level->getEntities() as $entity) {
-                if ($entity instanceof EnderPearl) {
-                    $owner = $entity->getOwningEntity();
-                    if ($owner instanceof Player) {
-                        if ($owner->getWorld() !== $entity->getWorld()) {
-                            $entity->kill();
-                        }
-                    }
                 }
             }
         }
@@ -249,18 +222,6 @@ class HorizonTask extends Task
                 } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                     $player->setScoreTag($untagpvp);
                 }
-            }
-        }
-    }
-
-    private function updateNameTag()
-    {
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            $name = $player->getName();
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
-            } else {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
             }
         }
     }

@@ -272,7 +272,11 @@ class FormUtils
                     break;
                 case 1:
                     $player->setDisplayName($player->getName());
-                    $player->setNameTag($player->getName());
+                    if (ArenaUtils::getInstance()->getData($player->getName())->getTag() !== null) {
+                        $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+                    } else {
+                        $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $player->getName());
+                    }
                     $player->sendMessage(Loader::getPrefixCore() . "§eYour nickname has been resetted!");
                     break;
             }
@@ -296,7 +300,11 @@ class FormUtils
                 $player->sendMessage(Loader::getPrefixCore() . "§cYour nickname is too long!");
             } else {
                 $player->setDisplayName($data[0]);
-                $player->setNameTag($data[0]);
+                if (ArenaUtils::getInstance()->getData($player->getName())->getTag() !== null) {
+                    $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $data[0] . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+                } else {
+                    $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $data[0]);
+                }
                 $player->sendMessage(Loader::getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
             }
             return true;

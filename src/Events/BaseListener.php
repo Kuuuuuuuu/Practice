@@ -22,6 +22,7 @@ use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionD
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 class BaseListener implements Listener
@@ -93,6 +94,11 @@ class BaseListener implements Listener
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::$cps->addClick($player);
+                if ($player instanceof Player) {
+                    if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                        $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+                    }
+                }
             }
         } else if ($event->getPacket()->pid() === AnimatePacket::NETWORK_ID) {
             Server::getInstance()->broadcastPackets($player->getViewers(), [$event->getPacket()]);
