@@ -149,14 +149,7 @@ class PlayerListener implements Listener
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        $owner = $entity->getOwningEntity();
-        if ($entity instanceof EnderPearl) {
-            if ($owner instanceof Player) {
-                if ($owner->getWorld() !== $entity->getWorld()) {
-                    $entity->kill();
-                }
-            }
-        } else if ($entity instanceof Arrow) {
+        if ($entity instanceof Arrow) {
             $entity->flagForDespawn();
             $entity->close();
         }
@@ -175,7 +168,6 @@ class PlayerListener implements Listener
     public function onPlayerDropItem(PlayerDropItemEvent $event): void
     {
         $player = $event->getPlayer();
-        if ($event->isCancelled()) return;
         if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
             $event->cancel();
         }
@@ -264,7 +256,6 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         if ($player->getHungerManager()->getFood() < 20) {
             $player->getHungerManager()->setFood(20);
-            $event->cancel();
         }
     }
 
@@ -345,7 +336,7 @@ class PlayerListener implements Listener
         if (isset(Loader::getInstance()->EditKit[$name])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());
-            if ($args[0] == "Confirm") {
+            if (mb_strtolower($args[0]) == "confirm") {
                 Loader::getInstance()->KitData->set($name, [
                     "0" => [
                         "item" => $player->getInventory()->getItem(0)->getId(),
@@ -523,10 +514,7 @@ class PlayerListener implements Listener
                                 Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
                             }
                             if (Loader::getInstance()->BoxingPoint[$damager->getName()] >= 100) {
-                                $pos = $player->getPosition();
-                                $world = $player->getWorld();
                                 $player->kill();
-                                $world->addParticle($pos, new HeartParticle(3));
                             }
                         } else {
                             Loader::getInstance()->BoxingPoint[$damager->getName()] = 1;
@@ -624,15 +612,9 @@ class PlayerListener implements Listener
         $event->setDeathMessage("");
         $event->setDrops([]);
         $player = $event->getPlayer();
-        $name = $player->getName();
         $pos = $player->getPosition();
         $world = $player->getWorld();
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->getOffHandInventory()->clearAll();
-        $player->getEffects()->clear();
         $player->kill();
-        $world->addParticle($pos, new HeartParticle(3));
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
@@ -647,7 +629,6 @@ class PlayerListener implements Listener
                         $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
                     }
                 }
-                $damager->setHealth(20);
             }
         }
     }
@@ -675,19 +656,6 @@ class PlayerListener implements Listener
                 }
                 if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
                     unset(Loader::getInstance()->TimerData[$player->getName()]);
-                }
-            }
-        }
-    }
-
-    public function onLaunch(ProjectileLaunchEvent $event)
-    {
-        $entity = $event->getEntity();
-        $owner = $entity->getOwningEntity();
-        if ($entity instanceof EnderPearl) {
-            if ($owner instanceof Player) {
-                if ($owner->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    $entity->kill();
                 }
             }
         }
