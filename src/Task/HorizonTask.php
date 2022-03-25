@@ -35,6 +35,13 @@ class HorizonTask extends Task
             $this->updateScoreboard();
             $this->updateRank();
         }
+        if ($this->tick % 300 === 0) {
+            if (Loader::getInstance()->LeaderboardMode === 1) {
+                Loader::getInstance()->LeaderboardMode = 2;
+            } else {
+                Loader::getInstance()->LeaderboardMode = 1;
+            }
+        }
         if ($this->tick % 2000 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
                 foreach ($level->getEntities() as $entity) {
