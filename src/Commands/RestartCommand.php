@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kohaku\Core\Commands;
 
 use Kohaku\Core\Loader;
-use Kohaku\Core\Task\RestartTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

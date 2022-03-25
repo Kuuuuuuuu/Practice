@@ -95,18 +95,6 @@ class ArenaFactory
         $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
     }
 
-    /**
-     * @throws JsonException
-     */
-
-    public function setSkywarsArena(Player $player, string $world)
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
-        $data->set("Skywars", $world);
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
-    }
-
     public function getRandomSpawnOitc(): array
     {
         // random array
@@ -367,16 +355,5 @@ class ArenaFactory
         $data->remove("KitPVP");
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "KitPVP removed arena");
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function removeSkywars(Player $player)
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
-        $data->remove("Skywars");
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Skywars removed arena");
     }
 }
