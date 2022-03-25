@@ -137,17 +137,17 @@ class HorizonPlayer extends Player
         return $this->validstuffs;
     }
 
-    public function getKit(): array
-    {
-        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : "");
-    }
-
     public function setValidStuffs(string $stuff): void
     {
         $key = in_array($stuff, $this->validstuffs);
         if ($key === false) {
             $this->validstuffs[] = $stuff;
         }
+    }
+
+    public function getKit(): array
+    {
+        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : "");
     }
 
     public function getAllArtifact()
@@ -214,6 +214,8 @@ class HorizonPlayer extends Player
         $this->setValidStuffs("White Heart");
         $this->setValidStuffs("Witchhat");
         $this->setValidStuffs("Wither Head");
+        $this->setValidStuffs("endolotl");
+        $this->setValidStuffs("privateship");
     }
 
     public function getLastDamagePlayer(): string

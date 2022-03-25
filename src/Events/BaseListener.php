@@ -39,13 +39,13 @@ class BaseListener implements Listener
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            if ($block->getId() !== BlockLegacyIds::SANDSTONE and $block->getId() !== BlockLegacyIds::COBWEB) {
+            if ($block->getId() !== BlockLegacyIds::WOOL and $block->getId() !== BlockLegacyIds::COBWEB) {
                 if ($player->getGamemode() !== GameMode::CREATIVE()) {
                     $ev->cancel();
                 }
             } else {
                 $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
-                if ($block->getId() === BlockLegacyIds::SANDSTONE) {
+                if ($block->getId() === BlockLegacyIds::WOOL) {
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SANDSTONE, 0, 1));
                     DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
                 }

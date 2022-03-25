@@ -151,17 +151,6 @@ class HorizonTask extends Task
         }
     }
 
-    private function updateRank() {
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            $name = $player->getName();
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
-            } else {
-                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
-            }
-        }
-    }
-
     private function RestartServer()
     {
         if (Loader::getInstance()->Restarted) {
@@ -251,6 +240,18 @@ class HorizonTask extends Task
                 } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                     ScoreboardUtils::getInstance()->Parkour($player);
                 }
+            }
+        }
+    }
+
+    private function updateRank()
+    {
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            $name = $player->getName();
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null) {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
+            } else {
+                $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
             }
         }
     }

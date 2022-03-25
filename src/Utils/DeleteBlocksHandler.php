@@ -33,6 +33,22 @@ class DeleteBlocksHandler
     public function update(): void
     {
         foreach (Loader::getInstance()->buildBlocks as $pos => $sec) {
+            if ($sec === 6) {
+                $block = explode(':', $pos);
+                $x = $block[0];
+                $y = $block[1];
+                $z = $block[2];
+                $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
+                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1), true);
+            }
+            if ($sec === 3) {
+                $block = explode(':', $pos);
+                $x = $block[0];
+                $y = $block[1];
+                $z = $block[2];
+                $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
+                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14), true);
+            }
             if ($sec <= 0) {
                 $block = explode(':', $pos);
                 $x = $block[0];

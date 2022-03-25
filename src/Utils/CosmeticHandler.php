@@ -285,7 +285,7 @@ class CosmeticHandler
         }
     }
 
-    private function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
+    public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
         try {
             $img = @imagecreatefrompng($imagePath);

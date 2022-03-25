@@ -22,7 +22,6 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
-use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -30,7 +29,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
@@ -58,7 +56,6 @@ use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use pocketmine\world\particle\HeartParticle;
 
 class PlayerListener implements Listener
 {
@@ -612,8 +609,6 @@ class PlayerListener implements Listener
         $event->setDeathMessage("");
         $event->setDrops([]);
         $player = $event->getPlayer();
-        $pos = $player->getPosition();
-        $world = $player->getWorld();
         $player->kill();
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
@@ -626,9 +621,10 @@ class PlayerListener implements Listener
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === $damager->getWorld()) {
-                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $player->getName() . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                        $p->sendMessage(Loader::getPrefixCore() . "§a" . ($player->getName() ?? "Unknown") . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
                     }
                 }
+                $damager->setHealth(20);
             }
         }
     }

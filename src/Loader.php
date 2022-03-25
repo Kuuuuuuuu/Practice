@@ -67,6 +67,7 @@ class Loader extends PluginBase
     public array $EditKit = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
+    public array $BlockPractice = [];
     public array $BanCommand = [
         "hub",
         "kill"
