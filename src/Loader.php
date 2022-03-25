@@ -39,6 +39,7 @@ class Loader extends PluginBase
     public SQLite3 $BanData;
     public int $RestartTime = 31;
     public int $DeleteBlockTime = 8;
+    public int $LeaderboardMode = 1;
     public int $MaximumCPS = 20;
     public bool $Restarted = false;
     public float $EnderPearlForce = 2.5;
@@ -64,6 +65,8 @@ class Loader extends PluginBase
     public array $LastedElo = [];
     public array $ParkourCheckPoint = [];
     public array $EditKit = [];
+    public array $KillLeaderboard = [];
+    public array $DeathLeaderboard = [];
     public array $BanCommand = [
         "hub",
         "kill"
@@ -109,13 +112,14 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
+        self::$YamlLoader = new YamlDataProvider();
     }
 
     public function onEnable(): void
     {
-        self::$YamlLoader = new YamlDataProvider();
+        self::$YamlLoader->loadArenas();
         ArenaUtils::getInstance()->Start();
-        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n\n");
+        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
     }
 

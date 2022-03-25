@@ -11,8 +11,6 @@ use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\EnderPearl;
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
@@ -39,6 +37,13 @@ class HorizonTask extends Task
         }
         if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
+        }
+        if ($this->tick % 300 === 0) {
+            if (Loader::getInstance()->LeaderboardMode === 1) {
+                Loader::getInstance()->LeaderboardMode = 2;
+            } else {
+                Loader::getInstance()->LeaderboardMode = 1;
+            }
         }
         if ($this->tick % 2000 === 0) {
             foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
@@ -96,8 +101,7 @@ class HorizonTask extends Task
                 Loader::getInstance()->LastedElo[$name] = 0;
             }
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
-                $message = ($name . " §eHas " . $nowcps . " §cCPS" . "§f(§a" . $player->getNetworkSession()->getPing() . " §ePing §f/ §6" . ArenaUtils::getInstance()->getPlayerControls($player) . "§f)");
-                Server::getInstance()->broadcastMessage(Loader::getInstance()->MessageData["AntiCheatName"] . $message);
+                $player->kill();
             }
             if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
                 if (!$player->isSprinting()) {

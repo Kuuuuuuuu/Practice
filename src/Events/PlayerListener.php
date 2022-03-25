@@ -41,7 +41,6 @@ use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\event\player\PlayerItemHeldEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerJumpEvent;
@@ -303,7 +302,8 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onCraft(CraftItemEvent $event) {
+    public function onCraft(CraftItemEvent $event)
+    {
         $event->cancel();
     }
 

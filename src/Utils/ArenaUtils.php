@@ -19,6 +19,7 @@ use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Entity\FallingWool;
+use Kohaku\Core\Entity\Leaderboard;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
@@ -238,6 +239,10 @@ class ArenaUtils
                     $nbt
                 );
             }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
+        EntityFactory::getInstance()->register(Leaderboard::class, function (World $world, CompoundTag $nbt): Leaderboard {
+            return new Leaderboard(EntityDataHelper::parseLocation($nbt, $world), Leaderboard
+                ::parseSkinNBT($nbt), $nbt);
+        }, ['Leaderboard']);
     }
 
     public function loadallworlds()
@@ -367,6 +372,11 @@ class ArenaUtils
 
     public function addDeath(Player $player)
     {
+        if (!isset(Loader::getInstance()->DeathLeaderboard[$player->getName()])) {
+            Loader::getInstance()->DeathLeaderboard[$player->getName()] = 1;
+        } else {
+            Loader::getInstance()->DeathLeaderboard[$player->getName()]++;
+        }
         $this->getData($player->getName())->addDeath();
     }
 
@@ -392,6 +402,11 @@ class ArenaUtils
     public function addKill(Player $player)
     {
         $data = $this->getData($player->getName());
+        if (!isset(Loader::getInstance()->KillLeaderboard[$player->getName()])) {
+            Loader::getInstance()->KillLeaderboard[$player->getName()] = 1;
+        } else {
+            Loader::getInstance()->KillLeaderboard[$player->getName()]++;
+        }
         $data->addKill();
     }
 
