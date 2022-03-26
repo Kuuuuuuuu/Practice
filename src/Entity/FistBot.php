@@ -77,7 +77,7 @@ class FistBot extends Human
             $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
         }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.75) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.5) {
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();
                 $this->getTargetPlayer()->attack($event);
