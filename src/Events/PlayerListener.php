@@ -646,7 +646,7 @@ class PlayerListener implements Listener
                 return;
             }
             if ($damager instanceof Player) {
-                $dname = $player->getLastDamageCause()->getDamager()->getName() ?? "Unknown";
+                $dname = $damager->getName() ?? "Unknown";
                 /* @var HorizonPlayer $damager */
                 ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 $player->setLastDamagePlayer("Unknown");
