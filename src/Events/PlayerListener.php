@@ -642,9 +642,11 @@ class PlayerListener implements Listener
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-            if ($damager instanceof FistBot) {
+            if ($cause->getDamager() instanceof FistBot) {
                 $damager->sendMessage(Loader::getPrefixCore() . "§aYou have killed " . $player->getName() . "!");
-            } else if ($damager instanceof Player) {
+                return;
+            }
+            if ($damager instanceof Player) {
                 /* @var HorizonPlayer $damager */
                 ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 $player->setLastDamagePlayer("Unknown");

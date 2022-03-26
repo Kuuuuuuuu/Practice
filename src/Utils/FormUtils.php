@@ -460,6 +460,10 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
+                    $player->getInventory()->clearAll();
+                    $player->getArmorInventory()->clearAll();
+                    $player->getOffHandInventory()->clearAll();
+                    $player->getEffects()->clear();
                     $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())->getSpawnLocation());
                     BotUtils::getInstance()->spawnFistBot($player, true);
                     break;
