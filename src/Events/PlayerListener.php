@@ -557,7 +557,7 @@ class PlayerListener implements Listener
                 $event->cancel();
             } else if ($event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
                 $event->cancel();
-                $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 1.5, $entity->getPosition()->getZ()));
+                $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
             } else if ($event instanceof EntityDamageByChildEntityEvent) {
                 $owner = $event->getChild()->getOwningEntity();
                 if ($owner instanceof Player) {
