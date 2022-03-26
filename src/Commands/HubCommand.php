@@ -28,10 +28,6 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
-            if ($sender->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())) {
-                $sender->kill();
-                return;
-            }
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             $sender->sendMessage(Loader::getPrefixCore() . "§aTeleported to Hub!");
             $sender->setGamemode(GameMode::ADVENTURE());

@@ -42,7 +42,7 @@ class SumoScheduler extends Task
             }
             if ($this->plugin->phase === SumoHandler::PHASE_LOBBY) {
                 if (count($this->plugin->players) >= 2) {
-                    if ($this->startTime > 0) {
+                    if ($this->startTime >= 0) {
                         $this->startTime--;
                         foreach ($this->plugin->players as $player) {
                             /** @var $player Player */

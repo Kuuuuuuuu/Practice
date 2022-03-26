@@ -20,22 +20,23 @@ class FistBot extends Human
     private string $target;
     private int $hitTick = 0;
     private float $speed = 0.5;
+    private int $tick = 0;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = "")
     {
         parent::__construct($location, $skin, $nbt);
         $this->target = $target;
+        $this->alwaysShowNameTag = true;
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
     {
         parent::entityBaseTick($tickDiff);
+        $this->tick++;
         if (!$this->isAlive() || $this->getTargetPlayer() === null || !$this->getTargetPlayer()->isAlive()) {
             if (!$this->closed) $this->flagForDespawn();
             return false;
         }
-        $roundedHealth = round($this->getHealth());
-        $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
@@ -47,11 +48,15 @@ class FistBot extends Human
         if (!$this->recentlyHit()) {
             $this->move($this->motion->x, $this->motion->y, $this->motion->z);
         }
-        if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
-            $this->teleport($this->getTargetPlayer()->getPosition());
-            $this->speed = 0.7;
+        if ($this->tick % 20 === 0) {
+            $roundedHealth = round($this->getHealth());
+            $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
+                $this->teleport($this->getTargetPlayer()->getPosition());
+                $this->speed = 0.7;
+            }
         }
-        if ($this->getTargetPlayer() === null) {
+        if ($this->getTargetPlayer() === null or $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
             $this->flagForDespawn();
             return false;
         } else {
@@ -91,9 +96,6 @@ class FistBot extends Human
 
     public function isLookingAt(Vector3 $target): bool
     {
-        $horizontal = sqrt(($target->x - $this->getLocation()->getX()) ** 2 + ($target->z - $this->getLocation()->getZ()) ** 2);
-        $vertical = $target->y - $this->getLocation()->getY();
-        $expectedPitch = -atan2($vertical, $horizontal) / M_PI * 180;
         $xDist = $target->x - $this->getLocation()->getX();
         $zDist = $target->z - $this->getLocation()->getZ();
         $expectedYaw = atan2($zDist, $xDist) / M_PI * 180 - 90;
@@ -118,7 +120,7 @@ class FistBot extends Human
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        parent::knockBack($x, $z, 0.45);
+        parent::knockBack($x, $z, 0.35);
         $this->hitTick = Server::getInstance()->getTick();
     }
 }

@@ -28,10 +28,8 @@ class HorizonTask extends Task
             $this->updatePlayer();
             $this->RestartServer();
         }
-        if ($this->tick % 40 === 0) {
-            $this->updateTag();
-        }
         if ($this->tick % 60 === 0) {
+            $this->updateTag();
             $this->updateScoreboard();
             $this->updateRank();
         }

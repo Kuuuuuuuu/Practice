@@ -377,7 +377,7 @@ class PlayerListener implements Listener
                             "count" => $player->getInventory()->getItem(8)->getCount()
                         ],
                     ]);
-                } catch (Exception $e) {
+                } catch (Exception) {
                     $player->kill();
                     $player->setImmobile(false);
                     $player->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
@@ -547,15 +547,25 @@ class PlayerListener implements Listener
     {
         $entity = $event->getEntity();
         /* @var HorizonPlayer $entity */
-        if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
-            $event->cancel();
-        } else if ($event instanceof EntityDamageByChildEntityEvent) {
-            $owner = $event->getChild()->getOwningEntity();
-            if ($owner instanceof Player and $entity instanceof Player) {
-                $name = $owner->getName();
-                if ($name === $entity->getName()) {
+        if ($entity instanceof Player) {
+            if ($event->getCause() === EntityDamageEvent::CAUSE_VOID) {
+                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     $event->cancel();
-                    $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                    $entity->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                }
+            } else if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
+                $event->cancel();
+            } else if ($event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
+                $event->cancel();
+                $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 1.5, $entity->getPosition()->getZ()));
+            } else if ($event instanceof EntityDamageByChildEntityEvent) {
+                $owner = $event->getChild()->getOwningEntity();
+                if ($owner instanceof Player) {
+                    $name = $owner->getName();
+                    if ($name === $entity->getName()) {
+                        $event->cancel();
+                        $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                    }
                 }
             }
         }
@@ -644,9 +654,7 @@ class PlayerListener implements Listener
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
                 Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
-                return;
-            }
-            if ($damager instanceof Player) {
+            } else if ($damager instanceof Player) {
                 $dname = $damager->getName() ?? "Unknown";
                 /* @var HorizonPlayer $damager */
                 ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());

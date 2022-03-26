@@ -398,11 +398,11 @@ class ArenaUtils
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
-        $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1);
+        $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName("§r§bPlay");
-        $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1);
+        $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item2->setCustomName("§r§bSettings");
-        $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1);
+        $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName("§r§bBot");
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(0, $item);
@@ -430,7 +430,7 @@ class ArenaUtils
             $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
         }
         $newStreak = $killer->getStreak();
-        if (is_int($newStreak / 5)) {
+        if (is_int($newStreak / 10)) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
         }
     }
