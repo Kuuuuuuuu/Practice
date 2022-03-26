@@ -35,22 +35,23 @@ class FistBot extends Human
     {
         parent::entityBaseTick($tickDiff);
         $this->tick++;
-        if (!$this->isAlive() || $this->getTargetPlayer() === null || !$this->getTargetPlayer()->isAlive()) {
-            if (!$this->closed) $this->flagForDespawn();
+        if (!$this->isAlive() or $this->getTargetPlayer() === null or !$this->getTargetPlayer()->isAlive()) {
+            if (!$this->closed) {
+                $this->flagForDespawn();
+            }
             return false;
         }
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
-        if ($x != 0 || $z != 0) {
+        if ($x !== 0 || $z !== 0) {
             $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
-        $this->setSprinting(true);
         if (!$this->recentlyHit()) {
             $this->move($this->motion->x, $this->motion->y, $this->motion->z);
         }
-        if ($this->tick % 20 === 0) {
+        if ($this->tick % 40 === 0) {
             $roundedHealth = round($this->getHealth());
             $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
             if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
@@ -62,27 +63,32 @@ class FistBot extends Human
             $this->flagForDespawn();
             return false;
         } else {
-            $this->attackTargetPlayer();
+            if ($this->tick % 10 === 0) {
+                $this->attackTargetPlayer();
+            }
+            if (!$this->isSprinting()) {
+                $this->setSprinting(true);
+            }
         }
         return $this->isAlive();
     }
 
-    public function getTargetPlayer(): Player
+    private function getTargetPlayer(): Player
     {
         return Server::getInstance()->getPlayerByPrefix($this->target);
     }
 
-    public function getSpeed(): float
+    private function getSpeed(): float
     {
         return $this->speed;
     }
 
-    public function recentlyHit(): bool
+    private function recentlyHit(): bool
     {
         return Server::getInstance()->getTick() - $this->hitTick <= 4;
     }
 
-    public function attackTargetPlayer(): void
+    private function attackTargetPlayer(): void
     {
         if (mt_rand(0, 100) % 4 === 0) {
             $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
@@ -96,7 +102,7 @@ class FistBot extends Human
         }
     }
 
-    public function isLookingAt(Vector3 $target): bool
+    private function isLookingAt(Vector3 $target): bool
     {
         $xDist = $target->x - $this->getLocation()->getX();
         $zDist = $target->z - $this->getLocation()->getZ();

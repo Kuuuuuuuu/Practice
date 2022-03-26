@@ -39,7 +39,9 @@ class DeleteBlocksHandler
                 $y = $block[1];
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1), true);
+                if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
+                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1), true);
+                }
             }
             if ($sec === 3) {
                 $block = explode(':', $pos);
@@ -47,7 +49,9 @@ class DeleteBlocksHandler
                 $y = $block[1];
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14), true);
+                if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
+                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14), true);
+                }
             }
             if ($sec <= 0) {
                 $block = explode(':', $pos);
