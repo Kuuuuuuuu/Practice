@@ -10,6 +10,7 @@ namespace Kohaku\Core\Events;
 
 use Exception;
 use JsonException;
+use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
@@ -26,6 +27,7 @@ use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
@@ -127,6 +129,8 @@ class PlayerListener implements Listener
             Loader::$form->Form1($player);
         } else if ($item->getCustomName() === "§r§bSettings") {
             Loader::$form->settingsForm($player);
+        } else if ($item->getCustomName() === "§r§bBot") {
+            Loader::$form->botForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
             Loader::getInstance()->TimerTask[$name] = false;
@@ -609,6 +613,22 @@ class PlayerListener implements Listener
         }
     }
 
+    public function onEntityDeath(EntityDeathEvent $event)
+    {
+        $entity = $event->getEntity();
+        if ($entity instanceof FistBot) {
+            $cause = $entity->getLastDamageCause();
+            if ($cause instanceof EntityDamageByEntityEvent) {
+                $damager = $cause->getDamager();
+                if ($damager instanceof Player) {
+                    $damager->sendMessage(Loader::getPrefixCore() . "§aYou have killed a bot!");
+                }
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§a" . $damager->getName() . " have killed a bot!");
+                $damager->kill();
+            }
+        }
+    }
+
     /**
      * @throws Exception
      */
@@ -622,7 +642,9 @@ class PlayerListener implements Listener
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-            if ($damager instanceof Player) {
+            if ($damager instanceof FistBot) {
+                $damager->sendMessage(Loader::getPrefixCore() . "§aYou have killed " . $player->getName() . "!");
+            } else if ($damager instanceof Player) {
                 /* @var HorizonPlayer $damager */
                 ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 $player->setLastDamagePlayer("Unknown");

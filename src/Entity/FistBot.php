@@ -2,6 +2,7 @@
 
 namespace Kohaku\Core\Entity;
 
+use Kohaku\Core\Loader;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
@@ -13,7 +14,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
-class PracticeBot extends Human
+class FistBot extends Human
 {
 
     private string $target;
@@ -102,6 +103,13 @@ class PracticeBot extends Human
     {
         parent::attack($source);
         $this->hitTick = 20;
+        $entity = $source->getEntity();
+        if ($entity instanceof Player) {
+            if ($entity->getName() !== $this->target) {
+                $source->cancel();
+                $entity->sendMessage(Loader::getPrefixCore() . "You can't attack this bot!");
+            }
+        }
     }
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void

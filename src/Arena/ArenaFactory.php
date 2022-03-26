@@ -59,6 +59,12 @@ class ArenaFactory
         return $data->get("Boxing");
     }
 
+    public function getBotArena(): string
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        return $data->get("Bot");
+    }
+
     public function getParkourArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
@@ -151,6 +157,18 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("OITC", $world);
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
+    }
+
+    /**
+     * @throws JsonException
+     */
+
+    public function setBotArena(Player $player, string $world)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->set("Bot", $world);
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "§aThe Arena was saved");
     }
@@ -278,6 +296,17 @@ class ArenaFactory
         $data->remove("Fist");
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . "Fist removed arena");
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function removeBot(Player $player)
+    {
+        $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
+        $data->remove("Bot");
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . "Bot removed arena");
     }
 
     /**

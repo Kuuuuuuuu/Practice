@@ -19,8 +19,8 @@ use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Entity\FallingWool;
+use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\Entity\Leaderboard;
-use Kohaku\Core\Entity\PracticeBot;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
@@ -243,8 +243,8 @@ class ArenaUtils
             return new Leaderboard(EntityDataHelper::parseLocation($nbt, $world), Leaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['Leaderboard']);
-        EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {
-            return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), PracticeBot
+        EntityFactory::getInstance()->register(FistBot::class, function (World $world, CompoundTag $nbt): FistBot {
+            return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
     }
@@ -399,10 +399,13 @@ class ArenaUtils
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
-        $item = ItemFactory::getInstance()->get(279, 0, 1);
+        $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1);
         $item->setCustomName("§r§bPlay");
-        $item2 = ItemFactory::getInstance()->get(286, 0, 1);
+        $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1);
         $item2->setCustomName("§r§bSettings");
+        $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1);
+        $item3->setCustomName("§r§bSettings");
+        $player->getInventory()->setItem(0, $item3);
         $player->getInventory()->setItem(4, $item);
         $player->getInventory()->setItem(8, $item2);
     }

@@ -450,4 +450,24 @@ class FormUtils
         $player->sendForm($form);
         return true;
     }
+
+    public function botForm($player)
+    {
+        $form = new SimpleForm(function (Player $player, int $data = null) {
+            $result = $data;
+            if ($result === null) {
+                return true;
+            }
+            switch ($result) {
+                case 0:
+                    $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())->getSpawnLocation());
+                    BotUtils::getInstance()->spawnFistBot($player, true);
+                    break;
+            }
+            return true;
+        });
+        $form->setTitle("§bHorizon §eMenu");
+        $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
+        $player->sendForm($form);
+    }
 }
