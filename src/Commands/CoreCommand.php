@@ -8,6 +8,7 @@ namespace Kohaku\Core\Commands;
 
 use JsonException;
 use Kohaku\Core\Entity\Leaderboard;
+use Kohaku\Core\Entity\PracticeBot;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\command\{Command, CommandSender};
@@ -237,6 +238,10 @@ class CoreCommand extends Command
                         break;
                     case "setleader":
                         $npc = new Leaderboard($sender->getLocation(), $sender->getSkin());
+                        $npc->spawnToAll();
+                        break;
+                    case "test":
+                        $npc = new PracticeBot($sender->getLocation(), $sender->getSkin());
                         $npc->spawnToAll();
                         break;
                     case "removeleader":

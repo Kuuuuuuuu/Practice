@@ -20,6 +20,7 @@ use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Entity\FallingWool;
 use Kohaku\Core\Entity\Leaderboard;
+use Kohaku\Core\Entity\PracticeBot;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
@@ -242,6 +243,10 @@ class ArenaUtils
             return new Leaderboard(EntityDataHelper::parseLocation($nbt, $world), Leaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['Leaderboard']);
+        EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {
+            return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), PracticeBot
+                ::parseSkinNBT($nbt), $nbt);
+        }, ['practicebot']);
     }
 
     public function loadallworlds()
