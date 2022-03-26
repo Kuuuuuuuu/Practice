@@ -6,7 +6,6 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\{entity\Skin, player\Player};
@@ -39,8 +38,7 @@ class HorizonPlayer extends Player
                     } else {
                         $attackSpeed = 10;
                     }
-                } catch (Exception $e) {
-                    ArenaUtils::getLogger((string)$e);
+                } catch (Exception) {
                     $attackSpeed = 10;
                 }
             }
@@ -58,8 +56,8 @@ class HorizonPlayer extends Player
                 $this->xzKB = 0.4;
                 $this->yKb = 0.4;
             }
-        } catch (Exception $e) {
-            ArenaUtils::getLogger((string)$e);
+        } catch (Exception) {
+            return;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {

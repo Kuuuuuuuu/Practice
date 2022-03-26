@@ -81,6 +81,20 @@ class ArenaUtils
         return new ArenaUtils();
     }
 
+    public static function getLogger(string $err)
+    {
+        $e = new DiscordWebhookEmbed();
+        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+        $msg = new DiscordWebhookUtils();
+        $e->setTitle("Error");
+        $e->setFooter("Made By KohakuChan");
+        $e->setTimestamp(new Datetime());
+        $e->setColor(0x00ff00);
+        $e->setDescription("Error: " . $err);
+        $msg->addEmbed($e);
+        $web->send($msg);
+    }
+
     public function getPlayerControls(Player $player): string
     {
         if (!isset(Loader::getInstance()->PlayerControl[strtolower($player->getName())]) or Loader::getInstance()->PlayerControl[strtolower($player->getName())] == null) {
@@ -296,8 +310,7 @@ class ArenaUtils
                         $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["6"]["item"], 0, $dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["7"]["item"], 0, $dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["8"]["item"], 0, $dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    } catch (Exception $e) {
-                        ArenaUtils::getLogger((string)$e);
+                    } catch (Exception) {
                         $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -362,20 +375,6 @@ class ArenaUtils
         if ($dplayer instanceof HorizonPlayer) {
             $dplayer->setLastDamagePlayer("Unknown");
         }
-    }
-
-    public static function getLogger(string $err)
-    {
-        $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-        $msg = new DiscordWebhookUtils();
-        $e->setTitle("Error");
-        $e->setFooter("Made By KohakuChan");
-        $e->setTimestamp(new Datetime());
-        $e->setColor(0x00ff00);
-        $e->setDescription("Error: " . $err);
-        $msg->addEmbed($e);
-        $web->send($msg);
     }
 
     public function addDeath(Player $player)

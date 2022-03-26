@@ -215,8 +215,7 @@ class ArenaManager
                     $player->getInventory()->setItem(6, ItemFactory::getInstance()->get($player->getKit()["0"]["6"]["item"], 0, $player->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     $player->getInventory()->setItem(7, ItemFactory::getInstance()->get($player->getKit()["0"]["7"]["item"], 0, $player->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     $player->getInventory()->setItem(8, ItemFactory::getInstance()->get($player->getKit()["0"]["8"]["item"], 0, $player->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                } catch (Exception $e) {
-                    ArenaUtils::getLogger((string)$e);
+                } catch (Exception) {
                     $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1));
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2));
