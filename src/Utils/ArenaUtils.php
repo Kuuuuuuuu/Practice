@@ -404,7 +404,7 @@ class ArenaUtils
         $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1);
         $item2->setCustomName("§r§bSettings");
         $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1);
-        $item3->setCustomName("§r§bSettings");
+        $item3->setCustomName("§r§bBot");
         $player->getInventory()->setItem(0, $item3);
         $player->getInventory()->setItem(4, $item);
         $player->getInventory()->setItem(8, $item2);
