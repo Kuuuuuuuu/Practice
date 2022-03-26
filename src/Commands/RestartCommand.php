@@ -24,7 +24,7 @@ class RestartCommand extends Command
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 Loader::getInstance()->Restarted = true;
                 if ($args != null) {
-                    Loader::getInstance()->RestartTime = (int)$args[0];
+                    Loader::getInstance()->RestartTime = (int)implode($args);
                 }
                 $sender->sendMessage(Loader::getPrefixCore() . "§aServer restarting...");
             } else {
