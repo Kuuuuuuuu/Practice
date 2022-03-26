@@ -620,8 +620,8 @@ class PlayerListener implements Listener
             $cause = $entity->getLastDamageCause();
             if ($cause instanceof EntityDamageByEntityEvent) {
                 $damager = $cause->getDamager();
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§a" . $damager->getName() . " have killed a bot!");
-                $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld());
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§f" . $damager->getName() . " §ahave been killed a bot!");
+                $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                 ArenaUtils::getInstance()->GiveItem($damager);
             }
         }
