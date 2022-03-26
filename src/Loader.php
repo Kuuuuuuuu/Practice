@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
+use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\FormUtils;
@@ -131,5 +132,12 @@ class Loader extends PluginBase
         ArenaUtils::getInstance()->loadMap("BUild");
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof FistBot) {
+                    $entity->close();
+                }
+            }
+        }
     }
 }
