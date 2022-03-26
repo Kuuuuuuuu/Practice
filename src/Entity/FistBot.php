@@ -21,6 +21,8 @@ class FistBot extends Human
     private int $hitTick = 0;
     private float $speed = 0.5;
     private int $tick = 0;
+    private float $yKb = 0.32;
+    private float $hKb = 0.32;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = "")
     {
@@ -120,7 +122,25 @@ class FistBot extends Human
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        parent::knockBack($x, $z, 0.35);
+        $f = sqrt($x * $x + $z * $z);
+        if ($f <= 0) {
+            return;
+        }
+        if (mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
+            $f = 1 / $f;
+            $motion = clone $this->motion;
+            $motion->x /= 2;
+            $motion->y /= 2;
+            $motion->z /= 2;
+            $motion->x += $x * $f * $this->hKb;
+            $motion->y += $this->yKb;
+            $motion->z += $z * $f * $this->hKb;
+            if ($motion->y > $this->yKb) {
+                $motion->y = $this->yKb;
+            }
+            $this->setMotion($motion);
+        }
+        parent::knockBack($this->hKb, $this->yKb, 0.35);
         $this->hitTick = Server::getInstance()->getTick();
     }
 }
