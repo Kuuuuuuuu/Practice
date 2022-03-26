@@ -57,7 +57,8 @@ class HorizonPlayer extends Player
                 $this->yKb = 0.4;
             }
         } catch (Exception) {
-            return;
+            $this->xzKB = 0.4;
+            $this->yKb = 0.4;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
