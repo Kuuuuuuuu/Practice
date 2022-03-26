@@ -28,7 +28,7 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
-            if ($sender->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())) {
+            if ($sender->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())) {
                 $sender->kill();
                 return;
             }
