@@ -248,7 +248,7 @@ class HorizonTask extends Task
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             $name = $player->getName();
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null or ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
                 $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
             } else {
                 $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
