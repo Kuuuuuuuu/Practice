@@ -241,7 +241,7 @@ class CoreCommand extends Command
                         $npc->spawnToAll();
                         break;
                     case "test":
-                        $npc = new PracticeBot($sender->getLocation(), $sender->getSkin(), $sender->getName());
+                        $npc = new PracticeBot($sender->getLocation(), $sender->getSkin(), null, $sender->getName());
                         $npc->spawnToAll();
                         break;
                     case "removeleader":
