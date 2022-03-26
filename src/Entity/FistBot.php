@@ -47,6 +47,9 @@ class FistBot extends Human
         if (!$this->recentlyHit()) {
             $this->move($this->motion->x, $this->motion->y, $this->motion->z);
         }
+        if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
+            $this->teleport($this->getTargetPlayer()->getPosition());
+        }
         if ($this->getTargetPlayer() === null) {
             $this->flagForDespawn();
             return false;
