@@ -643,7 +643,7 @@ class PlayerListener implements Listener
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§aYou have killed " . $player->getName() . "!");
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $player->getName() . " §ahas been killed by a bot!");
                 return;
             }
             if ($damager instanceof Player) {
