@@ -620,11 +620,9 @@ class PlayerListener implements Listener
             $cause = $entity->getLastDamageCause();
             if ($cause instanceof EntityDamageByEntityEvent) {
                 $damager = $cause->getDamager();
-                if ($damager instanceof Player) {
-                    $damager->sendMessage(Loader::getPrefixCore() . "§aYou have killed a bot!");
-                }
                 Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§a" . $damager->getName() . " have killed a bot!");
-                $damager->kill();
+                $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld());
+                ArenaUtils::getInstance()->GiveItem($damager);
             }
         }
     }
@@ -638,7 +636,7 @@ class PlayerListener implements Listener
         $event->setDrops([]);
         $player = $event->getPlayer();
         $player->kill();
-        $name = $player->getName() ? $player->getName() : "Unknown";
+        $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
@@ -648,13 +646,14 @@ class PlayerListener implements Listener
                 return;
             }
             if ($damager instanceof Player) {
+                $dname = $player->getLastDamageCause()->getDamager()->getName() ?? "Unknown";
                 /* @var HorizonPlayer $damager */
                 ArenaUtils::getInstance()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 $player->setLastDamagePlayer("Unknown");
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === $damager->getWorld()) {
-                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
                     }
                 }
                 $damager->setHealth(20);
