@@ -623,6 +623,7 @@ class PlayerListener implements Listener
                 Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§f" . $damager->getName() . " §ahave been killed a bot!");
                 $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                 ArenaUtils::getInstance()->GiveItem($damager);
+                $damager->setHealth(20);
             }
         }
     }
