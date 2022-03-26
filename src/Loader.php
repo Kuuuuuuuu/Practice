@@ -121,7 +121,19 @@ class Loader extends PluginBase
         self::$YamlLoader->loadArenas();
         ArenaUtils::getInstance()->Start();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
+        $this->killbot();
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
+    }
+
+    private function killbot()
+    {
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof FistBot) {
+                    $entity->close();
+                }
+            }
+        }
     }
 
     /**
@@ -131,13 +143,7 @@ class Loader extends PluginBase
     {
         ArenaUtils::getInstance()->loadMap("BUild");
         self::$YamlLoader->saveArenas();
+        $this->killbot();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof FistBot) {
-                    $entity->close();
-                }
-            }
-        }
     }
 }

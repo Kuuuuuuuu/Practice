@@ -497,7 +497,7 @@ class PlayerListener implements Listener
         if ($player instanceof HorizonPlayer and $damager instanceof HorizonPlayer) {
             $damager->setLastDamagePlayer($player->getName());
             $player->setLastDamagePlayer($damager->getName());
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
@@ -638,12 +638,13 @@ class PlayerListener implements Listener
         $event->setDrops([]);
         $player = $event->getPlayer();
         $player->kill();
+        $name = $player->getName() ? $player->getName() : "Unknown";
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $player->getName() . " §ahas been killed by a bot!");
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
                 return;
             }
             if ($damager instanceof Player) {
@@ -653,7 +654,7 @@ class PlayerListener implements Listener
                 $damager->setLastDamagePlayer("Unknown");
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === $damager->getWorld()) {
-                        $p->sendMessage(Loader::getPrefixCore() . "§a" . ($player->getName() ?? "Unknown") . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
+                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $player->getLastDamageCause()->getDamager()->getName());
                     }
                 }
                 $damager->setHealth(20);

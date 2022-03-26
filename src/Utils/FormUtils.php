@@ -15,6 +15,7 @@ use Kohaku\Core\Utils\Forms\CustomForm;
 use Kohaku\Core\Utils\Forms\SimpleForm;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -464,13 +465,14 @@ class FormUtils
                     $player->getArmorInventory()->clearAll();
                     $player->getOffHandInventory()->clearAll();
                     $player->getEffects()->clear();
-                    $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena())->getSpawnLocation());
+                    $player->teleport(new Location(255, 6, 255, Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena()), 0, 0));
                     BotUtils::getInstance()->spawnFistBot($player, true);
                     break;
             }
             return true;
         });
         $form->setTitle("§bHorizon §eMenu");
+        $form->setContent("§bPlayers: §e" . Loader::$arenafac->getPlayers(Loader::$arenafac->getBotArena()));
         $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
         $player->sendForm($form);
     }
