@@ -44,7 +44,7 @@ class FistBot extends Human
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
-        if ($x !== 0 || $z !== 0) {
+        if ($x != 0 || $z != 0) {
             $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
