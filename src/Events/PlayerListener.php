@@ -166,7 +166,7 @@ class PlayerListener implements Listener
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
                         $entity->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                     }
-                }), 30);
+                }), 50);
             }
         }
     }
