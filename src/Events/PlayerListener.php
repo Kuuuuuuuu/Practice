@@ -345,12 +345,17 @@ class PlayerListener implements Listener
             if (mb_strtolower($args[0]) === "confirm") {
                 try {
                     for ($x = 0; $x != 32; $x++) {
-                        Loader::getInstance()->KitData->set($name, [
+                        $array = array();
+                        $array[] = [
                             $x => [
                                 "item" => $player->getInventory()->getItem($x)->getId(),
                                 "count" => $player->getInventory()->getItem($x)->getCount()
                             ],
-                        ]);
+                        ];
+                        if ($x = 32) {
+                            Loader::getInstance()->KitData->set($name, $array);
+                            Loader::getInstance()->KitData->save();
+                        }
                     }
                 } catch (Exception) {
                     $player->kill();
