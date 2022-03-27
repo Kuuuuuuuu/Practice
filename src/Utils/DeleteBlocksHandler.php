@@ -42,8 +42,7 @@ class DeleteBlocksHandler
                 if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
                     $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1), true);
                 }
-            }
-            if ($sec === 3) {
+            } else if ($sec === 3) {
                 $block = explode(':', $pos);
                 $x = $block[0];
                 $y = $block[1];
@@ -52,8 +51,7 @@ class DeleteBlocksHandler
                 if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
                     $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14), true);
                 }
-            }
-            if ($sec <= 0) {
+            } else if ($sec <= 0) {
                 $block = explode(':', $pos);
                 $x = $block[0];
                 $y = $block[1];

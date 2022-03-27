@@ -45,7 +45,7 @@ class FistBot extends Human
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if (!$this->recentlyHit()) {
-            $this->move($this->motion->x, $this->motion->y, $this->motion->z);
+            //$this->move($this->motion->x, $this->motion->y, $this->motion->z);
         }
         $roundedHealth = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
@@ -102,7 +102,7 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 1.2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 1.5 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void

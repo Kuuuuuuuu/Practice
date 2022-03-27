@@ -8,8 +8,6 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\ScoreboardUtils;
-use pocketmine\entity\object\ItemEntity;
-use pocketmine\entity\projectile\Arrow;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\scheduler\Task;
@@ -32,18 +30,12 @@ class HorizonTask extends Task
             $this->updateTag();
             $this->updateScoreboard();
         }
-        if ($this->tick % 120 === 0) {
-            $this->updateRank();
-        }
         if ($this->tick % 600 === 0) {
             if (Loader::getInstance()->LeaderboardMode === 1) {
                 Loader::getInstance()->LeaderboardMode = 2;
             } else {
                 Loader::getInstance()->LeaderboardMode = 1;
             }
-        }
-        if ($this->tick % 2000 === 0) {
-            $this->updateItem();
         }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
@@ -84,6 +76,14 @@ class HorizonTask extends Task
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $player->kill();
             }
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
+            } else {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
+            }
+            if ($player->getNameTag() !== $nametag) {
+                $player->setNameTag($nametag);
+            }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 if (isset(Loader::getInstance()->CombatTimer[$name])) {
                     unset(Loader::getInstance()->CombatTimer[$name]);
@@ -122,36 +122,8 @@ class HorizonTask extends Task
     {
         if (Loader::getInstance()->Restarted) {
             Loader::getInstance()->RestartTime--;
-            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                switch (Loader::getInstance()->RestartTime) {
-                    case 30:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e30 §cseconds");
-                        break;
-                    case 15:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e15 §cseconds");
-                        break;
-                    case 10:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e10 §cseconds");
-                        break;
-                    case 5:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e5 §cseconds");
-                        break;
-                    case 4:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e4 §cseconds");
-                        break;
-                    case 3:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e3 §cseconds");
-                        break;
-                    case 2:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e2 §cseconds");
-                        break;
-                    case 1:
-                        $player->sendMessage(Loader::getPrefixCore() . "§cServer will restart in §e1 §csecond");
-                        break;
-                    case 0:
-                        Server::getInstance()->shutdown();
-                        break;
-                }
+            if (Loader::getInstance()->RestartTime <= 15) {
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
             }
         }
     }
@@ -206,35 +178,6 @@ class HorizonTask extends Task
                     ScoreboardUtils::getInstance()->sb2($player);
                 } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                     ScoreboardUtils::getInstance()->Parkour($player);
-                }
-            }
-        }
-    }
-
-    private function updateRank()
-    {
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            $name = $player->getName();
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
-            } else {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
-            }
-            if ($player->getNameTag() !== $nametag) {
-                $player->setNameTag($nametag);
-            }
-        }
-    }
-
-    private function updateItem()
-    {
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
-            foreach ($level->getEntities() as $entity) {
-                if ($entity instanceof ItemEntity or $entity instanceof Arrow) {
-                    if ($entity->onGround and $entity->isAlive()) {
-                        $entity->flagForDespawn();
-                        $entity->close();
-                    }
                 }
             }
         }

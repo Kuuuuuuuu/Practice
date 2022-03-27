@@ -344,44 +344,14 @@ class PlayerListener implements Listener
             $args = explode(" ", $event->getMessage());
             if (mb_strtolower($args[0]) === "confirm") {
                 try {
-                    Loader::getInstance()->KitData->set($name, [
-                        "0" => [
-                            "item" => $player->getInventory()->getItem(0)->getId(),
-                            "count" => $player->getInventory()->getItem(0)->getCount()
-                        ],
-                        "1" => [
-                            "item" => $player->getInventory()->getItem(1)->getId(),
-                            "count" => $player->getInventory()->getItem(1)->getCount()
-                        ],
-                        "2" => [
-                            "item" => $player->getInventory()->getItem(2)->getId(),
-                            "count" => $player->getInventory()->getItem(2)->getCount(),
-                        ],
-                        "3" => [
-                            "item" => $player->getInventory()->getItem(3)->getId(),
-                            "count" => $player->getInventory()->getItem(3)->getCount()
-                        ],
-                        "4" => [
-                            "item" => $player->getInventory()->getItem(4)->getId(),
-                            "count" => $player->getInventory()->getItem(4)->getCount()
-                        ],
-                        "5" => [
-                            "item" => $player->getInventory()->getItem(5)->getId(),
-                            "count" => $player->getInventory()->getItem(5)->getCount()
-                        ],
-                        "6" => [
-                            "item" => $player->getInventory()->getItem(6)->getId(),
-                            "count" => $player->getInventory()->getItem(6)->getCount()
-                        ],
-                        "7" => [
-                            "item" => $player->getInventory()->getItem(7)->getId(),
-                            "count" => $player->getInventory()->getItem(7)->getCount()
-                        ],
-                        "8" => [
-                            "item" => $player->getInventory()->getItem(8)->getId(),
-                            "count" => $player->getInventory()->getItem(8)->getCount()
-                        ],
-                    ]);
+                    for ($x = 0; $x != 32; $x++) {
+                        Loader::getInstance()->KitData->set($name, [
+                            $x => [
+                                "item" => $player->getInventory()->getItem($x)->getId(),
+                                "count" => $player->getInventory()->getItem($x)->getCount()
+                            ],
+                        ]);
+                    }
                 } catch (Exception) {
                     $player->kill();
                     $player->setImmobile(false);
