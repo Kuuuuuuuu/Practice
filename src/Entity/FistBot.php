@@ -49,15 +49,6 @@ class FistBot extends Human
         }
         $roundedHealth = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
-        if (!$this->isOnGround()) {
-            if ($this->motion->y > -$this->gravity) {
-                $this->motion->y = -$this->gravity;
-            } else {
-                $this->motion->y += $this->isUnderwater() ? $this->gravity : -$this->gravity;
-            }
-        } else {
-            $this->motion->y -= $this->gravity;
-        }
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
             $this->speed = 0.7;
