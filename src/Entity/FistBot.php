@@ -18,8 +18,7 @@ class FistBot extends Human
 {
 
     private string $target;
-    private int $hitTick = 0;
-    private float $speed = 0.5;
+    private float $speed = 1;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = "")
     {
@@ -41,17 +40,14 @@ class FistBot extends Human
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
         if ($x != 0 || $z != 0) {
-            $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
-            $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
-        }
-        if (!$this->recentlyHit()) {
-            //$this->move($this->motion->x, $this->motion->y, $this->motion->z);
+            $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
+            $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         }
         $roundedHealth = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
-            $this->speed = 0.7;
+            $this->speed = 2;
         }
         if ($this->getTargetPlayer() === null or $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
             $this->flagForDespawn();
@@ -75,18 +71,13 @@ class FistBot extends Human
         return $this->speed;
     }
 
-    private function recentlyHit(): bool
-    {
-        return Server::getInstance()->getTick() - $this->hitTick <= 4;
-    }
-
     private function attackTargetPlayer(): void
     {
         if (mt_rand(0, 100) % 4 === 0) {
             $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
         }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.3) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.45) {
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();
                 $this->getTargetPlayer()->attack($event);
@@ -102,13 +93,12 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 1.5 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
     {
         parent::attack($source);
-        $this->hitTick = 20;
         $entity = $source->getEntity();
         if ($source->isCancelled()) {
             $source->cancel();
