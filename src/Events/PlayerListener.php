@@ -23,7 +23,6 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
-use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -60,8 +59,6 @@ use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
-use ReflectionException;
-use ReflectionMethod;
 
 class PlayerListener implements Listener
 {
@@ -151,20 +148,10 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @throws ReflectionException
-     */
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        $owner = $entity->getOwningEntity();
-        if ($entity instanceof EnderPearl and $owner instanceof Player) {
-            $position = new ReflectionMethod($entity, 'setPosition');
-            $position->invoke($entity, $event->getRayTraceResult()->getHitVector());
-            $location = $entity->getLocation();
-            $entity->getNetworkSession()->syncMovement($location, $location->yaw, $location->pitch);
-            $entity->setOwningEntity(null);
-        } else if ($entity instanceof Arrow) {
+        if ($entity instanceof Arrow) {
             $entity->flagForDespawn();
             $entity->close();
         }
