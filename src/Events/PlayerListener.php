@@ -23,6 +23,7 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
+use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -57,7 +58,10 @@ use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
+use ReflectionException;
+use ReflectionMethod;
 
 class PlayerListener implements Listener
 {
@@ -147,10 +151,20 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        if ($entity instanceof Arrow) {
+        $owner = $entity->getOwningEntity();
+        if ($entity instanceof EnderPearl and $owner instanceof Player) {
+            $position = new ReflectionMethod($entity, 'setPosition');
+            $position->invoke($entity, $event->getRayTraceResult()->getHitVector());
+            $location = $entity->getLocation();
+            $entity->getNetworkSession()->syncMovement($location, $location->yaw, $location->pitch);
+            $entity->setOwningEntity(null);
+        } else if ($entity instanceof Arrow) {
             $entity->flagForDespawn();
             $entity->close();
         }
@@ -161,7 +175,11 @@ class PlayerListener implements Listener
         $entity = $event->getEntity();
         if ($entity instanceof Player) {
             if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                Loader::getInstance()->ArrowOITC[$entity->getName()] = 3;
+                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
+                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                        $entity->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                    }
+                }), 30);
             }
         }
     }
@@ -337,7 +355,7 @@ class PlayerListener implements Listener
         if (isset(Loader::getInstance()->EditKit[$name])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());
-            if (mb_strtolower($args[0]) == "confirm") {
+            if (mb_strtolower($args[0]) === "confirm") {
                 try {
                     Loader::getInstance()->KitData->set($name, [
                         "0" => [
@@ -389,9 +407,11 @@ class PlayerListener implements Listener
                 $player->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
                 $player->kill();
                 $player->setImmobile(false);
+            } else {
+                $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm");
+                $player->sendMessage(Loader::getPrefixCore() . "§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
             }
-        }
-        if (isset(Loader::getInstance()->SumoSetup[$name])) {
+        } else if (isset(Loader::getInstance()->SumoSetup[$name])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());
             $arena = Loader::getInstance()->SumoSetup[$name];
@@ -445,19 +465,11 @@ class PlayerListener implements Listener
                     break;
             }
         } else {
-            if (isset(Loader::getInstance()->ChatCooldown[$name])) {
-                if (Loader::getInstance()->ChatCooldown[$name] > 0) {
-                    $event->cancel();
-                    $player->sendMessage(str_replace(["&", "{cooldown}"], ["§", Loader::getInstance()->ChatCooldown[$name]], Loader::getInstance()->MessageData["CooldownMessage"]));
-                }
-            } else {
-                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-                $msg = new DiscordWebhookUtils();
-                $msg2 = str_replace(["@here", "@everyone"], "", $message);
-                $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
-                $web->send($msg);
-                Loader::getInstance()->ChatCooldown[$name] = 1.5;
-            }
+            $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+            $msg = new DiscordWebhookUtils();
+            $msg2 = str_replace(["@here", "@everyone"], "", $message);
+            $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . ArenaUtils::getInstance()->getPlayerOs($player) . " " . $player->getDisplayName() . " > " . $msg2);
+            $web->send($msg);
         }
     }
 
@@ -587,27 +599,33 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                 $player->kill();
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                 $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
                 $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
             if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
             }
         } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
             if ($block->getId() === BlockLegacyIds::NOTE_BLOCK) {
-                Loader::getInstance()->TimerTask[$name] = true;
+                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {
+                    Loader::getInstance()->TimerTask[$name] = true;
+                }
             } else if ($block->getId() === BlockLegacyIds::PODZOL) {
-                Loader::getInstance()->TimerTask[$name] = false;
+                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
+                    Loader::getInstance()->TimerTask[$name] = false;
+                }
             } else if ($block->getId() === BlockLegacyIds::LIT_REDSTONE_LAMP) {
-                if (Loader::getInstance()->TimerTask[$name] === true) {
+                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
                     Loader::getInstance()->TimerTask[$name] = false;
                     $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
                     $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
@@ -630,10 +648,12 @@ class PlayerListener implements Listener
             $cause = $entity->getLastDamageCause();
             if ($cause instanceof EntityDamageByEntityEvent) {
                 $damager = $cause->getDamager();
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§f" . $damager->getName() . " §ahave been killed a bot!");
-                $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-                ArenaUtils::getInstance()->GiveItem($damager);
-                $damager->setHealth(20);
+                if ($damager instanceof Player) {
+                    $damager->sendMessage(Loader::getPrefixCore() . "§aYou have been killed a bot!");
+                    $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                    ArenaUtils::getInstance()->GiveItem($damager);
+                    $damager->setHealth(20);
+                }
             }
         }
     }
@@ -653,7 +673,11 @@ class PlayerListener implements Listener
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
+                foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
+                    if ($p->getWorld() === $player->getWorld()) {
+                        $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
+                    }
+                }
             } else if ($damager instanceof Player) {
                 $dname = $damager->getName() ?? "Unknown";
                 /* @var HorizonPlayer $damager */
@@ -706,9 +730,10 @@ class PlayerListener implements Listener
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             $msg = substr($msg, 1);
             $msg = explode(" ", $msg);
-            if (!in_array($msg[0], Loader::getInstance()->BanCommand)) return;
-            $event->cancel();
-            $player->sendMessage(Loader::getInstance()->MessageData["CantUseWantCombat"]);
+            if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
+                $event->cancel();
+                $player->sendMessage(Loader::getInstance()->MessageData["CantUseWantCombat"]);
+            }
         }
     }
 }

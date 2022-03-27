@@ -212,23 +212,9 @@ class FormUtils
                     $this->openCapesUI($player);
                     break;
                 case 3:
-                    if (!isset(Loader::getInstance()->PlayerSprint[$player->getName()])) {
-                        Loader::getInstance()->PlayerSprint[$player->getName()] = true;
-                        $player->sendMessage(Loader::getPrefixCore() . "§aSprint enabled");
-                    } else {
-                        if (Loader::getInstance()->PlayerSprint[$player->getName()] === true) {
-                            Loader::getInstance()->PlayerSprint[$player->getName()] = false;
-                            $player->sendMessage(Loader::getPrefixCore() . "§cSprint disabled");
-                        } else {
-                            Loader::getInstance()->PlayerSprint[$player->getName()] = true;
-                            $player->sendMessage(Loader::getPrefixCore() . "§aSprint enabled");
-                        }
-                    }
-                    break;
-                case 4:
                     $this->getArtifactForm($player);
                     break;
-                case 5:
+                case 4:
                     $player->getInventory()->clearAll();
                     $player->getArmorInventory()->clearAll();
                     $player->setImmobile(true);
@@ -254,7 +240,6 @@ class FormUtils
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
-        $form->addButton("§bAuto §aSprint", 0, "textures/items/diamond_sword.png");
         $form->addButton("§bArtifacts", 0, "textures/items/diamond_axe.png");
         $form->addButton("§bEdit §aKit", 0, "textures/items/diamond_pickaxe.png");
         $player->sendForm($form);

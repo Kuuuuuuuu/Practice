@@ -47,8 +47,7 @@ class ScoreboardUtils
     {
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
-        $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);
-        $bow = floor(Loader::getInstance()->ArrowOITC[$player->getName() ?? null] ?? 0);
+        $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);;
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
@@ -59,8 +58,6 @@ class ScoreboardUtils
         ];
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
             $lines[5] = "§bSkillCD§f: §6$skill";
-        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-            $lines[5] = "§bBowCD§f: §6$bow";
         }
         Loader::$score->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {

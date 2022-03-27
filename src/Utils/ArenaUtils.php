@@ -356,12 +356,6 @@ class ArenaUtils
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             unset(Loader::getInstance()->BoxingPoint[$name]);
         }
-        if (isset(Loader::getInstance()->ArrowOITC[$dname])) {
-            unset(Loader::getInstance()->ArrowOITC[$dname]);
-        }
-        if (isset(Loader::getInstance()->ArrowOITC[$name])) {
-            unset(Loader::getInstance()->ArrowOITC[$name]);
-        }
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();

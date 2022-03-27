@@ -27,30 +27,19 @@ class HorizonTask extends Task
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
             $this->RestartServer();
-        }
-        if ($this->tick % 60 === 0) {
+        } else if ($this->tick % 60 === 0) {
             $this->updateTag();
             $this->updateScoreboard();
+        } else if ($this->tick % 120 === 0) {
             $this->updateRank();
-        }
-        if ($this->tick % 300 === 0) {
+        } else if ($this->tick % 600 === 0) {
             if (Loader::getInstance()->LeaderboardMode === 1) {
                 Loader::getInstance()->LeaderboardMode = 2;
             } else {
                 Loader::getInstance()->LeaderboardMode = 1;
             }
-        }
-        if ($this->tick % 2000 === 0) {
-            foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
-                foreach ($level->getEntities() as $entity) {
-                    if ($entity instanceof ItemEntity or $entity instanceof Arrow) {
-                        if ($entity->onGround and $entity->isAlive()) {
-                            $entity->flagForDespawn();
-                            $entity->close();
-                        }
-                    }
-                }
-            }
+        } else if ($this->tick % 2000 === 0) {
+            $this->updateItem();
         }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
             $name = $player->getName();
@@ -78,8 +67,6 @@ class HorizonTask extends Task
                         $player->sendTip("§a0 : 0 : 0");
                         Loader::getInstance()->TimerData[$name] = 0;
                     }
-                } else {
-                    Loader::getInstance()->TimerTask[$name] = false;
                 }
             }
         }
@@ -92,11 +79,6 @@ class HorizonTask extends Task
             $nowcps = Loader::$cps->getClicks($player);
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $player->kill();
-            }
-            if (isset(Loader::getInstance()->PlayerSprint[$name]) and Loader::getInstance()->PlayerSprint[$name] === true) {
-                if (!$player->isSprinting()) {
-                    $player->toggleSprint(true);
-                }
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 if (isset(Loader::getInstance()->CombatTimer[$name])) {
@@ -127,23 +109,6 @@ class HorizonTask extends Task
                     unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
                     unset(Loader::getInstance()->CombatTimer[$name]);
                     unset(Loader::getInstance()->PlayerOpponent[$name]);
-                }
-            }
-            if (isset(Loader::getInstance()->ChatCooldown[$name])) {
-                if (Loader::getInstance()->ChatCooldown[$name] > 0) {
-                    Loader::getInstance()->ChatCooldown[$name] -= 1;
-                } else {
-                    unset(Loader::getInstance()->ChatCooldown[$name]);
-                }
-            }
-            if (isset(Loader::getInstance()->ArrowOITC[$name])) {
-                if (Loader::getInstance()->ArrowOITC[$name] > 0) {
-                    Loader::getInstance()->ArrowOITC[$name] -= 1;
-                } else {
-                    if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                        $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-                    }
-                    unset(Loader::getInstance()->ArrowOITC[$name]);
                 }
             }
         }
@@ -253,6 +218,20 @@ class HorizonTask extends Task
             }
             if ($player->getNameTag() !== $nametag) {
                 $player->setNameTag($nametag);
+            }
+        }
+    }
+
+    private function updateItem()
+    {
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $level) {
+            foreach ($level->getEntities() as $entity) {
+                if ($entity instanceof ItemEntity or $entity instanceof Arrow) {
+                    if ($entity->onGround and $entity->isAlive()) {
+                        $entity->flagForDespawn();
+                        $entity->close();
+                    }
+                }
             }
         }
     }

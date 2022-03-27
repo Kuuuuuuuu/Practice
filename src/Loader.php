@@ -50,15 +50,12 @@ class Loader extends PluginBase
     public array $TimerTask = [];
     public array $JumpCount = [];
     public array $targetPlayer = [];
-    public array $ChatCooldown = [];
     public array $BoxingPoint = [];
     public array $ToolboxCheck = [];
     public array $PlayerDevice = [];
     public array $PlayerOS = [];
     public array $PlayerControl = [];
     public array $SkillCooldown = [];
-    public array $ArrowOITC = [];
-    public array $PlayerSprint = [];
     public array $SumoArenas = [];
     public array $SumoSetup = [];
     public array $SumoData = [];
