@@ -20,7 +20,6 @@ class FistBot extends Human
     private string $target;
     private int $hitTick = 0;
     private float $speed = 0.5;
-    private int $tick = 0;
     private float $yKb = 0.32;
     private float $hKb = 0.32;
 
@@ -34,7 +33,6 @@ class FistBot extends Human
     public function entityBaseTick(int $tickDiff = 1): bool
     {
         parent::entityBaseTick($tickDiff);
-        $this->tick++;
         if (!$this->isAlive() or $this->getTargetPlayer() === null or !$this->getTargetPlayer()->isAlive()) {
             if (!$this->closed) {
                 $this->flagForDespawn();
@@ -51,21 +49,17 @@ class FistBot extends Human
         if (!$this->recentlyHit()) {
             $this->move($this->motion->x, $this->motion->y, $this->motion->z);
         }
-        if ($this->tick % 40 === 0) {
-            $roundedHealth = round($this->getHealth());
-            $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
-                $this->teleport($this->getTargetPlayer()->getPosition());
-                $this->speed = 0.7;
-            }
+        $roundedHealth = round($this->getHealth());
+        $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
+        if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
+            $this->teleport($this->getTargetPlayer()->getPosition());
+            $this->speed = 0.7;
         }
         if ($this->getTargetPlayer() === null or $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
             $this->flagForDespawn();
             return false;
         } else {
-            if ($this->tick % 10 === 0) {
-                $this->attackTargetPlayer();
-            }
+            $this->attackTargetPlayer();
             if (!$this->isSprinting()) {
                 $this->setSprinting(true);
             }
