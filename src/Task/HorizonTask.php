@@ -27,18 +27,22 @@ class HorizonTask extends Task
             DeleteBlocksHandler::getInstance()->update();
             $this->updatePlayer();
             $this->RestartServer();
-        } else if ($this->tick % 60 === 0) {
+        }
+        if ($this->tick % 60 === 0) {
             $this->updateTag();
             $this->updateScoreboard();
-        } else if ($this->tick % 120 === 0) {
+        }
+        if ($this->tick % 120 === 0) {
             $this->updateRank();
-        } else if ($this->tick % 600 === 0) {
+        }
+        if ($this->tick % 600 === 0) {
             if (Loader::getInstance()->LeaderboardMode === 1) {
                 Loader::getInstance()->LeaderboardMode = 2;
             } else {
                 Loader::getInstance()->LeaderboardMode = 1;
             }
-        } else if ($this->tick % 2000 === 0) {
+        }
+        if ($this->tick % 2000 === 0) {
             $this->updateItem();
         }
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $player) {
