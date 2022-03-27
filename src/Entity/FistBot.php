@@ -126,9 +126,9 @@ class FistBot extends Human
         if ($source instanceof EntityDamageByEntityEvent) {
             $killer = $source->getDamager();
             if ($killer instanceof Player) {
-                $deltaX = $this->getPosition()->getX() - $killer->x;
-                $deltaZ = $this->getPosition()->getZ() - $killer->z;
-                $this->knockBack($killer, 0, $deltaX, $deltaZ);
+                $deltaX = $this->getPosition()->getX() - $killer->getPosition()->getX();
+                $deltaZ = $this->getPosition()->getZ() - $killer->getPosition()->getZ();
+                $this->knockBack($deltaX, $deltaZ);
             }
         }
         if ($entity instanceof Player) {
