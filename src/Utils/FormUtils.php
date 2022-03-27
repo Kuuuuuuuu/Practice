@@ -422,7 +422,7 @@ class FormUtils
             }
         });
 
-        $form->setTitle("Artifact");
+        $form->setTitle("§bHorizon §eArtifact");
         /** @var $player HorizonPlayer */
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
