@@ -164,9 +164,9 @@ class PlayerListener implements Listener
             if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
                 Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                        $entity->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                        $entity->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                     }
-                }), 50);
+                }), 100);
             }
         }
     }

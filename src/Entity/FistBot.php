@@ -20,8 +20,6 @@ class FistBot extends Human
     private string $target;
     private int $hitTick = 0;
     private float $speed = 0.5;
-    private float $yKb = 0.32;
-    private float $hKb = 0.32;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = "")
     {
@@ -51,6 +49,15 @@ class FistBot extends Human
         }
         $roundedHealth = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . "§bPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
+        if (!$this->isOnGround()) {
+            if ($this->motion->y > -$this->gravity) {
+                $this->motion->y = -$this->gravity;
+            } else {
+                $this->motion->y += $this->isUnderwater() ? $this->gravity : -$this->gravity;
+            }
+        } else {
+            $this->motion->y -= $this->gravity;
+        }
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
             $this->speed = 0.7;
@@ -104,7 +111,7 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 1 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 1.2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
@@ -112,6 +119,18 @@ class FistBot extends Human
         parent::attack($source);
         $this->hitTick = 20;
         $entity = $source->getEntity();
+        if ($source->isCancelled()) {
+            $source->cancel();
+            return;
+        }
+        if ($source instanceof EntityDamageByEntityEvent) {
+            $killer = $source->getDamager();
+            if ($killer instanceof Player) {
+                $deltaX = $this->getPosition()->getX() - $killer->x;
+                $deltaZ = $this->getPosition()->getZ() - $killer->z;
+                $this->knockBack($killer, 0, $deltaX, $deltaZ);
+            }
+        }
         if ($entity instanceof Player) {
             if ($entity->getName() !== $this->target) {
                 $source->cancel();
@@ -122,6 +141,8 @@ class FistBot extends Human
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
+        $xzKB = 0.388;
+        $yKb = 0.385;
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
             return;
@@ -132,15 +153,13 @@ class FistBot extends Human
             $motion->x /= 2;
             $motion->y /= 2;
             $motion->z /= 2;
-            $motion->x += $x * $f * $this->hKb;
-            $motion->y += $this->yKb;
-            $motion->z += $z * $f * $this->hKb;
-            if ($motion->y > $this->yKb) {
-                $motion->y = $this->yKb;
+            $motion->x += $x * $f * $xzKB;
+            $motion->y += $yKb;
+            $motion->z += $z * $f * $xzKB;
+            if ($motion->y > $yKb) {
+                $motion->y = $yKb;
             }
-            $this->setMotion($motion);
+            if ($this->isAlive() and !$this->isClosed()) $this->move($motion->x * 1.60, $motion->y * 1.80, $motion->z * 1.60);
         }
-        parent::knockBack($this->hKb, $this->yKb, 0.35);
-        $this->hitTick = Server::getInstance()->getTick();
     }
 }
