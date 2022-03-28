@@ -46,6 +46,7 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use Kohaku\SkyWars\Skywars;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
@@ -432,6 +433,16 @@ class ArenaUtils
     public function JoinRandomArenaSumo(Player $player)
     {
         $arena = $this->getRandomSumoArenas();
+        if (!is_null($arena)) {
+            $arena->joinToArena($player);
+            return;
+        }
+        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
+    }
+
+    public function JoinRandomArenaSkywars(Player $player)
+    {
+        $arena = Skywars::getInstance()->getRandomArenas();
         if (!is_null($arena)) {
             $arena->joinToArena($player);
             return;
