@@ -310,16 +310,17 @@ class PlayerListener implements Listener
         $transaction = $event->getTransaction();
         $actions = $transaction->getActions();
         $player = $transaction->getSource();
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSkywarsArena())) {
+            return;
+        }
         if ($transaction instanceof CraftingTransaction) {
             $event->cancel();
         }
         foreach ($actions as $action) {
-            if ($player instanceof Player) {
-                if ($player->getGamemode() === GameMode::CREATIVE() or (isset(Loader::getInstance()->EditKit[$player->getName()]) and Loader::getInstance()->EditKit[$player->getName()] === true)) {
-                    return;
-                } else {
-                    $event->cancel();
-                }
+            if ($player->getGamemode() === GameMode::CREATIVE() or (isset(Loader::getInstance()->EditKit[$player->getName()]) and Loader::getInstance()->EditKit[$player->getName()] === true)) {
+                return;
+            } else {
+                $event->cancel();
             }
         }
     }
