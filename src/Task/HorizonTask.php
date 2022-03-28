@@ -117,6 +117,9 @@ class HorizonTask extends Task
             if (Loader::getInstance()->RestartTime <= 15) {
                 Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
             }
+            if (Loader::getInstance()->RestartTime <= 0) {
+                Loader::getInstance()->getServer()->shutdown();
+            }
         }
     }
 
