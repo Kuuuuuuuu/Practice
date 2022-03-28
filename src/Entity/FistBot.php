@@ -18,13 +18,14 @@ class FistBot extends Human
 {
 
     private string $target;
-    private float $speed = 1;
+    private float $speed = 0.8;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = "")
     {
         parent::__construct($location, $skin, $nbt);
         $this->target = $target;
         $this->alwaysShowNameTag = true;
+        $this->gravity = 0.08;
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
@@ -123,7 +124,7 @@ class FistBot extends Human
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
         $xzKB = 0.388;
-        $yKb = 0.385;
+        $yKb = 0.499;
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
             return;
@@ -140,7 +141,9 @@ class FistBot extends Human
             if ($motion->y > $yKb) {
                 $motion->y = $yKb;
             }
-            if ($this->isAlive() and !$this->isClosed()) $this->move($motion->x * 1.60, $motion->y * 1.80, $motion->z * 1.60);
+            if ($this->isAlive() and !$this->isClosed()) {
+                $this->setMotion($motion);
+            }
         }
     }
 }
