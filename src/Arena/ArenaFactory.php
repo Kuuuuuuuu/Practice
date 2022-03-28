@@ -18,8 +18,8 @@ class ArenaFactory
     {
         try {
             return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers()) ?? "Error";
-        } catch (Exception $e) {
-            return "Error " . $e;
+        } catch (Exception) {
+            return "Error ";
         }
     }
 

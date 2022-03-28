@@ -40,24 +40,26 @@ class DeleteBlocksHandler
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
                 if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
-                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1), true);
+                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 1));
                 }
-            } else if ($sec === 3) {
+            }
+            if ($sec === 3) {
                 $block = explode(':', $pos);
                 $x = $block[0];
                 $y = $block[1];
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
                 if ($level->getBlock(new Vector3((int)$x, (int)$y, (int)$z))->getId() !== BlockLegacyIds::COBWEB) {
-                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14), true);
+                    $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 14));
                 }
-            } else if ($sec <= 0) {
+            }
+            if ($sec <= 0) {
                 $block = explode(':', $pos);
                 $x = $block[0];
                 $y = $block[1];
                 $z = $block[2];
                 $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), true);
+                $level->setBlock(new Vector3((int)$x, (int)$y, (int)$z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0));
                 unset(Loader::getInstance()->buildBlocks[$pos]);
             } else {
                 Loader::getInstance()->buildBlocks[$pos]--;

@@ -76,14 +76,6 @@ class HorizonTask extends Task
             if ($nowcps > Loader::getInstance()->MaximumCPS) {
                 $player->kill();
             }
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
-            } else {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
-            }
-            if ($player->getNameTag() !== $nametag) {
-                $player->setNameTag($nametag);
-            }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 if (isset(Loader::getInstance()->CombatTimer[$name])) {
                     unset(Loader::getInstance()->CombatTimer[$name]);
@@ -154,6 +146,14 @@ class HorizonTask extends Task
             $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
             $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
             $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($player) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($player) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($player);
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
+            } else {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
+            }
+            if ($player->getNameTag() !== $nametag) {
+                $player->setNameTag($nametag);
+            }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->setScoreTag($tagparkour);
             } else {
@@ -170,9 +170,7 @@ class HorizonTask extends Task
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             if ($player->isOnline()) {
-                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
-                    Loader::$score->remove($player);
-                } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     ScoreboardUtils::getInstance()->sb($player);
                 } else if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                     ScoreboardUtils::getInstance()->sb2($player);

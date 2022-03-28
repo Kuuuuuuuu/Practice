@@ -205,7 +205,7 @@ class SumoHandler implements Listener
                             $index = $i;
                         }
                     }
-                    if ($player->getPosition()->asVector3()->distance(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"])) > 1) {
+                    if ($player->getPosition()->asVector3()->distance(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"])) > 0.5) {
                         $player->teleport(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"]));
                     }
                 }

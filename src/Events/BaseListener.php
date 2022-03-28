@@ -51,7 +51,7 @@ class BaseListener implements Listener
                 }
             }
         } else {
-            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 $ev->cancel();
             }
         }
@@ -65,7 +65,7 @@ class BaseListener implements Listener
             DeleteBlocksHandler::getInstance()->setBlockBuild($block);
             return;
         }
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName("aqua")) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $ev->cancel();
         }
     }
