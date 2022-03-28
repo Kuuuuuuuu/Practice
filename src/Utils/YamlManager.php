@@ -9,7 +9,7 @@ use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Loader;
 use pocketmine\utils\Config;
 
-class YamlDataProvider
+class YamlManager
 {
 
     public Config $config;

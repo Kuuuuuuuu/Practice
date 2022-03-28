@@ -17,7 +17,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
-use Kohaku\Core\Utils\YamlDataProvider;
+use Kohaku\Core\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Config;
@@ -32,7 +32,7 @@ class Loader extends PluginBase
     public static ?FormUtils $form;
     public static ?ArenaFactory $arenafac;
     public static ?ArenaManager $arena;
-    public static ?YamlDataProvider $YamlLoader;
+    public static ?YamlManager $YamlLoader;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -110,7 +110,7 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$YamlLoader = new YamlDataProvider();
+        self::$YamlLoader = new YamlManager();
     }
 
     public function onEnable(): void

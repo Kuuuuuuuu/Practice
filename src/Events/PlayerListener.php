@@ -248,10 +248,11 @@ class PlayerListener implements Listener
             unset(Loader::getInstance()->EditKit[$name]);
         }
         if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-            $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]");
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
         } else {
-            $player->setNameTag(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName());
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName();
         }
+        $player->setNameTag($nametag);
     }
 
     public function onExhaust(PlayerExhaustEvent $event)
@@ -332,10 +333,11 @@ class PlayerListener implements Listener
         $message = $event->getMessage();
         $name = $player->getName();
         if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-            $event->setFormat(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]" . "§6 > §f" . $message);
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]" . "§r§a > §r" . $message;
         } else {
-            $event->setFormat(ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§6 > §f" . $message);
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§r§a > §r" . $message;
         }
+        $event->setFormat($nametag);
         if (isset(Loader::getInstance()->EditKit[$name])) {
             $event->cancel();
             $args = explode(" ", $event->getMessage());
@@ -620,7 +622,10 @@ class PlayerListener implements Listener
                     Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
                 }
             } else if ($block->getId() === BlockLegacyIds::REPEATING_COMMAND_BLOCK) {
-                Loader::getInstance()->ParkourCheckPoint[$name] = $player->getPosition()->asVector3();
+                $vector = $player->getPosition()->asVector3();
+                if (isset(Loader::getInstance()->ParkourCheckPoint[$name]) and Loader::getInstance()->ParkourCheckPoint[$name] !== $vector) {
+                    Loader::getInstance()->ParkourCheckPoint[$name] = $vector;
+                }
             }
         }
     }

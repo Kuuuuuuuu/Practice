@@ -6,9 +6,11 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
+use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\KnockbackManager;
-use pocketmine\{entity\Skin, player\Player};
+use Kohaku\Core\Utils\ScoreboardUtils;
+use pocketmine\{entity\Skin, item\ItemFactory, item\ItemIds, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class HorizonPlayer extends Player
@@ -18,6 +20,7 @@ class HorizonPlayer extends Player
     public string $artifact = "";
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
+    private int $sec = 0;
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
 
@@ -225,5 +228,108 @@ class HorizonPlayer extends Player
     public function setLastDamagePlayer(string $name): void
     {
         $this->lastDamagePlayer = $name;
+    }
+
+    public function updatePlayer()
+    {
+        $name = $this->getName();
+        $this->sec++;
+        if ($this->sec % 3 === 0) {
+            $this->updateTag();
+            $this->updateScoreboard();
+            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                    unset(Loader::getInstance()->CombatTimer[$name]);
+                } else if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
+                    unset(Loader::getInstance()->PlayerOpponent[$name]);
+                }
+            }
+        }
+        $nowcps = Loader::$cps->getClicks($this);
+        if ($nowcps > Loader::getInstance()->MaximumCPS) {
+            $this->setLastDamagePlayer("Unknown");
+            $this->kill();
+        }
+        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
+            if (Loader::getInstance()->SkillCooldown[$name] > 0) {
+                Loader::getInstance()->SkillCooldown[$name] -= 1;
+            } else {
+                if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                    $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                }
+                $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
+                unset(Loader::getInstance()->SkillCooldown[$name]);
+            }
+        }
+        if (isset(Loader::getInstance()->CombatTimer[$name])) {
+            if (Loader::getInstance()->CombatTimer[$name] > 0) {
+                $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                Loader::getInstance()->CombatTimer[$name] -= 1;
+            } else {
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
+                unset(Loader::getInstance()->CombatTimer[$name]);
+                unset(Loader::getInstance()->PlayerOpponent[$name]);
+            }
+        }
+    }
+
+    public function updateTag()
+    {
+        $name = $this->getName();
+        $ping = $this->getNetworkSession()->getPing();
+        $nowcps = Loader::$cps->getClicks($this);
+        $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
+        $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
+        $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
+        $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($this) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($this) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($this);
+        $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
+        $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
+        if (isset(Loader::getInstance()->JumpCount[$name])) {
+            $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
+        } else {
+            $tagparkour = str_replace("{jump}", "0", $tagparkour);
+        }
+        if (isset(Loader::getInstance()->TimerData[$name])) {
+            $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
+            $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
+            $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
+        } else {
+            $tagparkour = str_replace("{mili}", "0", $tagparkour);
+            $tagparkour = str_replace("{secs}", "0", $tagparkour);
+            $tagparkour = str_replace("{mins}", "0", $tagparkour);
+        }
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            $this->setScoreTag($tagparkour);
+        } else {
+            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+                $this->setScoreTag($tagpvp);
+            } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
+                $this->setScoreTag($untagpvp);
+            }
+        }
+        if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
+        } else {
+            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName();
+        }
+        if ($this->getNameTag() !== $nametag) {
+            $this->setNameTag($nametag);
+        }
+    }
+
+    public function updateScoreboard()
+    {
+        if ($this->isOnline()) {
+            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                ScoreboardUtils::getInstance()->sb($this);
+            } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                ScoreboardUtils::getInstance()->sb2($this);
+            } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                ScoreboardUtils::getInstance()->Parkour($this);
+            }
+        }
     }
 }
