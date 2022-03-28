@@ -25,6 +25,7 @@ class FistBot extends Human
         parent::__construct($location, $skin, $nbt);
         $this->target = $target;
         $this->alwaysShowNameTag = true;
+        $this->gravityEnabled = true;
         $this->gravity = 0.08;
     }
 
