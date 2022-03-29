@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Exception;
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ScoreboardUtils;
@@ -131,6 +132,8 @@ class SumoHandler implements Listener
                 }
             }
         }
+        /* @var HorizonPlayer $player */
+        $player->setPVPTag();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getCursorInventory()->clearAll();

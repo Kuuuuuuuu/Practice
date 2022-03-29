@@ -30,6 +30,7 @@ use Kohaku\Core\Task\HorizonTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kohaku\SkyWars\Skywars;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\EntityDataHelper;
@@ -46,7 +47,6 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use Kohaku\SkyWars\Skywars;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
@@ -94,6 +94,15 @@ class ArenaUtils
         $e->setDescription("Error: " . $err);
         $msg->addEmbed($e);
         $web->send($msg);
+    }
+
+    public static function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
+    {
+        if ($world->isChunkPopulated($x, $z)) {
+            ($callable)();
+            return;
+        }
+        $world->registerChunkLoader(new HorizonChunkLoader($world, $x, $z, $callable), $x, $z, true);
     }
 
     public function getPlayerControls(Player $player): string
@@ -440,16 +449,6 @@ class ArenaUtils
         $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
     }
 
-    public function JoinRandomArenaSkywars(Player $player)
-    {
-        $arena = Skywars::getInstance()->getRandomArenas();
-        if (!is_null($arena)) {
-            $arena->joinToArena($player);
-            return;
-        }
-        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
-    }
-
     public function getRandomSumoArenas(): ?SumoHandler
     {
         $availableArenas = [];
@@ -482,6 +481,16 @@ class ArenaUtils
             return null;
         }
         return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
+    }
+
+    public function JoinRandomArenaSkywars(Player $player)
+    {
+        $arena = Skywars::getInstance()->getRandomArenas();
+        if (!is_null($arena)) {
+            $arena->joinToArena($player);
+            return;
+        }
+        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
     }
 
     public function loadMap(string $folderName, bool $justSave = false): ?World

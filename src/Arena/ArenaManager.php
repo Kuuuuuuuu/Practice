@@ -43,6 +43,10 @@ class ArenaManager
         $player->getInventory()->setItem(8, $item3);
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 10, $player->getPosition()->asPosition()->z));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinBoxing(Player $player)
@@ -60,6 +64,10 @@ class ArenaManager
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinFist(Player $player)
@@ -76,6 +84,10 @@ class ArenaManager
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getFistArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinCombo(Player $player)
@@ -94,6 +106,10 @@ class ArenaManager
         $player->getInventory()->addItem($item);
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getComboArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinKnockback(Player $player)
@@ -126,6 +142,10 @@ class ArenaManager
         $player->getInventory()->addItem($leap);
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinKitpvp(Player $player)
@@ -142,6 +162,10 @@ class ArenaManager
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getSafeSpawn());
         ArenaUtils::getInstance()->randomSpawn($player);
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
     }
 
     public function onJoinOITC(Player $player)
@@ -158,6 +182,10 @@ class ArenaManager
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())->getSafeSpawn());
         $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
         $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
         $player->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
         $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -175,6 +203,10 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getResistanceArena())->getSafeSpawn());
+            $pos = $player->getPosition();
+            ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+                $player->teleport($pos);
+            });
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
             return true;
         }
@@ -219,6 +251,10 @@ class ArenaManager
         $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())->getSafeSpawn());
         $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
+        $pos = $player->getPosition();
+        ArenaUtils::getiNstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
         $player->setGamemode(GameMode::SURVIVAL());
     }
 }

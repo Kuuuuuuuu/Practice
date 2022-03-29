@@ -503,6 +503,8 @@ class PlayerListener implements Listener
                 Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
                 Loader::getInstance()->CombatTimer[$player->getName()] = 10;
                 Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
+                $player->setPVPTag();
+                $damager->setPVPTag();
                 $player->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
                 $damager->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
             } else if (isset(Loader::getInstance()->PlayerOpponent[$damager->getName()]) and isset(Loader::getInstance()->PlayerOpponent[$player->getName()])) {
@@ -694,6 +696,7 @@ class PlayerListener implements Listener
         $player->getOffHandInventory()->clearAll();
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
+        $player->setPVPTag();
     }
 
     public function onTeleport(EntityTeleportEvent $event)
