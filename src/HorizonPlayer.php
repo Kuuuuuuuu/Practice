@@ -356,7 +356,7 @@ class HorizonPlayer extends Player
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             $point = Loader::getInstance()->BoxingPoint[$name];
             $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
+            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($this));
         } else {
             Loader::getInstance()->BoxingPoint[$name] = 0;
         }
