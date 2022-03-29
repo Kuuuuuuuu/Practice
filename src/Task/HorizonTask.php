@@ -35,33 +35,15 @@ class HorizonTask extends Task
         }
 
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            $name = $player->getName();
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                $player->parkourTimer();
+            }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-                    $point = Loader::getInstance()->BoxingPoint[$name];
-                    $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-                    $player->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
-                } else {
-                    Loader::getInstance()->BoxingPoint[$name] = 0;
-                }
-            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                if (isset(Loader::getInstance()->TimerTask[$name])) {
-                    if (Loader::getInstance()->TimerTask[$name] === true) {
-                        if (isset(Loader::getInstance()->TimerData[$name])) {
-                            Loader::getInstance()->TimerData[$name] += 5;
-                        } else {
-                            Loader::getInstance()->TimerData[$name] = 0;
-                        }
-                        $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                        $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                        $mili = Loader::getInstance()->TimerData[$name] % 100;
-                        $player->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
-                    } else {
-                        $player->sendTip("§a0 : 0 : 0");
-                        Loader::getInstance()->TimerData[$name] = 0;
-                    }
+            }
+            if ($this->tick % 5 === 0) {
+                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    $player->boxingTip();
                 }
             }
         }

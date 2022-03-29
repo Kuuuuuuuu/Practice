@@ -239,30 +239,34 @@ class HorizonPlayer extends Player
             $this->updateScoreboard();
         }
         $nowcps = Loader::$cps->getClicks($this);
-        if ($nowcps >= Loader::getInstance()->MaximumCPS) {
+        if ($nowcps > Loader::getInstance()->MaximumCPS) {
             $this->setLastDamagePlayer("Unknown");
             $this->kill();
         }
-        if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] > 0) {
-            Loader::getInstance()->SkillCooldown[$name] -= 1;
-        } else {
-            if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
+            if (Loader::getInstance()->SkillCooldown[$name] > 0) {
+                Loader::getInstance()->SkillCooldown[$name] -= 1;
+            } else {
+                if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                    $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                }
+                $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
+                unset(Loader::getInstance()->SkillCooldown[$name]);
             }
-            $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-            unset(Loader::getInstance()->SkillCooldown[$name]);
         }
         if (isset(Loader::getInstance()->CombatTimer[$name]) and Loader::getInstance()->CombatTimer[$name] > 0) {
-            $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
-            $this->getXpManager()->setXpProgress($percent);
-            Loader::getInstance()->CombatTimer[$name] -= 1;
-        } else {
-            $this->getXpManager()->setXpProgress(0.0);
-            $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
-            unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
-            unset(Loader::getInstance()->CombatTimer[$name]);
-            unset(Loader::getInstance()->PlayerOpponent[$name]);
-            $this->setUnPVPTag();
+            if (Loader::getInstance()->CombatTimer[$name] > 0) {
+                $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                Loader::getInstance()->CombatTimer[$name] -= 1;
+            } else {
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
+                unset(Loader::getInstance()->CombatTimer[$name]);
+                unset(Loader::getInstance()->PlayerOpponent[$name]);
+                $this->setUnPVPTag();
+            }
         }
     }
 
@@ -325,6 +329,37 @@ class HorizonPlayer extends Player
     {
         $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($this) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($this) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($this);
         $this->setScoreTag($untagpvp);
+    }
+
+    public function parkourTimer(){
+        $name = $this->getName();
+        if (isset(Loader::getInstance()->TimerTask[$name])) {
+            if (Loader::getInstance()->TimerTask[$name] === true) {
+                if (isset(Loader::getInstance()->TimerData[$name])) {
+                    Loader::getInstance()->TimerData[$name] += 5;
+                } else {
+                    Loader::getInstance()->TimerData[$name] = 0;
+                }
+                $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                $mili = Loader::getInstance()->TimerData[$name] % 100;
+                $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+            } else {
+                $this->sendTip("§a0 : 0 : 0");
+                Loader::getInstance()->TimerData[$name] = 0;
+            }
+        }
+    }
+
+    public function boxingTip() {
+        $name = $this->getName();
+        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+            $point = Loader::getInstance()->BoxingPoint[$name];
+            $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
+            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($player));
+        } else {
+            Loader::getInstance()->BoxingPoint[$name] = 0;
+        }
     }
 
     public function updateScoreboard()
