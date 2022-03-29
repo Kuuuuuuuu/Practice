@@ -32,8 +32,7 @@ class HorizonTask extends Task
             } else {
                 if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
                     unset(Loader::getInstance()->TimerTask[$player->getName()]);
-                }
-                if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
+                } else if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
                     unset(Loader::getInstance()->TimerData[$player->getName()]);
                 }
             }

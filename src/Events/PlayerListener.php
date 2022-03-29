@@ -83,7 +83,7 @@ class PlayerListener implements Listener
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
                                 $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
-                                Loader::getInstance()->SkillCooldown[$name] = 10;
+                                Loader::getInstance()->SkillCooldown[$name] = true;
                             }
                         }
                     }
@@ -93,26 +93,26 @@ class PlayerListener implements Listener
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 120, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 120, 1, false));
-                Loader::getInstance()->SkillCooldown[$name] = 10;
+                Loader::getInstance()->SkillCooldown[$name] = true;
             } else if ($item->getCustomName() === "§r§6Ultimate Boxing") {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                Loader::getInstance()->SkillCooldown[$name] = 10;
+                Loader::getInstance()->SkillCooldown[$name] = true;
             } else if ($item->getCustomName() === "§r§6Ultimate Bower") {
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 120, 3, false));
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 120, 3, false));
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                Loader::getInstance()->SkillCooldown[$name] = 10;
+                Loader::getInstance()->SkillCooldown[$name] = true;
             } else if ($item->getCustomName() === "§r§6Teleport") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
                         if ($p->getName() !== $name) {
                             $player->teleport($p->getPosition()->asVector3());
-                            Loader::getInstance()->SkillCooldown[$name] = 10;
+                            Loader::getInstance()->SkillCooldown[$name] = true;
                         }
                     }
                 }
@@ -122,8 +122,9 @@ class PlayerListener implements Listener
                 $dy = $directionvector->getY();
                 $dz = $directionvector->getZ();
                 $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
-                Loader::getInstance()->SkillCooldown[$name] = 10;
+                Loader::getInstance()->SkillCooldown[$name] = true;
             }
+            ArenaUtils::getInstance()->SkillCooldown($player);
         }
         if ($item->getCustomName() === "§r§bPlay") {
             Loader::$form->Form1($player);

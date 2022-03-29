@@ -47,6 +47,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
@@ -290,6 +291,21 @@ class ArenaUtils
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             $world->setTime(0);
             $world->stopTime();
+        }
+    }
+
+    public function SkillCooldown(Player $player)
+    {
+        $name = $player->getName();
+        if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] === true) {
+            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
+                $name = $player->getName();
+                if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                    $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                }
+                $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
+                unset(Loader::getInstance()->SkillCooldown[$name]);
+            }), 200);
         }
     }
 

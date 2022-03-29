@@ -246,24 +246,6 @@ class HorizonPlayer extends Player
                 $this->setNameTag($nametag);
             }
         }
-        $nowcps = Loader::$cps->getClicks($this);
-        if ($nowcps > Loader::getInstance()->MaximumCPS) {
-            $this->setLastDamagePlayer("Unknown");
-            $this->kill();
-        }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-            if (isset(Loader::getInstance()->SkillCooldown[$name])) {
-                if (Loader::getInstance()->SkillCooldown[$name] > 0) {
-                    Loader::getInstance()->SkillCooldown[$name] -= 1;
-                } else {
-                    if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                        $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
-                    }
-                    $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-                    unset(Loader::getInstance()->SkillCooldown[$name]);
-                }
-            }
-        }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             if (Loader::getInstance()->CombatTimer[$name] > 0) {
                 $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);

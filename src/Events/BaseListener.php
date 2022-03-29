@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Events;
 
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use pocketmine\block\BlockLegacyIds;
@@ -93,6 +94,11 @@ class BaseListener implements Listener
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::$cps->addClick($player);
+                if (Loader::$cps->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
+                    /* @var HorizonPlayer $player */
+                    $player->setLastDamagePlayer("Unknown");
+                    $player->kill();
+                }
             }
         } else if ($event->getPacket()->pid() === AnimatePacket::NETWORK_ID) {
             Server::getInstance()->broadcastPackets($player->getViewers(), [$event->getPacket()]);
