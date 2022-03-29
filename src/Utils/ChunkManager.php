@@ -11,7 +11,7 @@ use pocketmine\world\format\Chunk;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 
-class HorizonChunkLoader implements ChunkListener, ChunkLoader
+class ChunkManager implements ChunkListener, ChunkLoader
 {
     private Position $position;
     private int $chunkX;

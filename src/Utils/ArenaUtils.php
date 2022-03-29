@@ -102,7 +102,7 @@ class ArenaUtils
             ($callable)();
             return;
         }
-        $world->registerChunkLoader(new HorizonChunkLoader($world, $x, $z, $callable), $x, $z, true);
+        $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z, true);
     }
 
     public function getPlayerControls(Player $player): string
