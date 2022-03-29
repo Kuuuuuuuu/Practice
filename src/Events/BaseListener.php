@@ -27,12 +27,21 @@ use pocketmine\Server;
 
 class BaseListener implements Listener
 {
+
+    /**
+     * @priority LOWEST
+     */
+    
     public function onLevelLoadEvent(WorldLoadEvent $event)
     {
         $world = $event->getWorld();
         $world->setTime(0);
         $world->stopTime();
     }
+
+    /**
+     * @priority HIGH
+     */
 
     public function onBreak(BlockBreakEvent $ev)
     {
@@ -57,6 +66,10 @@ class BaseListener implements Listener
         }
     }
 
+    /**
+     * @priority HIGH
+     */
+
     public function onPlace(BlockPlaceEvent $ev)
     {
         $player = $ev->getPlayer();
@@ -69,6 +82,10 @@ class BaseListener implements Listener
             $ev->cancel();
         }
     }
+
+    /**
+     * @priority MONITOR
+     */
 
     public function onDataPacketSend(DataPacketSendEvent $ev): void
     {
@@ -86,6 +103,10 @@ class BaseListener implements Listener
             }
         }
     }
+
+    /**
+     * @priority MONITOR
+     */
 
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void
     {

@@ -62,10 +62,18 @@ use pocketmine\Server;
 class PlayerListener implements Listener
 {
 
+    /**
+     * @priority MONITOR
+     */
+
     public function onCreation(PlayerCreationEvent $event)
     {
         $event->setPlayerClass(HorizonPlayer::class);
     }
+
+    /**
+     * @priority LOWEST
+     */
 
     public function onUse(PlayerItemUseEvent $event)
     {
@@ -148,6 +156,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
@@ -156,6 +168,10 @@ class PlayerListener implements Listener
             $entity->close();
         }
     }
+
+    /**
+     * @priority LOWEST
+     */
 
     public function onBow(EntityShootBowEvent $event)
     {
@@ -177,6 +193,9 @@ class PlayerListener implements Listener
     }
 
     /**
+     *
+     * @priority LOWEST
+     *
      * @throws JsonException
      */
     public function onPlayerLogin(PlayerLoginEvent $event)
@@ -219,6 +238,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onPlayerLog(PlayerPreLoginEvent $event)
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
@@ -229,6 +252,9 @@ class PlayerListener implements Listener
     }
 
     /**
+     *
+     * @priority LOWEST
+     *
      * @throws JsonException
      */
     public function onJoin(PlayerJoinEvent $event)
@@ -255,6 +281,10 @@ class PlayerListener implements Listener
         $player->setNameTag($nametag);
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onExhaust(PlayerExhaustEvent $event)
     {
         $player = $event->getPlayer();
@@ -264,6 +294,9 @@ class PlayerListener implements Listener
     }
 
     /**
+     *
+     * @priority LOWEST
+     *
      * @throws JsonException
      */
     public function onChangeSkin(PlayerChangeSkinEvent $event)
@@ -300,10 +333,18 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onCraft(CraftItemEvent $event)
     {
         $event->cancel();
     }
+
+    /**
+     * @priority LOWEST
+     */
 
     public function onItemMoved(InventoryTransactionEvent $event): void
     {
@@ -326,6 +367,8 @@ class PlayerListener implements Listener
     }
 
     /**
+     * @priority LOWEST
+     *
      * @throws JsonException
      */
     public function onChat(PlayerChatEvent $event)
@@ -460,6 +503,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onLeft(PlayerQuitEvent $event)
     {
         $player = $event->getPlayer();
@@ -540,6 +587,9 @@ class PlayerListener implements Listener
     }
 
     /**
+     *
+     * @priority LOWEST
+     *
      * @throws Exception
      */
     public function onDamage(EntityDamageEvent $event)
@@ -570,6 +620,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onJump(PlayerJumpEvent $event)
     {
         $player = $event->getPlayer();
@@ -581,6 +635,10 @@ class PlayerListener implements Listener
             }
         }
     }
+
+    /**
+     * @priority LOWEST
+     */
 
     public function onMove(PlayerMoveEvent $event)
     {
@@ -631,6 +689,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onEntityDeath(EntityDeathEvent $event)
     {
         $entity = $event->getEntity();
@@ -649,6 +711,9 @@ class PlayerListener implements Listener
     }
 
     /**
+     *
+     * @priority LOWEST
+     *
      * @throws Exception
      */
     public function onDeath(PlayerDeathEvent $event): void
@@ -684,6 +749,10 @@ class PlayerListener implements Listener
         }
     }
 
+    /**
+     * @priority LOWEST
+     */
+
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
@@ -695,6 +764,10 @@ class PlayerListener implements Listener
         ScoreboardUtils::getInstance()->sb($player);
         $player->setPVPTag();
     }
+
+    /**
+     * @priority LOWEST
+     */
 
     public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
     {
