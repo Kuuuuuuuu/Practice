@@ -254,7 +254,7 @@ class HorizonPlayer extends Player
                 unset(Loader::getInstance()->SkillCooldown[$name]);
             }
         }
-        if (isset(Loader::getInstance()->CombatTimer[$name]) and Loader::getInstance()->CombatTimer[$name] > 0) {
+        if (isset(Loader::getInstance()->CombatTimer[$name])) {
             if (Loader::getInstance()->CombatTimer[$name] > 0) {
                 $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
                 $this->getXpManager()->setXpProgress($percent);
