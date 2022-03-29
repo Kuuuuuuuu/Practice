@@ -26,17 +26,16 @@ class HorizonTask extends Task
                 $player->updatePlayer();
             }
         }
-        if ($this->tick % 600 === 0) {
-            if (Loader::getInstance()->LeaderboardMode === 1) {
-                Loader::getInstance()->LeaderboardMode = 2;
-            } else {
-                Loader::getInstance()->LeaderboardMode = 1;
-            }
-        }
-
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
                 $player->parkourTimer();
+            } else {
+                if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
+                    unset(Loader::getInstance()->TimerTask[$player->getName()]);
+                }
+                if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
+                    unset(Loader::getInstance()->TimerData[$player->getName()]);
+                }
             }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));

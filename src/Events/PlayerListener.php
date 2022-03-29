@@ -29,7 +29,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
-use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -694,23 +693,6 @@ class PlayerListener implements Listener
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
         $player->setPVPTag();
-    }
-
-    public function onTeleport(EntityTeleportEvent $event)
-    {
-        $player = $event->getEntity();
-        $from = $event->getFrom();
-        $to = $event->getTo();
-        if ($player instanceof Player) {
-            if ($from->getWorld() !== $to->getWorld()) {
-                if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
-                    unset(Loader::getInstance()->TimerTask[$player->getName()]);
-                }
-                if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
-                    unset(Loader::getInstance()->TimerData[$player->getName()]);
-                }
-            }
-        }
     }
 
     public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)

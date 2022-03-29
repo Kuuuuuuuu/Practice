@@ -18,9 +18,10 @@ use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
+use Kohaku\Core\Entity\DeathLeaderboard;
 use Kohaku\Core\Entity\FallingWool;
 use Kohaku\Core\Entity\FistBot;
-use Kohaku\Core\Entity\Leaderboard;
+use Kohaku\Core\Entity\KillLeaderboard;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
 use Kohaku\Core\HorizonPlayer;
@@ -263,10 +264,14 @@ class ArenaUtils
                     $nbt
                 );
             }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
-        EntityFactory::getInstance()->register(Leaderboard::class, function (World $world, CompoundTag $nbt): Leaderboard {
-            return new Leaderboard(EntityDataHelper::parseLocation($nbt, $world), Leaderboard
+        EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): KillLeaderboard {
+            return new KillLeaderboard(EntityDataHelper::parseLocation($nbt, $world), KillLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
-        }, ['Leaderboard']);
+        }, ['KillLeaderboard']);
+        EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): DeathLeaderboard {
+            return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
+                ::parseSkinNBT($nbt), $nbt);
+        }, ['DeathLeaderboard']);
         EntityFactory::getInstance()->register(FistBot::class, function (World $world, CompoundTag $nbt): FistBot {
             return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
                 ::parseSkinNBT($nbt), $nbt);

@@ -40,7 +40,6 @@ class Loader extends PluginBase
     public SQLite3 $BanData;
     public int $RestartTime = 31;
     public int $DeleteBlockTime = 8;
-    public int $LeaderboardMode = 1;
     public int $MaximumCPS = 20;
     public bool $Restarted = false;
     public float $EnderPearlForce = 2.5;

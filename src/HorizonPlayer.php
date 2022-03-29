@@ -216,8 +216,6 @@ class HorizonPlayer extends Player
         $this->setValidStuffs("White Heart");
         $this->setValidStuffs("Witchhat");
         $this->setValidStuffs("Wither Head");
-        $this->setValidStuffs("endolotl");
-        $this->setValidStuffs("privateship");
     }
 
     public function getLastDamagePlayer(): string
@@ -238,20 +236,32 @@ class HorizonPlayer extends Player
             $this->updateTag();
             $this->updateScoreboard();
         }
+        if ($this->sec % 10 === 0) {
+            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
+            } else {
+                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName();
+            }
+            if ($this->getNameTag() !== $nametag) {
+                $this->setNameTag($nametag);
+            }
+        }
         $nowcps = Loader::$cps->getClicks($this);
         if ($nowcps > Loader::getInstance()->MaximumCPS) {
             $this->setLastDamagePlayer("Unknown");
             $this->kill();
         }
-        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
-            if (Loader::getInstance()->SkillCooldown[$name] > 0) {
-                Loader::getInstance()->SkillCooldown[$name] -= 1;
-            } else {
-                if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                    $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
+            if (isset(Loader::getInstance()->SkillCooldown[$name])) {
+                if (Loader::getInstance()->SkillCooldown[$name] > 0) {
+                    Loader::getInstance()->SkillCooldown[$name] -= 1;
+                } else {
+                    if ($this->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                        $this->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                    }
+                    $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
+                    unset(Loader::getInstance()->SkillCooldown[$name]);
                 }
-                $this->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-                unset(Loader::getInstance()->SkillCooldown[$name]);
             }
         }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
@@ -281,14 +291,6 @@ class HorizonPlayer extends Player
             } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                 $this->setUnPVPTag();
             }
-        }
-        if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
-        } else {
-            $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName();
-        }
-        if ($this->getNameTag() !== $nametag) {
-            $this->setNameTag($nametag);
         }
     }
 
@@ -331,7 +333,19 @@ class HorizonPlayer extends Player
         $this->setScoreTag($untagpvp);
     }
 
-    public function parkourTimer(){
+    public function updateScoreboard()
+    {
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            ScoreboardUtils::getInstance()->sb($this);
+        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            ScoreboardUtils::getInstance()->sb2($this);
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            ScoreboardUtils::getInstance()->Parkour($this);
+        }
+    }
+
+    public function parkourTimer()
+    {
         $name = $this->getName();
         if (isset(Loader::getInstance()->TimerTask[$name])) {
             if (Loader::getInstance()->TimerTask[$name] === true) {
@@ -351,7 +365,8 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function boxingTip() {
+    public function boxingTip()
+    {
         $name = $this->getName();
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             $point = Loader::getInstance()->BoxingPoint[$name];
@@ -359,17 +374,6 @@ class HorizonPlayer extends Player
             $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($this));
         } else {
             Loader::getInstance()->BoxingPoint[$name] = 0;
-        }
-    }
-
-    public function updateScoreboard()
-    {
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            ScoreboardUtils::getInstance()->sb($this);
-        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-            ScoreboardUtils::getInstance()->sb2($this);
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-            ScoreboardUtils::getInstance()->Parkour($this);
         }
     }
 }

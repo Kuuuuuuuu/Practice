@@ -22,7 +22,6 @@ use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionD
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
-use pocketmine\player\Player;
 use pocketmine\Server;
 
 class BaseListener implements Listener

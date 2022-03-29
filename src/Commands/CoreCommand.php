@@ -7,7 +7,8 @@ declare(strict_types=1);
 namespace Kohaku\Core\Commands;
 
 use JsonException;
-use Kohaku\Core\Entity\Leaderboard;
+use Kohaku\Core\Entity\DeathLeaderboard;
+use Kohaku\Core\Entity\KillLeaderboard;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\command\{Command, CommandSender};
@@ -259,19 +260,23 @@ class CoreCommand extends Command
                                 break;
                         }
                         break;
-                    case "setleader":
-                        $npc = new Leaderboard($sender->getLocation(), $sender->getSkin());
+                    case "setkillleader":
+                        $npc = new KillLeaderboard($sender->getLocation(), $sender->getSkin());
+                        $npc->spawnToAll();
+                        break;
+                    case "setdeathleader":
+                        $npc = new DeathLeaderboard($sender->getLocation(), $sender->getSkin());
                         $npc->spawnToAll();
                         break;
                     case "removeleader":
                         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
                             foreach ($world->getEntities() as $entity) {
-                                if ($entity instanceof Leaderboard) {
+                                if ($entity instanceof KillLeaderboard or $entity instanceof DeathLeaderboard) {
                                     $entity->close();
                                 }
                             }
                         }
-                        $sender->sendMessage(Loader::getPrefixCore() . "Leaderboard removed!");
+                        $sender->sendMessage(Loader::getPrefixCore() . "KillLeaderboard removed!");
                         break;
                     default:
                         $sender->sendMessage(Loader::getPrefixCore() . "§e/core help");
