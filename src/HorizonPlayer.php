@@ -234,16 +234,9 @@ class HorizonPlayer extends Player
     {
         $name = $this->getName();
         $this->sec++;
-        if ($this->sec % 5 === 0) {
+        if ($this->sec % 3 === 0) {
             $this->updateTag();
             $this->updateScoreboard();
-            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if (isset(Loader::getInstance()->CombatTimer[$name])) {
-                    unset(Loader::getInstance()->CombatTimer[$name]);
-                } else if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
-                    unset(Loader::getInstance()->PlayerOpponent[$name]);
-                }
-            }
         }
         $nowcps = Loader::$cps->getClicks($this);
         if ($nowcps > Loader::getInstance()->MaximumCPS) {
@@ -340,14 +333,12 @@ class HorizonPlayer extends Player
 
     public function updateScoreboard()
     {
-        if ($this->isOnline()) {
-            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                ScoreboardUtils::getInstance()->sb($this);
-            } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                ScoreboardUtils::getInstance()->sb2($this);
-            } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                ScoreboardUtils::getInstance()->Parkour($this);
-            }
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            ScoreboardUtils::getInstance()->sb($this);
+        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            ScoreboardUtils::getInstance()->sb2($this);
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+            ScoreboardUtils::getInstance()->Parkour($this);
         }
     }
 }

@@ -47,7 +47,7 @@ class ScoreboardUtils
     {
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
-        $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);;
+        $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",

@@ -73,7 +73,7 @@ class SumoScheduler extends Task
                     }
                 }
             }
-            if ($this->tick % 5 === 0) {
+            if ($this->tick % 10 === 0) {
                 if ($this->plugin->phase === SumoHandler::PHASE_GAME) {
                     if ($this->plugin->checkEnd()) {
                         $this->plugin->startRestart();

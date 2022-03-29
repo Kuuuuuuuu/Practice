@@ -15,6 +15,7 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 class Leaderboard extends Human
 {
+    private int $tick = 0;
 
     /**
      * @throws JsonException
@@ -38,53 +39,56 @@ class Leaderboard extends Human
 
     public function onUpdate(int $currentTick): bool
     {
-        $subtitle = "";
-        if (Loader::getInstance()->LeaderboardMode === 1) {
-            $tops = Loader::getInstance()->KillLeaderboard;
-            if (count($tops) > 0) {
-                arsort($tops);
-                $i = 1;
-                foreach ($tops as $name => $wins) {
-                    $subtitle .= " §7[§b# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Kills\n";
-                    if ($i === 1) {
-                        $top1 = $name;
+        $this->tick++;
+        if ($this->tick % 25 === 0) {
+            $subtitle = "";
+            if (Loader::getInstance()->LeaderboardMode === 1) {
+                $tops = Loader::getInstance()->KillLeaderboard;
+                if (count($tops) > 0) {
+                    arsort($tops);
+                    $i = 1;
+                    foreach ($tops as $name => $wins) {
+                        $subtitle .= " §7[§b# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Kills\n";
+                        if ($i === 1) {
+                            $top1 = $name;
+                        }
+                        if ($i === 2) {
+                            $top2 = $name;
+                        }
+                        if ($i === 3) {
+                            $top3 = $name;
+                        }
+                        if ($i >= 10) {
+                            break;
+                        }
+                        ++$i;
                     }
-                    if ($i === 2) {
-                        $top2 = $name;
-                    }
-                    if ($i === 3) {
-                        $top3 = $name;
-                    }
-                    if ($i >= 10) {
-                        break;
-                    }
-                    ++$i;
                 }
-            }
-            $this->setNameTag("§bMost Kills Players\n" . $subtitle);
-        } else {
-            $tops = Loader::getInstance()->DeathLeaderboard;
-            if (count($tops) > 0) {
-                arsort($tops);
-                $i = 1;
-                foreach ($tops as $name => $wins) {
-                    $subtitle .= " §7[§b# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Deaths\n";
-                    if ($i === 1) {
-                        $top1 = $name;
+                $this->setNameTag("§bMost Kills Players\n" . $subtitle);
+            } else {
+                $tops = Loader::getInstance()->DeathLeaderboard;
+                if (count($tops) > 0) {
+                    arsort($tops);
+                    $i = 1;
+                    foreach ($tops as $name => $wins) {
+                        $subtitle .= " §7[§b# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Deaths\n";
+                        if ($i === 1) {
+                            $top1 = $name;
+                        }
+                        if ($i === 2) {
+                            $top2 = $name;
+                        }
+                        if ($i === 3) {
+                            $top3 = $name;
+                        }
+                        if ($i >= 10) {
+                            break;
+                        }
+                        ++$i;
                     }
-                    if ($i === 2) {
-                        $top2 = $name;
-                    }
-                    if ($i === 3) {
-                        $top3 = $name;
-                    }
-                    if ($i >= 10) {
-                        break;
-                    }
-                    ++$i;
                 }
+                $this->setNameTag("§bMost Deaths Players\n" . $subtitle);
             }
-            $this->setNameTag("§bMost Deaths Players\n" . $subtitle);
         }
         $this->setNameTagAlwaysVisible(true);
         return parent::onUpdate($currentTick);
