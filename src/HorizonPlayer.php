@@ -10,7 +10,7 @@ use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\Utils\ScoreboardUtils;
-use pocketmine\{entity\Skin, item\ItemFactory, item\ItemIds, player\Player, Server};
+use pocketmine\{entity\Skin, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class HorizonPlayer extends Player
@@ -242,9 +242,7 @@ class HorizonPlayer extends Player
             } else {
                 $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName();
             }
-            if ($this->getNameTag() !== $nametag) {
-                $this->setNameTag($nametag);
-            }
+            $this->setNameTag($nametag);
         }
         if (isset(Loader::getInstance()->CombatTimer[$name])) {
             if (Loader::getInstance()->CombatTimer[$name] > 0) {

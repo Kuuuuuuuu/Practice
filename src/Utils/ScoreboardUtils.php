@@ -47,18 +47,14 @@ class ScoreboardUtils
     {
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
-        $skill = floor(Loader::getInstance()->SkillCooldown[$player->getName() ?? null] ?? 0);
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
             2 => "§bOnline§f: §6$on",
             3 => "§bPing§f: §6$ping",
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            6 => "§7---------------"
+            5 => "§7---------------"
         ];
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-            $lines[5] = "§bSkillCD§f: §6$skill";
-        }
         Loader::$score->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
             Loader::$score->setLine($player, $line, $content);

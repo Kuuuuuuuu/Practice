@@ -27,21 +27,19 @@ class HorizonTask extends Task
             }
         }
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-                $player->parkourTimer();
-            } else {
-                if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
-                    unset(Loader::getInstance()->TimerTask[$player->getName()]);
-                } else if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
-                    unset(Loader::getInstance()->TimerData[$player->getName()]);
-                }
-            }
             if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) and $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
                 $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-            }
-            if ($this->tick % 5 === 0) {
-                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
-                    $player->boxingTip();
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                $player->boxingTip();
+            } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+                $player->parkourTimer();
+            } else {
+                if ($this->tick % 40 === 0) {
+                    if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
+                        unset(Loader::getInstance()->TimerTask[$player->getName()]);
+                    } else if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
+                        unset(Loader::getInstance()->TimerData[$player->getName()]);
+                    }
                 }
             }
         }
@@ -54,7 +52,7 @@ class HorizonTask extends Task
             if (Loader::getInstance()->RestartTime <= 15) {
                 Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
             }
-            if (Loader::getInstance()->RestartTime <= 0) {
+            if (Loader::getInstance()->RestartTime <= 1) {
                 Loader::getInstance()->getServer()->shutdown();
             }
         }

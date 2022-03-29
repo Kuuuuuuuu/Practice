@@ -142,9 +142,6 @@ class DataManager
     public function getRank(): string
     {
         $format = "§6Rookie";
-        if ($this->elo >= 1000 && $this->elo < 1200) {
-            $format = "§6Rookie";
-        }
         if ($this->elo >= 1200 && $this->elo < 1400) {
             $format = "§fSilver";
         }
@@ -152,10 +149,22 @@ class DataManager
             $format = "§eGold";
         }
         if ($this->elo >= 1600 && $this->elo < 1800) {
-            $format = "§bDiamond";
+            $format = "§dPlatinum";
         }
         if ($this->elo >= 1800 && $this->elo < 2000) {
-            $format = "§cMaster";
+            $format = "§bDiamond";
+        }
+        if ($this->elo >= 2000 && $this->elo < 2200) {
+            $format = "§6Master";
+        }
+        if ($this->elo >= 2200 && $this->elo < 2400) {
+            $format = "§3Grandmaster";
+        }
+        if ($this->elo >= 2400 && $this->elo < 2600) {
+            $format = "§4Challenger";
+        }
+        if ($this->elo >= 4000) {
+            $format = "§9Legend";
         }
         return $format;
     }

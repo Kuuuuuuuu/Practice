@@ -269,7 +269,7 @@ class ArenaUtils
             return new KillLeaderboard(EntityDataHelper::parseLocation($nbt, $world), KillLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['KillLeaderboard']);
-        EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): DeathLeaderboard {
+        EntityFactory::getInstance()->register(DeathLeaderboard::class, function (World $world, CompoundTag $nbt): DeathLeaderboard {
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
@@ -305,7 +305,7 @@ class ArenaUtils
                 }
                 $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
                 unset(Loader::getInstance()->SkillCooldown[$name]);
-            }), 200);
+            }), 250);
         }
     }
 
