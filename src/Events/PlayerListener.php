@@ -1,7 +1,7 @@
-<?php /** @noinspection PhpIllegalStringOffsetInspection */
+<?php
+/** @noinspection PhpIllegalStringOffsetInspection */
 /** @noinspection PhpInconsistentReturnPointsInspection */
 /** @noinspection PhpParamsInspection */
-
 /** @noinspection PhpPossiblePolymorphicInvocationInspection */
 
 declare(strict_types=1);
@@ -74,16 +74,14 @@ class PlayerListener implements Listener
         if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
             if ($item->getCustomName() === "§r§6Reaper") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-                    if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-                        if ($p->getName() !== $name) {
-                            if ($player->getPosition()->distance($p->getPosition()) <= 10) {
-                                $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
-                                $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
-                                $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
-                                $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
-                                Loader::getInstance()->SkillCooldown[$name] = true;
-                            }
+                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getPlayers() as $p) {
+                    if ($p->getName() !== $name) {
+                        if ($player->getPosition()->distance($p->getPosition()) <= 10) {
+                            $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
+                            $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
+                            $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
+                            $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+                            Loader::getInstance()->SkillCooldown[$name] = true;
                         }
                     }
                 }
@@ -107,12 +105,10 @@ class PlayerListener implements Listener
                 Loader::getInstance()->SkillCooldown[$name] = true;
             } else if ($item->getCustomName() === "§r§6Teleport") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-                    if ($p->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-                        if ($p->getName() !== $name) {
-                            $player->teleport($p->getPosition()->asVector3());
-                            Loader::getInstance()->SkillCooldown[$name] = true;
-                        }
+                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getPlayers() as $p) {
+                    if ($p->getName() !== $name) {
+                        $player->teleport($p->getPosition()->asVector3());
+                        Loader::getInstance()->SkillCooldown[$name] = true;
                     }
                 }
             } else if ($item->getCustomName() === "§r§eLeap§r") {
@@ -160,13 +156,11 @@ class PlayerListener implements Listener
     {
         $entity = $event->getEntity();
         if ($entity instanceof Player) {
-            if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
-                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                        $entity->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-                    }
-                }), 100);
-            }
+            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
+                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                    $entity->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                }
+            }), 100);
         }
     }
 
