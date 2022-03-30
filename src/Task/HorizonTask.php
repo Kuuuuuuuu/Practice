@@ -20,7 +20,9 @@ class HorizonTask extends Task
         $this->tick++;
         if ($this->tick % 20 === 0) {
             DeleteBlocksHandler::getInstance()->update();
-            $this->RestartServer();
+            if (Loader::getInstance()->Restarted) {
+                $this->RestartServer();
+            }
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 /* @var HorizonPlayer $player */
                 $player->updatePlayer();
@@ -28,21 +30,18 @@ class HorizonTask extends Task
         }
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             switch ($player->getWorld()) {
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena()):
-                    $player->boxingTip();
-                    break;
                 case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()):
                     $player->parkourTimer();
                     break;
-                default:
-                    if ($this->tick % 40 === 0) {
-                        if (isset(Loader::getInstance()->TimerTask[$player->getName()])) {
-                            unset(Loader::getInstance()->TimerTask[$player->getName()]);
-                        } else if (isset(Loader::getInstance()->TimerData[$player->getName()])) {
-                            unset(Loader::getInstance()->TimerData[$player->getName()]);
-                        }
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena()):
+                    if ($this->tick % 3 === 0) {
+                        $player->boxingTip();
                     }
-                    $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+                    break;
+                default:
+                    if ($this->tick % 3 === 0) {
+                        $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+                    }
                     break;
             }
         }
@@ -50,14 +49,12 @@ class HorizonTask extends Task
 
     private function RestartServer()
     {
-        if (Loader::getInstance()->Restarted) {
-            Loader::getInstance()->RestartTime--;
-            if (Loader::getInstance()->RestartTime <= 15) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
-            }
-            if (Loader::getInstance()->RestartTime <= 1) {
-                Loader::getInstance()->getServer()->shutdown();
-            }
+        Loader::getInstance()->RestartTime--;
+        if (Loader::getInstance()->RestartTime <= 15) {
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
+        }
+        if (Loader::getInstance()->RestartTime <= 1) {
+            Loader::getInstance()->getServer()->shutdown();
         }
     }
 }

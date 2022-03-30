@@ -28,6 +28,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
+use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -713,6 +714,22 @@ class PlayerListener implements Listener
             if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
                 $event->cancel();
                 $player->sendMessage(Loader::getInstance()->MessageData["CantUseWantCombat"]);
+            }
+        }
+    }
+
+    public function onTeleport(EntityTeleportEvent $event)
+    {
+        $entity = $event->getEntity();
+        $from = $event->getFrom();
+        $to = $event->getTo();
+        if ($entity instanceof Player) {
+            if ($from->getWorld() !== $to->getWorld() and ($to->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld())) {
+                if (isset(Loader::getInstance()->TimerTask[$entity->getName()])) {
+                    unset(Loader::getInstance()->TimerTask[$entity->getName()]);
+                } else if (isset(Loader::getInstance()->TimerData[$entity->getName()])) {
+                    unset(Loader::getInstance()->TimerData[$entity->getName()]);
+                }
             }
         }
     }
