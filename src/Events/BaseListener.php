@@ -27,11 +27,6 @@ use pocketmine\Server;
 
 class BaseListener implements Listener
 {
-
-    /**
-     * @priority LOWEST
-     */
-    
     public function onLevelLoadEvent(WorldLoadEvent $event)
     {
         $world = $event->getWorld();
@@ -39,24 +34,20 @@ class BaseListener implements Listener
         $world->stopTime();
     }
 
-    /**
-     * @priority HIGH
-     */
-
     public function onBreak(BlockBreakEvent $ev)
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            if ($block->getId() !== BlockLegacyIds::WOOL and $block->getId() !== BlockLegacyIds::COBWEB) {
-                if ($player->getGamemode() !== GameMode::CREATIVE()) {
-                    $ev->cancel();
-                }
-            } else {
+            if ($block->getId() === BlockLegacyIds::WOOL or $block->getId() === BlockLegacyIds::COBWEB) {
                 $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
                 if ($block->getId() === BlockLegacyIds::WOOL) {
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::WOOL, 0, 1));
                     DeleteBlocksHandler::getInstance()->setBlockBuild($block, true);
+                }
+            } else {
+                if ($player->getGamemode() !== GameMode::CREATIVE()) {
+                    $ev->cancel();
                 }
             }
         } else {
@@ -65,10 +56,6 @@ class BaseListener implements Listener
             }
         }
     }
-
-    /**
-     * @priority HIGH
-     */
 
     public function onPlace(BlockPlaceEvent $ev)
     {
@@ -82,10 +69,6 @@ class BaseListener implements Listener
             $ev->cancel();
         }
     }
-
-    /**
-     * @priority MONITOR
-     */
 
     public function onDataPacketSend(DataPacketSendEvent $ev): void
     {
@@ -103,10 +86,6 @@ class BaseListener implements Listener
             }
         }
     }
-
-    /**
-     * @priority MONITOR
-     */
 
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void
     {

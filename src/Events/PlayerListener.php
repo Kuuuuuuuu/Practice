@@ -62,18 +62,10 @@ use pocketmine\Server;
 class PlayerListener implements Listener
 {
 
-    /**
-     * @priority MONITOR
-     */
-
     public function onCreation(PlayerCreationEvent $event)
     {
         $event->setPlayerClass(HorizonPlayer::class);
     }
-
-    /**
-     * @priority LOWEST
-     */
 
     public function onUse(PlayerItemUseEvent $event)
     {
@@ -156,10 +148,6 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
@@ -168,10 +156,6 @@ class PlayerListener implements Listener
             $entity->close();
         }
     }
-
-    /**
-     * @priority LOWEST
-     */
 
     public function onBow(EntityShootBowEvent $event)
     {
@@ -193,9 +177,6 @@ class PlayerListener implements Listener
     }
 
     /**
-     *
-     * @priority LOWEST
-     *
      * @throws JsonException
      */
     public function onPlayerLogin(PlayerLoginEvent $event)
@@ -238,10 +219,6 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onPlayerLog(PlayerPreLoginEvent $event)
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
@@ -252,9 +229,6 @@ class PlayerListener implements Listener
     }
 
     /**
-     *
-     * @priority LOWEST
-     *
      * @throws JsonException
      */
     public function onJoin(PlayerJoinEvent $event)
@@ -281,10 +255,6 @@ class PlayerListener implements Listener
         $player->setNameTag($nametag);
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onExhaust(PlayerExhaustEvent $event)
     {
         $player = $event->getPlayer();
@@ -294,9 +264,6 @@ class PlayerListener implements Listener
     }
 
     /**
-     *
-     * @priority LOWEST
-     *
      * @throws JsonException
      */
     public function onChangeSkin(PlayerChangeSkinEvent $event)
@@ -333,18 +300,10 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onCraft(CraftItemEvent $event)
     {
         $event->cancel();
     }
-
-    /**
-     * @priority LOWEST
-     */
 
     public function onItemMoved(InventoryTransactionEvent $event): void
     {
@@ -367,8 +326,6 @@ class PlayerListener implements Listener
     }
 
     /**
-     * @priority LOWEST
-     *
      * @throws JsonException
      */
     public function onChat(PlayerChatEvent $event)
@@ -503,10 +460,6 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onLeft(PlayerQuitEvent $event)
     {
         $player = $event->getPlayer();
@@ -588,8 +541,6 @@ class PlayerListener implements Listener
 
     /**
      *
-     * @priority LOWEST
-     *
      * @throws Exception
      */
     public function onDamage(EntityDamageEvent $event)
@@ -620,10 +571,6 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onJump(PlayerJumpEvent $event)
     {
         $player = $event->getPlayer();
@@ -636,62 +583,61 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();
         $name = $player->getName();
+        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
                 $player->kill();
             }
-        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
-            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-            if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
-                $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
-            }
-        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())) {
-            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-            if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
-            }
-        } else if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
-            $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-            if ($block->getId() === BlockLegacyIds::NOTE_BLOCK) {
-                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {
-                    Loader::getInstance()->TimerTask[$name] = true;
+        }
+        switch ($player->getWorld()) {
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()):
+                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                    $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
+                    $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
                 }
-            } else if ($block->getId() === BlockLegacyIds::PODZOL) {
-                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
-                    Loader::getInstance()->TimerTask[$name] = false;
+                break;
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()):
+                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
                 }
-            } else if ($block->getId() === BlockLegacyIds::LIT_REDSTONE_LAMP) {
-                if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
-                    Loader::getInstance()->TimerTask[$name] = false;
-                    $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                    $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                    $mili = Loader::getInstance()->TimerData[$name] % 100;
-                    Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
-                    Loader::getInstance()->ParkourCheckPoint[$name] = new Vector3(255, 77, 255);
-                    $player->teleport(new Vector3(275, 66, 212));
-                    Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
+                break;
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()):
+                switch ($block->getId()) {
+                    case BlockLegacyIds::NOTE_BLOCK:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {
+                            Loader::getInstance()->TimerTask[$name] = true;
+                        }
+                        break;
+                    case BlockLegacyIds::PODZOL:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
+                            Loader::getInstance()->TimerTask[$name] = false;
+                        }
+                        break;
+                    case BlockLegacyIds::LIT_REDSTONE_LAMP:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
+                            Loader::getInstance()->TimerTask[$name] = false;
+                            $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                            $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                            $mili = Loader::getInstance()->TimerData[$name] % 100;
+                            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
+                            Loader::getInstance()->ParkourCheckPoint[$name] = new Vector3(255, 77, 255);
+                            $player->teleport(new Vector3(275, 66, 212));
+                            Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
+                        }
+                        break;
+                    case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
+                        $vector = $player->getPosition()->asVector3();
+                        if (isset(Loader::getInstance()->ParkourCheckPoint[$name]) and Loader::getInstance()->ParkourCheckPoint[$name] !== $vector) {
+                            Loader::getInstance()->ParkourCheckPoint[$name] = $vector;
+                        }
+                        break;
                 }
-            } else if ($block->getId() === BlockLegacyIds::REPEATING_COMMAND_BLOCK) {
-                $vector = $player->getPosition()->asVector3();
-                if (isset(Loader::getInstance()->ParkourCheckPoint[$name]) and Loader::getInstance()->ParkourCheckPoint[$name] !== $vector) {
-                    Loader::getInstance()->ParkourCheckPoint[$name] = $vector;
-                }
-            }
         }
     }
-
-    /**
-     * @priority LOWEST
-     */
 
     public function onEntityDeath(EntityDeathEvent $event)
     {
@@ -711,9 +657,6 @@ class PlayerListener implements Listener
     }
 
     /**
-     *
-     * @priority LOWEST
-     *
      * @throws Exception
      */
     public function onDeath(PlayerDeathEvent $event): void
@@ -728,10 +671,8 @@ class PlayerListener implements Listener
             /* @var HorizonPlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
-                foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
-                    if ($p->getWorld() === $player->getWorld()) {
-                        $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
-                    }
+                foreach (Server::getInstance()->getWorldManager()->getWorldByName($cause->getDamager()->getWorld()->getFolderName())->getPlayers() as $p) {
+                    $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
                 }
             } else if ($damager instanceof Player) {
                 $dname = $damager->getName() ?? "Unknown";
@@ -749,10 +690,6 @@ class PlayerListener implements Listener
         }
     }
 
-    /**
-     * @priority LOWEST
-     */
-
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
@@ -762,12 +699,9 @@ class PlayerListener implements Listener
         $player->getOffHandInventory()->clearAll();
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
-        $player->setPVPTag();
+        /* @var HorizonPlayer $player */
+        $player->setUnPVPTag();
     }
-
-    /**
-     * @priority LOWEST
-     */
 
     public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
     {
