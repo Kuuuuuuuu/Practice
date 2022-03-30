@@ -454,24 +454,12 @@ class FormUtils
                     $player->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     break;
-                case 1:
-                    $player->getInventory()->clearAll();
-                    $player->getArmorInventory()->clearAll();
-                    $player->setImmobile(true);
-                    Loader::getInstance()->EditKit[$player->getName()] = "oitc";
-                    $player->sendMessage(Loader::getPrefixCore() . "§aEdit kit enabled");
-                    $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
-                    $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-                    $player->getInventory()->setItem(2, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-                    $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    break;
             }
             return true;
         });
         $form->setTitle("§l§cEdit Kit");
         $form->setContent("§7Select a kit to edit");
         $form->addButton("§l§cBuild Kit");
-        $form->addButton("§l§cOITC Kit");
         $player->sendForm($form);
     }
 
