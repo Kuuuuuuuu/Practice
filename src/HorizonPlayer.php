@@ -301,9 +301,7 @@ class HorizonPlayer extends Player
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = Loader::$cps->getClicks($this);
-        $tagpvp = "§b{ping}§fms §f| §b{cps} §fCPS";
-        $tagpvp = str_replace("{ping}", (string)$ping, $tagpvp);
-        $tagpvp = str_replace("{cps}", (string)$nowcps, $tagpvp);
+        $tagpvp = "§b" . $ping . "§fms §f| §b" . $nowcps . " §fCPS";
         $this->setScoreTag($tagpvp);
     }
 

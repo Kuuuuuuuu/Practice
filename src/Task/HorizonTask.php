@@ -34,14 +34,10 @@ class HorizonTask extends Task
                     $player->parkourTimer();
                     break;
                 case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena()):
-                    if ($this->tick % 3 === 0) {
-                        $player->boxingTip();
-                    }
+                    $player->boxingTip();
                     break;
                 default:
-                    if ($this->tick % 3 === 0) {
-                        $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
-                    }
+                    $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
                     break;
             }
         }
@@ -50,10 +46,9 @@ class HorizonTask extends Task
     private function RestartServer()
     {
         Loader::getInstance()->RestartTime--;
-        if (Loader::getInstance()->RestartTime <= 15) {
+        if (Loader::getInstance()->RestartTime !== 0 and Loader::getInstance()->RestartTime % 5 === 0) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
-        }
-        if (Loader::getInstance()->RestartTime <= 1) {
+        } else if (Loader::getInstance()->RestartTime === 0) {
             Loader::getInstance()->getServer()->shutdown();
         }
     }
