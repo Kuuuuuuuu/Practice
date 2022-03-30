@@ -158,7 +158,7 @@ class PlayerListener implements Listener
         if ($entity instanceof Player) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
                 if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
-                    $entity->getInventory()->setItem(19, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                    $entity->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                 }
             }), 100);
         }
@@ -310,7 +310,7 @@ class PlayerListener implements Listener
             $event->cancel();
         }
         foreach ($actions as $action) {
-            if ($player->getGamemode() === GameMode::CREATIVE() or (isset(Loader::getInstance()->EditKit[$player->getName()]) and Loader::getInstance()->EditKit[$player->getName()] === true)) {
+            if ($player->getGamemode() === GameMode::CREATIVE() or isset(Loader::getInstance()->EditKit[$player->getName()])) {
                 return;
             } else {
                 $event->cancel();
@@ -338,42 +338,44 @@ class PlayerListener implements Listener
             if (mb_strtolower($args[0]) === "confirm") {
                 try {
                     Loader::getInstance()->KitData->set($name, [
-                        "0" => [
-                            "item" => $player->getInventory()->getItem(0)->getId(),
-                            "count" => $player->getInventory()->getItem(0)->getCount(),
-                        ],
-                        "1" => [
-                            "item" => $player->getInventory()->getItem(1)->getId(),
-                            "count" => $player->getInventory()->getItem(1)->getCount()
-                        ],
-                        "2" => [
-                            "item" => $player->getInventory()->getItem(2)->getId(),
-                            "count" => $player->getInventory()->getItem(2)->getCount(),
-                        ],
-                        "3" => [
-                            "item" => $player->getInventory()->getItem(3)->getId(),
-                            "count" => $player->getInventory()->getItem(3)->getCount()
-                        ],
-                        "4" => [
-                            "item" => $player->getInventory()->getItem(4)->getId(),
-                            "count" => $player->getInventory()->getItem(4)->getCount()
-                        ],
-                        "5" => [
-                            "item" => $player->getInventory()->getItem(5)->getId(),
-                            "count" => $player->getInventory()->getItem(5)->getCount()
-                        ],
-                        "6" => [
-                            "item" => $player->getInventory()->getItem(6)->getId(),
-                            "count" => $player->getInventory()->getItem(6)->getCount()
-                        ],
-                        "7" => [
-                            "item" => $player->getInventory()->getItem(7)->getId(),
-                            "count" => $player->getInventory()->getItem(7)->getCount()
-                        ],
-                        "8" => [
-                            "item" => $player->getInventory()->getItem(8)->getId(),
-                            "count" => $player->getInventory()->getItem(8)->getCount()
-                        ],
+                        Loader::getInstance()->EditKit[$name] => [
+                            "0" => [
+                                "item" => $player->getInventory()->getItem(0)->getId(),
+                                "count" => $player->getInventory()->getItem(0)->getCount(),
+                            ],
+                            "1" => [
+                                "item" => $player->getInventory()->getItem(1)->getId(),
+                                "count" => $player->getInventory()->getItem(1)->getCount()
+                            ],
+                            "2" => [
+                                "item" => $player->getInventory()->getItem(2)->getId(),
+                                "count" => $player->getInventory()->getItem(2)->getCount(),
+                            ],
+                            "3" => [
+                                "item" => $player->getInventory()->getItem(3)->getId(),
+                                "count" => $player->getInventory()->getItem(3)->getCount()
+                            ],
+                            "4" => [
+                                "item" => $player->getInventory()->getItem(4)->getId(),
+                                "count" => $player->getInventory()->getItem(4)->getCount()
+                            ],
+                            "5" => [
+                                "item" => $player->getInventory()->getItem(5)->getId(),
+                                "count" => $player->getInventory()->getItem(5)->getCount()
+                            ],
+                            "6" => [
+                                "item" => $player->getInventory()->getItem(6)->getId(),
+                                "count" => $player->getInventory()->getItem(6)->getCount()
+                            ],
+                            "7" => [
+                                "item" => $player->getInventory()->getItem(7)->getId(),
+                                "count" => $player->getInventory()->getItem(7)->getCount()
+                            ],
+                            "8" => [
+                                "item" => $player->getInventory()->getItem(8)->getId(),
+                                "count" => $player->getInventory()->getItem(8)->getCount()
+                            ],
+                        ]
                     ]);
                 } catch (Exception) {
                     $player->kill();

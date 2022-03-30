@@ -28,6 +28,11 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
+            $name = $sender->getName();
+            if (isset(Loader::getInstance()->EditKit[$name])) {
+                $sender->sendMessage(Loader::getPrefixCore() . "§cYou can't use this command while editing a kit!");
+                return;
+            }
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             $sender->sendMessage(Loader::getPrefixCore() . "§aTeleported to Hub!");
             $sender->setGamemode(GameMode::ADVENTURE());
