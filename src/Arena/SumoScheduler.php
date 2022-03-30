@@ -35,14 +35,13 @@ class SumoScheduler extends Task
             if ($this->tick % 20 === 0) {
                 foreach ($this->plugin->players as $player) {
                     if ($this->plugin->inGame($player)) {
-                        if ($player->getPosition()->getY() <= 50) {
+                        if ($player->getWorld() !== $this->plugin->level) {
+                            $this->plugin->disconnectPlayer($player);
+                        } else if ($player->getPosition()->getY() <= 50) {
                             $this->plugin->disconnectPlayer($player);
                             ArenaUtils::getInstance()->getData($player->getName())->removeElo();
                             $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->LastedElo[$player->getName() ?? null] ?? 0 . " Elos!");
                         }
-                    }
-                    if ($player->getWorld() !== $this->plugin->level) {
-                        $this->plugin->disconnectPlayer($player);
                     }
                 }
                 if ($this->plugin->phase === SumoHandler::PHASE_GAME) {
@@ -51,8 +50,7 @@ class SumoScheduler extends Task
                     } else {
                         $this->plugin->startRestart();
                     }
-                }
-                if ($this->plugin->phase === SumoHandler::PHASE_LOBBY) {
+                } else if ($this->plugin->phase === SumoHandler::PHASE_LOBBY) {
                     if (count($this->plugin->players) >= 2) {
                         if ($this->startTime >= 0) {
                             $this->startTime--;
@@ -80,12 +78,9 @@ class SumoScheduler extends Task
                     }
                     foreach ($this->plugin->players as $player) {
                         /** @var $player Player */
-                        if ($player->isImmobile()) {
-                            $player->setImmobile(false);
-                        }
+                        $player->setImmobile(false);
                     }
-                }
-                if ($this->plugin->phase === SumoHandler::PHASE_RESTART) {
+                } else if ($this->plugin->phase === SumoHandler::PHASE_RESTART) {
                     foreach ($this->plugin->players as $player) {
                         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                         $player->getInventory()->clearAll();

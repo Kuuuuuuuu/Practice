@@ -24,7 +24,6 @@ use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\Skin;
-use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDeathEvent;
@@ -548,25 +547,30 @@ class PlayerListener implements Listener
         $entity = $event->getEntity();
         /* @var HorizonPlayer $entity */
         if ($entity instanceof Player) {
-            if ($event->getCause() === EntityDamageEvent::CAUSE_VOID) {
-                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    $event->cancel();
-                    $entity->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-                }
-            } else if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) {
-                $event->cancel();
-            } else if ($event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
-                $event->cancel();
-                $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
-            } else if ($event instanceof EntityDamageByChildEntityEvent) {
-                $owner = $event->getChild()->getOwningEntity();
-                if ($owner instanceof Player) {
-                    $name = $owner->getName();
-                    if ($name === $entity->getName()) {
+            switch ($event->getCause()) {
+                case EntityDamageEvent::CAUSE_VOID:
+                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         $event->cancel();
-                        $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                        $entity->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                     }
-                }
+                    break;
+                case EntityDamageEvent::CAUSE_FALL:
+                    $event->cancel();
+                    break;
+                case EntityDamageEvent::CAUSE_SUFFOCATION:
+                    $event->cancel();
+                    $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
+                    break;
+                case EntityDamageEvent::CAUSE_PROJECTILE:
+                    $owner = $event->getChild()->getOwningEntity();
+                    if ($owner instanceof Player) {
+                        $name = $owner->getName();
+                        if ($name === $entity->getName()) {
+                            $event->cancel();
+                            $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                        }
+                    }
+                    break;
             }
         }
     }

@@ -228,7 +228,7 @@ class SumoHandler implements Listener
                     $index = $i;
                 }
             }
-            if ($index != "") {
+            if ($index !== "") {
                 unset($this->players[$index]);
             }
         } else {

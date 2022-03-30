@@ -75,12 +75,12 @@ class BaseListener implements Listener
         foreach ($ev->getPackets() as $packet) {
             if ($packet instanceof LevelSoundEventPacket) {
                 if ($packet->pid() === LevelSoundEventPacket::NETWORK_ID) {
-                    if ($packet->sound === LevelSoundEvent::ATTACK) {
-                        $ev->cancel();
-                    } else if ($packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
-                        $ev->cancel();
-                    } else if ($packet->sound === LevelSoundEvent::ATTACK_STRONG) {
-                        $ev->cancel();
+                    switch ($packet->sound) {
+                        case LevelSoundEvent::ATTACK:
+                        case LevelSoundEvent::ATTACK_NODAMAGE:
+                        case LevelSoundEvent::ATTACK_STRONG:
+                            $ev->cancel();
+                            break;
                     }
                 }
             }
