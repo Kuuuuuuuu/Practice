@@ -19,7 +19,7 @@ class HorizonTask extends Task
     {
         $this->tick++;
         if ($this->tick % 20 === 0) {
-            DeleteBlocksHandler::getInstance()->update();
+            Loader::getInstance()->getDeleteBlockHandler()->update();
             if (Loader::getInstance()->Restarted) {
                 $this->RestartServer();
             }
@@ -30,14 +30,14 @@ class HorizonTask extends Task
         }
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             switch ($player->getWorld()) {
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()):
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena()):
                     $player->parkourTimer();
                     break;
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena()):
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBoxingArena()):
                     $player->boxingTip();
                     break;
                 default:
-                    $player->sendTip("§bCPS: §f" . Loader::$cps->getClicks($player));
+                    $player->sendTip("§bCPS: §f" . Loader::getInstance()->getClickHandler()->getClicks($player));
                     break;
             }
         }

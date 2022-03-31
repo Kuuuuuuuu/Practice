@@ -12,9 +12,9 @@ use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
-use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\ClickHandler;
+use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlManager;
@@ -27,12 +27,13 @@ use SQLite3;
 class Loader extends PluginBase
 {
     public static self $plugin;
-    public static ?ClickHandler $cps;
-    public static ?Scoreboards $score;
-    public static ?FormUtils $form;
-    public static ?ArenaFactory $arenafac;
-    public static ?ArenaManager $arena;
-    public static ?YamlManager $YamlLoader;
+    public static ClickHandler $cps;
+    public static Scoreboards $score;
+    public static FormUtils $form;
+    public static ArenaFactory $arenafac;
+    public static ArenaManager $arena;
+    public static YamlManager $YamlLoader;
+    public static DeleteBlocksHandler $blockhandle;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -58,7 +59,6 @@ class Loader extends PluginBase
     public array $SumoArenas = [];
     public array $SumoSetup = [];
     public array $SumoData = [];
-    public array $buildBlocks = [];
     public array $ParkourCheckPoint = [];
     public array $EditKit = [];
     public array $KillLeaderboard = [];
@@ -109,26 +109,16 @@ class Loader extends PluginBase
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
         self::$YamlLoader = new YamlManager();
+        self::$blockhandle = new DeleteBlocksHandler();
     }
 
     public function onEnable(): void
     {
         self::$YamlLoader->loadArenas();
         ArenaUtils::getInstance()->Start();
+        ArenaUtils::getInstance()->killbot();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
-        $this->killbot();
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
-    }
-
-    private function killbot()
-    {
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof FistBot) {
-                    $entity->close();
-                }
-            }
-        }
     }
 
     /**
@@ -137,8 +127,38 @@ class Loader extends PluginBase
     #[Pure] public function onDisable(): void
     {
         ArenaUtils::getInstance()->loadMap("BUild");
+        ArenaUtils::getInstance()->killbot();
         self::$YamlLoader->saveArenas();
-        $this->killbot();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+    }
+
+    public function getDeleteBlockHandler(): DeleteBlocksHandler
+    {
+        return self::$blockhandle;
+    }
+
+    public function getFormUtils(): FormUtils
+    {
+        return self::$form;
+    }
+
+    public function getArenaFactory(): ArenaFactory
+    {
+        return self::$arenafac;
+    }
+
+    public function getArenaManager(): ArenaManager
+    {
+        return self::$arena;
+    }
+
+    public function getScoreboardsUtils(): Scoreboards
+    {
+        return self::$score;
+    }
+
+    public function getClickHandler(): ClickHandler
+    {
+        return self::$cps;
     }
 }

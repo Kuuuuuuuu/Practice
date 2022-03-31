@@ -63,7 +63,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setFistArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setFistArena($sender, $args[2]);
                                 }
                                 break;
                             case "Parkour":
@@ -72,7 +72,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setParkourArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setParkourArena($sender, $args[2]);
                                 }
                                 break;
                             case "Boxing":
@@ -81,7 +81,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setBoxingArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setBoxingArena($sender, $args[2]);
                                 }
                                 break;
                             case "Combo":
@@ -90,7 +90,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setComboArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setComboArena($sender, $args[2]);
                                 }
                                 break;
                             case "Knockback":
@@ -99,7 +99,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setKnockbackArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setKnockbackArena($sender, $args[2]);
                                 }
                                 break;
                             case "KitPVP":
@@ -108,7 +108,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setKitPVPArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setKitPVPArena($sender, $args[2]);
                                 }
                                 break;
                             case "Resistance":
@@ -117,7 +117,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setResistanceArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setResistanceArena($sender, $args[2]);
                                 }
                                 break;
                             case "OITC":
@@ -126,7 +126,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setOITCArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setOITCArena($sender, $args[2]);
                                 }
                                 break;
                             case "SumoD":
@@ -135,7 +135,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setSumoD($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setSumoD($sender, $args[2]);
                                 }
                                 break;
                             case "Build":
@@ -144,7 +144,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setBuildArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setBuildArena($sender, $args[2]);
                                 }
                                 break;
                             case "Bot":
@@ -153,7 +153,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setBotArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setBotArena($sender, $args[2]);
                                 }
                                 break;
                             case "Skywars":
@@ -162,7 +162,7 @@ class CoreCommand extends Command
                                 } else {
                                     Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                    Loader::$arenafac->setSkywarsArena($sender, $args[2]);
+                                    Loader::getInstance()->getArenaFactory()->setSkywarsArena($sender, $args[2]);
                                 }
                                 break;
                             default:
@@ -219,40 +219,40 @@ class CoreCommand extends Command
                         }
                         switch ($args[1]) {
                             case "fist":
-                                Loader::$arenafac->removeFist($sender);
+                                Loader::getInstance()->getArenaFactory()->removeFist($sender);
                                 break;
                             case "Boxing":
-                                Loader::$arenafac->removeBoxing($sender);
+                                Loader::getInstance()->getArenaFactory()->removeBoxing($sender);
                                 break;
                             case "Parkour":
-                                Loader::$arenafac->removeParkour($sender);
+                                Loader::getInstance()->getArenaFactory()->removeParkour($sender);
                                 break;
                             case "Combo":
-                                Loader::$arenafac->removeCombo($sender);
+                                Loader::getInstance()->getArenaFactory()->removeCombo($sender);
                                 break;
                             case "Knockback":
-                                Loader::$arenafac->removeKnockback($sender);
+                                Loader::getInstance()->getArenaFactory()->removeKnockback($sender);
                                 break;
                             case "KitPVP":
-                                Loader::$arenafac->removeKitPVP($sender);
+                                Loader::getInstance()->getArenaFactory()->removeKitPVP($sender);
                                 break;
                             case "Resistance":
-                                Loader::$arenafac->removeResistance($sender);
+                                Loader::getInstance()->getArenaFactory()->removeResistance($sender);
                                 break;
                             case "OITC":
-                                Loader::$arenafac->removeOITC($sender);
+                                Loader::getInstance()->getArenaFactory()->removeOITC($sender);
                                 break;
                             case "SumoD":
-                                Loader::$arenafac->removeSumoD($sender);
+                                Loader::getInstance()->getArenaFactory()->removeSumoD($sender);
                                 break;
                             case "Build":
-                                Loader::$arenafac->removeBuild($sender);
+                                Loader::getInstance()->getArenaFactory()->removeBuild($sender);
                                 break;
                             case "Bot":
-                                Loader::$arenafac->removeBot($sender);
+                                Loader::getInstance()->getArenaFactory()->removeBot($sender);
                                 break;
                             case "Skywars":
-                                Loader::$arenafac->removeSkywars($sender);
+                                Loader::getInstance()->getArenaFactory()->removeSkywars($sender);
                                 break;
                             default:
                                 $sender->sendMessage(Loader::getPrefixCore() . Color::RED . "use /core remove <mode>");

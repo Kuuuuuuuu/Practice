@@ -82,7 +82,7 @@ class PlayerListener implements Listener
         if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
             if ($item->getCustomName() === "§r§6Reaper") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getPlayers() as $p) {
+                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
                     if ($p->getName() !== $name) {
                         if ($player->getPosition()->distance($p->getPosition()) <= 10) {
                             $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
@@ -113,7 +113,7 @@ class PlayerListener implements Listener
                 Loader::getInstance()->SkillCooldown[$name] = true;
             } else if ($item->getCustomName() === "§r§6Teleport") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena())->getPlayers() as $p) {
+                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
                     if ($p->getName() !== $name) {
                         $player->teleport($p->getPosition()->asVector3());
                         Loader::getInstance()->SkillCooldown[$name] = true;
@@ -130,11 +130,11 @@ class PlayerListener implements Listener
             ArenaUtils::getInstance()->SkillCooldown($player);
         }
         if ($item->getCustomName() === "§r§bPlay") {
-            Loader::$form->Form1($player);
+            Loader::getInstance()->getFormUtils()->Form1($player);
         } else if ($item->getCustomName() === "§r§bSettings") {
-            Loader::$form->settingsForm($player);
+            Loader::getInstance()->getFormUtils()->settingsForm($player);
         } else if ($item->getCustomName() === "§r§bBot") {
-            Loader::$form->botForm($player);
+            Loader::getInstance()->getFormUtils()->botForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
             Loader::getInstance()->TimerTask[$name] = false;
@@ -165,7 +165,7 @@ class PlayerListener implements Listener
         $entity = $event->getEntity();
         if ($entity instanceof HorizonPlayer) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
-                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena())) {
+                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena())) {
                     $entity->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                 }
             }), 100);
@@ -211,7 +211,7 @@ class PlayerListener implements Listener
             $player->getAllArtifact();
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             ArenaUtils::getInstance()->DeviceCheck($player);
-            Loader::$cps->initPlayerClickData($player);
+            Loader::getInstance()->getClickHandler()->initPlayerClickData($player);
             if ($player instanceof HorizonPlayer) {
                 $cosmetic = CosmeticHandler::getInstance();
                 $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
@@ -320,7 +320,7 @@ class PlayerListener implements Listener
         $transaction = $event->getTransaction();
         $actions = $transaction->getActions();
         $player = $transaction->getSource();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSkywarsArena())) {
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getSkywarsArena())) {
             return;
         }
         if ($transaction instanceof CraftingTransaction) {
@@ -412,8 +412,8 @@ class PlayerListener implements Listener
             $event->cancel();
             $args = explode(" ", $event->getMessage());
             $arena = Loader::getInstance()->SumoSetup[$name];
-            if (Loader::$arenafac->getSumoDArena() !== null) {
-                $arena->data["level"] = Loader::$arenafac->getSumoDArena();
+            if (Loader::getInstance()->getArenaFactory()->getSumoDArena() !== null) {
+                $arena->data["level"] = Loader::getInstance()->getArenaFactory()->getSumoDArena();
             }
             switch ($args[0]) {
                 case "help":
@@ -478,7 +478,7 @@ class PlayerListener implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $event->setQuitMessage("§f[§c-§f] §c" . $player->getName());
-        Loader::$cps->removePlayerClickData($player);
+        Loader::getInstance()->getClickHandler()->removePlayerClickData($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             unset(Loader::getInstance()->BoxingPoint[$name]);
@@ -506,10 +506,10 @@ class PlayerListener implements Listener
         if ($player instanceof HorizonPlayer and $damager instanceof HorizonPlayer) {
             $damager->setLastDamagePlayer($player->getName());
             $player->setLastDamagePlayer($damager->getName());
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
                 Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
                 Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
                 Loader::getInstance()->CombatTimer[$player->getName()] = 10;
@@ -521,12 +521,12 @@ class PlayerListener implements Listener
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 } else if (Loader::getInstance()->PlayerOpponent[$player->getName()] === $damager->getName() and Loader::getInstance()->PlayerOpponent[$damager->getName()] === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
                     Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
                     Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
                     Loader::getInstance()->CombatTimer[$player->getName()] = 10;
                     Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBoxingArena())) {
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBoxingArena())) {
                         if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
                             if (Loader::getInstance()->BoxingPoint[$damager->getName()] <= 100) {
                                 Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
@@ -589,7 +589,7 @@ class PlayerListener implements Listener
     public function onJump(PlayerJumpEvent $event)
     {
         $player = $event->getPlayer();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
             if (isset(Loader::getInstance()->JumpCount[$player->getName()])) {
                 Loader::getInstance()->JumpCount[$player->getName()]++;
             } else {
@@ -604,23 +604,23 @@ class PlayerListener implements Listener
         $name = $player->getName();
         $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
                 $player->kill();
             }
         }
         switch ($player->getWorld()) {
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena()):
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena()):
                 if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                     $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
                     $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
                 }
                 break;
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()):
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena()):
                 if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
                 }
                 break;
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena()):
+            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena()):
                 switch ($block->getId()) {
                     case BlockLegacyIds::NOTE_BLOCK:
                         if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {

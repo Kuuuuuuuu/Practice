@@ -266,10 +266,10 @@ class HorizonPlayer extends Player
     public function updateTag()
     {
         $name = $this->getName();
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
             $this->setParkourTag();
         } else {
-            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getBuildArena())) {
+            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
                 $this->setPVPTag();
             } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                 $this->setUnPVPTag();
@@ -303,7 +303,7 @@ class HorizonPlayer extends Player
     public function setPVPTag()
     {
         $ping = $this->getNetworkSession()->getPing();
-        $nowcps = Loader::$cps->getClicks($this);
+        $nowcps = Loader::getInstance()->getClickHandler()->getClicks($this);
         $tagpvp = "§b" . $ping . "§fms §f| §b" . $nowcps . " §fCPS";
         $this->setScoreTag($tagpvp);
     }
@@ -318,9 +318,9 @@ class HorizonPlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             ScoreboardUtils::getInstance()->sb($this);
-        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
             ScoreboardUtils::getInstance()->sb2($this);
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::$arenafac->getParkourArena())) {
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
             ScoreboardUtils::getInstance()->Parkour($this);
         }
     }
@@ -352,7 +352,7 @@ class HorizonPlayer extends Player
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             $point = Loader::getInstance()->BoxingPoint[$name];
             $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::$cps->getClicks($this));
+            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getInstance()->getClickHandler()->getClicks($this));
         } else {
             Loader::getInstance()->BoxingPoint[$name] = 0;
         }

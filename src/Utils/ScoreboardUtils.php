@@ -37,9 +37,9 @@ class ScoreboardUtils
             10 => "§bElo§f: §6{$data->getElo()}",
             11 => "§7---------------"
         ];
-        Loader::$score->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::$score->setLine($player, $line, $content);
+            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -55,9 +55,9 @@ class ScoreboardUtils
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
-        Loader::$score->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::$score->setLine($player, $line, $content);
+            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -73,9 +73,9 @@ class ScoreboardUtils
             4 => "§bJump Count§f: §6$jump",
             5 => "§7---------------"
         ];
-        Loader::$score->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::$score->setLine($player, $line, $content);
+            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 }
