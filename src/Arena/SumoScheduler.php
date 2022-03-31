@@ -77,11 +77,11 @@ class SumoScheduler extends Task
                         if ($player->getWorld() !== $this->plugin->level) {
                             $this->plugin->disconnectPlayer($player);
                             ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . (Loader::getInstance()->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
+                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ($this->plugin->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
                         } else if ($player->getPosition()->getY() <= 50) {
                             $this->plugin->disconnectPlayer($player);
                             ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . (Loader::getInstance()->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
+                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ($this->plugin->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
                         }
                         $player->setImmobile(false);
                     }

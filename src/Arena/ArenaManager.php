@@ -228,7 +228,6 @@ class ArenaManager
         $player->setHealth(20);
         if ($player instanceof HorizonPlayer) {
             try {
-                $name = $player->getName();
                 $player->getInventory()->setItem(0, ItemFactory::getInstance()->get($player->getKit()["0"]["0"]["item"], 0, $player->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                 $player->getInventory()->setItem(1, ItemFactory::getInstance()->get($player->getKit()["0"]["1"]["item"], 0, $player->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                 $player->getInventory()->setItem(2, ItemFactory::getInstance()->get($player->getKit()["0"]["2"]["item"], 0, $player->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));

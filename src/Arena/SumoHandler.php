@@ -41,7 +41,7 @@ class SumoHandler implements Listener
         $this->plugin = $plugin;
         $this->data = $arenaFileData;
         $this->setup = !$this->enable(false);
-        $this->plugin->getScheduler()->scheduleRepeatingTask($this->scheduler = new SumoScheduler($this), 1);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = new SumoScheduler($this), 1);
         if ($this->setup) {
             if (empty($this->data)) {
                 $this->createBasicData();
@@ -84,10 +84,10 @@ class SumoHandler implements Listener
     public function loadArena(bool $restart = false)
     {
         if (!$this->data["enabled"]) {
-            $this->plugin->getLogger()->error("Can not load arena: Arena is not enabled!");
+            Loader::getInstance()->getLogger()->error("Can not load arena: Arena is not enabled!");
             return;
         } else if (!$restart) {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
+            Server::getInstance()->getPluginManager()->registerEvents($this, $this->plugin);
             if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"])) {
                 Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
             }
@@ -179,7 +179,7 @@ class SumoHandler implements Listener
             $player = $p;
         }
         if ($player instanceof Player and $player->isOnline()) {
-            $this->plugin->getServer()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
             ArenaUtils::getInstance()->getData($player->getName())->addElo();
             $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . (Loader::getInstance()->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
         }
@@ -235,7 +235,7 @@ class SumoHandler implements Listener
             unset($this->players[$player->getName()]);
         }
         $player->getEffects()->clear();
-        $player->setGamemode($this->plugin->getServer()->getGamemode());
+        $player->setGamemode(Loader::getInstance()->getServer()->getGamemode());
         $player->setHealth(20);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -243,7 +243,7 @@ class SumoHandler implements Listener
         ArenaUtils::getInstance()->addDeath($player);
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
-        $player->teleport($this->plugin->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
+        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
         $player->sendMessage(Loader::getPrefixCore() . "§r§e$quitMsg");
     }
 

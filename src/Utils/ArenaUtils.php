@@ -19,6 +19,7 @@ use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Entity\DeathLeaderboard;
+use Kohaku\Core\Entity\EnderPearlEntity;
 use Kohaku\Core\Entity\FallingWool;
 use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\Entity\KillLeaderboard;
@@ -35,6 +36,7 @@ use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
 use Kohaku\SkyWars\Skywars;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
+use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
@@ -279,6 +281,9 @@ class ArenaUtils
             return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
+        EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
+            return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
+        }, ['HThrownEnderpearl', 'horizon:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
     }
 
     public function loadallworlds()
