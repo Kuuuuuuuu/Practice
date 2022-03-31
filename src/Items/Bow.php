@@ -36,8 +36,8 @@ class Bow extends ItemBow
         }
         $location = $player->getLocation();
         $diff = $player->getItemUseDuration();
-        $p = $diff / 20;
-        $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
+        //$p = $diff / 20;
+        $baseForce = 4;
 
         $entity = new ArrowEntity(Location::fromObject(
             $player->getEyePos(),
