@@ -267,7 +267,6 @@ class PlayerListener implements Listener
 
     public function onClickBlock(PlayerInteractEvent $event)
     {
-        $player = $event->getPlayer();
         $block = $event->getBlock();
         if ($block->getId() === ItemIds::ANVIL) {
             $event->cancel();

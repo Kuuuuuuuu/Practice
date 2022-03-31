@@ -102,6 +102,9 @@ class HorizonPlayer extends Player
             if ($this->getStuff() !== "" or $this->getStuff() !== null) {
                 CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
             }
+        } else {
+            Loader::getInstance()->ArtifactData->remove($this->getName());
+            Loader::getInstance()->ArtifactData->save();
         }
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();

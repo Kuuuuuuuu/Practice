@@ -108,23 +108,23 @@ class DataManager
     /**
      * @throws Exception
      */
-    public function addElo()
+    public function addElo(): int
     {
         $random = random_int(1, 30);
         $this->elo += $random;
         $this->save();
-        Loader::getInstance()->LastedElo[$this->player] = $random;
+        return $random;
     }
 
     /**
      * @throws Exception
      */
-    public function removeElo()
+    public function removeElo(): int
     {
         $random = random_int(1, 30);
         $this->elo -= $random;
         $this->save();
-        Loader::getInstance()->LastedElo[$this->player] = $random;
+        return $random;
     }
 
     public function getElo(): int

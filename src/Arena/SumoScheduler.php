@@ -67,7 +67,7 @@ class SumoScheduler extends Task
                     }
                 }
             }
-            if ($this->tick % 10 === 0) {
+            if ($this->tick % 5 === 0) {
                 if ($this->plugin->phase === SumoHandler::PHASE_GAME) {
                     if ($this->plugin->checkEnd()) {
                         $this->plugin->startRestart();
@@ -76,12 +76,11 @@ class SumoScheduler extends Task
                         /** @var $player Player */
                         if ($player->getWorld() !== $this->plugin->level) {
                             $this->plugin->disconnectPlayer($player);
-                            ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ($this->plugin->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
+                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
                         } else if ($player->getPosition()->getY() <= 50) {
                             $this->plugin->disconnectPlayer($player);
                             ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ($this->plugin->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
+                            $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
                         }
                         $player->setImmobile(false);
                     }

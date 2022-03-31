@@ -180,8 +180,7 @@ class SumoHandler implements Listener
         }
         if ($player instanceof Player and $player->isOnline()) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
-            ArenaUtils::getInstance()->getData($player->getName())->addElo();
-            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . (Loader::getInstance()->LastedElo[$player->getName() ?? null] ?? 0) . " Elos!");
+            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . ArenaUtils::getInstance()->getData($player->getName())->addElo() . " Elos!");
         }
         $this->phase = self::PHASE_RESTART;
     }

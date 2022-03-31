@@ -59,7 +59,6 @@ class Loader extends PluginBase
     public array $SumoSetup = [];
     public array $SumoData = [];
     public array $buildBlocks = [];
-    public array $LastedElo = [];
     public array $ParkourCheckPoint = [];
     public array $EditKit = [];
     public array $KillLeaderboard = [];
