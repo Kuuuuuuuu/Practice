@@ -19,6 +19,9 @@ use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\ModalFormResponsePacket;
+use pocketmine\network\mcpe\protocol\ServerSettingsRequestPacket;
+use pocketmine\network\mcpe\protocol\ServerSettingsResponsePacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\permission\DefaultPermissions;
@@ -91,6 +94,17 @@ class BaseListener implements Listener
     {
         $player = $event->getOrigin()->getPlayer();
         $packet = $event->getPacket();
+        if ($packet instanceof ServerSettingsRequestPacket) {
+            $packet = new ServerSettingsResponsePacket();
+            $packet->formData = file_get_contents(Loader::getInstance()->getDataFolder() . "Form.json");
+            $packet->formId = 5928;
+            $player->getNetworkSession()->sendDataPacket($packet);
+        } else if ($packet instanceof ModalFormResponsePacket) {
+            $formId = $packet->formId;
+            if ($formId !== 5928) {
+                return;
+            }
+        }
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::$cps->addClick($player);
