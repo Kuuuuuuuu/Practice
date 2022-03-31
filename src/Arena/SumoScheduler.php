@@ -33,10 +33,12 @@ class SumoScheduler extends Task
         if (!$this->plugin->setup) {
             $this->tick++;
             if ($this->tick % 20 === 0) {
-                foreach ($this->plugin->players as $player) {
-                    if ($this->plugin->inGame($player)) {
-                        if ($player->getWorld() !== $this->plugin->level) {
-                            $this->plugin->disconnectPlayer($player);
+                if ($this->plugin->phase !== SumoHandler::PHASE_RESTART) {
+                    foreach ($this->plugin->players as $player) {
+                        if ($this->plugin->inGame($player)) {
+                            if ($player->getWorld() !== $this->plugin->level) {
+                                $this->plugin->disconnectPlayer($player);
+                            }
                         }
                     }
                 }
