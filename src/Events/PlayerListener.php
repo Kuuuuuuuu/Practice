@@ -40,6 +40,7 @@ use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
+use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerJumpEvent;
@@ -51,6 +52,7 @@ use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\inventory\transaction\CraftingTransaction;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
@@ -72,6 +74,11 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $item = $event->getItem();
         $name = $player->getName();
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            if ($item->getId() === ItemIds::ENDER_PEARL) {
+                $event->cancel();
+            }
+        }
         if (!isset(Loader::getInstance()->SkillCooldown[$name])) {
             if ($item->getCustomName() === "§r§6Reaper") {
                 $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
@@ -255,6 +262,15 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         if ($player->getHungerManager()->getFood() < 20) {
             $player->getHungerManager()->setFood(20);
+        }
+    }
+
+    public function onClickBlock(PlayerInteractEvent $event)
+    {
+        $player = $event->getPlayer();
+        $block = $event->getBlock();
+        if ($block->getId() === ItemIds::ANVIL) {
+            $event->cancel();
         }
     }
 
