@@ -78,37 +78,41 @@ class SumoScheduler extends Task
                         if ($this->plugin->checkEnd()) {
                             $this->plugin->startRestart();
                         }
-                        foreach ($this->plugin->players as $player) {
-                            /** @var $player Player */
-                            if ($player->getWorld() !== $this->plugin->level) {
-                                $this->plugin->disconnectPlayer($player);
-                                ArenaUtils::getInstance()->addDeath($player);
-                                $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
-                            } else if ($player->getPosition()->getY() <= 50) {
-                                $this->plugin->disconnectPlayer($player);
-                                ArenaUtils::getInstance()->addDeath($player);
-                                ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                                $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
+                        if ($this->tick % 5 === 0) {
+                            foreach ($this->plugin->players as $player) {
+                                /** @var $player Player */
+                                if ($player->getWorld() !== $this->plugin->level) {
+                                    $this->plugin->disconnectPlayer($player);
+                                    ArenaUtils::getInstance()->addDeath($player);
+                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
+                                } else if ($player->getPosition()->getY() <= 50) {
+                                    $this->plugin->disconnectPlayer($player);
+                                    ArenaUtils::getInstance()->addDeath($player);
+                                    ArenaUtils::getInstance()->getData($player->getName())->removeElo();
+                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
+                                }
+                                $player->setImmobile(false);
                             }
-                            $player->setImmobile(false);
                         }
                     }
                     break;
                 case SumoHandler::PHASE_RESTART:
                     {
-                        foreach ($this->plugin->players as $player) {
-                            $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-                            $player->getInventory()->clearAll();
-                            $player->getArmorInventory()->clearAll();
-                            $player->getEffects()->clear();
-                            ArenaUtils::getInstance()->GiveItem($player);
-                            ArenaUtils::getInstance()->addKill($player);
-                            ScoreboardUtils::getInstance()->sb($player);
-                            $player->setGamemode(GameMode::ADVENTURE());
+                        if ($this->tick % 5 === 0) {
+                            foreach ($this->plugin->players as $player) {
+                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                                $player->getInventory()->clearAll();
+                                $player->getArmorInventory()->clearAll();
+                                $player->getEffects()->clear();
+                                ArenaUtils::getInstance()->GiveItem($player);
+                                ArenaUtils::getInstance()->addKill($player);
+                                ScoreboardUtils::getInstance()->sb($player);
+                                $player->setGamemode(GameMode::ADVENTURE());
+                            }
+                            $this->plugin->players = [];
+                            $this->plugin->loadArena(true);
+                            $this->reloadTimer();
                         }
-                        $this->plugin->players = [];
-                        $this->plugin->loadArena(true);
-                        $this->reloadTimer();
                     }
                     break;
             }
