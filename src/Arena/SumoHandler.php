@@ -218,7 +218,7 @@ class SumoHandler implements Listener
     /**
      * @throws Exception
      */
-    public function disconnectPlayer(Player $player, string $quitMsg = "You left the Game")
+    public function disconnectPlayer(Player $player)
     {
         if ($this->phase === self::PHASE_LOBBY) {
             $index = "";
@@ -239,11 +239,9 @@ class SumoHandler implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setImmobile(false);
-        ArenaUtils::getInstance()->addDeath($player);
         ArenaUtils::getInstance()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
-        $player->sendMessage(Loader::getPrefixCore() . "§r§e$quitMsg");
     }
 
     /**
