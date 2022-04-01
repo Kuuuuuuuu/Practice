@@ -18,6 +18,7 @@ use Kohaku\Core\Commands\SumoCommand;
 use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
+use Kohaku\Core\Commands\VanishCommand;
 use Kohaku\Core\Entity\DeathLeaderboard;
 use Kohaku\Core\Entity\EnderPearlEntity;
 use Kohaku\Core\Entity\FallingWool;
@@ -246,6 +247,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
         Server::getInstance()->getCommandMap()->register("settag", new SetTagCommand());
+        Server::getInstance()->getCommandMap()->register("vanish", new VanishCommand());
     }
 
     private function registerEvents(): void

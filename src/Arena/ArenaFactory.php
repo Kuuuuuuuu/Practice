@@ -291,7 +291,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("OITC");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "OITC removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -302,7 +302,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Build");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Build removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -313,7 +313,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Fist");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Fist removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -324,7 +324,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Bot");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Bot removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -335,7 +335,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Knockback");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Knockback removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -346,7 +346,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Skywars");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Skywars removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -357,7 +357,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Parkour");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Parkour removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -368,7 +368,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("SumoD");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "SumoD removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -379,7 +379,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Boxing");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Boxing removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -390,7 +390,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Resistance");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Resistance removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -401,7 +401,7 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Combo");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "Combo removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 
     /**
@@ -412,6 +412,6 @@ class ArenaFactory
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("KitPVP");
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . "KitPVP removed arena");
+        $player->sendMessage(Loader::getPrefixCore() . "Removed arena");
     }
 }

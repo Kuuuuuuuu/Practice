@@ -28,6 +28,9 @@ class DeleteBlocksHandler
 
     public function update(): void
     {
+        if (count($this->buildBlocks) === 0) {
+            return;
+        }
         foreach ($this->buildBlocks as $pos => $sec) {
             if ($sec <= 0) {
                 $block = explode(':', $pos);

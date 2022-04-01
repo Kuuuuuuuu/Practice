@@ -275,6 +275,8 @@ class FormUtils
                 return true;
             } else if (strlen($data[0]) >= 15) {
                 $player->sendMessage(Loader::getPrefixCore() . "§cYour nickname is too long!");
+            } else if (Server::getInstance()->getPlayerByPrefix($data[0]) !== null or $data[0] === "" or mb_strtolower($data[0]) === "iskohakuchan") {
+                $player->sendMessage(Loader::getPrefixCore() . "§cYou cant use this nickname!");
             } else {
                 $player->setDisplayName($data[0]);
                 if (ArenaUtils::getInstance()->getData($player->getName())->getTag() !== null) {

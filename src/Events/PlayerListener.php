@@ -52,7 +52,6 @@ use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\inventory\transaction\CraftingTransaction;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
-use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
@@ -493,6 +492,12 @@ class PlayerListener implements Listener
         }
         if (isset(Loader::getInstance()->EditKit[$name])) {
             unset(Loader::getInstance()->EditKit[$name]);
+        }
+        if ($player instanceof HorizonPlayer) {
+            if ($player->vanish) {
+                $player->vanish = false;
+                $player->setGamemode(GameMode::SURVIVAL());
+            }
         }
     }
 
