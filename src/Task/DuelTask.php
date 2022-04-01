@@ -10,8 +10,10 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
+
 class DuelTask extends Task
 {
+
     private int $time = 903;
     private HorizonPlayer $player1;
     private HorizonPlayer $player2;
@@ -57,14 +59,6 @@ class DuelTask extends Task
                 }, function (): void {
                 });
                 break;
-            case 901:
-                foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof HorizonPlayer) {
-                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                        $player->getInventory()->setContents($this->kit->getInventoryItems());
-                    }
-                }
-                break;
             case 0:
                 $this->onEnd();
                 break;
@@ -82,7 +76,6 @@ class DuelTask extends Task
         foreach ($this->getPlayers() as $online) {
             if (is_null($playerLeft) || $online->getName() !== $playerLeft->getName()) {
                 $online->sendMessage(TF::GRAY . "---------------");
-
                 $winnerMessage = TF::GOLD . "Winner: " . TF::WHITE;
                 if ($this->winner === null) {
                     $winnerMessage .= "None";
@@ -90,11 +83,9 @@ class DuelTask extends Task
                     $winnerMessage .= $this->winner->getDisplayName() . " " . floor($this->winner->getHealth() / 2) . TF::RED . " ❤";
                 }
                 $online->sendMessage($winnerMessage);
-
                 $loserMessage = TF::YELLOW . "Loser: " . TF::WHITE;
                 $loserMessage .= $this->loser !== null ? $this->loser->getDisplayName() : "None";
                 $online->sendMessage($loserMessage);
-
                 $online->sendMessage(TF::GRAY . "---------------");
                 $online->resetPlayer();
                 $online->giveLobbyItems();

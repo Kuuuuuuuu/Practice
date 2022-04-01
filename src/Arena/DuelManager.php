@@ -8,6 +8,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Task\DuelTask;
 use pocketmine\block\Block;
 use pocketmine\block\BlockLegacyIds;
+use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
@@ -54,16 +55,12 @@ class DuelManager
         $this->matches = $matches;
     }
 
-    public function canUseBlock(Block $block): bool
-    {
-        return $block->getId() === BlockLegacyIds::COBBLESTONE;
-    }
-
     public function stopMatch(string $name)
     {
         $this->removeMatch($name);
-        $level = $this->plugin->getServer()->getWorldManager()->getWorldByName($name);
-        $this->plugin->getServer()->getWorldManager()->unloadWorld($level, true);
+        if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
+            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
+        }
         Loader::getArenaUtils()->deleteDir($this->plugin->getServer()->getDataPath() . "worlds/$name");
     }
 

@@ -16,7 +16,6 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -722,6 +721,7 @@ class PlayerListener implements Listener
             $player->setImmobile(false);
         }
         /* @var HorizonPlayer $player */
+        $player->setDueling(false);
         $player->setUnPVPTag();
     }
 

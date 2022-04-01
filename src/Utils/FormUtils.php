@@ -68,8 +68,15 @@ class FormUtils
                 case 9:
                     Loader::getArenaManager()->onJoinBuild($player);
                     break;
-                case 10:
+                case 11:
                     Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
+                    break;
+                case 10:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                    }
                     break;
                 default:
                     print "Error";
@@ -91,6 +98,7 @@ class FormUtils
         if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
             $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         }
+        $form->addButton("§atest", 0, "textures/items/paper.png");
         $player->sendForm($form);
     }
 
