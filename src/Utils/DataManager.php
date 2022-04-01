@@ -163,8 +163,17 @@ class DataManager
         if ($this->elo >= 2400 && $this->elo < 2600) {
             $format = "§4Challenger";
         }
-        if ($this->elo >= 4000) {
-            $format = "§9Legend";
+        if ($this->elo >= 2600 && $this->elo < 2800) {
+            $format = "§5Legend";
+        }
+        if ($this->elo >= 2800 && $this->elo < 3000) {
+            $format = "§6Legendary";
+        }
+        if ($this->elo >= 3000 && $this->elo < 3200) {
+            $format = "§7Godlike";
+        }
+        if ($this->elo >= 3200) {
+            $format = "§cUnbeatable";
         }
         return $format;
     }

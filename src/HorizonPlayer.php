@@ -6,9 +6,6 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\CosmeticHandler;
-use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\Utils\ScoreboardUtils;
 use pocketmine\{entity\Skin,
     network\mcpe\protocol\PlayerListPacket,

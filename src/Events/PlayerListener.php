@@ -14,8 +14,6 @@ use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
-use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
 use Kohaku\Core\Utils\ScoreboardUtils;
@@ -74,7 +72,7 @@ class PlayerListener implements Listener
         $item = $event->getItem();
         $name = $player->getName();
         if (isset(Loader::getInstance()->EditKit[$name])) {
-            if ($item->getId() === ItemIds::ENDER_PEARL) {
+            if ($item->getId() === ItemIds::ENDER_PEARL or $item->getId() === ItemIds::GOLDEN_APPLE) {
                 $event->cancel();
             }
         }
@@ -713,12 +711,17 @@ class PlayerListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            unset(Loader::getInstance()->EditKit[$name]);
+            $player->setImmobile(false);
+        }
         /* @var HorizonPlayer $player */
         $player->setUnPVPTag();
     }
@@ -728,7 +731,7 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $msg = $event->getMessage();
         $name = $player->getName();
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
+        if (isset(Loader::getInstance()->CombatTimer[$name]) or isset(Loader::getInstance()->EditKit[$name])) {
             $msg = substr($msg, 1);
             $msg = explode(" ", $msg);
             if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
