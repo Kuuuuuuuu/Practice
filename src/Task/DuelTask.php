@@ -2,7 +2,6 @@
 
 namespace Kohaku\Core\Task;
 
-use Kohaku\Core\Arena\DuelManager;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use pocketmine\scheduler\Task;
@@ -49,6 +48,9 @@ class DuelTask extends Task
         }
         switch ($this->time) {
             case 902:
+                foreach ($this->getPlayers() as $player) {
+                    $player->getInventory()->clearAll();
+                }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
                 }, function (): void {
