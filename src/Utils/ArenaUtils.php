@@ -282,7 +282,7 @@ class ArenaUtils
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
         }, ['HThrownEnderpearl', 'horizon:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
         EntityFactory::getInstance()->register(ArrowEntity::class, function (World $world, CompoundTag $nbt): ArrowEntity {
-            return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
+            return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, true, $nbt);
         }, ['HArrow', 'horizon:arrow'], EntityLegacyIds::ARROW);
     }
 
