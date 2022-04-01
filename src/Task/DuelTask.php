@@ -5,7 +5,6 @@ namespace Kohaku\Core\Task;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use pocketmine\scheduler\Task;
-use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
@@ -76,16 +75,18 @@ class DuelTask extends Task
     {
         foreach ($this->getPlayers() as $online) {
             if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
-                $winnerMessage = "§aWinner: " . TF::WHITE;
+                $online->sendMessage("§f-----------------------");
+                $winnerMessage = "§aWinner: §f";
                 if ($this->winner === null) {
                     $winnerMessage .= "None";
                 } else {
                     $winnerMessage .= $this->winner->getDisplayName();
                 }
                 $online->sendMessage($winnerMessage);
-                $loserMessage = "§cLoser: " . TF::WHITE;
+                $loserMessage = "§cLoser: §f";
                 $loserMessage .= $this->loser !== null ? $this->loser->getDisplayName() : "None";
                 $online->sendMessage($loserMessage);
+                $online->sendMessage("§f-----------------------");
                 Loader::getArenaUtils()->GiveItem($online);
                 $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
