@@ -7,8 +7,6 @@ namespace Kohaku\Core\Arena;
 use Exception;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Listener;

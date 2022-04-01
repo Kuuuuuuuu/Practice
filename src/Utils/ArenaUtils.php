@@ -258,14 +258,9 @@ class ArenaUtils
 
     private function registerEntity(): void
     {
-        EntityFactory::getInstance()->register(FallingWool::class,
-            function (World $world, CompoundTag $nbt): FallingWool {
-                return new FallingWool(
-                    EntityDataHelper::parseLocation($nbt, $world),
-                    BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 0),
-                    $nbt
-                );
-            }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
+        EntityFactory::getInstance()->register(FallingWool::class, function (World $world, CompoundTag $nbt): FallingWool {
+            return new FallingWool(EntityDataHelper::parseLocation($nbt, $world), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 0), $nbt);
+        }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
         EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): KillLeaderboard {
             return new KillLeaderboard(EntityDataHelper::parseLocation($nbt, $world), KillLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
