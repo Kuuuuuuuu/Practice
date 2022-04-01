@@ -89,8 +89,7 @@ class DuelTask extends Task
                 $loserMessage .= $this->loser !== null ? $this->loser->getDisplayName() : "None";
                 $online->sendMessage($loserMessage);
                 $online->sendMessage(TF::GRAY . "---------------");
-                $online->resetPlayer();
-                $online->giveLobbyItems();
+                Loader::getArenaUtils()->GiveItem($online);
                 $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
         }
