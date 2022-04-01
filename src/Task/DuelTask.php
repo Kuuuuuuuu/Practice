@@ -12,6 +12,7 @@ use pocketmine\world\WorldException;
 class DuelTask extends Task
 {
     private int $time = 903;
+    private int $tick = 0;
     private HorizonPlayer $player1;
     private HorizonPlayer $player2;
     private World $level;
@@ -24,7 +25,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        $this->setHandler($plugin->getScheduler()->scheduleRepeatingTask($this, 20));
+        $this->setHandler($plugin->getScheduler()->scheduleRepeatingTask($this, 1));
         $this->level = $world;
         $this->player1 = $player1;
         $this->player2 = $player2;
@@ -32,38 +33,43 @@ class DuelTask extends Task
 
     public function onRun(): void
     {
-        foreach ($this->getPlayers() as $player) {
-            if ($player->isOnline()) {
-                if (!$player->isDueling()) {
+        $this->tick++;
+        if ($this->tick % 40 === 0) {
+            foreach ($this->getPlayers() as $player) {
+                if ($player->isOnline()) {
+                    if (!$player->isDueling()) {
+                        $this->loser = $player;
+                        $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
+                        $this->onEnd();
+                    }
+                } else {
                     $this->loser = $player;
                     $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                    $this->onEnd();
+                    $this->onEnd($player);
                 }
-            } else {
-                $this->loser = $player;
-                $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                $this->onEnd($player);
             }
         }
-        switch ($this->time) {
-            case 902:
-                foreach ($this->getPlayers() as $player) {
-                    $player->getInventory()->clearAll();
-                }
-                $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(15, 4, 40, $this->level));
-                }, function (): void {
-                });
-                $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                    $this->player2->teleport(new Position(15, 4, 10, $this->level));
-                }, function (): void {
-                });
-                break;
-            case 0:
-                $this->onEnd();
-                break;
+        if ($this->tick % 20 === 0) {
+            switch ($this->time) {
+                case 902:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->getInventory()->clearAll();
+                    }
+                    $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
+                        $this->player1->teleport(new Position(15, 4, 40, $this->level));
+                    }, function (): void {
+                    });
+                    $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
+                        $this->player2->teleport(new Position(15, 4, 10, $this->level));
+                    }, function (): void {
+                    });
+                    break;
+                case 0:
+                    $this->onEnd();
+                    break;
+            }
+            $this->time--;
         }
-        $this->time--;
     }
 
     public function getPlayers(): array
