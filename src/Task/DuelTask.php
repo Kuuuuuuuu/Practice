@@ -14,6 +14,8 @@ use pocketmine\world\WorldException;
 class DuelTask extends Task
 {
 
+    // Duel code example from https://github.com/buchwasa/Duels lol
+
     private int $time = 903;
     private HorizonPlayer $player1;
     private HorizonPlayer $player2;
@@ -37,7 +39,7 @@ class DuelTask extends Task
     {
         foreach ($this->getPlayers() as $player) {
             if ($player->isOnline()) {
-                if (!$player->isPlaying()) {
+                if (!$player->isDueling()) {
                     $this->loser = $player;
                     $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
                     $this->onEnd();

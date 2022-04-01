@@ -493,6 +493,10 @@ class PlayerListener implements Listener
         if ($player instanceof HorizonPlayer) {
             if ($player->vanish) {
                 $player->vanish = false;
+                if ($player->isDueling()) {
+                    $player->kill();
+                }
+                $player->setInQueue(false);
                 $player->setGamemode(GameMode::SURVIVAL());
             }
         }

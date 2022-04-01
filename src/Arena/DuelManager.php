@@ -16,6 +16,9 @@ use Ramsey\Uuid\Uuid;
 
 class DuelManager
 {
+
+    // Duel code example from https://github.com/buchwasa/Duels lol
+
     use SingletonTrait;
 
     private array $matches = [];
