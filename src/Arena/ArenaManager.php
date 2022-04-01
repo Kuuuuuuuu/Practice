@@ -27,11 +27,11 @@ class ArenaManager
 
     public function onJoinParkour(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getParkourArena() == null) {
+        if (Loader::getArenaFactory()->getParkourArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getParkourArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $item2 = ItemFactory::getInstance()->get(345, 0, 1);
         $item3 = ItemFactory::getInstance()->get(288, 0, 1);
@@ -43,62 +43,62 @@ class ArenaManager
         $player->setHealth(20);
         $player->getInventory()->setItem(0, $item2);
         $player->getInventory()->setItem(8, $item3);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 10, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinBoxing(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getBoxingArena() == null) {
+        if (Loader::getArenaFactory()->getBoxingArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getBoxingArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBoxingArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setHealth(20);
         $player->getEffects()->clear();
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBoxingArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinFist(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getFistArena() == null) {
+        if (Loader::getArenaFactory()->getFistArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getFistArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getFistArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getFistArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getFistArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinCombo(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getFistArena() == null) {
+        if (Loader::getArenaFactory()->getFistArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getComboArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getComboArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -106,21 +106,21 @@ class ArenaManager
         $player->setHealth(20);
         $item = ItemFactory::getInstance()->get(466, 0, 3);
         $player->getInventory()->addItem($item);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getComboArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinKnockback(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getKnockbackArena() == null) {
+        if (Loader::getArenaFactory()->getKnockbackArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getKnockbackArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKnockbackArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -142,50 +142,50 @@ class ArenaManager
         $player->getInventory()->setItem(12, $arrow);
         $player->getInventory()->addItem($bow);
         $player->getInventory()->addItem($leap);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena())->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinKitpvp(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getKitPVPArena() == null) {
+        if (Loader::getArenaFactory()->getKitPVPArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getKitPVPArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKitPVPArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena())->getSafeSpawn());
-        ArenaUtils::getInstance()->randomSpawn($player);
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getSafeSpawn());
+        Loader::getInstance()->getArenaUtils()->randomSpawn($player);
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinOITC(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getOITCArena() == null) {
+        if (Loader::getArenaFactory()->getOITCArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        $random = Loader::getInstance()->getArenaFactory()->getRandomSpawnOitc();
+        $random = Loader::getArenaFactory()->getRandomSpawnOitc();
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())->getSafeSpawn());
         $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -195,19 +195,19 @@ class ArenaManager
 
     public function onJoinResistance(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getResistanceArena() == null) {
+        if (Loader::getArenaFactory()->getResistanceArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getResistanceArena());
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getResistanceArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getResistanceArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getResistanceArena())->getSafeSpawn());
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
@@ -215,12 +215,12 @@ class ArenaManager
 
     public function onJoinBuild(Player $player)
     {
-        if (Loader::getInstance()->getArenaFactory()->getBuildArena() == null) {
+        if (Loader::getArenaFactory()->getBuildArena() == null) {
             $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
             return;
         }
-        $random = Loader::getInstance()->getArenaFactory()->getRandomSpawnBuild();
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getInstance()->getArenaFactory()->getBuildArena());
+        $random = Loader::getArenaFactory()->getRandomSpawnBuild();
+        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBuildArena());
         ScoreboardUtils::getInstance()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -250,10 +250,10 @@ class ArenaManager
         $player->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())->getSafeSpawn());
         $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
         $pos = $player->getPosition();
-        ArenaUtils::getInstance()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->setGamemode(GameMode::SURVIVAL());

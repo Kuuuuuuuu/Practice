@@ -53,13 +53,13 @@ class SumoScheduler extends Task
                                     foreach ($this->plugin->players as $player) {
                                         /** @var $player Player */
                                         $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
-                                        ArenaUtils::getInstance()->playSound("random.click", $player);
+                                        Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                                     }
                                 }
                                 if ($this->startTime === 0) {
                                     $this->plugin->startGame();
                                     foreach ($this->plugin->players as $player) {
-                                        ArenaUtils::getInstance()->playSound("random.anvil_use", $player);
+                                        Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
                                     }
                                 }
                             } else {
@@ -85,13 +85,13 @@ class SumoScheduler extends Task
                                 /** @var $player Player */
                                 if ($player->getWorld() !== $this->plugin->level) {
                                     $this->plugin->disconnectPlayer($player);
-                                    ArenaUtils::getInstance()->addDeath($player);
-                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
+                                    Loader::getInstance()->getArenaUtils()->addDeath($player);
+                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
                                 } else if ($player->getPosition()->getY() <= 50) {
                                     $this->plugin->disconnectPlayer($player);
-                                    ArenaUtils::getInstance()->addDeath($player);
-                                    ArenaUtils::getInstance()->getData($player->getName())->removeElo();
-                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . ArenaUtils::getInstance()->getData($player->getName())->removeElo() . " Elos!");
+                                    Loader::getInstance()->getArenaUtils()->addDeath($player);
+                                    Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo();
+                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
                                 }
                                 $player->setImmobile(false);
                             }
@@ -106,8 +106,8 @@ class SumoScheduler extends Task
                                 $player->getInventory()->clearAll();
                                 $player->getArmorInventory()->clearAll();
                                 $player->getEffects()->clear();
-                                ArenaUtils::getInstance()->GiveItem($player);
-                                ArenaUtils::getInstance()->addKill($player);
+                                Loader::getInstance()->getArenaUtils()->GiveItem($player);
+                                Loader::getInstance()->getArenaUtils()->addKill($player);
                                 ScoreboardUtils::getInstance()->sb($player);
                                 $player->setGamemode(GameMode::ADVENTURE());
                             }

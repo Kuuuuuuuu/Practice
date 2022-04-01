@@ -180,7 +180,7 @@ class SumoHandler implements Listener
         }
         if ($player instanceof Player and $player->isOnline()) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
-            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . ArenaUtils::getInstance()->getData($player->getName())->addElo() . " Elos!");
+            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->addElo() . " Elos!");
         }
         $this->phase = self::PHASE_RESTART;
     }
@@ -239,7 +239,7 @@ class SumoHandler implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setImmobile(false);
-        ArenaUtils::getInstance()->GiveItem($player);
+        Loader::getInstance()->getArenaUtils()->GiveItem($player);
         ScoreboardUtils::getInstance()->sb($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
     }

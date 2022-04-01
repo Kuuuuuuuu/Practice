@@ -6,7 +6,6 @@ namespace Kohaku\Core\Utils;
 
 use DateTime;
 use Exception;
-use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
@@ -81,11 +80,6 @@ class ArenaUtils
         $pk->y = $location->y;
         $pk->z = $location->z;
         $player->getNetworkSession()->sendDataPacket($pk, true);
-    }
-
-    #[Pure] public static function getInstance(): ArenaUtils
-    {
-        return new ArenaUtils();
     }
 
     public static function getLogger(string $err)
@@ -325,8 +319,8 @@ class ArenaUtils
     {
         $name = $player->getName();
         $dname = $dplayer->getName();
-        if ($arena === Loader::getInstance()->getArenaFactory()->getOITCArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena())) {
+        if ($arena === Loader::getArenaFactory()->getOITCArena()) {
+            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
                 if ($dplayer instanceof HorizonPlayer) {
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
@@ -336,8 +330,8 @@ class ArenaUtils
                     $dplayer->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                 }
             }
-        } else if ($arena === Loader::getInstance()->getArenaFactory()->getBuildArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
+        } else if ($arena === Loader::getArenaFactory()->getBuildArena()) {
+            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $dplayer->getInventory()->clearAll();
                 $dplayer->getArmorInventory()->clearAll();
                 $dplayer->setHealth(20);
@@ -366,12 +360,12 @@ class ArenaUtils
                 $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             }
-        } else if ($arena === Loader::getInstance()->getArenaFactory()->getBoxingArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBoxingArena())) {
+        } else if ($arena === Loader::getArenaFactory()->getBoxingArena()) {
+            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                 $dplayer->setHealth(20);
             }
-        } else if ($arena === Loader::getInstance()->getArenaFactory()->getComboArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getComboArena())) {
+        } else if ($arena === Loader::getArenaFactory()->getComboArena()) {
+            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
                 $dplayer->getInventory()->clearAll();
                 $item = ItemFactory::getInstance()->get(466, 0, 3);
                 $dplayer->getInventory()->addItem($item);

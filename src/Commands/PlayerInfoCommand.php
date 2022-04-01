@@ -30,10 +30,13 @@ class PlayerInfoCommand extends Command
                 if ($playerinfo !== null) {
                     $sender->sendMessage(Loader::getPrefixCore() . "§7Player: §a" . $playerinfo->getName());
                     $sender->sendMessage("\n");
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Device: §a" . ArenaUtils::getInstance()->getPlayerDevices($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7OS: §a" . ArenaUtils::getInstance()->getPlayerOS($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Control: §a" . ArenaUtils::getInstance()->getPlayerControls($playerinfo));
-                    $sender->sendMessage(Loader::getPrefixCore() . "§7Toolbox: §a" . ArenaUtils::getInstance()->getToolboxCheck($playerinfo));
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7IP: §a" . $playerinfo->getNetworkSession()->getIp());
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7UUID: §a" . $playerinfo->getUniqueId());
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7Nametag: §a" . $playerinfo->getNameTag());
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7Device: §a" . Loader::getInstance()->getArenaUtils()->getPlayerDevices($playerinfo));
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7OS: §a" . Loader::getInstance()->getArenaUtils()->getPlayerOS($playerinfo));
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7Control: §a" . Loader::getInstance()->getArenaUtils()->getPlayerControls($playerinfo));
+                    $sender->sendMessage(Loader::getPrefixCore() . "§7Toolbox: §a" . Loader::getInstance()->getArenaUtils()->getToolboxCheck($playerinfo));
                 } else {
                     $sender->sendMessage(Loader::getPrefixCore() . "§cPlayer not found.");
                 }

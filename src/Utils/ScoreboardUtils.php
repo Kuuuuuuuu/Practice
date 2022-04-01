@@ -19,7 +19,7 @@ class ScoreboardUtils
     {
         $ping = $player->getNetworkSession()->getPing();
         $server = Server::getInstance();
-        $data = ArenaUtils::getInstance()->getData($player->getName());
+        $data = Loader::getInstance()->getArenaUtils()->getData($player->getName());
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();
@@ -37,9 +37,9 @@ class ScoreboardUtils
             10 => "§bElo§f: §6{$data->getElo()}",
             11 => "§7---------------"
         ];
-        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -55,9 +55,9 @@ class ScoreboardUtils
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
-        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -73,9 +73,9 @@ class ScoreboardUtils
             4 => "§bJump Count§f: §6$jump",
             5 => "§7---------------"
         ];
-        Loader::getInstance()->getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
-            Loader::getInstance()->getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 }

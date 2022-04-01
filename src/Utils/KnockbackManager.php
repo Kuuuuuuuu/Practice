@@ -2,7 +2,6 @@
 
 namespace Kohaku\Core\Utils;
 
-use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Loader;
 use pocketmine\player\Player;
@@ -12,11 +11,6 @@ use pocketmine\utils\TextFormat as Color;
 
 class KnockbackManager
 {
-
-    #[Pure] public static function getInstance(): KnockbackManager
-    {
-        return new KnockbackManager();
-    }
 
     /**
      * @throws JsonException

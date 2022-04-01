@@ -32,7 +32,7 @@ class SetTagCommand extends Command
                 }
                 $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
                 if ($playerinfo !== null) {
-                    ArenaUtils::getInstance()->getData($playerinfo->getName())->setTag($args[1]);
+                    Loader::getInstance()->getArenaUtils()->getData($playerinfo->getName())->setTag($args[1]);
                     $sender->sendMessage(Loader::getPrefixCore() . "§aTag set to §e" . $args[1]);
                 } else {
                     $sender->sendMessage(Loader::getPrefixCore() . "§cPlayer not found.");

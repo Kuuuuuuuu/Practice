@@ -13,9 +13,12 @@ use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
 use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Core\Utils\BotUtils;
 use Kohaku\Core\Utils\ClickHandler;
+use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
+use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
@@ -34,6 +37,10 @@ class Loader extends PluginBase
     public static ArenaManager $arena;
     public static YamlManager $YamlLoader;
     public static DeleteBlocksHandler $blockhandle;
+    public static BotUtils $bot;
+    public static KnockbackManager $knockback;
+    public static CosmeticHandler $cosmetics;
+    public static ArenaUtils $arenautils;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -90,14 +97,54 @@ class Loader extends PluginBase
         "XboxOne"
     ];
 
-    public static function getInstance(): Loader
-    {
-        return self::$plugin;
-    }
-
     public static function getPrefixCore(): string
     {
         return "§b§bHorizon§f » §r";
+    }
+
+    public static function getDeleteBlockHandler(): DeleteBlocksHandler
+    {
+        return self::$blockhandle;
+    }
+
+    public static function getFormUtils(): FormUtils
+    {
+        return self::$form;
+    }
+
+    public static function getArenaFactory(): ArenaFactory
+    {
+        return self::$arenafac;
+    }
+
+    public static function getArenaManager(): ArenaManager
+    {
+        return self::$arena;
+    }
+
+    public static function getScoreboardsUtils(): Scoreboards
+    {
+        return self::$score;
+    }
+
+    public static function getClickHandler(): ClickHandler
+    {
+        return self::$cps;
+    }
+
+    public static function getBotUtils(): BotUtils
+    {
+        return self::$bot;
+    }
+
+    public static function getKnockbackManager(): KnockbackManager
+    {
+        return self::$knockback;
+    }
+
+    public static function getCosmeticHandler(): CosmeticHandler
+    {
+        return self::$cosmetics;
     }
 
     public function onLoad(): void
@@ -110,15 +157,29 @@ class Loader extends PluginBase
         self::$arena = new ArenaManager();
         self::$YamlLoader = new YamlManager();
         self::$blockhandle = new DeleteBlocksHandler();
+        self::$bot = new BotUtils();
+        self::$knockback = new KnockbackManager();
+        self::$cosmetics = new CosmeticHandler();
+        self::$arenautils = new ArenaUtils();
     }
 
     public function onEnable(): void
     {
         self::$YamlLoader->loadArenas();
-        ArenaUtils::getInstance()->Start();
-        ArenaUtils::getInstance()->killbot();
+        Loader::getInstance()->getArenaUtils()->Start();
+        Loader::getInstance()->getArenaUtils()->killbot();
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
+    }
+
+    public static function getArenaUtils(): ArenaUtils
+    {
+        return self::$arenautils;
+    }
+
+    public static function getInstance(): Loader
+    {
+        return self::$plugin;
     }
 
     /**
@@ -126,39 +187,9 @@ class Loader extends PluginBase
      */
     #[Pure] public function onDisable(): void
     {
-        ArenaUtils::getInstance()->loadMap("BUild");
-        ArenaUtils::getInstance()->killbot();
+        Loader::getInstance()->getArenaUtils()->loadMap("BUild");
+        Loader::getInstance()->getArenaUtils()->killbot();
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
-    }
-
-    public function getDeleteBlockHandler(): DeleteBlocksHandler
-    {
-        return self::$blockhandle;
-    }
-
-    public function getFormUtils(): FormUtils
-    {
-        return self::$form;
-    }
-
-    public function getArenaFactory(): ArenaFactory
-    {
-        return self::$arenafac;
-    }
-
-    public function getArenaManager(): ArenaManager
-    {
-        return self::$arena;
-    }
-
-    public function getScoreboardsUtils(): Scoreboards
-    {
-        return self::$score;
-    }
-
-    public function getClickHandler(): ClickHandler
-    {
-        return self::$cps;
     }
 }

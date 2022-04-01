@@ -40,7 +40,7 @@ class HubCommand extends Command
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
             ScoreboardUtils::getInstance()->sb($sender);
-            ArenaUtils::getInstance()->GiveItem($sender);
+            Loader::getInstance()->getArenaUtils()->GiveItem($sender);
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);
             }

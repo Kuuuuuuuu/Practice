@@ -37,12 +37,12 @@ class BaseListener implements Listener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             if ($block->getId() === BlockLegacyIds::WOOL or $block->getId() === BlockLegacyIds::COBWEB) {
                 $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
                 if ($block->getId() === BlockLegacyIds::WOOL) {
                     $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::WOOL, 0, 1));
-                    Loader::getInstance()->getDeleteBlockHandler()->setBlockBuild($block, true);
+                    Loader::getDeleteBlockHandler()->setBlockBuild($block, true);
                 }
             } else {
                 if ($player->getGamemode() !== GameMode::CREATIVE()) {
@@ -60,8 +60,8 @@ class BaseListener implements Listener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
-            Loader::getInstance()->getDeleteBlockHandler()->setBlockBuild($block);
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+            Loader::getDeleteBlockHandler()->setBlockBuild($block);
             return;
         }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
@@ -92,8 +92,8 @@ class BaseListener implements Listener
         $packet = $event->getPacket();
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
-                Loader::getInstance()->getClickHandler()->addClick($player);
-                if (Loader::getInstance()->getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
+                Loader::getClickHandler()->addClick($player);
+                if (Loader::getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
                     /* @var HorizonPlayer $player */
                     $player->setLastDamagePlayer("Unknown");
                     $player->kill();

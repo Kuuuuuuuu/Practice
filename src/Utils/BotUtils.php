@@ -9,11 +9,6 @@ use pocketmine\player\Player;
 class BotUtils
 {
 
-    #[Pure] public static function getInstance(): BotUtils
-    {
-        return new BotUtils();
-    }
-
     public function spawnFistBot(Player $player, bool $spawn): void
     {
         if ($spawn) {

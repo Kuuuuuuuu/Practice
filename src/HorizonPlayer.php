@@ -42,8 +42,8 @@ class HorizonPlayer extends Player
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
                 try {
-                    if (KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = KnockbackManager::getInstance()->getAttackspeed($this->getWorld()->getFolderName());
+                    if (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                        $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     } else {
                         $attackSpeed = 10;
                     }
@@ -58,9 +58,9 @@ class HorizonPlayer extends Player
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
         try {
-            if (KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $this->xzKB = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["hkb"];
-                $this->yKb = KnockbackManager::getInstance()->getKnockback($this->getWorld()->getFolderName())["ykb"];
+            if (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+                $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["hkb"];
+                $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["ykb"];
             } else {
                 $this->xzKB = 0.4;
                 $this->yKb = 0.4;
@@ -106,7 +106,7 @@ class HorizonPlayer extends Player
     {
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
             if ($this->getStuff() !== "" or $this->getStuff() !== null) {
-                CosmeticHandler::getInstance()->setSkin($this, $this->getStuff());
+                Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
             }
         } else {
             Loader::getInstance()->ArtifactData->remove($this->getName());
@@ -114,7 +114,7 @@ class HorizonPlayer extends Player
         }
         if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
             $oldSkin = $this->getSkin();
-            $capeData = CosmeticHandler::getInstance()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
+            $capeData = Loader::getCosmeticHandler()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
             $this->setSkin($setCape);
             $this->sendSkin();
@@ -247,10 +247,10 @@ class HorizonPlayer extends Player
             $this->updateScoreboard();
         }
         if ($this->sec % 10 === 0) {
-            if (ArenaUtils::getInstance()->getData($name)->getTag() !== null and ArenaUtils::getInstance()->getData($name)->getTag() !== "") {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . ArenaUtils::getInstance()->getData($name)->getTag() . "§f]";
+            if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
+                $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]";
             } else {
-                $nametag = ArenaUtils::getInstance()->getData($name)->getRank() . "§a " . $this->getDisplayName();
+                $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName();
             }
             $this->setNameTag($nametag);
         }
@@ -270,7 +270,7 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function Vanish()
+    private function Vanish()
     {
         if ($this->vanish) {
             foreach ($this->getEffects() as $effect) {
@@ -297,10 +297,10 @@ class HorizonPlayer extends Player
     public function updateTag()
     {
         $name = $this->getName();
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             $this->setParkourTag();
         } else {
-            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBuildArena())) {
+            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $this->setPVPTag();
             } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
                 $this->setUnPVPTag();
@@ -334,14 +334,14 @@ class HorizonPlayer extends Player
     public function setPVPTag()
     {
         $ping = $this->getNetworkSession()->getPing();
-        $nowcps = Loader::getInstance()->getClickHandler()->getClicks($this);
+        $nowcps = Loader::getClickHandler()->getClicks($this);
         $tagpvp = "§b" . $ping . "§fms §f| §b" . $nowcps . " §fCPS";
         $this->setScoreTag($tagpvp);
     }
 
     public function setUnPVPTag()
     {
-        $untagpvp = "§b" . ArenaUtils::getInstance()->getPlayerOs($this) . " §f| §b" . ArenaUtils::getInstance()->getPlayerControls($this) . " §f| §b" . ArenaUtils::getInstance()->getToolboxCheck($this);
+        $untagpvp = "§b" . Loader::getInstance()->getArenaUtils()->getPlayerOs($this) . " §f| §b" . Loader::getInstance()->getArenaUtils()->getPlayerControls($this) . " §f| §b" . Loader::getInstance()->getArenaUtils()->getToolboxCheck($this);
         $this->setScoreTag($untagpvp);
     }
 
@@ -349,9 +349,9 @@ class HorizonPlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             ScoreboardUtils::getInstance()->sb($this);
-        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
+        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             ScoreboardUtils::getInstance()->sb2($this);
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena())) {
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             ScoreboardUtils::getInstance()->Parkour($this);
         }
     }
@@ -383,7 +383,7 @@ class HorizonPlayer extends Player
         if (isset(Loader::getInstance()->BoxingPoint[$name])) {
             $point = Loader::getInstance()->BoxingPoint[$name];
             $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getInstance()->getClickHandler()->getClicks($this));
+            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getClickHandler()->getClicks($this));
         } else {
             Loader::getInstance()->BoxingPoint[$name] = 0;
         }

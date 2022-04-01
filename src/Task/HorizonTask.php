@@ -6,7 +6,6 @@ namespace Kohaku\Core\Task;
 
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\DeleteBlocksHandler;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -19,7 +18,7 @@ class HorizonTask extends Task
     {
         $this->tick++;
         if ($this->tick % 20 === 0) {
-            Loader::getInstance()->getDeleteBlockHandler()->update();
+            Loader::getDeleteBlockHandler()->update();
             if (Loader::getInstance()->Restarted) {
                 $this->RestartServer();
             }
@@ -30,14 +29,14 @@ class HorizonTask extends Task
         }
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             switch ($player->getWorld()) {
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getParkourArena()):
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
                     $player->parkourTimer();
                     break;
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBoxingArena()):
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena()):
                     $player->boxingTip();
                     break;
                 default:
-                    $player->sendTip("§bCPS: §f" . Loader::getInstance()->getClickHandler()->getClicks($player));
+                    $player->sendTip("§bCPS: §f" . Loader::getClickHandler()->getClicks($player));
                     break;
             }
         }

@@ -39,37 +39,37 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    Loader::getInstance()->getArenaManager()->onJoinParkour($player);
+                    Loader::getArenaManager()->onJoinParkour($player);
                     break;
                 case 1:
-                    Loader::getInstance()->getArenaManager()->onJoinBoxing($player);
+                    Loader::getArenaManager()->onJoinBoxing($player);
                     break;
                 case 2:
-                    Loader::getInstance()->getArenaManager()->onJoinFist($player);
+                    Loader::getArenaManager()->onJoinFist($player);
                     break;
                 case 3:
-                    Loader::getInstance()->getArenaManager()->onJoinCombo($player);
+                    Loader::getArenaManager()->onJoinCombo($player);
                     break;
                 case 4:
-                    Loader::getInstance()->getArenaManager()->onJoinKnockback($player);
+                    Loader::getArenaManager()->onJoinKnockback($player);
                     break;
                 case 5:
-                    Loader::getInstance()->getArenaManager()->onJoinResistance($player);
+                    Loader::getArenaManager()->onJoinResistance($player);
                     break;
                 case 6:
                     $this->formkit($player);
                     break;
                 case 7:
-                    Loader::getInstance()->getArenaManager()->onJoinOITC($player);
+                    Loader::getArenaManager()->onJoinOITC($player);
                     break;
                 case 8:
-                    ArenaUtils::getInstance()->JoinRandomArenaSumo($player);
+                    Loader::getInstance()->getArenaUtils()->JoinRandomArenaSumo($player);
                     break;
                 case 9:
-                    Loader::getInstance()->getArenaManager()->onJoinBuild($player);
+                    Loader::getArenaManager()->onJoinBuild($player);
                     break;
                 case 10:
-                    ArenaUtils::getInstance()->JoinRandomArenaSkywars($player);
+                    Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
                     break;
                 default:
                     print "Error";
@@ -78,18 +78,18 @@ class FormUtils
         });
 
         $form->setTitle("§bHorizon §eMenu");
-        $form->addButton("§aParkour\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
-        $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
-        $form->addButton("§aFist\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
-        $form->addButton("§aCombo\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getComboArena() ?? null) ?? 0, 0, "textures/items/apple_golden.png");
-        $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
-        $form->addButton("§aResistance\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, "textures/ui/resistance_effect.png");
-        $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
-        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
-        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getSumoDArena() ?? null) ?? 0, 0, "textures/items/blaze_rod.png");
-        $form->addButton("§aBuild\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
+        $form->addButton("§aParkour\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
+        $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
+        $form->addButton("§aFist\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
+        $form->addButton("§aCombo\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena() ?? null) ?? 0, 0, "textures/items/apple_golden.png");
+        $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
+        $form->addButton("§aResistance\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, "textures/ui/resistance_effect.png");
+        $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
+        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
+        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena() ?? null) ?? 0, 0, "textures/items/blaze_rod.png");
+        $form->addButton("§aBuild\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
-            $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
+            $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         }
         $player->sendForm($form);
     }
@@ -121,7 +121,7 @@ class FormUtils
             return true;
         });
         $form->setTitle("§bHorizon §eKitPVP");
-        $form->setContent("§eNow Playing: §a" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getKitPVPArena()));
+        $form->setContent("§eNow Playing: §a" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
         $form->addButton("§eAssasins");
         $form->addButton("§eTank");
         $form->addButton("§eBoxing");
@@ -132,7 +132,7 @@ class FormUtils
 
     private function assasins(Player $player)
     {
-        Loader::getInstance()->getArenaManager()->onJoinKitpvp($player);
+        Loader::getArenaManager()->onJoinKitpvp($player);
         $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $item2 = ItemFactory::getInstance()->get(ItemIds::ENDER_EYE, 0, 1)->setCustomName("§r§6Teleport");
         $player->getInventory()->setItem(8, $item2);
@@ -147,7 +147,7 @@ class FormUtils
 
     private function tank(Player $player)
     {
-        Loader::getInstance()->getArenaManager()->onJoinKitpvp($player);
+        Loader::getArenaManager()->onJoinKitpvp($player);
         $item = ItemFactory::getInstance()->get(ItemIds::DIAMOND_AXE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $player->getInventory()->setItem(0, $item);
         $item2 = ItemFactory::getInstance()->get(ItemIds::REDSTONE, 0, 1)->setCustomName("§r§6Ultimate Tank");
@@ -163,7 +163,7 @@ class FormUtils
 
     private function boxing(Player $player)
     {
-        Loader::getInstance()->getArenaManager()->onJoinKitpvp($player);
+        Loader::getArenaManager()->onJoinKitpvp($player);
         $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 9999999, 2, false));
         $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 1, false));
         $item2 = ItemFactory::getInstance()->get(ItemIds::DIAMOND, 0, 1)->setCustomName("§r§6Ultimate Boxing");
@@ -174,7 +174,7 @@ class FormUtils
 
     private function bower(Player $player)
     {
-        Loader::getInstance()->getArenaManager()->onJoinKitpvp($player);
+        Loader::getArenaManager()->onJoinKitpvp($player);
         $item = ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::INFINITY(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 4))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $player->getInventory()->setItem(0, $item);
         $item2 = ItemFactory::getInstance()->get(ItemIds::EMERALD, 0, 1)->setCustomName("§r§6Ultimate Bower");
@@ -191,7 +191,7 @@ class FormUtils
 
     private function reaper(Player $player)
     {
-        Loader::getInstance()->getArenaManager()->onJoinKitpvp($player);
+        Loader::getArenaManager()->onJoinKitpvp($player);
         $item = ItemFactory::getInstance()->get(ItemIds::DIAMOND_HOE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 4));
         $item2 = ItemFactory::getInstance()->get(ItemIds::SKULL, 0, 1)->setCustomName("§r§6Reaper");
         $player->getInventory()->setItem(8, $item2);
@@ -249,10 +249,10 @@ class FormUtils
                     break;
                 case 1:
                     $player->setDisplayName($player->getName());
-                    if (ArenaUtils::getInstance()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $player->getName() . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+                    if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . "§a " . $player->getName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . "§f]");
                     } else {
-                        $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $player->getName());
+                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . "§a " . $player->getName());
                     }
                     $player->sendMessage(Loader::getPrefixCore() . "§eYour nickname has been resetted!");
                     break;
@@ -279,10 +279,10 @@ class FormUtils
                 $player->sendMessage(Loader::getPrefixCore() . "§cYou cant use this nickname!");
             } else {
                 $player->setDisplayName($data[0]);
-                if (ArenaUtils::getInstance()->getData($player->getName())->getTag() !== null) {
-                    $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $data[0] . " §f[" . ArenaUtils::getInstance()->getData($player->getName())->getTag() . "§f]");
+                if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                    $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . "§a " . $data[0] . " §f[" . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . "§f]");
                 } else {
-                    $player->setNameTag(ArenaUtils::getInstance()->getData($player->getName())->getRank() . "§a " . $data[0]);
+                    $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . "§a " . $data[0]);
                 }
                 $player->sendMessage(Loader::getPrefixCore() . "§6Your nickname is now §c" . $data[0]);
             }
@@ -375,7 +375,7 @@ class FormUtils
                 $player->sendMessage(Loader::getPrefixCore() . "§cCape not found!");
             } else {
                 $oldSkin = $player->getSkin();
-                $capeData = CosmeticHandler::getInstance()->createCape($cape);
+                $capeData = Loader::getCosmeticHandler()->createCape($cape);
                 $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                 $player->setSkin($setCape);
                 $player->sendSkin();
@@ -388,7 +388,7 @@ class FormUtils
             return true;
         });
         $form->setTitle("§bHorizon §eCapes");
-        foreach (CosmeticHandler::getInstance()->getCapes() as $capes) {
+        foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
             $form->addButton("$capes", -1, "", $capes);
         }
         $player->sendForm($form);
@@ -400,7 +400,7 @@ class FormUtils
             if ($event instanceof HorizonPlayer) {
                 if ($data !== null) {
                     if ($data === "None") return;
-                    $cosmetic = CosmeticHandler::getInstance();
+                    $cosmetic = Loader::getCosmeticHandler();
                     if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
                         if (str_contains($data, 'SP-')) {
                             $event->setStuff('');
@@ -478,15 +478,15 @@ class FormUtils
                     $player->getArmorInventory()->clearAll();
                     $player->getOffHandInventory()->clearAll();
                     $player->getEffects()->clear();
-                    $player->teleport(new Location(255, 6, 255, Server::getInstance()->getWorldManager()->getWorldByName(Loader::getInstance()->getArenaFactory()->getBotArena()), 0, 0));
-                    BotUtils::getInstance()->spawnFistBot($player, true);
+                    $player->teleport(new Location(255, 6, 255, Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()), 0, 0));
+                    Loader::getBotUtils()->spawnFistBot($player, true);
                     ScoreboardUtils::getInstance()->sb2($player);
                     break;
             }
             return true;
         });
         $form->setTitle("§bHorizon §eMenu");
-        $form->setContent("§bPlayers: §e" . Loader::getInstance()->getArenaFactory()->getPlayers(Loader::getInstance()->getArenaFactory()->getBotArena()));
+        $form->setContent("§bPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
         $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
         $player->sendForm($form);
     }
