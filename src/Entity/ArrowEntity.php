@@ -20,7 +20,7 @@ class ArrowEntity extends Arrow
     {
         $owner = $this->getOwningEntity();
         if ($owner instanceof Player) {
-            if ($owner->getWorld() === $this->getWorld()) {
+            if ($owner->getWorld() === $this->getWorld() and $owner->isAlive()) {
                 parent::onHitEntity($entityHit, $hitResult);
             }
         } else {
