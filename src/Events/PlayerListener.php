@@ -16,7 +16,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kohaku\Core\Utils\ScoreboardUtils;
+use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -716,7 +716,7 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        ScoreboardUtils::getInstance()->sb($player);
+        Loader::getInstance()->getScoreboardManager()->sb($player);
         if (isset(Loader::getInstance()->EditKit[$name])) {
             unset(Loader::getInstance()->EditKit[$name]);
             $player->setImmobile(false);

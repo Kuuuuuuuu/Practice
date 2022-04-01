@@ -124,11 +124,6 @@ class CosmeticHandler
         }
     }
 
-    public static function getInstance(): CosmeticHandler
-    {
-        return new CosmeticHandler(Loader::getInstance());
-    }
-
     public function getCapes(): array
     {
         $list = array();
@@ -385,7 +380,7 @@ class CosmeticHandler
             }
             $transparentPixels = $pixels = 0;
             foreach ($bounds as $bound) {
-                if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
+                if ($bound['max']['x'] > $maxX or $bound['max']['y'] > $maxY) {
                     continue;
                 }
                 for ($y = $bound['min']['y']; $y <= $bound['max']['y']; $y++) {

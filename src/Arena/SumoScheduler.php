@@ -6,8 +6,7 @@ namespace Kohaku\Core\Arena;
 
 use Exception;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\ScoreboardUtils;
+use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
@@ -108,7 +107,7 @@ class SumoScheduler extends Task
                                 $player->getEffects()->clear();
                                 Loader::getInstance()->getArenaUtils()->GiveItem($player);
                                 Loader::getInstance()->getArenaUtils()->addKill($player);
-                                ScoreboardUtils::getInstance()->sb($player);
+                                Loader::getInstance()->getScoreboardManager()->sb($player);
                                 $player->setGamemode(GameMode::ADVENTURE());
                             }
                             $this->plugin->players = [];

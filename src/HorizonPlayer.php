@@ -6,7 +6,7 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Utils\ScoreboardUtils;
+use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\{entity\Skin,
     network\mcpe\protocol\PlayerListPacket,
     network\mcpe\protocol\types\PlayerListEntry,
@@ -345,11 +345,11 @@ class HorizonPlayer extends Player
     public function updateScoreboard()
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            ScoreboardUtils::getInstance()->sb($this);
+            Loader::getInstance()->getScoreboardManager()->sb($this);
         } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
-            ScoreboardUtils::getInstance()->sb2($this);
+            Loader::getInstance()->getScoreboardManager()->sb2($this);
         } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
-            ScoreboardUtils::getInstance()->Parkour($this);
+            Loader::getInstance()->getScoreboardManager()->Parkour($this);
         }
     }
 

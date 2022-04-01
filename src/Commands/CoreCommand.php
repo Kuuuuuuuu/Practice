@@ -1,5 +1,6 @@
-<?php /** @noinspection PhpParamsInspection */
+<?php
 
+/** @noinspection PhpParamsInspection */
 /** @noinspection PhpPossiblePolymorphicInvocationInspection */
 
 declare(strict_types=1);
@@ -10,7 +11,6 @@ use JsonException;
 use Kohaku\Core\Entity\DeathLeaderboard;
 use Kohaku\Core\Entity\KillLeaderboard;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\KnockbackManager;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\Server;

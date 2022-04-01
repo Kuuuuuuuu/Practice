@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpPropertyOnlyWrittenInspection */
+<?php
+
+/** @noinspection PhpPropertyOnlyWrittenInspection */
 
 declare(strict_types=1);
 
@@ -142,37 +144,27 @@ class DataManager
     public function getRank(): string
     {
         $format = "§6Rookie";
-        if ($this->elo >= 1200 && $this->elo < 1400) {
+        if ($this->elo >= 1200 and $this->elo < 1400) {
             $format = "§fSilver";
-        }
-        if ($this->elo >= 1400 && $this->elo < 1600) {
+        } else if ($this->elo >= 1400 and $this->elo < 1600) {
             $format = "§eGold";
-        }
-        if ($this->elo >= 1600 && $this->elo < 1800) {
+        } else if ($this->elo >= 1600 and $this->elo < 1800) {
             $format = "§dPlatinum";
-        }
-        if ($this->elo >= 1800 && $this->elo < 2000) {
+        } else if ($this->elo >= 1800 and $this->elo < 2000) {
             $format = "§bDiamond";
-        }
-        if ($this->elo >= 2000 && $this->elo < 2200) {
+        } else if ($this->elo >= 2000 and $this->elo < 2200) {
             $format = "§6Master";
-        }
-        if ($this->elo >= 2200 && $this->elo < 2400) {
+        } else if ($this->elo >= 2200 and $this->elo < 2400) {
             $format = "§3Grandmaster";
-        }
-        if ($this->elo >= 2400 && $this->elo < 2600) {
+        } else if ($this->elo >= 2400 and $this->elo < 2600) {
             $format = "§4Challenger";
-        }
-        if ($this->elo >= 2600 && $this->elo < 2800) {
+        } else if ($this->elo >= 2600 and $this->elo < 2800) {
             $format = "§5Legend";
-        }
-        if ($this->elo >= 2800 && $this->elo < 3000) {
+        } else if ($this->elo >= 2800 and $this->elo < 3000) {
             $format = "§6Legendary";
-        }
-        if ($this->elo >= 3000 && $this->elo < 3200) {
+        } else if ($this->elo >= 3000 and $this->elo < 3200) {
             $format = "§7Godlike";
-        }
-        if ($this->elo >= 3200) {
+        } else if ($this->elo >= 3200) {
             $format = "§cUnbeatable";
         }
         return $format;

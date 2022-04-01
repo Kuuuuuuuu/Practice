@@ -9,7 +9,7 @@ namespace Kohaku\Core\Arena;
 use Exception;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ScoreboardUtils;
+use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -31,7 +31,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $item2 = ItemFactory::getInstance()->get(345, 0, 1);
         $item3 = ItemFactory::getInstance()->get(288, 0, 1);
         $item2->setCustomName("§r§aStop Timer §f| §bClick to use");
@@ -57,7 +57,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBoxingArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setHealth(20);
@@ -78,7 +78,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getFistArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
@@ -98,7 +98,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getComboArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
@@ -120,7 +120,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKnockbackArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
@@ -156,7 +156,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKitPVPArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getEffects()->clear();
@@ -176,7 +176,7 @@ class ArenaManager
             return;
         }
         $random = Loader::getArenaFactory()->getRandomSpawnOitc();
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
@@ -199,7 +199,7 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getResistanceArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
@@ -220,7 +220,7 @@ class ArenaManager
         }
         $random = Loader::getArenaFactory()->getRandomSpawnBuild();
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBuildArena());
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();

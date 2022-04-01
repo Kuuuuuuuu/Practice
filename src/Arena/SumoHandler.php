@@ -8,7 +8,7 @@ use Exception;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\ScoreboardUtils;
+use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Listener;
@@ -141,7 +141,7 @@ class SumoHandler implements Listener
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999999 * 20, 10, false));
         $player->setGamemode(Gamemode::ADVENTURE());
         $player->setHealth(20);
-        ScoreboardUtils::getInstance()->sb2($player);
+        Loader::getInstance()->getScoreboardManager()->sb2($player);
     }
 
     public function inGame(Player $player): bool
@@ -240,7 +240,7 @@ class SumoHandler implements Listener
         $player->getArmorInventory()->clearAll();
         $player->setImmobile(false);
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        ScoreboardUtils::getInstance()->sb($player);
+        Loader::getInstance()->getScoreboardManager()->sb($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
     }
 

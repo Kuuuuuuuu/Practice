@@ -7,13 +7,8 @@ use Kohaku\Core\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-class ScoreboardUtils
+class ScoreboardManager
 {
-
-    #[Pure] public static function getInstance(): ScoreboardUtils
-    {
-        return new ScoreboardUtils();
-    }
 
     public function sb(Player $player): void
     {

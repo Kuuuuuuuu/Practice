@@ -19,6 +19,7 @@ use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\Utils\KnockbackManager;
+use Kohaku\Core\Utils\ScoreboardManager;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
@@ -41,6 +42,7 @@ class Loader extends PluginBase
     public static KnockbackManager $knockback;
     public static CosmeticHandler $cosmetics;
     public static ArenaUtils $arenautils;
+    public static ScoreboardManager $scoremanager;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -145,6 +147,11 @@ class Loader extends PluginBase
     public static function getCosmeticHandler(): CosmeticHandler
     {
         return self::$cosmetics;
+    }
+
+    public static function getScoreboardManager(): ScoreboardManager
+    {
+        return self::$scoremanager;
     }
 
     public function onLoad(): void
