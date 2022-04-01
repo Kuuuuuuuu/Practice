@@ -169,6 +169,7 @@ class Loader extends PluginBase
         self::$knockback = new KnockbackManager();
         self::$cosmetics = new CosmeticHandler();
         self::$arenautils = new ArenaUtils();
+        self::$scoremanager = new ScoreboardManager();
     }
 
     public function onEnable(): void
