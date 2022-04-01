@@ -22,6 +22,8 @@ class ArrowEntity extends Arrow
         if ($owner instanceof Player) {
             if ($owner->getWorld() === $this->getWorld() and $owner->isAlive()) {
                 parent::onHitEntity($entityHit, $hitResult);
+            } else {
+                $this->flagForDespawn();
             }
         } else {
             parent::onHitEntity($entityHit, $hitResult);
