@@ -356,11 +356,6 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function setvanish(bool $vanish)
-    {
-        $this->vanish = $vanish;
-    }
-
     public function parkourTimer()
     {
         $name = $this->getName();
