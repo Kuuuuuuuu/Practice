@@ -11,8 +11,6 @@ use pocketmine\block\BlockLegacyIds;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
-use practice\kits\Kit;
-use practice\task\MatchTask;
 use Ramsey\Uuid\Uuid;
 
 class DuelManager
