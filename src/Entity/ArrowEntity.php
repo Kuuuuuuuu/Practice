@@ -23,6 +23,8 @@ class ArrowEntity extends Arrow
             if ($owner->getWorld() === $this->getWorld()) {
                 parent::onHitEntity($entityHit, $hitResult);
             }
+        } else {
+            parent::onHitEntity($entityHit, $hitResult);
         }
     }
 }
