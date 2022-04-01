@@ -44,15 +44,15 @@ class CosmeticHandler
     ];
     private string $capeFolder;
 
-    public function __construct(Loader $core)
+    public function __construct()
     {
-        $this->dataFolder = $core->getDataFolder() . 'cosmetic/';
+        $this->dataFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
             mkdir($this->dataFolder);
             mkdir($this->saveSkin);
         }
-        $this->resourcesFolder = $core->getDataFolder() . 'cosmetic/';
+        $this->resourcesFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
