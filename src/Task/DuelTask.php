@@ -13,9 +13,6 @@ use pocketmine\world\WorldException;
 
 class DuelTask extends Task
 {
-
-    // Duel code example from https://github.com/buchwasa/Duels lol
-
     private int $time = 903;
     private HorizonPlayer $player1;
     private HorizonPlayer $player2;
@@ -76,24 +73,22 @@ class DuelTask extends Task
     public function onEnd(?HorizonPlayer $playerLeft = null): void
     {
         foreach ($this->getPlayers() as $online) {
-            if (is_null($playerLeft) || $online->getName() !== $playerLeft->getName()) {
-                $online->sendMessage(TF::GRAY . "---------------");
-                $winnerMessage = TF::GOLD . "Winner: " . TF::WHITE;
+            if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
+                $winnerMessage = "§aWinner: " . TF::WHITE;
                 if ($this->winner === null) {
                     $winnerMessage .= "None";
                 } else {
-                    $winnerMessage .= $this->winner->getDisplayName() . " " . floor($this->winner->getHealth() / 2) . TF::RED . " ❤";
+                    $winnerMessage .= $this->winner->getDisplayName();
                 }
                 $online->sendMessage($winnerMessage);
-                $loserMessage = TF::YELLOW . "Loser: " . TF::WHITE;
+                $loserMessage = "§cLoser: " . TF::WHITE;
                 $loserMessage .= $this->loser !== null ? $this->loser->getDisplayName() : "None";
                 $online->sendMessage($loserMessage);
-                $online->sendMessage(TF::GRAY . "---------------");
                 Loader::getArenaUtils()->GiveItem($online);
                 $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
         }
         $this->getHandler()->cancel();
-        DuelManager::getInstance()->stopMatch($this->level->getFolderName());
+        Loader::getInstance()->getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }

@@ -44,6 +44,7 @@ class Loader extends PluginBase
     public static CosmeticHandler $cosmetics;
     public static ArenaUtils $arenautils;
     public static ScoreboardManager $scoremanager;
+    public static DuelManager $duelmanager;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -174,7 +175,7 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
-        new DuelManager($this);
+        self::$duelmanager = new DuelManager($this);
         self::$YamlLoader->loadArenas();
         Loader::getInstance()->getArenaUtils()->Start();
         Loader::getInstance()->getArenaUtils()->killbot();
@@ -201,8 +202,13 @@ class Loader extends PluginBase
         Loader::getInstance()->getArenaUtils()->killbot();
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
-        foreach (DuelManager::getInstance()->getMatches() as $activeMatch => $matchTask) {
-            DuelManager::getInstance()->stopMatch($activeMatch);
+        foreach ($this->getDuelManager()->getMatches() as $activeMatch => $matchTask) {
+            $this->getDuelManager()->stopMatch($activeMatch);
         }
+    }
+
+    public static function getDuelManager(): DuelManager
+    {
+        return self::$duelmanager;
     }
 }

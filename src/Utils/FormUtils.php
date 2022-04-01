@@ -76,6 +76,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 default:
@@ -98,7 +99,7 @@ class FormUtils
         if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
             $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         }
-        $form->addButton("§atest", 0, "textures/items/paper.png");
+        $form->addButton("§aFist Duel(TEST)", 0, "textures/items/paper.png");
         $player->sendForm($form);
     }
 

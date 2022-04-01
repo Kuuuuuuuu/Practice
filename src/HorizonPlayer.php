@@ -42,7 +42,9 @@ class HorizonPlayer extends Player
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
                 try {
-                    if (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                    if ($this->isDueling()) {
+                        $attackSpeed = 7;
+                    } else if (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     } else {
                         $attackSpeed = 10;
@@ -55,10 +57,18 @@ class HorizonPlayer extends Player
         $this->attackTime = $attackSpeed;
     }
 
+    public function isDueling(): bool
+    {
+        return $this->isDueling;
+    }
+
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
         try {
-            if (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+            if ($this->isDueling()) {
+                $this->yKb = 0.344;
+                $this->xzKB = 0.311;
+            } else if (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["hkb"];
                 $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["ykb"];
             } else {
@@ -395,7 +405,7 @@ class HorizonPlayer extends Player
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
             if ($player instanceof HorizonPlayer and $player->getName() !== $this->getName()) {
                 if ($player->isInQueue()) {
-                    DuelManager::getInstance()->createMatch($this, $player);
+                    Loader::getInstance()->getDuelManager()->createMatch($this, $player);
                     $this->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $player->getName());
                     $player->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $this->getName());
                     $player->setInQueue(false);
@@ -414,11 +424,6 @@ class HorizonPlayer extends Player
     public function setInQueue(bool $inQueue): void
     {
         $this->inQueue = $inQueue;
-    }
-
-    public function isDueling(): bool
-    {
-        return $this->isDueling;
     }
 
     public function setDueling(bool $playing): void

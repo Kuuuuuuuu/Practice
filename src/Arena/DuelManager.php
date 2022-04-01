@@ -6,8 +6,6 @@ use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\DuelTask;
-use pocketmine\block\Block;
-use pocketmine\block\BlockLegacyIds;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
@@ -16,9 +14,6 @@ use Ramsey\Uuid\Uuid;
 
 class DuelManager
 {
-
-    // Duel code example from https://github.com/buchwasa/Duels lol
-
     use SingletonTrait;
 
     private array $matches = [];
@@ -32,7 +27,7 @@ class DuelManager
 
     public function createMatch(HorizonPlayer $player1, HorizonPlayer $player2): void
     {
-        $worldName = "arena-" . Uuid::uuid4();
+        $worldName = "Duel-" . Uuid::uuid4();
         $player1->getInventory()->clearAll();
         $player2->getInventory()->clearAll();
         $creationOptions = new WorldCreationOptions();
@@ -51,11 +46,6 @@ class DuelManager
     public function getMatches(): array
     {
         return $this->matches;
-    }
-
-    public function setMatches(array $matches): void
-    {
-        $this->matches = $matches;
     }
 
     public function stopMatch(string $name)
@@ -77,10 +67,5 @@ class DuelManager
     #[Pure] public function isMatch($name): bool
     {
         return isset($this->getMatches()[$name]);
-    }
-
-    #[Pure] public function getMatch($name): ?DuelTask
-    {
-        return $this->isMatch($name) ? $this->getMatches()[$name] : null;
     }
 }
