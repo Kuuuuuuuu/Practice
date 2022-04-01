@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
+use Kohaku\Core\Arena\DuelManager;
 use Kohaku\Core\Utils\ArenaUtils;
 use Kohaku\Core\Utils\BotUtils;
 use Kohaku\Core\Utils\ClickHandler;
@@ -172,6 +173,7 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
+        new DuelManager($this);
         self::$YamlLoader->loadArenas();
         Loader::getInstance()->getArenaUtils()->Start();
         Loader::getInstance()->getArenaUtils()->killbot();
@@ -198,5 +200,8 @@ class Loader extends PluginBase
         Loader::getInstance()->getArenaUtils()->killbot();
         self::$YamlLoader->saveArenas();
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+        foreach (DuelManager::getInstance()->getMatches() as $activeMatch => $matchTask) {
+            DuelManager::getInstance()->stopMatch($activeMatch);
+        }
     }
 }

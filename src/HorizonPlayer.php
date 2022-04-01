@@ -6,7 +6,6 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\{entity\Skin,
     network\mcpe\protocol\PlayerListPacket,
     network\mcpe\protocol\types\PlayerListEntry,
@@ -26,6 +25,10 @@ class HorizonPlayer extends Player
     private int $sec = 0;
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
+
+    private bool $isDueling = false;
+    private bool $inQueue = false;
+    private Kit $currentKit;
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -384,5 +387,52 @@ class HorizonPlayer extends Player
         } else {
             Loader::getInstance()->BoxingPoint[$name] = 0;
         }
+    }
+
+    public function checkQueue(): void
+    {
+        $this->sendMessage(TextFormat::GOLD . "Entering queue...");
+        foreach ($this->getServer()->getOnlinePlayers() as $player) {
+            if ($player instanceof PracticePlayer and $player->getName() != $this->getName()) {
+                if ($player->isInQueue() && $player->getCurrentKit() === $this->getCurrentKit()) {
+                    MatchManager::getInstance()->createMatch($this, $player, $this->getCurrentKit());
+                    $this->sendMessage(TextFormat::YELLOW . "Found a match against " . TextFormat::GOLD . $player->getName());
+                    $player->sendMessage(TextFormat::YELLOW . "Found a match against " . TextFormat::GOLD . $this->getName());
+                    $player->setInQueue(false);
+                    $this->setInQueue(false);
+                    return;
+                }
+            }
+        }
+    }
+
+    public function getCurrentKit(): Kit
+    {
+        return $this->currentKit;
+    }
+
+    public function setCurrentKit(Kit $kit): void
+    {
+        $this->currentKit = $kit;
+    }
+
+    public function isDueling(): bool
+    {
+        return $this->isDueling;
+    }
+
+    public function setDueling(bool $playing): void
+    {
+        $this->isDueling = $playing;
+    }
+
+    public function isInQueue(): bool
+    {
+        return $this->inQueue;
+    }
+
+    public function setInQueue(bool $inQueue): void
+    {
+        $this->inQueue = $inQueue;
     }
 }
