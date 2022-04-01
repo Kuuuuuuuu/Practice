@@ -18,6 +18,7 @@ use Kohaku\Core\Commands\TbanCommand;
 use Kohaku\Core\Commands\TcheckCommand;
 use Kohaku\Core\Commands\TpsCommand;
 use Kohaku\Core\Commands\VanishCommand;
+use Kohaku\Core\Entity\ArrowEntity;
 use Kohaku\Core\Entity\DeathLeaderboard;
 use Kohaku\Core\Entity\EnderPearlEntity;
 use Kohaku\Core\Entity\FallingWool;
@@ -280,6 +281,9 @@ class ArenaUtils
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
         }, ['HThrownEnderpearl', 'horizon:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+        EntityFactory::getInstance()->register(ArrowEntity::class, function (World $world, CompoundTag $nbt): ArrowEntity {
+            return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
+        }, ['HArrow', 'horizon:arrow'], EntityLegacyIds::ARROW);
     }
 
     public function loadallworlds()

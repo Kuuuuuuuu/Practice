@@ -682,7 +682,6 @@ class PlayerListener implements Listener
         $event->setDeathMessage("");
         $event->setDrops([]);
         $player = $event->getPlayer();
-        $player->kill();
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {

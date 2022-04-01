@@ -2,9 +2,10 @@
 
 namespace Kohaku\Core\Items;
 
+use Kohaku\Core\Entity\ArrowEntity;
 use Kohaku\Core\Loader;
 use pocketmine\entity\Location;
-use pocketmine\entity\projectile\Arrow as ArrowEntity;
+use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
@@ -51,7 +52,7 @@ class Bow extends ItemBow
 
         $infinity = $this->hasEnchantment(VanillaEnchantments::INFINITY());
         if ($infinity) {
-            $entity->setPickupMode(ArrowEntity::PICKUP_CREATIVE);
+            $entity->setPickupMode(Arrow::PICKUP_CREATIVE);
         }
         if (($punchLevel = $this->getEnchantmentLevel(VanillaEnchantments::PUNCH())) > 0) {
             $entity->setPunchKnockback($punchLevel);
