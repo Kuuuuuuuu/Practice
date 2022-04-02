@@ -31,6 +31,7 @@ class DuelManager
         $player1->getInventory()->clearAll();
         $player2->getInventory()->clearAll();
         $creationOptions = new WorldCreationOptions();
+        // TODO: Make Custom Generator for Duel
         $creationOptions->setGeneratorClass(Flat::class);
         $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $creationOptions);
         $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2));
