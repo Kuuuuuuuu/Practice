@@ -6,6 +6,7 @@ use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\DuelTask;
+use Kohaku\Core\Utils\DuelGenerator;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
@@ -32,7 +33,7 @@ class DuelManager
         $player2->getInventory()->clearAll();
         $creationOptions = new WorldCreationOptions();
         // TODO: Make Custom Generator for Duel
-        $creationOptions->setGeneratorClass(Flat::class);
+        $creationOptions->setGeneratorClass(DuelGenerator::class);
         $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $creationOptions);
         $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2));
         $player1->setDueling(true);
