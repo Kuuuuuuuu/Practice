@@ -157,7 +157,7 @@ class PlayerListener implements Listener
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        if ($entity instanceof Arrow) {
+        if ($entity instanceof Arrow and ($entity->getOwningEntity()->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $entity->getOwningEntity()->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()))) {
             $entity->flagForDespawn();
             $entity->close();
         }
@@ -167,11 +167,13 @@ class PlayerListener implements Listener
     {
         $entity = $event->getEntity();
         if ($entity instanceof HorizonPlayer) {
-            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
-                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
-                    $entity->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
-                }
-            }), 100);
+            if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
+                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+                        $entity->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                    }
+                }), 100);
+            }
         }
     }
 
