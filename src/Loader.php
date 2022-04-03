@@ -19,7 +19,6 @@ use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
-use Kohaku\Core\Utils\Kits\KitRegistry;
 use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\Utils\ScoreboardManager;
 use Kohaku\Core\utils\Scoreboards;
