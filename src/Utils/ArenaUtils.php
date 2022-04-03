@@ -54,6 +54,7 @@ use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
 use UnexpectedValueException;
@@ -177,6 +178,7 @@ class ArenaUtils
     {
         $this->registerItems();
         $this->registerConfigs();
+        $this->registerGenerator();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
@@ -228,6 +230,11 @@ class ArenaUtils
         )))->getAll();
         Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
         Loader::getInstance()->BanData->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
+    }
+
+    public function registerGenerator()
+    {
+        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, "Duel", fn() => null);
     }
 
     private function registerCommands(): void
