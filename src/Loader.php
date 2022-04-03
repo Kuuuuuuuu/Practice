@@ -19,6 +19,7 @@ use Kohaku\Core\Utils\ClickHandler;
 use Kohaku\Core\Utils\CosmeticHandler;
 use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
+use Kohaku\Core\Utils\Kits\KitRegistry;
 use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\Utils\ScoreboardManager;
 use Kohaku\Core\utils\Scoreboards;
@@ -179,6 +180,9 @@ class Loader extends PluginBase
         self::$YamlLoader->loadArenas();
         Loader::getInstance()->getArenaUtils()->Start();
         Loader::getInstance()->getArenaUtils()->killbot();
+        foreach (KitRegistry::getKits() as $kit) {
+            var_dump($kit);
+        }
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
     }

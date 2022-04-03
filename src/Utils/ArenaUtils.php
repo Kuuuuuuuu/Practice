@@ -440,8 +440,11 @@ class ArenaUtils
         $item2->setCustomName("§r§bSettings");
         $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName("§r§bBot");
+        $item4 = ItemFactory::getInstance()->get(ItemIds::BOOK, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4->setCustomName("§r§bDuel");
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(0, $item);
+        $player->getInventory()->setItem(1, $item4);
         $player->getInventory()->setItem(8, $item2);
     }
 

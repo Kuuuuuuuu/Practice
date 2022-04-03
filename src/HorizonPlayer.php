@@ -6,6 +6,7 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
+use Kohaku\Core\Utils\Kits\KitManager;
 use pocketmine\{entity\Skin,
     network\mcpe\protocol\PlayerListPacket,
     network\mcpe\protocol\types\PlayerListEntry,
@@ -20,12 +21,12 @@ class HorizonPlayer extends Player
     public string $cape = "";
     public string $artifact = "";
     public bool $vanish = false;
+    public KitManager $duelKit;
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
     private int $sec = 0;
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
-
     private bool $isDueling = false;
     private bool $inQueue = false;
 
@@ -418,8 +419,8 @@ class HorizonPlayer extends Player
         $this->sendMessage(Loader::getPrefixCore() . "Entering queue...");
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
             if ($player instanceof HorizonPlayer and $player->getName() !== $this->getName()) {
-                if ($player->isInQueue()) {
-                    Loader::getInstance()->getDuelManager()->createMatch($this, $player);
+                if ($player->isInQueue() and $this->getDuelKit() === $player->getDuelKit()) {
+                    Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
                     $this->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $player->getName());
                     $player->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $this->getName());
                     $player->setInQueue(false);
@@ -438,6 +439,16 @@ class HorizonPlayer extends Player
     public function setInQueue(bool $inQueue): void
     {
         $this->inQueue = $inQueue;
+    }
+
+    public function getDuelKit(): ?KitManager
+    {
+        return $this->duelKit ?? null;
+    }
+
+    public function setCurrentKit(?KitManager $kit): void
+    {
+        $this->duelKit = $kit;
     }
 
     public function setDueling(bool $playing): void

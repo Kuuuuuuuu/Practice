@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Utils;
 
 use DateTime;
+use Exception;
 use JsonException;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
@@ -13,6 +14,7 @@ use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
 use Kohaku\Core\Utils\Forms\CustomForm;
 use Kohaku\Core\Utils\Forms\SimpleForm;
+use Kohaku\Core\Utils\Kits\KitRegistry;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\Location;
@@ -63,16 +65,14 @@ class FormUtils
                     Loader::getArenaManager()->onJoinOITC($player);
                     break;
                 case 8:
-                    Loader::getInstance()->getArenaUtils()->JoinRandomArenaSumo($player);
-                    break;
-                case 9:
                     Loader::getArenaManager()->onJoinBuild($player);
                     break;
-                case 11:
+                case 9:
                     Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
                     break;
                 case 10:
                     if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("Fist"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
@@ -94,12 +94,10 @@ class FormUtils
         $form->addButton("§aResistance\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, "textures/ui/resistance_effect.png");
         $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
         $form->addButton("§aOITC\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
-        $form->addButton("§aSumo\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena() ?? null) ?? 0, 0, "textures/items/blaze_rod.png");
         $form->addButton("§aBuild\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
             $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         }
-        $form->addButton("§aFist Duel(TEST)", 0, "textures/items/paper.png");
         $player->sendForm($form);
     }
 
@@ -207,6 +205,92 @@ class FormUtils
         $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3));
         $player->getInventory()->setItem(0, $item);
         $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::DIAMOND_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+    }
+
+    public function duelForm(Player $player)
+    {
+        $form = new SimpleForm(function (Player $player, int $data = null) {
+            $result = $data;
+            if ($result === null) {
+                return true;
+            }
+            switch ($result) {
+                case 0:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("Fist"));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    }
+                    break;
+                case 1:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("NoDebuff"));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    }
+                    break;
+                case 2:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("Classic"));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    }
+                    break;
+                case 3:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("SG"));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    }
+                    break;
+                case 4:
+                    if ($player instanceof HorizonPlayer) {
+                        $player->setCurrentKit(KitRegistry::fromString("BuildUHC"));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    }
+                    break;
+                case 5:
+                    Loader::getArenaUtils()->JoinRandomArenaSumo($player);
+                    break;
+            }
+            return true;
+        });
+        $form->setTitle("§bHorizon §eDuel");
+        $form->addButton("§6Fist\n§9Queue§f: §4" . $this->getQueue("Fist"), 0, "textures/items/paper.png");
+        $form->addButton("§6NoDebuff\n§9Queue§f: §4" . $this->getQueue("NoDebuff"), 0, "textures/items/paper.png");
+        $form->addButton("§6Classic\n§9Queue§f: §4" . $this->getQueue("Classic"), 0, "textures/items/paper.png");
+        $form->addButton("§6SG\n§9Queue§f: §4" . $this->getQueue("SG"), 0, "textures/items/paper.png");
+        $form->addButton("§6BuildUHC\n§9Queue§f: §4" . $this->getQueue("BuildUHC"), 0, "textures/items/paper.png");
+        $form->addButton("§6Sumo\n§9Queue§f: §4" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena()), 0, "textures/items/paper.png");
+        $player->sendForm($form);
+    }
+
+    public function getQueue(string $kit): int
+    {
+        $kitcount = 0;
+        foreach (Server::getInstance()->getOnlinePlayers() as $p) {
+            if ($p instanceof HorizonPlayer) {
+                try {
+                    if ($p->getDuelKit()?->getName() === $kit) {
+                        $kitcount += 1;
+                    }
+                } catch (Exception) {
+                    $kitcount = 0;
+                }
+            }
+        }
+        return $kitcount ?? 0;
     }
 
     public function settingsForm($player)
@@ -468,9 +552,9 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§l§cEdit Kit");
+        $form->setTitle("§l§cEdit KitManager");
         $form->setContent("§7Select a kit to edit");
-        $form->addButton("§l§cBuild Kit");
+        $form->addButton("§l§cBuild KitManager");
         $player->sendForm($form);
     }
 

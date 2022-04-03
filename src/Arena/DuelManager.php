@@ -7,6 +7,7 @@ use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\DuelTask;
 use Kohaku\Core\Utils\DuelGenerator;
+use Kohaku\Core\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\WorldCreationOptions;
@@ -25,7 +26,7 @@ class DuelManager
         self::$instance = $this;
     }
 
-    public function createMatch(HorizonPlayer $player1, HorizonPlayer $player2): void
+    public function createMatch(HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit): void
     {
         $worldName = "Duel-" . Uuid::uuid4();
         $player1->getInventory()->clearAll();
@@ -33,7 +34,7 @@ class DuelManager
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
         $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $world);
-        $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2));
+        $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2, $kit));
         $player1->setDueling(true);
         $player2->setDueling(true);
         foreach ([$player1, $player2] as $player) {

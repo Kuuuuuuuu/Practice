@@ -8,6 +8,7 @@ use pocketmine\scheduler\Task;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
+use Kohaku\Core\Utils\Kits\KitManager;
 
 class DuelTask extends Task
 {
@@ -18,8 +19,9 @@ class DuelTask extends Task
     private World $level;
     private ?HorizonPlayer $winner = null;
     private ?HorizonPlayer $loser = null;
+    private KitManager $kit;
 
-    public function __construct(Loader $plugin, string $name, HorizonPlayer $player1, HorizonPlayer $player2)
+    public function __construct(Loader $plugin, string $name, HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit)
     {
         $world = $plugin->getServer()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
@@ -27,6 +29,7 @@ class DuelTask extends Task
         }
         $this->setHandler($plugin->getScheduler()->scheduleRepeatingTask($this, 1));
         $this->level = $world;
+        $this->kit = $kit;
         $this->player1 = $player1;
         $this->player2 = $player2;
     }
@@ -53,7 +56,10 @@ class DuelTask extends Task
             switch ($this->time) {
                 case 902:
                     foreach ($this->getPlayers() as $player) {
-                        $player->getInventory()->clearAll();
+                        if ($player instanceof HorizonPlayer) {
+                            $player->getArmorInventory()->setContents($this->kit->getArmorItems());
+                            $player->getInventory()->setContents($this->kit->getInventoryItems());
+                        }
                     }
                     $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                         $this->player1->teleport(new Position(15, 4, 40, $this->level));
@@ -91,6 +97,8 @@ class DuelTask extends Task
                 $online->sendMessage("§f-----------------------");
                 Loader::getArenaUtils()->GiveItem($online);
                 Loader::getScoreboardManager()->sb($online);
+                /* @var $online HorizonPlayer */
+                $online->setCurrentKit(null);
                 $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
         }

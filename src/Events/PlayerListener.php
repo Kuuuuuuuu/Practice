@@ -146,8 +146,11 @@ class PlayerListener implements Listener
             $player->sendMessage(Loader::getPrefixCore() . "§aTeleport to Checkpoint");
         } else if ($item->getCustomName() === "§cLeave Queue") {
             $player->sendMessage(Loader::getPrefixCore() . "Left the queue");
+            $player->setCurrentKit(null);
             $player->setInQueue(false);
             Loader::getArenaUtils()->GiveItem($player);
+        } else if ($item->getCustomName() === "§r§bDuel") {
+            Loader::getFormUtils()->duelForm($player);
         }
     }
 
@@ -501,6 +504,7 @@ class PlayerListener implements Listener
                     $player->kill();
                 }
                 $player->setInQueue(false);
+                $player->setCurrentKit(null);
                 $player->setGamemode(GameMode::SURVIVAL());
             }
         }

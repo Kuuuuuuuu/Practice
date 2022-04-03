@@ -2,6 +2,7 @@
 
 namespace Kohaku\Core\Utils;
 
+use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -17,6 +18,7 @@ class ScoreboardManager
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();
+        $queue = $this->getQueuePlayer();
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§7",
@@ -29,12 +31,27 @@ class ScoreboardManager
             8 => "§bD§f: §6$deaths",
             9 => "§bK/D§f: §6$rate",
             10 => "§bElo§f: §6{$data->getElo()}",
+            12 => "§e",
+            13 => "§bIn-Queue §6$queue",
             11 => "§7---------------"
         ];
         Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
             Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
+    }
+
+    public function getQueuePlayer(): int
+    {
+        $queue = 0;
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            if ($player instanceof HorizonPlayer) {
+                if ($player->isInQueue()) {
+                    $queue += 1;
+                }
+            }
+        }
+        return $queue ?? 0;
     }
 
     public function sb2(Player $player): void
