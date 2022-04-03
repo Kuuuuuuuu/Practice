@@ -4,11 +4,12 @@ namespace Kohaku\Core\Task;
 
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
+use Kohaku\Core\Utils\Kits\KitManager;
+use pocketmine\player\GameMode;
 use pocketmine\scheduler\Task;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
-use Kohaku\Core\Utils\Kits\KitManager;
 
 class DuelTask extends Task
 {
@@ -57,6 +58,7 @@ class DuelTask extends Task
                 case 902:
                     foreach ($this->getPlayers() as $player) {
                         if ($player instanceof HorizonPlayer) {
+                            $player->setGamemode(GameMode::SURVIVAL());
                             $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                             $player->getInventory()->setContents($this->kit->getInventoryItems());
                         }

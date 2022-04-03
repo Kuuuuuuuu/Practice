@@ -43,7 +43,7 @@ class HorizonPlayer extends Player
             if ($damager instanceof Player) {
                 try {
                     if ($this->isDueling()) {
-                        $attackSpeed = 7;
+                        $attackSpeed = 8;
                     } else if (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     } else {
@@ -66,7 +66,7 @@ class HorizonPlayer extends Player
     {
         try {
             if ($this->isDueling()) {
-                $this->yKb = 0.344;
+                $this->yKb = 0.301;
                 $this->xzKB = 0.311;
             } else if (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["hkb"];

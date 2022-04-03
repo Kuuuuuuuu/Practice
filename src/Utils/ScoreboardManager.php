@@ -31,9 +31,9 @@ class ScoreboardManager
             8 => "§bD§f: §6$deaths",
             9 => "§bK/D§f: §6$rate",
             10 => "§bElo§f: §6{$data->getElo()}",
-            12 => "§e",
-            13 => "§bIn-Queue §6$queue",
-            11 => "§7---------------"
+            11 => "§e",
+            12 => "§bIn-Queue §6$queue",
+            13 => "§7---------------"
         ];
         Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
         foreach ($lines as $line => $content) {
