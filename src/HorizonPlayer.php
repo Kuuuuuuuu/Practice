@@ -6,7 +6,12 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use pocketmine\{entity\Skin,
+use Kohaku\Core\Task\ParkourFinishTask;
+use pocketmine\{block\BlockLegacyIds,
+    entity\effect\EffectInstance,
+    entity\effect\VanillaEffects,
+    entity\Skin,
+    math\Vector3,
     network\mcpe\protocol\PlayerListPacket,
     network\mcpe\protocol\types\PlayerListEntry,
     player\Player,
@@ -410,6 +415,56 @@ class HorizonPlayer extends Player
             Loader::getInstance()->getScoreboardManager()->sb2($this);
         } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             Loader::getInstance()->getScoreboardManager()->Parkour($this);
+        }
+    }
+
+    public function updateBlock()
+    {
+        $name = $this->getName();
+        $block = $this->getWorld()->getBlock(new Vector3($this->getPosition()->getX(), $this->getPosition()->getY() - 0.5, $this->getPosition()->getZ()));
+        switch ($this->getWorld()) {
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
+                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                    $smallpp = $this->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
+                    $this->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
+                }
+                break;
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):
+                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                    $this->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
+                }
+                break;
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
+                switch ($block->getId()) {
+                    case BlockLegacyIds::NOTE_BLOCK:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {
+                            Loader::getInstance()->TimerTask[$name] = true;
+                        }
+                        break;
+                    case BlockLegacyIds::PODZOL:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
+                            Loader::getInstance()->TimerTask[$name] = false;
+                        }
+                        break;
+                    case BlockLegacyIds::LIT_REDSTONE_LAMP:
+                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
+                            Loader::getInstance()->TimerTask[$name] = false;
+                            $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                            $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                            $mili = Loader::getInstance()->TimerData[$name] % 100;
+                            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
+                            Loader::getInstance()->ParkourCheckPoint[$name] = new Vector3(255, 77, 255);
+                            $this->teleport(new Vector3(275, 66, 212));
+                            Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($this, $this->getWorld()), 0, 2);
+                        }
+                        break;
+                    case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
+                        $vector = $this->getPosition()->asVector3();
+                        if (isset(Loader::getInstance()->ParkourCheckPoint[$name]) and Loader::getInstance()->ParkourCheckPoint[$name] !== $vector) {
+                            Loader::getInstance()->ParkourCheckPoint[$name] = $vector;
+                        }
+                        break;
+                }
         }
     }
 

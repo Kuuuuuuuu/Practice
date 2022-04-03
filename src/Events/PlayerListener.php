@@ -13,10 +13,8 @@ use JsonException;
 use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
-use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
@@ -611,56 +609,13 @@ class PlayerListener implements Listener
     public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
-        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 0) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $player->kill();
             }
         }
-        switch ($player->getWorld()) {
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
-                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                    $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
-                    $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
-                }
-                break;
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):
-                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                    $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
-                }
-                break;
-            case $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
-                switch ($block->getId()) {
-                    case BlockLegacyIds::NOTE_BLOCK:
-                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === false) {
-                            Loader::getInstance()->TimerTask[$name] = true;
-                        }
-                        break;
-                    case BlockLegacyIds::PODZOL:
-                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
-                            Loader::getInstance()->TimerTask[$name] = false;
-                        }
-                        break;
-                    case BlockLegacyIds::LIT_REDSTONE_LAMP:
-                        if (isset(Loader::getInstance()->TimerTask[$name]) and Loader::getInstance()->TimerTask[$name] === true) {
-                            Loader::getInstance()->TimerTask[$name] = false;
-                            $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                            $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                            $mili = Loader::getInstance()->TimerData[$name] % 100;
-                            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
-                            Loader::getInstance()->ParkourCheckPoint[$name] = new Vector3(255, 77, 255);
-                            $player->teleport(new Vector3(275, 66, 212));
-                            Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
-                        }
-                        break;
-                    case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
-                        $vector = $player->getPosition()->asVector3();
-                        if (isset(Loader::getInstance()->ParkourCheckPoint[$name]) and Loader::getInstance()->ParkourCheckPoint[$name] !== $vector) {
-                            Loader::getInstance()->ParkourCheckPoint[$name] = $vector;
-                        }
-                        break;
-                }
+        if ($player instanceof HorizonPlayer) {
+            $player->updateBlock();
         }
     }
 
