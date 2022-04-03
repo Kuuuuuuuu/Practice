@@ -9,9 +9,9 @@ use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\LevelEventPacket;
-use pocketmine\network\mcpe\protocol\types\LevelEvent;
 use pocketmine\Server;
+use pocketmine\world\particle\BlockPunchParticle;
+use pocketmine\world\sound\BlockPunchSound;
 
 class DeleteBlocksHandler
 {
@@ -39,11 +39,12 @@ class DeleteBlocksHandler
             $y = (int)$block[1];
             $z = (int)$block[2];
             $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-            if ($sec >= 0) {
-                $level->broadcastPacketToViewers(new Vector3($x, $y, $z), LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (65535), new Vector3($x, $y, $z)));
-            }
+            $block = $level->getBlock(new Vector3($x, $y, $z));
+            $blockvec = new Vector3($x, $y, $z);
             if ($sec <= 0) {
-                $level->setBlock(new Vector3($x, $y, $z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), true);
+                $level->addParticle($blockvec, new BlockPunchParticle($block, $block->getFacing()));
+                $level->addSound($blockvec, new BlockPunchSound($block));
+                $level->setBlock($blockvec, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), true);
                 unset($this->buildBlocks[$pos]);
             } else {
                 $this->buildBlocks[$pos]--;
