@@ -27,6 +27,9 @@ class HorizonTask extends Task
                 $player->updatePlayer();
             }
         }
+        if ($this->tick % 60 === 0) {
+            $this->clearChunk();
+        }
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             switch ($player->getWorld()) {
                 case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
@@ -49,6 +52,16 @@ class HorizonTask extends Task
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§cServer will restart in §e" . Loader::getInstance()->RestartTime . "§c seconds");
         } else if (Loader::getInstance()->RestartTime === 0) {
             Loader::getInstance()->getServer()->shutdown();
+        }
+    }
+
+    private function clearChunk()
+    {
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            foreach ($world->getLoadedChunks() as $chunk) {
+                $chunk->clearTerrainDirtyFlags();
+                $chunk->collectGarbage();
+            }
         }
     }
 }

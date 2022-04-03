@@ -36,6 +36,9 @@ class DuelManager
         $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2));
         $player1->setDueling(true);
         $player2->setDueling(true);
+        foreach ([$player1, $player2] as $player) {
+            Loader::getScoreboardManager()->sb2($player);
+        }
     }
 
     #[Pure] public function addMatch(string $name, DuelTask $task): void
