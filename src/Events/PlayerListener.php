@@ -662,7 +662,6 @@ class PlayerListener implements Listener
                         break;
                     default:
                         return;
-                        break;
                 }
         }
     }
