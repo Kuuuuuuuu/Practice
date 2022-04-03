@@ -9,7 +9,6 @@ use Kohaku\Core\Task\DuelTask;
 use Kohaku\Core\Utils\DuelGenerator;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
-use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
 use Ramsey\Uuid\Uuid;
 
@@ -31,10 +30,9 @@ class DuelManager
         $worldName = "Duel-" . Uuid::uuid4();
         $player1->getInventory()->clearAll();
         $player2->getInventory()->clearAll();
-        $creationOptions = new WorldCreationOptions();
-        // TODO: Make Custom Generator for Duel
-        $creationOptions->setGeneratorClass(DuelGenerator::class);
-        $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $creationOptions);
+        $world = new WorldCreationOptions();
+        $world->setGeneratorClass(DuelGenerator::class);
+        $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $world);
         $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2));
         $player1->setDueling(true);
         $player2->setDueling(true);

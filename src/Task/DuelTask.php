@@ -83,14 +83,10 @@ class DuelTask extends Task
             if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
                 $online->sendMessage("§f-----------------------");
                 $winnerMessage = "§aWinner: §f";
-                if ($this->winner === null) {
-                    $winnerMessage .= "None";
-                } else {
-                    $winnerMessage .= $this->winner->getDisplayName();
-                }
+                $winnerMessage .= $this->winner !== null ? $this->winner->getName() : "None";
                 $online->sendMessage($winnerMessage);
                 $loserMessage = "§cLoser: §f";
-                $loserMessage .= $this->loser !== null ? $this->loser->getDisplayName() : "None";
+                $loserMessage .= $this->loser !== null ? $this->loser->getName() : "None";
                 $online->sendMessage($loserMessage);
                 $online->sendMessage("§f-----------------------");
                 Loader::getArenaUtils()->GiveItem($online);
