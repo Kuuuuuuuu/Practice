@@ -2,7 +2,6 @@
 
 namespace Kohaku\Core\Utils;
 
-use JetBrains\PhpStorm\Pure;
 use Kohaku\Core\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;

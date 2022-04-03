@@ -3,7 +3,6 @@
 namespace Kohaku\Core\Commands;
 
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ArenaUtils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

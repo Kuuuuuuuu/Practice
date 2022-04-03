@@ -6,7 +6,6 @@ namespace Kohaku\Core;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Arena\DuelManager;
 use pocketmine\{entity\Skin,
     network\mcpe\protocol\PlayerListPacket,
     network\mcpe\protocol\types\PlayerListEntry,
@@ -247,6 +246,54 @@ class HorizonPlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
+    public function updateCPS()
+    {
+        switch ($this->getWorld()) {
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
+                $this->parkourTimer();
+                break;
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena()):
+                $this->boxingTip();
+                break;
+            default:
+                $this->sendTip("§bCPS: §f" . Loader::getClickHandler()->getClicks($this));
+                break;
+        }
+    }
+
+    public function parkourTimer()
+    {
+        $name = $this->getName();
+        if (isset(Loader::getInstance()->TimerTask[$name])) {
+            if (Loader::getInstance()->TimerTask[$name] === true) {
+                if (isset(Loader::getInstance()->TimerData[$name])) {
+                    Loader::getInstance()->TimerData[$name] += 5;
+                } else {
+                    Loader::getInstance()->TimerData[$name] = 0;
+                }
+                $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
+                $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
+                $mili = Loader::getInstance()->TimerData[$name] % 100;
+                $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+            } else {
+                $this->sendTip("§a0 : 0 : 0");
+                Loader::getInstance()->TimerData[$name] = 0;
+            }
+        }
+    }
+
+    public function boxingTip()
+    {
+        $name = $this->getName();
+        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+            $point = Loader::getInstance()->BoxingPoint[$name];
+            $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
+            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getClickHandler()->getClicks($this));
+        } else {
+            Loader::getInstance()->BoxingPoint[$name] = 0;
+        }
+    }
+
     public function updatePlayer()
     {
         $name = $this->getName();
@@ -363,39 +410,6 @@ class HorizonPlayer extends Player
             Loader::getInstance()->getScoreboardManager()->sb2($this);
         } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             Loader::getInstance()->getScoreboardManager()->Parkour($this);
-        }
-    }
-
-    public function parkourTimer()
-    {
-        $name = $this->getName();
-        if (isset(Loader::getInstance()->TimerTask[$name])) {
-            if (Loader::getInstance()->TimerTask[$name] === true) {
-                if (isset(Loader::getInstance()->TimerData[$name])) {
-                    Loader::getInstance()->TimerData[$name] += 5;
-                } else {
-                    Loader::getInstance()->TimerData[$name] = 0;
-                }
-                $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                $mili = Loader::getInstance()->TimerData[$name] % 100;
-                $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
-            } else {
-                $this->sendTip("§a0 : 0 : 0");
-                Loader::getInstance()->TimerData[$name] = 0;
-            }
-        }
-    }
-
-    public function boxingTip()
-    {
-        $name = $this->getName();
-        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-            $point = Loader::getInstance()->BoxingPoint[$name];
-            $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getClickHandler()->getClicks($this));
-        } else {
-            Loader::getInstance()->BoxingPoint[$name] = 0;
         }
     }
 
