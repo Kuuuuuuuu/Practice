@@ -21,7 +21,7 @@ class HorizonPlayer extends Player
     public string $cape = "";
     public string $artifact = "";
     public bool $vanish = false;
-    public KitManager $duelKit;
+    public ?KitManager $duelKit;
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
     private int $sec = 0;
