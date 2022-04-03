@@ -180,9 +180,6 @@ class Loader extends PluginBase
         self::$YamlLoader->loadArenas();
         Loader::getInstance()->getArenaUtils()->Start();
         Loader::getInstance()->getArenaUtils()->killbot();
-        foreach (KitRegistry::getKits() as $kit) {
-            var_dump($kit);
-        }
         $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
     }
@@ -208,6 +205,13 @@ class Loader extends PluginBase
         $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
         foreach ($this->getDuelManager()->getMatches() as $activeMatch => $matchTask) {
             $this->getDuelManager()->stopMatch($activeMatch);
+        }
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            if (str_contains($world->getFolderName(), "Duel")) {
+                $name = $world->getFolderName();
+                Server::getInstance()->getWorldManager()->unloadWorld($world);
+                self::getArenaUtils()->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
+            }
         }
     }
 
