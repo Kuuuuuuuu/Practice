@@ -34,13 +34,15 @@ class DeleteBlocksHandler
             return;
         }
         foreach ($this->buildBlocks as $pos => $sec) {
+            $block = explode(':', $pos);
+            $x = (int)$block[0];
+            $y = (int)$block[1];
+            $z = (int)$block[2];
+            $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
+            if ($sec >= 0) {
+                $level->broadcastPacketToViewers(new Vector3($x, $y, $z), LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (65535), new Vector3($x, $y, $z)));
+            }
             if ($sec <= 0) {
-                $block = explode(':', $pos);
-                $x = (int)$block[0];
-                $y = (int)$block[1];
-                $z = (int)$block[2];
-                $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
-                $level->broadcastPacketToViewers(new Vector3($x, $y, $z), LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (int)(65535 * 2), new Vector3($x, $y, $z)));
                 $level->setBlock(new Vector3($x, $y, $z), BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), true);
                 unset($this->buildBlocks[$pos]);
             } else {
