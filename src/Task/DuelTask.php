@@ -90,10 +90,13 @@ class DuelTask extends Task
                 $online->sendMessage($loserMessage);
                 $online->sendMessage("§f-----------------------");
                 Loader::getArenaUtils()->GiveItem($online);
+                Loader::getScoreboardManager()->sb($online);
                 $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
         }
-        $this->getHandler()->cancel();
+        if (!$this->getHandler()->isCancelled()) {
+            $this->getHandler()->cancel();
+        }
         Loader::getInstance()->getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }
