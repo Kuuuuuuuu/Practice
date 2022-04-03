@@ -40,7 +40,7 @@ class Bow extends ItemBow
         $location = $player->getLocation();
         $diff = $player->getItemUseDuration();
         $p = $diff / 20;
-        $baseForce = min((($p ** 2) + $p * 2) / 3, 1) ? $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) : 3;
+        $baseForce = 3 ? $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) : min((($p ** 2) + $p * 2) / 3, 1);
 
         $entity = new ArrowEntity(Location::fromObject(
             $player->getEyePos(),
