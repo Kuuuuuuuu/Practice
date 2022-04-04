@@ -1,6 +1,5 @@
-# HorizonCore
+# NeptuneCore
 
-
-Practice Core for Horizon Servers
+Practice Core for Neptune Servers
 
 API: 4.0
