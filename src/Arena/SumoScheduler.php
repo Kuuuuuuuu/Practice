@@ -106,7 +106,6 @@ class SumoScheduler extends Task
                                 $player->getEffects()->clear();
                                 Loader::getInstance()->getArenaUtils()->GiveItem($player);
                                 Loader::getInstance()->getArenaUtils()->addKill($player);
-                                Loader::getInstance()->getScoreboardManager()->sb($player);
                                 $player->setGamemode(GameMode::ADVENTURE());
                             }
                             $this->plugin->players = [];

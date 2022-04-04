@@ -138,7 +138,6 @@ class SumoHandler implements Listener
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999999 * 20, 10, false));
         $player->setGamemode(Gamemode::ADVENTURE());
         $player->setHealth(20);
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
     }
 
     public function inGame(Player $player): bool
@@ -237,7 +236,6 @@ class SumoHandler implements Listener
         $player->getArmorInventory()->clearAll();
         $player->setImmobile(false);
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        Loader::getInstance()->getScoreboardManager()->sb($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
     }
 

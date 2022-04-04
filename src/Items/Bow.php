@@ -3,6 +3,7 @@
 namespace Kohaku\Items;
 
 use Kohaku\Entity\ArrowEntity;
+use Kohaku\Loader;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
@@ -14,6 +15,7 @@ use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemUseResult;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use pocketmine\world\sound\BowShootSound;
 
 class Bow extends ItemBow
@@ -37,9 +39,12 @@ class Bow extends ItemBow
         }
         $location = $player->getLocation();
         $diff = $player->getItemUseDuration();
-        //$p = $diff / 20;
-        $baseForce = 2.3;
-
+        $p = $diff / 20;
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+            $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
+        } else {
+            $baseForce = 2.4;
+        }
         $entity = new ArrowEntity(Location::fromObject(
             $player->getEyePos(),
             $player->getWorld(),

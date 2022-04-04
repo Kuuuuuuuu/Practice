@@ -573,7 +573,6 @@ class FormUtils
                     $player->getEffects()->clear();
                     $player->teleport(new Location(255, 6, 255, Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()), 0, 0));
                     Loader::getBotUtils()->spawnFistBot($player, true);
-                    Loader::getInstance()->getScoreboardManager()->sb2($player);
                     break;
             }
             return true;

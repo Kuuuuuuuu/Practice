@@ -55,7 +55,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBoxingArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->setHealth(20);
@@ -192,7 +191,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getResistanceArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
