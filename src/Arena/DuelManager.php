@@ -20,9 +20,8 @@ class DuelManager
     private array $matches = [];
     private Loader $plugin;
 
-    public function __construct(Loader $plugin)
+    public function __construct()
     {
-        $this->plugin = $plugin;
         self::$instance = $this;
     }
 
@@ -33,8 +32,8 @@ class DuelManager
         $player2->getInventory()->clearAll();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
-        $this->plugin->getServer()->getWorldManager()->generateWorld($worldName, $world);
-        $this->addMatch($worldName, new DuelTask($this->plugin, $worldName, $player1, $player2, $kit));
+        Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
+        $this->addMatch($worldName, new DuelTask($worldName, $player1, $player2, $kit));
         $player1->setDueling(true);
         $player2->setDueling(true);
         foreach ([$player1, $player2] as $player) {
@@ -58,7 +57,7 @@ class DuelManager
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        Loader::getArenaUtils()->deleteDir($this->plugin->getServer()->getDataPath() . "worlds/$name");
+        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
     }
 
     public function removeMatch($name): void

@@ -6,6 +6,8 @@ namespace Kohaku\Core\Utils;
 
 use DateTime;
 use Exception;
+use JsonException;
+use Kohaku\Core\Arena\DuelManager;
 use Kohaku\Core\Arena\SumoHandler;
 use Kohaku\Core\Commands\BroadcastCommand;
 use Kohaku\Core\Commands\CoreCommand;
@@ -53,6 +55,7 @@ use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
@@ -173,8 +176,13 @@ class ArenaUtils
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
 
-    public function Start()
+    public function Enable()
     {
+        Loader::$duelmanager = new DuelManager();
+        Loader::$YamlLoader = new YamlManager();
+        Loader::$YamlLoader->loadArenas();
+        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
+        Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
         $this->registerItems();
         $this->registerConfigs();
         $this->registerGenerator();
@@ -526,6 +534,46 @@ class ArenaUtils
         $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
     }
 
+    /**
+     * @throws JsonException
+     */
+    public function Disable()
+    {
+        foreach (Loader::getDuelManager()->getMatches() as $activeMatch => $matchTask) {
+            Loader::getDuelManager()->stopMatch($activeMatch);
+        }
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            if (str_contains(mb_strtolower($world->getFolderName()), "duel")) {
+                $name = $world->getFolderName();
+                Server::getInstance()->getWorldManager()->unloadWorld($world);
+                $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
+            }
+        }
+        Loader::getInstance()->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+        $this->loadMap("BUild");
+        $this->killbot();
+        Loader::$YamlLoader->saveArenas();
+    }
+
+    public function deleteDir($dirPath): void
+    {
+        if (!is_dir($dirPath)) {
+            throw new UnexpectedValueException("dirPath must be a directory");
+        }
+        if (!str_ends_with($dirPath, '/')) {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
+    }
+
     public function loadMap(string $folderName, bool $justSave = false): ?World
     {
         if (!Server::getInstance()->getWorldManager()->isWorldGenerated($folderName)) {
@@ -549,25 +597,6 @@ class ArenaUtils
         }
         Server::getInstance()->getWorldManager()->loadWorld($folderName, true);
         return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
-    }
-
-    public function deleteDir($dirPath): void
-    {
-        if (!is_dir($dirPath)) {
-            throw new UnexpectedValueException("dirPath must be a directory");
-        }
-        if (!str_ends_with($dirPath, '/')) {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                $this->deleteDir($file);
-            } else {
-                unlink($file);
-            }
-        }
-        rmdir($dirPath);
     }
 
     public function killbot()

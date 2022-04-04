@@ -7,6 +7,7 @@ use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
 use pocketmine\scheduler\Task;
+use pocketmine\Server;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
@@ -22,13 +23,13 @@ class DuelTask extends Task
     private ?HorizonPlayer $loser = null;
     private KitManager $kit;
 
-    public function __construct(Loader $plugin, string $name, HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit)
+    public function __construct(string $name, HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit)
     {
-        $world = $plugin->getServer()->getWorldManager()->getWorldByName($name);
+        $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        $this->setHandler($plugin->getScheduler()->scheduleRepeatingTask($this, 1));
+        $this->setHandler(Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1));
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -101,7 +102,7 @@ class DuelTask extends Task
                 Loader::getScoreboardManager()->sb($online);
                 /* @var $online HorizonPlayer */
                 $online->setCurrentKit(null);
-                $online->teleport($online->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }
         }
         if (!$this->getHandler()->isCancelled()) {

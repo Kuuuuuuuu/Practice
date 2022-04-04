@@ -28,7 +28,7 @@ class YamlManager
     {
         foreach (glob(Loader::getInstance()->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . "*.yml") as $arenaFile) {
             $config = new Config($arenaFile, Config::YAML);
-            Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler(Loader::getInstance(), $config->getAll(false));
+            Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler($config->getAll(false));
         }
     }
 

@@ -34,9 +34,8 @@ class SumoHandler implements Listener
     public ?World $level;
     private SumoScheduler $scheduler;
 
-    public function __construct(Loader $plugin, array $arenaFileData)
+    public function __construct(array $arenaFileData)
     {
-        $this->plugin = $plugin;
         $this->data = $arenaFileData;
         $this->setup = !$this->enable(false);
         Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = new SumoScheduler($this), 1);

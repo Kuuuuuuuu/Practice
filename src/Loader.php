@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Core;
 
-use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Kohaku\Core\Arena\ArenaFactory;
 use Kohaku\Core\Arena\ArenaManager;
@@ -24,9 +23,7 @@ use Kohaku\Core\Utils\ScoreboardManager;
 use Kohaku\Core\utils\Scoreboards;
 use Kohaku\Core\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
 use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat;
 use SQLite3;
 
 class Loader extends PluginBase
@@ -156,6 +153,11 @@ class Loader extends PluginBase
         return self::$scoremanager;
     }
 
+    public static function getDuelManager(): DuelManager
+    {
+        return self::$duelmanager;
+    }
+
     public function onLoad(): void
     {
         self::$plugin = $this;
@@ -175,12 +177,7 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
-        self::$duelmanager = new DuelManager($this);
-        self::$YamlLoader->loadArenas();
-        Loader::getInstance()->getArenaUtils()->Start();
-        Loader::getInstance()->getArenaUtils()->killbot();
-        $this->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
-        Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
+        Loader::getInstance()->getArenaUtils()->Enable();
     }
 
     public static function getArenaUtils(): ArenaUtils
@@ -196,26 +193,8 @@ class Loader extends PluginBase
     /**
      * @throws JsonException
      */
-    #[Pure] public function onDisable(): void
+    public function onDisable(): void
     {
-        Loader::getInstance()->getArenaUtils()->loadMap("BUild");
-        Loader::getInstance()->getArenaUtils()->killbot();
-        self::$YamlLoader->saveArenas();
-        $this->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
-        foreach ($this->getDuelManager()->getMatches() as $activeMatch => $matchTask) {
-            $this->getDuelManager()->stopMatch($activeMatch);
-        }
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            if (str_contains($world->getFolderName(), "Duel")) {
-                $name = $world->getFolderName();
-                Server::getInstance()->getWorldManager()->unloadWorld($world);
-                self::getArenaUtils()->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
-            }
-        }
-    }
-
-    public static function getDuelManager(): DuelManager
-    {
-        return self::$duelmanager;
+        Loader::getArenaUtils()->Disable();
     }
 }

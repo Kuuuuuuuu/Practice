@@ -13,8 +13,10 @@ use JsonException;
 use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\HorizonPlayer;
 use Kohaku\Core\Loader;
+use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
@@ -619,7 +621,7 @@ class PlayerListener implements Listener
                 $player->kill();
             }
         }
-        /*switch ($player->getWorld()) {
+        switch ($player->getWorld()) {
             case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
                 if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                     $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
@@ -664,7 +666,7 @@ class PlayerListener implements Listener
                     default:
                         return;
                 }
-        }*/
+        }
     }
 
     public function onEntityDeath(EntityDeathEvent $event)
