@@ -46,7 +46,7 @@ class FistBot extends Human
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         }
         $roundedHealth = round($this->getHealth());
-        $this->setNameTag(TextFormat::BOLD . "§9PracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
+        $this->setNameTag(TextFormat::BOLD . "§dPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
             $this->speed = 2;

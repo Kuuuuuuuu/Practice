@@ -32,8 +32,8 @@ class ArenaManager
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
         $item2 = ItemFactory::getInstance()->get(345, 0, 1);
         $item3 = ItemFactory::getInstance()->get(288, 0, 1);
-        $item2->setCustomName("§r§aStop Timer §f| §bClick to use");
-        $item3->setCustomName("§r§aBack to Checkpoint §f| §bClick to use");
+        $item2->setCustomName("§r§aStop Timer §f| §dClick to use");
+        $item3->setCustomName("§r§aBack to Checkpoint §f| §dClick to use");
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();

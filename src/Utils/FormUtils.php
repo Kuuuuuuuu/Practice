@@ -85,18 +85,18 @@ class FormUtils
             return true;
         });
 
-        $form->setTitle("§dNeptune §eMenu");
-        $form->addButton("§aParkour\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
-        $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
-        $form->addButton("§aFist\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
-        $form->addButton("§aCombo\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena() ?? null) ?? 0, 0, "textures/items/apple_golden.png");
-        $form->addButton("§aKnockback\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
-        $form->addButton("§aResistance\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, "textures/ui/resistance_effect.png");
-        $form->addButton("§aKitPVP\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
-        $form->addButton("§aOITC\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
-        $form->addButton("§aBuild\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
+        $form->setTitle("§dNeptune §cMenu");
+        $form->addButton("§aParkour\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
+        $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
+        $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
+        $form->addButton("§aCombo\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena() ?? null) ?? 0, 0, "textures/items/apple_golden.png");
+        $form->addButton("§aKnockback\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena() ?? null) ?? 0, 0, "textures/items/stick.png");
+        $form->addButton("§aResistance\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, "textures/ui/resistance_effect.png");
+        $form->addButton("§aKitPVP\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
+        $form->addButton("§aOITC\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
+        $form->addButton("§aBuild\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
         if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
-            $form->addButton("§aSkywars\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
+            $form->addButton("§aSkywars\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
         }
         $player->sendForm($form);
     }
@@ -320,12 +320,12 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eMenu");
-        $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
-        $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
-        $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
-        $form->addButton("§bArtifacts", 0, "textures/items/diamond_axe.png");
-        $form->addButton("§bEdit §aKit", 0, "textures/items/diamond_pickaxe.png");
+        $form->setTitle("§dNeptune §cMenu");
+        $form->addButton("§dChange §cName", 0, "textures/ui/dressing_room_skins.png");
+        $form->addButton("§dReport §cPlayers", 0, "textures/blocks/barrier.png");
+        $form->addButton("§dChange §cCapes", 0, "textures/items/snowball.png");
+        $form->addButton("§dArtifacts", 0, "textures/items/diamond_axe.png");
+        $form->addButton("§dEdit §aKit", 0, "textures/items/diamond_pickaxe.png");
         $player->sendForm($form);
     }
 
@@ -381,7 +381,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eNick");
+        $form->setTitle("§dNeptune §cNick");
         $form->addInput("§eEnter New Name Here!");
         $player->sendForm($form);
     }
@@ -415,7 +415,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eReport");
+        $form->setTitle("§dNeptune §cReport");
         $form->addLabel("§aReport");
         $form->addDropdown("§eSelect a player", $this->players[$player->getName()]);
         $form->addInput("§bReason", "Type a reason");
@@ -447,7 +447,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eCapes");
+        $form->setTitle("§dNeptune §cCapes");
         $form->addButton("§0Remove your Cape");
         $form->addButton("§eChoose a Cape");
         $player->sendForm($form);
@@ -480,7 +480,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eCapes");
+        $form->setTitle("§dNeptune §cCapes");
         foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
             $form->addButton("$capes", -1, "", $capes);
         }
@@ -508,7 +508,7 @@ class FormUtils
             }
         });
 
-        $form->setTitle("§dNeptune §eArtifact");
+        $form->setTitle("§dNeptune §cArtifact");
         /** @var $player NeptunePlayer */
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
@@ -578,8 +578,8 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eMenu");
-        $form->setContent("§bPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
+        $form->setTitle("§dNeptune §cMenu");
+        $form->setContent("§dPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
         $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
         $player->sendForm($form);
     }

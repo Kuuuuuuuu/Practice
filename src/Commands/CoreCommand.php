@@ -23,7 +23,7 @@ class CoreCommand extends Command
     {
         parent::__construct(
             "core",
-            "HorizonCore Commands",
+            "NeptuneCore Commands",
             "/core help",
             ["horizon"]
         );

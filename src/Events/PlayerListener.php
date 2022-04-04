@@ -130,13 +130,13 @@ class PlayerListener implements Listener
             Loader::getFormUtils()->settingsForm($player);
         } else if ($item->getCustomName() === "§r§bBot") {
             Loader::getFormUtils()->botForm($player);
-        } else if ($item->getCustomName() === "§r§aStop Timer §f| §bClick to use") {
+        } else if ($item->getCustomName() === "§r§aStop Timer §f| §dClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
             Loader::getInstance()->TimerTask[$name] = false;
             $player->teleport(new Vector3(275, 66, 212));
             $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
             Loader::getInstance()->ParkourCheckPoint[$name] = new Vector3(275, 77, 212);
-        } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §bClick to use") {
+        } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §dClick to use") {
             if (isset(Loader::getInstance()->ParkourCheckPoint[$name])) {
                 $player->teleport(Loader::getInstance()->ParkourCheckPoint[$name]);
             } else {

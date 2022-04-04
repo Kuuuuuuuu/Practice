@@ -281,7 +281,7 @@ class NeptunePlayer extends Player
     {
         $name = $this->getName();
         $ping = $this->getNetworkSession()->getPing();
-        $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]";
+        $tagparkour = "§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]";
         $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
         $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] ?? 0 % 100), $tagparkour);
         $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] ?? 0 / 100) % 60), $tagparkour);
@@ -293,13 +293,13 @@ class NeptunePlayer extends Player
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = Loader::getClickHandler()->getClicks($this);
-        $tagpvp = "§b" . $ping . "§fms §f| §b" . $nowcps . " §fCPS";
+        $tagpvp = "§d" . $ping . "§fms §f| §d" . $nowcps . " §fCPS";
         $this->setScoreTag($tagpvp);
     }
 
     public function setUnPVPTag()
     {
-        $untagpvp = "§b" . Loader::getInstance()->getArenaUtils()->getPlayerOs($this) . " §f| §b" . Loader::getInstance()->getArenaUtils()->getPlayerControls($this) . " §f| §b" . Loader::getInstance()->getArenaUtils()->getToolboxCheck($this);
+        $untagpvp = "§d" . Loader::getInstance()->getArenaUtils()->getPlayerOs($this) . " §f| §d" . Loader::getInstance()->getArenaUtils()->getPlayerControls($this) . " §f| §d" . Loader::getInstance()->getArenaUtils()->getToolboxCheck($this);
         $this->setScoreTag($untagpvp);
     }
 

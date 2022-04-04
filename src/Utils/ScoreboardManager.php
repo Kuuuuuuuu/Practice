@@ -22,17 +22,17 @@ class ScoreboardManager
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§7",
-            2 => "§bOnline§f: §6$on",
+            2 => "§dOnline§f: §6$on",
             3 => "§d",
-            4 => "§bPing§f: §6$ping",
-            5 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
+            4 => "§dPing§f: §6$ping",
+            5 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             6 => "§a",
-            7 => "§bK§f: §6$kills",
-            8 => "§bD§f: §6$deaths",
-            9 => "§bK/D§f: §6$rate",
-            10 => "§bElo§f: §6{$data->getElo()}",
+            7 => "§dK§f: §6$kills",
+            8 => "§dD§f: §6$deaths",
+            9 => "§dK/D§f: §6$rate",
+            10 => "§dElo§f: §6{$data->getElo()}",
             11 => "§e",
-            12 => "§bIn-Queue §6$queue",
+            12 => "§dIn-Queue §6$queue",
             13 => "§7---------------"
         ];
         Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
@@ -61,9 +61,9 @@ class ScoreboardManager
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
-            2 => "§bOnline§f: §6$on",
-            3 => "§bPing§f: §6$ping",
-            4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
+            2 => "§dOnline§f: §6$on",
+            3 => "§dPing§f: §6$ping",
+            4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
         Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
@@ -80,8 +80,8 @@ class ScoreboardManager
         $opponentboxingp = Loader::getInstance()->BoxingPoint[$opponent] ?? 0;
         $lines = [
             1 => "§7---------------§0",
-            2 => "§bYour§f: §a$boxingp",
-            3 => "§bOpponent§f: §c$opponentboxingp",
+            2 => "§dYour§f: §a$boxingp",
+            3 => "§dOpponent§f: §c$opponentboxingp",
             4 => "§7---------------"
         ];
         Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
