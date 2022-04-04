@@ -51,7 +51,7 @@ class BaseListener implements Listener
             }
         } else {
             /* @var $player HorizonPlayer */
-            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() and !$player->isDueling())) {
+            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or !$player->isDueling()) {
                 $ev->cancel();
             }
         }
@@ -66,7 +66,7 @@ class BaseListener implements Listener
             return;
         }
         /* @var $player HorizonPlayer */
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() and !$player->isDueling())) {
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or !$player->isDueling()) {
             $ev->cancel();
         }
     }
