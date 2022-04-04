@@ -99,12 +99,12 @@ class Loader extends PluginBase
 
     public static function getScoreboardTitle(): string
     {
-        return "§9Neptune";
+        return "§dNeptune";
     }
 
     public static function getPrefixCore(): string
     {
-        return "§9Neptune§f » §r";
+        return "§dNeptune§f » §r";
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler

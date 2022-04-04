@@ -85,7 +85,7 @@ class FormUtils
             return true;
         });
 
-        $form->setTitle("§9Neptune §eMenu");
+        $form->setTitle("§dNeptune §eMenu");
         $form->addButton("§aParkour\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
         $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
         $form->addButton("§aFist\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
@@ -127,7 +127,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eKitPVP");
+        $form->setTitle("§dNeptune §eKitPVP");
         $form->setContent("§eNow Playing: §a" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
         $form->addButton("§eAssasins");
         $form->addButton("§eTank");
@@ -266,7 +266,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eDuel");
+        $form->setTitle("§dNeptune §eDuel");
         $form->addButton("§6Fist\n§9Queue§f: §4" . $this->getQueue("Fist"), 0, "textures/items/paper.png");
         $form->addButton("§6NoDebuff\n§9Queue§f: §4" . $this->getQueue("NoDebuff"), 0, "textures/items/paper.png");
         $form->addButton("§6Classic\n§9Queue§f: §4" . $this->getQueue("Classic"), 0, "textures/items/paper.png");
@@ -320,7 +320,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eMenu");
+        $form->setTitle("§dNeptune §eMenu");
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
@@ -353,7 +353,7 @@ class FormUtils
             return true;
         });
         $name = "§eNow Your Name is: §a" . $player->getDisplayName();
-        $form->setTitle("§9Neptune §eNick");
+        $form->setTitle("§dNeptune §eNick");
         $form->setContent($name);
         $form->addButton("§a§lChange Name\n§r§8Tap to continue", 0, "textures/ui/confirm");
         $form->addButton("§c§lReset Name\n§r§8Tap to reset", 0, "textures/ui/trash");
@@ -381,7 +381,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eNick");
+        $form->setTitle("§dNeptune §eNick");
         $form->addInput("§eEnter New Name Here!");
         $player->sendForm($form);
     }
@@ -415,7 +415,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eReport");
+        $form->setTitle("§dNeptune §eReport");
         $form->addLabel("§aReport");
         $form->addDropdown("§eSelect a player", $this->players[$player->getName()]);
         $form->addInput("§bReason", "Type a reason");
@@ -447,7 +447,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eCapes");
+        $form->setTitle("§dNeptune §eCapes");
         $form->addButton("§0Remove your Cape");
         $form->addButton("§eChoose a Cape");
         $player->sendForm($form);
@@ -480,7 +480,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eCapes");
+        $form->setTitle("§dNeptune §eCapes");
         foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
             $form->addButton("$capes", -1, "", $capes);
         }
@@ -508,7 +508,7 @@ class FormUtils
             }
         });
 
-        $form->setTitle("§9Neptune §eArtifact");
+        $form->setTitle("§dNeptune §eArtifact");
         /** @var $player NeptunePlayer */
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
@@ -578,7 +578,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§9Neptune §eMenu");
+        $form->setTitle("§dNeptune §eMenu");
         $form->setContent("§bPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
         $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
         $player->sendForm($form);

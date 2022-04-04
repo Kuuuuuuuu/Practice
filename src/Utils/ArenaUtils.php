@@ -182,7 +182,7 @@ class ArenaUtils
         Loader::$YamlLoader = new YamlManager();
         Loader::$YamlLoader->loadArenas();
         Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Neptune" . TextFormat::WHITE . "Core" . "]\n\n");
-        Server::getInstance()->getNetwork()->setName("§9Neptune §fNetwork");
+        Server::getInstance()->getNetwork()->setName("§dNeptune §fNetwork");
         $this->registerItems();
         $this->registerConfigs();
         $this->registerGenerator();
@@ -213,14 +213,14 @@ class ArenaUtils
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
-            "StartCombat" => "§9Neptune§f » §r§aYou Started combat!",
+            "StartCombat" => "§dNeptune§f » §r§aYou Started combat!",
             "AntiCheatName" => "§bGuardian §f» ",
-            "CooldownMessage" => "§9Neptune§f » §r§cYou can't chat for {cooldown} seconds!",
-            "StopCombat" => "§9Neptune§f » §r§aYou Cleared combat!",
-            "StartSkillMessage" => "§9Neptune§f » §r§aYou Started Skill!",
-            "NoPlayer" => "§9Neptune§f » §r§cPlayer not found!",
-            "SkillCleared" => "§9Neptune§f » §r§aSkill Cleared!",
-            "CantUseWantCombat" => "§9Neptune§f » §r§cYou can't use this command in combat!",
+            "CooldownMessage" => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
+            "StopCombat" => "§dNeptune§f » §r§aYou Cleared combat!",
+            "StartSkillMessage" => "§dNeptune§f » §r§aYou Started Skill!",
+            "NoPlayer" => "§dNeptune§f » §r§cPlayer not found!",
+            "SkillCleared" => "§dNeptune§f » §r§aSkill Cleared!",
+            "CantUseWantCombat" => "§dNeptune§f » §r§cYou can't use this command in combat!",
             "BroadcastBanMessage" => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
             "KickBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
             "LoginBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
@@ -228,9 +228,9 @@ class ArenaUtils
             "NoBanPlayers" => "§bGuardian §f> §aNo ban players",
             "UnBanPlayer" => "§bGuardian §f> §b{player} §ahas been unban",
             "AutoUnBanPlayer" => "§bGuardian §f> §a{player} Has Auto Unban Already!",
-            "BanListTitle" => "§9Neptune §eBanSystem",
+            "BanListTitle" => "§dNeptune §eBanSystem",
             "BanListContent" => "§c§lChoose player",
-            "PlayerListTitle" => "§9Neptune §eBanSystem",
+            "PlayerListTitle" => "§dNeptune §eBanSystem",
             "PlayerListContent" => "§c§lChoose Player",
             "InfoUIContent" => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             "InfoUIUnBanButton" => "§aUnban",

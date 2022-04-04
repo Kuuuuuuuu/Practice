@@ -112,7 +112,7 @@ class TbanCommand extends Command
             return true;
         });
         $list[] = Loader::getInstance()->targetPlayer[$player->getName()];
-        $form->setTitle("§9Neptune §eBanSystem");
+        $form->setTitle("§dNeptune §eBanSystem");
         $form->addDropdown("\nTarget", $list);
         $form->addSlider("Day/s", 0, 30, 1);
         $form->addSlider("Hour/s", 0, 24, 1);
