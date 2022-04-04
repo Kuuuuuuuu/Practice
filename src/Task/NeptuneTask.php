@@ -9,7 +9,7 @@ use Kohaku\Core\Loader;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
-class HorizonTask extends Task
+class NeptuneTask extends Task
 {
 
     private int $tick = 0;

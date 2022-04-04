@@ -54,7 +54,7 @@ class KillLeaderboard extends Human
                     ++$i;
                 }
             }
-            $this->setNameTag("§bMost Kills Players\n" . $subtitle);
+            $this->setNameTag("§9Most Kills Players\n" . $subtitle);
         }
         $this->setNameTagAlwaysVisible(true);
         return parent::onUpdate($currentTick);

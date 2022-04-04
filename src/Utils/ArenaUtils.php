@@ -31,7 +31,7 @@ use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Items\Bow;
 use Kohaku\Core\Items\EnderPearl;
 use Kohaku\Core\Loader;
-use Kohaku\Core\Task\HorizonTask;
+use Kohaku\Core\Task\NeptuneTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
@@ -159,7 +159,7 @@ class ArenaUtils
         }
         $check = strtoupper($name[0]);
         if ($check !== $name[0]) {
-            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cUsing §aToolbox. Please Avoid that Player!");
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cMight be Using §aToolbox. Please Avoid that Player!");
             Loader::getInstance()->ToolboxCheck[strtolower($username)] = "Toolbox";
         }
     }
@@ -181,7 +181,7 @@ class ArenaUtils
         Loader::$duelmanager = new DuelManager();
         Loader::$YamlLoader = new YamlManager();
         Loader::$YamlLoader->loadArenas();
-        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
+        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Neptune" . TextFormat::WHITE . "Core" . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§9Neptune §fNetwork");
         $this->registerItems();
         $this->registerConfigs();
@@ -266,7 +266,7 @@ class ArenaUtils
 
     private function registerTasks(): void
     {
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new HorizonTask(), 1);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new NeptuneTask(), 1);
     }
 
     private function registerEntity(): void

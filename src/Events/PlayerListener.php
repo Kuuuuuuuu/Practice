@@ -143,7 +143,7 @@ class PlayerListener implements Listener
                 $player->teleport(new Vector3(275, 77, 212));
             }
             $player->sendMessage(Loader::getPrefixCore() . "§aTeleport to Checkpoint");
-        } else if ($item->getCustomName() === "§cLeave Queue") {
+        } else if ($item->getCustomName() === "§r§cLeave Queue") {
             $player->sendMessage(Loader::getPrefixCore() . "Left the queue");
             $player->setCurrentKit(null);
             $player->setInQueue(false);

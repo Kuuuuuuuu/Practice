@@ -20,7 +20,7 @@ use Kohaku\Core\Utils\DeleteBlocksHandler;
 use Kohaku\Core\Utils\FormUtils;
 use Kohaku\Core\Utils\KnockbackManager;
 use Kohaku\Core\Utils\ScoreboardManager;
-use Kohaku\Core\utils\Scoreboards;
+use Kohaku\Core\utils\ScoreboardsUtils;
 use Kohaku\Core\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
@@ -30,7 +30,7 @@ class Loader extends PluginBase
 {
     public static self $plugin;
     public static ClickHandler $cps;
-    public static Scoreboards $score;
+    public static ScoreboardsUtils $score;
     public static FormUtils $form;
     public static ArenaFactory $arenafac;
     public static ArenaManager $arena;
@@ -127,7 +127,7 @@ class Loader extends PluginBase
         return self::$arena;
     }
 
-    public static function getScoreboardsUtils(): Scoreboards
+    public static function getScoreboardsUtils(): ScoreboardsUtils
     {
         return self::$score;
     }
@@ -166,7 +166,7 @@ class Loader extends PluginBase
     {
         self::$plugin = $this;
         self::$cps = new ClickHandler();
-        self::$score = new Scoreboards();
+        self::$score = new ScoreboardsUtils();
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();

@@ -76,7 +76,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 default:
@@ -221,7 +221,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 case 1:
@@ -230,7 +230,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 case 2:
@@ -239,7 +239,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 case 3:
@@ -248,7 +248,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 case 4:
@@ -257,7 +257,7 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                     break;
                 case 5:
