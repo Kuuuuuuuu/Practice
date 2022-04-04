@@ -62,6 +62,9 @@ class DuelTask extends Task
                             $player->setGamemode(GameMode::SURVIVAL());
                             $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                             $player->getInventory()->setContents($this->kit->getInventoryItems());
+                            $player->setImmobile(true);
+                            $player->sendTitle("3", "", 1, 3, 1);
+                            Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                         }
                     }
                     $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
@@ -72,6 +75,25 @@ class DuelTask extends Task
                         $this->player2->teleport(new Position(15, 4, 10, $this->level));
                     }, function (): void {
                     });
+                    break;
+                case 901:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle("2", "", 1, 3, 1);
+                        Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                    }
+                    break;
+                case 900:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle("1", "", 1, 3, 1);
+                        Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                    }
+                    break;
+                case 899:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle("Fight!", "", 1, 3, 1);
+                        Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
+                        $player->setImmobile(false);
+                    }
                     break;
                 case 0:
                     $this->onEnd();

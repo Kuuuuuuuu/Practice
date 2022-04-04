@@ -99,7 +99,7 @@ class Loader extends PluginBase
 
     public static function getScoreboardTitle(): string
     {
-        return "§dNeptune";
+        return "§f» §dNeptune §f«";
     }
 
     public static function getPrefixCore(): string

@@ -13,7 +13,6 @@ class ScoreboardManager
     public function sb(Player $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $server = Server::getInstance();
         $data = Loader::getInstance()->getArenaUtils()->getData($player->getName());
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
@@ -22,18 +21,13 @@ class ScoreboardManager
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§7",
-            2 => "§dOnline§f: §6$on",
-            3 => "§d",
-            4 => "§dPing§f: §6$ping",
-            5 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            6 => "§a",
-            7 => "§dK§f: §6$kills",
-            8 => "§dD§f: §6$deaths",
-            9 => "§dK/D§f: §6$rate",
-            10 => "§dElo§f: §6{$data->getElo()}",
-            11 => "§e",
-            12 => "§dIn-Queue §6$queue",
-            13 => "§7---------------"
+            2 => "§dOnline§f: §a$on §dPing§f: §a$ping",
+            4 => "§a",
+            5 => "§dK§f: §a$kills §dD§f: §a$deaths",
+            6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
+            7 => "§e",
+            8 => "§dIn-Queue §a$queue",
+            9 => "§7---------------"
         ];
         Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
@@ -61,8 +55,8 @@ class ScoreboardManager
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => "§7---------------§0",
-            2 => "§dOnline§f: §6$on",
-            3 => "§dPing§f: §6$ping",
+            2 => "§dOnline§f: §a$on",
+            3 => "§dPing§f: §a$ping",
             4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
