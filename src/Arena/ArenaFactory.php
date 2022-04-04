@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Arena;
+namespace Kohaku\Arena;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;

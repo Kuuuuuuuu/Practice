@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core;
+namespace Kohaku;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Utils\Kits\KitManager;
+use Kohaku\Utils\Kits\KitManager;
 use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 

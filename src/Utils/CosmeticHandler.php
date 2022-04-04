@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Utils;
+namespace Kohaku\Utils;
 
 use Exception;
 use GdImage;
 use InvalidArgumentException;
-use Kohaku\Core\Loader;
-use Kohaku\Core\NeptunePlayer;
+use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
 use function ord;

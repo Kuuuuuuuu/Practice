@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Task;
+namespace Kohaku\Task;
 
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 

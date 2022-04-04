@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Core\Utils;
+namespace Kohaku\Utils;
 
 use JsonException;
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;

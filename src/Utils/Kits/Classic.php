@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kohaku\Core\Utils\Kits;
+namespace Kohaku\Utils\Kits;
 
 use pocketmine\item\VanillaItems;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Task;
+namespace Kohaku\Task;
 
-use Kohaku\Core\Entity\FallingWool;
-use Kohaku\Core\Utils\ArenaUtils;
+use Kohaku\Entity\FallingWool;
+use Kohaku\Utils\ArenaUtils;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\world\World;

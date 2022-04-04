@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku\Core\Utils;
+namespace Kohaku\Utils;
 
 use pocketmine\world\ChunkManager;
 use pocketmine\world\format\BiomeArray;

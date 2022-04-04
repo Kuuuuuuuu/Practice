@@ -1,5 +1,7 @@
 name: NeptuneCore
 api: 4.0.0
 version: 1.3.0
-src-namespace-pre fix: Kohaku\Core
-main: Kohaku\Core\Loader
+src-namespace-prefix: Kohaku
+main: Kohaku\Loader
+load: STARTUP
+author: Kuu

@@ -1,8 +1,8 @@
 <?php
 
-namespace Kohaku\Core\Items;
+namespace Kohaku\Items;
 
-use Kohaku\Core\Entity\ArrowEntity;
+use Kohaku\Entity\ArrowEntity;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;

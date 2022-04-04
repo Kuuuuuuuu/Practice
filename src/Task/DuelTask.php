@@ -1,10 +1,10 @@
 <?php
 
-namespace Kohaku\Core\Task;
+namespace Kohaku\Task;
 
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\Kits\KitManager;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
+use Kohaku\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;

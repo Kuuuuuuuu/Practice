@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Utils\DiscordUtils;
+namespace Kohaku\Utils\DiscordUtils;
 
 use JsonSerializable;
 use ReturnTypeWillChange;

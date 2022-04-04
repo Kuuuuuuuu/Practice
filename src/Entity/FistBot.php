@@ -1,8 +1,8 @@
 <?php
 
-namespace Kohaku\Core\Entity;
+namespace Kohaku\Entity;
 
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;

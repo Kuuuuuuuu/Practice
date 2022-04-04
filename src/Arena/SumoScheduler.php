@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Arena;
+namespace Kohaku\Arena;
 
 use Exception;
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;

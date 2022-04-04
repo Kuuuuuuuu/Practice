@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Core\Utils;
+namespace Kohaku\Utils;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\Entity\FistBot;
+use Kohaku\Entity\FistBot;
 use pocketmine\player\Player;
 
 class BotUtils

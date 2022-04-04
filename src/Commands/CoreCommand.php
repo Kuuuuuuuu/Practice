@@ -5,12 +5,12 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Commands;
+namespace Kohaku\Commands;
 
 use JsonException;
-use Kohaku\Core\Entity\DeathLeaderboard;
-use Kohaku\Core\Entity\KillLeaderboard;
-use Kohaku\Core\Loader;
+use Kohaku\Entity\DeathLeaderboard;
+use Kohaku\Entity\KillLeaderboard;
+use Kohaku\Loader;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\Server;

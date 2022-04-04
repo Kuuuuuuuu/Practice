@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku\Core\Entity;
+namespace Kohaku\Entity;
 
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\EntityDamageEvent;

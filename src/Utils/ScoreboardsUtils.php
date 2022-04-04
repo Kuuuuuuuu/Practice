@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\utils;
+namespace Kohaku\utils;
 
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;

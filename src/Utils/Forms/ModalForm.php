@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kohaku\Core\Utils\Forms;
+namespace Kohaku\Utils\Forms;
 
 
 use pocketmine\form\FormValidationException;

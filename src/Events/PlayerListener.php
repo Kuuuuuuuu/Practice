@@ -6,16 +6,16 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Events;
+namespace Kohaku\Events;
 
 use Exception;
 use JsonException;
-use Kohaku\Core\Entity\FistBot;
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
-use Kohaku\Core\Task\ParkourFinishTask;
-use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
-use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kohaku\Entity\FistBot;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
+use Kohaku\Task\ParkourFinishTask;
+use Kohaku\Utils\DiscordUtils\DiscordWebhook;
+use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;

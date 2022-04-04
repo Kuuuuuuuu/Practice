@@ -1,13 +1,13 @@
 <?php
 
-namespace Kohaku\Core\Arena;
+namespace Kohaku\Arena;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
-use Kohaku\Core\Task\DuelTask;
-use Kohaku\Core\Utils\DuelGenerator;
-use Kohaku\Core\Utils\Kits\KitManager;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
+use Kohaku\Task\DuelTask;
+use Kohaku\Utils\DuelGenerator;
+use Kohaku\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\WorldCreationOptions;

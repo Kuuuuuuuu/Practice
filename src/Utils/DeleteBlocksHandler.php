@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Utils;
+namespace Kohaku\Utils;
 
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;

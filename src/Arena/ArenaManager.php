@@ -4,11 +4,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Arena;
+namespace Kohaku\Arena;
 
 use Exception;
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\enchantment\EnchantmentInstance;

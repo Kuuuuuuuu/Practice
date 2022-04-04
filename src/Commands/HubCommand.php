@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Commands;
+namespace Kohaku\Commands;
 
-use Kohaku\Core\Loader;
+use Kohaku\Loader;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;

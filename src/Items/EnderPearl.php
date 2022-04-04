@@ -1,10 +1,10 @@
 <?php
 
-namespace Kohaku\Core\Items;
+namespace Kohaku\Items;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\Entity\EnderPearlEntity;
-use Kohaku\Core\Loader;
+use Kohaku\Entity\EnderPearlEntity;
+use Kohaku\Loader;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\item\EnderPearl as ItemEnderPearl;

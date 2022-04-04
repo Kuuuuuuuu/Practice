@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Core\Events;
+namespace Kohaku\Events;
 
-use Kohaku\Core\NeptunePlayer;
-use Kohaku\Core\Loader;
+use Kohaku\NeptunePlayer;
+use Kohaku\Loader;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
