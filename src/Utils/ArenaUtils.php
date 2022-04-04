@@ -549,7 +549,7 @@ class ArenaUtils
                 $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
             }
         }
-        Loader::getInstance()->getLogger()->info(TextFormat::RED . "Disable HorizonCore");
+        Loader::getInstance()->getLogger()->info(TextFormat::RED . "Disable Yeet");
         $this->loadMap("BUild");
         $this->killbot();
         Loader::$YamlLoader->saveArenas();
