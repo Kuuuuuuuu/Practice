@@ -50,7 +50,7 @@ class SumoScheduler extends Task
                                     $this->startTime--;
                                     foreach ($this->plugin->players as $player) {
                                         /** @var $player Player */
-                                        $player->sendTitle("§b" . $this->startTime, "", 1, 1, 1);
+                                        $player->sendTitle("§d" . $this->startTime, "", 1, 3, 1);
                                         Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                                     }
                                 }

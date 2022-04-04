@@ -11,8 +11,8 @@ namespace Kohaku\Events;
 use Exception;
 use JsonException;
 use Kohaku\Entity\FistBot;
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use Kohaku\Task\ParkourFinishTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
@@ -124,11 +124,11 @@ class PlayerListener implements Listener
             }
             Loader::getInstance()->getArenaUtils()->SkillCooldown($player);
         }
-        if ($item->getCustomName() === "§r§bPlay") {
+        if ($item->getCustomName() === "§r§dPlay") {
             Loader::getFormUtils()->Form1($player);
-        } else if ($item->getCustomName() === "§r§bSettings") {
+        } else if ($item->getCustomName() === "§r§dSettings") {
             Loader::getFormUtils()->settingsForm($player);
-        } else if ($item->getCustomName() === "§r§bBot") {
+        } else if ($item->getCustomName() === "§r§dBot") {
             Loader::getFormUtils()->botForm($player);
         } else if ($item->getCustomName() === "§r§aStop Timer §f| §dClick to use") {
             Loader::getInstance()->TimerData[$name] = 0;
@@ -148,7 +148,7 @@ class PlayerListener implements Listener
             $player->setCurrentKit(null);
             $player->setInQueue(false);
             Loader::getArenaUtils()->GiveItem($player);
-        } else if ($item->getCustomName() === "§r§bDuel") {
+        } else if ($item->getCustomName() === "§r§dDuel") {
             Loader::getFormUtils()->duelForm($player);
         }
     }
@@ -448,6 +448,21 @@ class PlayerListener implements Listener
                         if (isset(Loader::getInstance()->BoxingPoint[$damager->getName()])) {
                             if (Loader::getInstance()->BoxingPoint[$damager->getName()] <= 100) {
                                 Loader::getInstance()->BoxingPoint[$damager->getName()] += 1;
+                                foreach ([$damager, $player] as $p) {
+                                    $boxingp = Loader::getInstance()->BoxingPoint[$p->getName()] ?? 0;
+                                    $opponent = Loader::getInstance()->PlayerOpponent[$p->getName()] ?? "";
+                                    $opponentboxingp = Loader::getInstance()->BoxingPoint[$opponent] ?? 0;
+                                    $lines = [
+                                        1 => "§7---------------§0",
+                                        2 => "§dYour§f: §a$boxingp",
+                                        3 => "§dOpponent§f: §c$opponentboxingp",
+                                        4 => "§7---------------"
+                                    ];
+                                    Loader::getScoreboardUtils()->new($p, "ObjectiveName", Loader::getScoreboardTitle());
+                                    foreach ($lines as $line => $content) {
+                                        Loader::getScoreboardUtils()->setLine($p, $line, $content);
+                                    }
+                                }
                             }
                             if (Loader::getInstance()->BoxingPoint[$damager->getName()] >= 100) {
                                 $player->kill();
@@ -518,7 +533,7 @@ class PlayerListener implements Listener
             case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
                 if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
                     $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
-                    $player->setMotion(new Vector3($smallpp->x, 1.5, $smallpp->y));
+                    $player->setMotion(new Vector3($smallpp->getX(), 1.5, $smallpp->getY()));
                 }
                 break;
             case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):

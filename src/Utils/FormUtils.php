@@ -129,11 +129,11 @@ class FormUtils
         });
         $form->setTitle("§dNeptune §eKitPVP");
         $form->setContent("§eNow Playing: §a" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
-        $form->addButton("§eAssasins");
-        $form->addButton("§eTank");
-        $form->addButton("§eBoxing");
-        $form->addButton("§eBower");
-        $form->addButton("§eReaper");
+        $form->addButton("§aAssasins");
+        $form->addButton("§aTank");
+        $form->addButton("§aBoxing");
+        $form->addButton("§aBower");
+        $form->addButton("§aReaper");
         $player->sendForm($form);
     }
 
@@ -266,13 +266,13 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§dNeptune §eDuel");
-        $form->addButton("§6Fist\n§9Queue§f: §4" . $this->getQueue("Fist"), 0, "textures/items/paper.png");
-        $form->addButton("§6NoDebuff\n§9Queue§f: §4" . $this->getQueue("NoDebuff"), 0, "textures/items/paper.png");
-        $form->addButton("§6Classic\n§9Queue§f: §4" . $this->getQueue("Classic"), 0, "textures/items/paper.png");
-        $form->addButton("§6SG\n§9Queue§f: §4" . $this->getQueue("SG"), 0, "textures/items/paper.png");
-        $form->addButton("§6BuildUHC\n§9Queue§f: §4" . $this->getQueue("BuildUHC"), 0, "textures/items/paper.png");
-        $form->addButton("§6Sumo\n§9Queue§f: §4" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena()), 0, "textures/items/paper.png");
+        $form->setTitle("§dNeptune §cDuel");
+        $form->addButton("§aFist\n§dQueue§f: " . $this->getQueue("Fist"), 0, "textures/items/paper.png");
+        $form->addButton("§aNoDebuff\n§dQueue§f: " . $this->getQueue("NoDebuff"), 0, "textures/items/paper.png");
+        $form->addButton("§aClassic\n§dQueue§f: " . $this->getQueue("Classic"), 0, "textures/items/paper.png");
+        $form->addButton("§aSG\n§dQueue§f: " . $this->getQueue("SG"), 0, "textures/items/paper.png");
+        $form->addButton("§aBuildUHC\n§dQueue§f: " . $this->getQueue("BuildUHC"), 0, "textures/items/paper.png");
+        $form->addButton("§aSumo\n§dQueue§f: " . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena()), 0, "textures/items/paper.png");
         $player->sendForm($form);
     }
 
@@ -321,11 +321,11 @@ class FormUtils
             return true;
         });
         $form->setTitle("§dNeptune §cMenu");
-        $form->addButton("§dChange §cName", 0, "textures/ui/dressing_room_skins.png");
-        $form->addButton("§dReport §cPlayers", 0, "textures/blocks/barrier.png");
-        $form->addButton("§dChange §cCapes", 0, "textures/items/snowball.png");
-        $form->addButton("§dArtifacts", 0, "textures/items/diamond_axe.png");
-        $form->addButton("§dEdit §aKit", 0, "textures/items/diamond_pickaxe.png");
+        $form->addButton("§aChange §dName", 0, "textures/ui/dressing_room_skins.png");
+        $form->addButton("§aReport §dPlayers", 0, "textures/blocks/barrier.png");
+        $form->addButton("§aChange §dCapes", 0, "textures/items/snowball.png");
+        $form->addButton("§aArtifacts", 0, "textures/items/diamond_axe.png");
+        $form->addButton("§aEdit §dKit", 0, "textures/items/diamond_pickaxe.png");
         $player->sendForm($form);
     }
 
@@ -353,10 +353,10 @@ class FormUtils
             return true;
         });
         $name = "§eNow Your Name is: §a" . $player->getDisplayName();
-        $form->setTitle("§dNeptune §eNick");
+        $form->setTitle("§dNeptune §cNick");
         $form->setContent($name);
-        $form->addButton("§a§lChange Name\n§r§8Tap to continue", 0, "textures/ui/confirm");
-        $form->addButton("§c§lReset Name\n§r§8Tap to reset", 0, "textures/ui/trash");
+        $form->addButton("§aChange Name\n§r§8Tap to continue", 0, "textures/ui/confirm");
+        $form->addButton("§cReset Name\n§r§8Tap to reset", 0, "textures/ui/trash");
         $player->sendForm($form);
     }
 
@@ -418,7 +418,7 @@ class FormUtils
         $form->setTitle("§dNeptune §cReport");
         $form->addLabel("§aReport");
         $form->addDropdown("§eSelect a player", $this->players[$player->getName()]);
-        $form->addInput("§bReason", "Type a reason");
+        $form->addInput("§dReason", "Type a reason");
         $player->sendForm($form);
     }
 
@@ -448,8 +448,8 @@ class FormUtils
             return true;
         });
         $form->setTitle("§dNeptune §cCapes");
-        $form->addButton("§0Remove your Cape");
-        $form->addButton("§eChoose a Cape");
+        $form->addButton("§aRemove your Cape");
+        $form->addButton("§aChoose a Cape");
         $player->sendForm($form);
     }
 
@@ -482,7 +482,7 @@ class FormUtils
         });
         $form->setTitle("§dNeptune §cCapes");
         foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
-            $form->addButton("$capes", -1, "", $capes);
+            $form->addButton("§a$capes", -1, "", $capes);
         }
         $player->sendForm($form);
     }
@@ -517,7 +517,7 @@ class FormUtils
         }
         foreach ($validstuffs as $stuff) {
             if ($stuff === "None") continue;
-            $form->addButton("§b" . $stuff, -1, "", $stuff);
+            $form->addButton("§a" . $stuff, -1, "", $stuff);
         }
         $player->sendForm($form);
         return true;
@@ -552,9 +552,9 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§l§cEdit KitManager");
+        $form->setTitle("§l§cEdit Kit");
         $form->setContent("§7Select a kit to edit");
-        $form->addButton("§l§cBuild KitManager");
+        $form->addButton("§aBuild Kit");
         $player->sendForm($form);
     }
 
@@ -580,7 +580,7 @@ class FormUtils
         });
         $form->setTitle("§dNeptune §cMenu");
         $form->setContent("§dPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
-        $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
+        $form->addButton("§aFist §dBot", 0, "textures/items/diamond.png");
         $player->sendForm($form);
     }
 }

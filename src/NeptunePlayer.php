@@ -16,8 +16,8 @@ class NeptunePlayer extends Player
     public string $cape = "";
     public string $artifact = "";
     public ?KitManager $duelKit;
-    private float|int $xzKB = 0.4;
-    private float|int $yKb = 0.4;
+    private float $xzKB = 0.4;
+    private float $yKb = 0.4;
     private int $sec = 0;
     private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
@@ -208,7 +208,7 @@ class NeptunePlayer extends Player
                 $this->parkourTimer();
                 break;
             default:
-                $this->sendTip("§bCPS: §f" . Loader::getClickHandler()->getClicks($this));
+                $this->sendTip("§dCPS: §f" . Loader::getClickHandler()->getClicks($this));
                 break;
         }
     }
@@ -238,27 +238,23 @@ class NeptunePlayer extends Player
     {
         $name = $this->getName();
         $this->sec++;
-        if ($this->sec % 3 === 0) {
-            $this->updateTag();
+        $this->updateTag();
+        if ($this->sec % 2 === 0) {
             $this->updateScoreboard();
-        }
-        if ($this->sec % 20 === 0) {
             $this->updateNametag();
         }
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            if (isset(Loader::getInstance()->CombatTimer[$name])) {
-                if (Loader::getInstance()->CombatTimer[$name] > 0) {
-                    $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
-                    $this->getXpManager()->setXpProgress($percent);
-                    Loader::getInstance()->CombatTimer[$name] -= 1;
-                } else {
-                    $this->getXpManager()->setXpProgress(0.0);
-                    $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
-                    unset(Loader::getInstance()->BoxingPoint[$name]);
-                    unset(Loader::getInstance()->CombatTimer[$name]);
-                    unset(Loader::getInstance()->PlayerOpponent[$name]);
-                    $this->setUnPVPTag();
-                }
+        if (isset(Loader::getInstance()->CombatTimer[$name])) {
+            if (Loader::getInstance()->CombatTimer[$name] > 0) {
+                $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                Loader::getInstance()->CombatTimer[$name] -= 1;
+            } else {
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                unset(Loader::getInstance()->BoxingPoint[$name]);
+                unset(Loader::getInstance()->CombatTimer[$name]);
+                unset(Loader::getInstance()->PlayerOpponent[$name]);
+                $this->setUnPVPTag();
             }
         }
     }

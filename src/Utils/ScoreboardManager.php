@@ -35,9 +35,9 @@ class ScoreboardManager
             12 => "§dIn-Queue §6$queue",
             13 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
+        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
-            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -66,9 +66,9 @@ class ScoreboardManager
             4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
+        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
-            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -84,9 +84,9 @@ class ScoreboardManager
             3 => "§dOpponent§f: §c$opponentboxingp",
             4 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
+        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
-            Loader::getScoreboardsUtils()->setLine($player, $line, $content);
+            Loader::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 }

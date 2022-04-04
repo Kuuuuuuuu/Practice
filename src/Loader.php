@@ -127,7 +127,7 @@ class Loader extends PluginBase
         return self::$arena;
     }
 
-    public static function getScoreboardsUtils(): ScoreboardsUtils
+    public static function getScoreboardUtils(): ScoreboardsUtils
     {
         return self::$score;
     }

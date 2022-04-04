@@ -44,7 +44,7 @@ class SumoCommand extends Command
                         $sender->sendMessage(Loader::getPrefixCore() . "§cArena $args[1] already exists!");
                         break;
                     }
-                    Loader::getInstance()->SumoArenas[$args[1]] = new SumoHandler(Loader::getInstance(), []);
+                    Loader::getInstance()->SumoArenas[$args[1]] = new SumoHandler([]);
                     $sender->sendMessage(Loader::getPrefixCore() . "§aArena $args[1] created!");
                     break;
                 case "delete":

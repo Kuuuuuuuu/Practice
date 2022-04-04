@@ -214,7 +214,7 @@ class ArenaUtils
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
             "StartCombat" => "§dNeptune§f » §r§aYou Started combat!",
-            "AntiCheatName" => "§bGuardian §f» ",
+            "AntiCheatName" => "§fLunar §f» ",
             "CooldownMessage" => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
             "StopCombat" => "§dNeptune§f » §r§aYou Cleared combat!",
             "StartSkillMessage" => "§dNeptune§f » §r§aYou Started Skill!",
@@ -222,12 +222,12 @@ class ArenaUtils
             "SkillCleared" => "§dNeptune§f » §r§aSkill Cleared!",
             "CantUseWantCombat" => "§dNeptune§f » §r§cYou can't use this command in combat!",
             "BroadcastBanMessage" => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
-            "KickBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
-            "LoginBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
-            "BanMyself" => "§bGuardian §f> §cYou can't ban yourself",
-            "NoBanPlayers" => "§bGuardian §f> §aNo ban players",
-            "UnBanPlayer" => "§bGuardian §f> §b{player} §ahas been unban",
-            "AutoUnBanPlayer" => "§bGuardian §f> §a{player} Has Auto Unban Already!",
+            "KickBanMessage" => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            "LoginBanMessage" => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            "BanMyself" => "§dNeptune§f » §cYou can't ban yourself",
+            "NoBanPlayers" => "§dNeptune§f » §aNo ban players",
+            "UnBanPlayer" => "§dNeptune§f » §b{player} §ahas been unban",
+            "AutoUnBanPlayer" => "§dNeptune§f »» §a{player} Has Auto Unban Already!",
             "BanListTitle" => "§dNeptune §eBanSystem",
             "BanListContent" => "§c§lChoose player",
             "PlayerListTitle" => "§dNeptune §eBanSystem",
@@ -441,13 +441,13 @@ class ArenaUtils
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
         $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item->setCustomName("§r§bPlay");
+        $item->setCustomName("§r§dPlay");
         $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item2->setCustomName("§r§bSettings");
+        $item2->setCustomName("§r§dSettings");
         $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item3->setCustomName("§r§bBot");
+        $item3->setCustomName("§r§dBot");
         $item4 = ItemFactory::getInstance()->get(ItemIds::BOOK, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item4->setCustomName("§r§bDuel");
+        $item4->setCustomName("§r§dDuel");
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(0, $item);
         $player->getInventory()->setItem(1, $item4);
