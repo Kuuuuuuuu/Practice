@@ -84,7 +84,7 @@ class SumoHandler implements Listener
             Loader::getInstance()->getLogger()->error("Can not load arena: Arena is not enabled!");
             return;
         } else if (!$restart) {
-            Server::getInstance()->getPluginManager()->registerEvents($this, $this->plugin);
+            Server::getInstance()->getPluginManager()->registerEvents($this, Loader::getInstance());
             if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"])) {
                 Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
             }

@@ -51,8 +51,10 @@ class BaseListener implements Listener
             }
         } else {
             /* @var $player HorizonPlayer */
-            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or !$player->isDueling()) {
-                $ev->cancel();
+            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                if (!$player->isDueling()) {
+                    $ev->cancel();
+                }
             }
         }
     }
@@ -66,8 +68,10 @@ class BaseListener implements Listener
             return;
         }
         /* @var $player HorizonPlayer */
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) or !$player->isDueling()) {
-            $ev->cancel();
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+            if (!$player->isDueling()) {
+                $ev->cancel();
+            }
         }
     }
 
