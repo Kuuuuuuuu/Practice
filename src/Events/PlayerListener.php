@@ -325,7 +325,8 @@ class PlayerListener implements Listener
         $transaction = $event->getTransaction();
         $actions = $transaction->getActions();
         $player = $transaction->getSource();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena())) {
+        /* @var HorizonPlayer $player */
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) or $player->isDueling()) {
             return;
         }
         if ($transaction instanceof CraftingTransaction) {
