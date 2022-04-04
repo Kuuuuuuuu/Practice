@@ -56,7 +56,6 @@ class Loader extends PluginBase
     public array $PlayerOpponent = [];
     public array $TimerData = [];
     public array $TimerTask = [];
-    public array $JumpCount = [];
     public array $targetPlayer = [];
     public array $BoxingPoint = [];
     public array $ToolboxCheck = [];
@@ -98,9 +97,14 @@ class Loader extends PluginBase
         "XboxOne"
     ];
 
+    public static function getScoreboardTitle(): string
+    {
+        return "§9Neptune";
+    }
+
     public static function getPrefixCore(): string
     {
-        return "§b§bHorizon§f » §r";
+        return "§9Neptune§f » §r";
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler

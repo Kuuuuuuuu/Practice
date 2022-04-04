@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Exception;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -129,7 +129,7 @@ class SumoHandler implements Listener
                 }
             }
         }
-        /* @var HorizonPlayer $player */
+        /* @var NeptunePlayer $player */
         $player->setPVPTag();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();

@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Kohaku\Core\Arena;
 
 use Exception;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -30,7 +30,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $item2 = ItemFactory::getInstance()->get(345, 0, 1);
         $item3 = ItemFactory::getInstance()->get(288, 0, 1);
         $item2->setCustomName("§r§aStop Timer §f| §bClick to use");
@@ -77,7 +76,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getFistArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
@@ -97,7 +95,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getComboArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
@@ -119,7 +116,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKnockbackArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
@@ -155,7 +151,6 @@ class ArenaManager
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKitPVPArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->setHealth(20);
         $player->getEffects()->clear();
@@ -175,7 +170,6 @@ class ArenaManager
             return;
         }
         $random = Loader::getArenaFactory()->getRandomSpawnOitc();
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
@@ -219,12 +213,11 @@ class ArenaManager
         }
         $random = Loader::getArenaFactory()->getRandomSpawnBuild();
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBuildArena());
-        Loader::getInstance()->getScoreboardManager()->sb2($player);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
         $player->setHealth(20);
-        if ($player instanceof HorizonPlayer) {
+        if ($player instanceof NeptunePlayer) {
             try {
                 $player->getInventory()->setItem(0, ItemFactory::getInstance()->get($player->getKit()["0"]["0"]["item"], 0, $player->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                 $player->getInventory()->setItem(1, ItemFactory::getInstance()->get($player->getKit()["0"]["1"]["item"], 0, $player->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));

@@ -2,7 +2,7 @@
 
 namespace Kohaku\Core\Utils;
 
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -35,7 +35,7 @@ class ScoreboardManager
             12 => "§bIn-Queue §6$queue",
             13 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
@@ -45,7 +45,7 @@ class ScoreboardManager
     {
         $queue = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof HorizonPlayer) {
+            if ($player instanceof NeptunePlayer) {
                 if ($player->isInQueue()) {
                     $queue += 1;
                 }
@@ -66,25 +66,25 @@ class ScoreboardManager
             4 => "§bTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }
     }
 
-    public function Parkour(Player $player): void
+    public function Boxing(Player $player): void
     {
-        $ping = $player->getNetworkSession()->getPing();
-        $jump = Loader::getInstance()->JumpCount[$player->getName() ?? null] ?? 0;
-        $on = count(Server::getInstance()->getOnlinePlayers());
+        $name = $player->getName();
+        $boxingp = Loader::getInstance()->BoxingPoint[$name] ?? 0;
+        $opponent = Loader::getInstance()->PlayerOpponent[$name] ?? "";
+        $opponentboxingp = Loader::getInstance()->BoxingPoint[$opponent] ?? 0;
         $lines = [
             1 => "§7---------------§0",
-            2 => "§bOnline§f: §6$on",
-            3 => "§bPing§f: §6$ping",
-            4 => "§bJump Count§f: §6$jump",
-            5 => "§7---------------"
+            2 => "§bYour§f: §a$boxingp",
+            3 => "§bOpponent§f: §c$opponentboxingp",
+            4 => "§7---------------"
         ];
-        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", "§bHorizon");
+        Loader::getScoreboardsUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             Loader::getScoreboardsUtils()->setLine($player, $line, $content);
         }

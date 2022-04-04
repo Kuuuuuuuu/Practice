@@ -16,7 +16,7 @@ class SumoCommand extends Command
 
     public function __construct()
     {
-        parent::__construct("sumo", "HorizonCore Sumo commands", null, ["sumo"]);
+        parent::__construct("sumo", "NeptuneCore Sumo commands", null, ["sumo"]);
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args)

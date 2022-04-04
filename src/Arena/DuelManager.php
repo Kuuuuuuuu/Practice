@@ -3,7 +3,7 @@
 namespace Kohaku\Core\Arena;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\DuelTask;
 use Kohaku\Core\Utils\DuelGenerator;
@@ -25,7 +25,7 @@ class DuelManager
         self::$instance = $this;
     }
 
-    public function createMatch(HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit): void
+    public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
         $worldName = "Duel-" . Uuid::uuid4();
         $player1->getInventory()->clearAll();

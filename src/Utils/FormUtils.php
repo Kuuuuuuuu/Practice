@@ -7,7 +7,7 @@ namespace Kohaku\Core\Utils;
 use DateTime;
 use Exception;
 use JsonException;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhookEmbed;
@@ -71,7 +71,7 @@ class FormUtils
                     Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
                     break;
                 case 10:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("Fist"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -85,7 +85,7 @@ class FormUtils
             return true;
         });
 
-        $form->setTitle("§bHorizon §eMenu");
+        $form->setTitle("§9Neptune §eMenu");
         $form->addButton("§aParkour\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, "textures/items/name_tag.png");
         $form->addButton("§aBoxing\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, "textures/items/diamond_sword.png");
         $form->addButton("§aFist\n§bPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, "textures/items/beef_cooked.png");
@@ -127,7 +127,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eKitPVP");
+        $form->setTitle("§9Neptune §eKitPVP");
         $form->setContent("§eNow Playing: §a" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
         $form->addButton("§eAssasins");
         $form->addButton("§eTank");
@@ -216,7 +216,7 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("Fist"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -225,7 +225,7 @@ class FormUtils
                     }
                     break;
                 case 1:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("NoDebuff"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -234,7 +234,7 @@ class FormUtils
                     }
                     break;
                 case 2:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("Classic"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -243,7 +243,7 @@ class FormUtils
                     }
                     break;
                 case 3:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("SG"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -252,7 +252,7 @@ class FormUtils
                     }
                     break;
                 case 4:
-                    if ($player instanceof HorizonPlayer) {
+                    if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(KitRegistry::fromString("BuildUHC"));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
@@ -266,7 +266,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eDuel");
+        $form->setTitle("§9Neptune §eDuel");
         $form->addButton("§6Fist\n§9Queue§f: §4" . $this->getQueue("Fist"), 0, "textures/items/paper.png");
         $form->addButton("§6NoDebuff\n§9Queue§f: §4" . $this->getQueue("NoDebuff"), 0, "textures/items/paper.png");
         $form->addButton("§6Classic\n§9Queue§f: §4" . $this->getQueue("Classic"), 0, "textures/items/paper.png");
@@ -280,7 +280,7 @@ class FormUtils
     {
         $kitcount = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-            if ($p instanceof HorizonPlayer) {
+            if ($p instanceof NeptunePlayer) {
                 try {
                     if ($p->getDuelKit()?->getName() === $kit) {
                         $kitcount += 1;
@@ -320,7 +320,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eMenu");
+        $form->setTitle("§9Neptune §eMenu");
         $form->addButton("§bChange §aName", 0, "textures/ui/dressing_room_skins.png");
         $form->addButton("§bReport §aPlayers", 0, "textures/blocks/barrier.png");
         $form->addButton("§bChange §aCapes", 0, "textures/items/snowball.png");
@@ -353,7 +353,7 @@ class FormUtils
             return true;
         });
         $name = "§eNow Your Name is: §a" . $player->getDisplayName();
-        $form->setTitle("§bHorizon §eNick");
+        $form->setTitle("§9Neptune §eNick");
         $form->setContent($name);
         $form->addButton("§a§lChange Name\n§r§8Tap to continue", 0, "textures/ui/confirm");
         $form->addButton("§c§lReset Name\n§r§8Tap to reset", 0, "textures/ui/trash");
@@ -381,7 +381,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eNick");
+        $form->setTitle("§9Neptune §eNick");
         $form->addInput("§eEnter New Name Here!");
         $player->sendForm($form);
     }
@@ -415,7 +415,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eReport");
+        $form->setTitle("§9Neptune §eReport");
         $form->addLabel("§aReport");
         $form->addDropdown("§eSelect a player", $this->players[$player->getName()]);
         $form->addInput("§bReason", "Type a reason");
@@ -447,7 +447,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eCapes");
+        $form->setTitle("§9Neptune §eCapes");
         $form->addButton("§0Remove your Cape");
         $form->addButton("§eChoose a Cape");
         $player->sendForm($form);
@@ -480,7 +480,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eCapes");
+        $form->setTitle("§9Neptune §eCapes");
         foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
             $form->addButton("$capes", -1, "", $capes);
         }
@@ -490,7 +490,7 @@ class FormUtils
     public static function getArtifactForm(Player $player): bool
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
-            if ($event instanceof HorizonPlayer) {
+            if ($event instanceof NeptunePlayer) {
                 if ($data !== null) {
                     if ($data === "None") return;
                     $cosmetic = Loader::getCosmeticHandler();
@@ -508,8 +508,8 @@ class FormUtils
             }
         });
 
-        $form->setTitle("§bHorizon §eArtifact");
-        /** @var $player HorizonPlayer */
+        $form->setTitle("§9Neptune §eArtifact");
+        /** @var $player NeptunePlayer */
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
             $form->addButton("None", -1, "", "None");
@@ -578,7 +578,7 @@ class FormUtils
             }
             return true;
         });
-        $form->setTitle("§bHorizon §eMenu");
+        $form->setTitle("§9Neptune §eMenu");
         $form->setContent("§bPlayers: §e" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
         $form->addButton("§bFist Bot", 0, "textures/items/diamond.png");
         $player->sendForm($form);

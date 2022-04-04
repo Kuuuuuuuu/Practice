@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Kohaku\Core\Commands;
 
 use Kohaku\Core\Loader;
-use Kohaku\Core\Utils\ArenaUtils;
-use Kohaku\Core\Utils\ScoreboardManager;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;

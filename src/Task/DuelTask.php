@@ -2,7 +2,7 @@
 
 namespace Kohaku\Core\Task;
 
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
@@ -16,14 +16,14 @@ class DuelTask extends Task
 {
     private int $time = 903;
     private int $tick = 0;
-    private HorizonPlayer $player1;
-    private HorizonPlayer $player2;
+    private NeptunePlayer $player1;
+    private NeptunePlayer $player2;
     private World $level;
-    private ?HorizonPlayer $winner = null;
-    private ?HorizonPlayer $loser = null;
+    private ?NeptunePlayer $winner = null;
+    private ?NeptunePlayer $loser = null;
     private KitManager $kit;
 
-    public function __construct(string $name, HorizonPlayer $player1, HorizonPlayer $player2, KitManager $kit)
+    public function __construct(string $name, NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
@@ -58,7 +58,7 @@ class DuelTask extends Task
             switch ($this->time) {
                 case 902:
                     foreach ($this->getPlayers() as $player) {
-                        if ($player instanceof HorizonPlayer) {
+                        if ($player instanceof NeptunePlayer) {
                             $player->setGamemode(GameMode::SURVIVAL());
                             $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                             $player->getInventory()->setContents($this->kit->getInventoryItems());
@@ -86,7 +86,7 @@ class DuelTask extends Task
         return [$this->player1, $this->player2];
     }
 
-    public function onEnd(?HorizonPlayer $playerLeft = null): void
+    public function onEnd(?NeptunePlayer $playerLeft = null): void
     {
         foreach ($this->getPlayers() as $online) {
             if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
@@ -100,7 +100,7 @@ class DuelTask extends Task
                 $online->sendMessage("§f-----------------------");
                 Loader::getArenaUtils()->GiveItem($online);
                 Loader::getScoreboardManager()->sb($online);
-                /* @var $online HorizonPlayer */
+                /* @var $online NeptunePlayer */
                 $online->setCurrentKit(null);
                 $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
             }

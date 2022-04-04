@@ -7,7 +7,7 @@ namespace Kohaku\Core\Utils;
 use Exception;
 use GdImage;
 use InvalidArgumentException;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
@@ -193,7 +193,7 @@ class CosmeticHandler
         try {
             $imagePath = $this->getSaveSkin($player->getName());
             $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-            /* @var $player HorizonPlayer */
+            /* @var $player NeptunePlayer */
             $cape = $player->getCape() ?? null;
             $capeData = ($cape !== "" and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
             $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());

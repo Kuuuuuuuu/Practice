@@ -7,10 +7,10 @@ namespace Kohaku\Core;
 use Exception;
 use JsonException;
 use Kohaku\Core\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin, player\Player, Server};
+use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
-class HorizonPlayer extends Player
+class NeptunePlayer extends Player
 {
 
     public string $cape = "";
@@ -91,46 +91,6 @@ class HorizonPlayer extends Player
             }
             $this->setMotion($motion);
         }
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function LoadData()
-    {
-        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : "";
-        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : "";
-        $this->setCosmetic();
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function setCosmetic(): void
-    {
-        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
-            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
-                Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
-            }
-        } else {
-            Loader::getInstance()->ArtifactData->remove($this->getName());
-            Loader::getInstance()->ArtifactData->save();
-        }
-        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
-            $oldSkin = $this->getSkin();
-            $capeData = Loader::getCosmeticHandler()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
-            $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
-            $this->setSkin($setCape);
-            $this->sendSkin();
-        } else {
-            Loader::getInstance()->CapeData->remove($this->getName());
-            Loader::getInstance()->CapeData->save();
-        }
-    }
-
-    public function getStuff(): string
-    {
-        return $this->artifact;
     }
 
     /**
@@ -247,9 +207,6 @@ class HorizonPlayer extends Player
             case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
                 $this->parkourTimer();
                 break;
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena()):
-                $this->boxingTip();
-                break;
             default:
                 $this->sendTip("§bCPS: §f" . Loader::getClickHandler()->getClicks($this));
                 break;
@@ -277,18 +234,6 @@ class HorizonPlayer extends Player
         }
     }
 
-    public function boxingTip()
-    {
-        $name = $this->getName();
-        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-            $point = Loader::getInstance()->BoxingPoint[$name];
-            $opponent = Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name ?? null] ?? null] ?? 0;
-            $this->sendTip("§aYour Points: §f" . $point . " | §cOpponent: §f" . $opponent . " | §bCPS: §f" . Loader::getClickHandler()->getClicks($this));
-        } else {
-            Loader::getInstance()->BoxingPoint[$name] = 0;
-        }
-    }
-
     public function updatePlayer()
     {
         $name = $this->getName();
@@ -297,26 +242,23 @@ class HorizonPlayer extends Player
             $this->updateTag();
             $this->updateScoreboard();
         }
-        if ($this->sec % 10 === 0) {
-            if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
-                $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]";
-            } else {
-                $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName();
-            }
-            $this->setNameTag($nametag);
+        if ($this->sec % 20 === 0) {
+            $this->updateNametag();
         }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            if (Loader::getInstance()->CombatTimer[$name] > 0) {
-                $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
-                $this->getXpManager()->setXpProgress($percent);
-                Loader::getInstance()->CombatTimer[$name] -= 1;
-            } else {
-                $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
-                unset(Loader::getInstance()->BoxingPoint[$name ?? null]);
-                unset(Loader::getInstance()->CombatTimer[$name]);
-                unset(Loader::getInstance()->PlayerOpponent[$name]);
-                $this->setUnPVPTag();
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if (isset(Loader::getInstance()->CombatTimer[$name])) {
+                if (Loader::getInstance()->CombatTimer[$name] > 0) {
+                    $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+                    $this->getXpManager()->setXpProgress($percent);
+                    Loader::getInstance()->CombatTimer[$name] -= 1;
+                } else {
+                    $this->getXpManager()->setXpProgress(0.0);
+                    $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                    unset(Loader::getInstance()->BoxingPoint[$name]);
+                    unset(Loader::getInstance()->CombatTimer[$name]);
+                    unset(Loader::getInstance()->PlayerOpponent[$name]);
+                    $this->setUnPVPTag();
+                }
             }
         }
     }
@@ -339,22 +281,11 @@ class HorizonPlayer extends Player
     {
         $name = $this->getName();
         $ping = $this->getNetworkSession()->getPing();
-        $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]\n §f[§b Jump Count§f: §b{jump} §f]";
+        $tagparkour = "§f[§b {mins} §f: §b{secs} §f: §b{mili} {ping}ms §f]";
         $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-        if (isset(Loader::getInstance()->JumpCount[$name])) {
-            $tagparkour = str_replace("{jump}", (string)Loader::getInstance()->JumpCount[$name] ?? null, $tagparkour);
-        } else {
-            $tagparkour = str_replace("{jump}", "0", $tagparkour);
-        }
-        if (isset(Loader::getInstance()->TimerData[$name])) {
-            $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] % 100), $tagparkour);
-            $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] / 100) % 60), $tagparkour);
-            $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] / 6000), $tagparkour);
-        } else {
-            $tagparkour = str_replace("{mili}", "0", $tagparkour);
-            $tagparkour = str_replace("{secs}", "0", $tagparkour);
-            $tagparkour = str_replace("{mins}", "0", $tagparkour);
-        }
+        $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] ?? 0 % 100), $tagparkour);
+        $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] ?? 0 / 100) % 60), $tagparkour);
+        $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] ?? 0 / 6000), $tagparkour);
         $this->setScoreTag($tagparkour);
     }
 
@@ -376,18 +307,91 @@ class HorizonPlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             Loader::getInstance()->getScoreboardManager()->sb($this);
-        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
+        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
             Loader::getInstance()->getScoreboardManager()->sb2($this);
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
-            Loader::getInstance()->getScoreboardManager()->Parkour($this);
+        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+            Loader::getInstance()->getScoreboardManager()->Boxing($this);
         }
+    }
+
+    public function updateNametag()
+    {
+        $name = $this->getName();
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]";
+        } else {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName();
+        }
+        $this->setNameTag($nametag);
+    }
+
+    public function setDueling(bool $playing): void
+    {
+        $this->isDueling = $playing;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function onJoin()
+    {
+        $name = $this->getName();
+        $this->getEffects()->clear();
+        $this->getInventory()->clearAll();
+        $this->getArmorInventory()->clearAll();
+        Loader::getInstance()->getArenaUtils()->GiveItem($this);
+        $this->LoadData();
+        $this->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            unset(Loader::getInstance()->EditKit[$name]);
+        }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function LoadData()
+    {
+        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : "";
+        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : "";
+        $this->setCosmetic();
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function setCosmetic(): void
+    {
+        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
+            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
+                Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
+            }
+        } else {
+            Loader::getInstance()->ArtifactData->remove($this->getName());
+            Loader::getInstance()->ArtifactData->save();
+        }
+        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
+            $oldSkin = $this->getSkin();
+            $capeData = Loader::getCosmeticHandler()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
+            $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+            $this->setSkin($setCape);
+            $this->sendSkin();
+        } else {
+            Loader::getInstance()->CapeData->remove($this->getName());
+            Loader::getInstance()->CapeData->save();
+        }
+    }
+
+    public function getStuff(): string
+    {
+        return $this->artifact;
     }
 
     public function checkQueue(): void
     {
         $this->sendMessage(Loader::getPrefixCore() . "Entering queue...");
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            if ($player instanceof HorizonPlayer and $player->getName() !== $this->getName()) {
+            if ($player instanceof NeptunePlayer and $player->getName() !== $this->getName()) {
                 if ($player->isInQueue() and $this->getDuelKit() === $player->getDuelKit()) {
                     Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
                     $this->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $player->getName());
@@ -415,13 +419,96 @@ class HorizonPlayer extends Player
         return $this->duelKit ?? null;
     }
 
+    public function onQuit()
+    {
+        $name = $this->getName();
+        $this->getEffects()->clear();
+        $this->getInventory()->clearAll();
+        $this->getArmorInventory()->clearAll();
+        Loader::getClickHandler()->removePlayerClickData($this);
+        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
+            unset(Loader::getInstance()->BoxingPoint[$name]);
+        }
+        if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
+            Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name]] = 0;
+            unset(Loader::getInstance()->PlayerOpponent[$name]);
+        }
+        if (isset(Loader::getInstance()->CombatTimer[$name])) {
+            $this->kill();
+            unset(Loader::getInstance()->CombatTimer[$name]);
+        }
+        if (isset(Loader::getInstance()->EditKit[$name])) {
+            unset(Loader::getInstance()->EditKit[$name]);
+        }
+        if ($this->isDueling()) {
+            $this->kill();
+        }
+        $this->setInQueue(false);
+        $this->setCurrentKit(null);
+        $this->setGamemode(GameMode::SURVIVAL());
+    }
+
     public function setCurrentKit(?KitManager $kit): void
     {
         $this->duelKit = $kit;
     }
 
-    public function setDueling(bool $playing): void
+    /**
+     * @throws JsonException
+     */
+    public function saveKit()
     {
-        $this->isDueling = $playing;
+        $name = $this->getName();
+        try {
+            Loader::getInstance()->KitData->set($name, [
+                "0" => [
+                    "item" => $this->getInventory()->getItem(0)->getId(),
+                    "count" => $this->getInventory()->getItem(0)->getCount(),
+                ],
+                "1" => [
+                    "item" => $this->getInventory()->getItem(1)->getId(),
+                    "count" => $this->getInventory()->getItem(1)->getCount()
+                ],
+                "2" => [
+                    "item" => $this->getInventory()->getItem(2)->getId(),
+                    "count" => $this->getInventory()->getItem(2)->getCount(),
+                ],
+                "3" => [
+                    "item" => $this->getInventory()->getItem(3)->getId(),
+                    "count" => $this->getInventory()->getItem(3)->getCount()
+                ],
+                "4" => [
+                    "item" => $this->getInventory()->getItem(4)->getId(),
+                    "count" => $this->getInventory()->getItem(4)->getCount()
+                ],
+                "5" => [
+                    "item" => $this->getInventory()->getItem(5)->getId(),
+                    "count" => $this->getInventory()->getItem(5)->getCount()
+                ],
+                "6" => [
+                    "item" => $this->getInventory()->getItem(6)->getId(),
+                    "count" => $this->getInventory()->getItem(6)->getCount()
+                ],
+                "7" => [
+                    "item" => $this->getInventory()->getItem(7)->getId(),
+                    "count" => $this->getInventory()->getItem(7)->getCount()
+                ],
+                "8" => [
+                    "item" => $this->getInventory()->getItem(8)->getId(),
+                    "count" => $this->getInventory()->getItem(8)->getCount()
+                ]
+            ]);
+        } catch (Exception) {
+            $this->kill();
+            $this->setImmobile(false);
+            $this->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
+            unset(Loader::getInstance()->EditKit[$name]);
+            return;
+        }
+        Loader::getInstance()->KitData->save();
+        unset(Loader::getInstance()->EditKit[$name]);
+        $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
+        $this->kill();
+        $this->setImmobile(false);
     }
 }

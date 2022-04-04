@@ -11,7 +11,7 @@ namespace Kohaku\Core\Events;
 use Exception;
 use JsonException;
 use Kohaku\Core\Entity\FistBot;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use Kohaku\Core\Task\ParkourFinishTask;
 use Kohaku\Core\Utils\DiscordUtils\DiscordWebhook;
@@ -40,7 +40,6 @@ use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerJumpEvent;
 use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
@@ -62,7 +61,7 @@ class PlayerListener implements Listener
 
     public function onCreation(PlayerCreationEvent $event)
     {
-        $event->setPlayerClass(HorizonPlayer::class);
+        $event->setPlayerClass(NeptunePlayer::class);
     }
 
     public function onUse(PlayerItemUseEvent $event)
@@ -166,7 +165,7 @@ class PlayerListener implements Listener
     public function onBow(EntityShootBowEvent $event)
     {
         $entity = $event->getEntity();
-        if ($entity instanceof HorizonPlayer) {
+        if ($entity instanceof NeptunePlayer) {
             if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
                 Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
@@ -177,7 +176,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onPlayerDropItem(PlayerDropItemEvent $event): void
+    public function onDropItem(PlayerDropItemEvent $event): void
     {
         $event->cancel();
     }
@@ -185,7 +184,7 @@ class PlayerListener implements Listener
     /**
      * @throws JsonException
      */
-    public function onPlayerLogin(PlayerLoginEvent $event)
+    public function onLogin(PlayerLoginEvent $event)
     {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -217,7 +216,7 @@ class PlayerListener implements Listener
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
             Loader::getInstance()->getArenaUtils()->DeviceCheck($player);
             Loader::getClickHandler()->initPlayerClickData($player);
-            if ($player instanceof HorizonPlayer) {
+            if ($player instanceof NeptunePlayer) {
                 $cosmetic = Loader::getCosmeticHandler();
                 $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
                 $cosmetic->saveSkin($skin->getSkinData(), $name);
@@ -225,7 +224,7 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onPlayerLog(PlayerPreLoginEvent $event)
+    public function onPlayerPreLogin(PlayerPreLoginEvent $event)
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() and strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
@@ -242,24 +241,9 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $name = $player->getName();
         $event->setJoinMessage("§f[§a+§f] §a" . $name);
-        $player->getEffects()->clear();
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        if ($player instanceof HorizonPlayer) {
-            $player->LoadData();
-            $player->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
-            $player->sendMessage(Loader::getPrefixCore() . "§aChangelog: §f Optimize Some of the Code\nFix Known Bugs");
+        if ($player instanceof NeptunePlayer) {
+            $player->onJoin();
         }
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            unset(Loader::getInstance()->EditKit[$name]);
-        }
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]";
-        } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName();
-        }
-        $player->setNameTag($nametag);
     }
 
     public function onExhaust(PlayerExhaustEvent $event)
@@ -287,7 +271,7 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $name = $player->getName();
         $cosmetic = Loader::getCosmeticHandler();
-        if ($player instanceof HorizonPlayer) {
+        if ($player instanceof NeptunePlayer) {
             if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
                 copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
                 $cosmetic->resetSkin($player);
@@ -325,7 +309,7 @@ class PlayerListener implements Listener
         $transaction = $event->getTransaction();
         $actions = $transaction->getActions();
         $player = $transaction->getSource();
-        /* @var HorizonPlayer $player */
+        /* @var NeptunePlayer $player */
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) or $player->isDueling()) {
             return;
         }
@@ -349,74 +333,20 @@ class PlayerListener implements Listener
         $player = $event->getPlayer();
         $message = $event->getMessage();
         $name = $player->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]" . "§r§a > §r" . $message;
-        } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§r§a > §r" . $message;
-        }
-        $event->setFormat($nametag);
+        $args = explode(" ", $event->getMessage());
+        $event->setFormat(Loader::getArenaUtils()->getChatFormat($player, $message));
         if (isset(Loader::getInstance()->EditKit[$name])) {
             $event->cancel();
-            $args = explode(" ", $event->getMessage());
             if (mb_strtolower($args[0]) === "confirm") {
-                try {
-                    Loader::getInstance()->KitData->set($name, [
-                        "0" => [
-                            "item" => $player->getInventory()->getItem(0)->getId(),
-                            "count" => $player->getInventory()->getItem(0)->getCount(),
-                        ],
-                        "1" => [
-                            "item" => $player->getInventory()->getItem(1)->getId(),
-                            "count" => $player->getInventory()->getItem(1)->getCount()
-                        ],
-                        "2" => [
-                            "item" => $player->getInventory()->getItem(2)->getId(),
-                            "count" => $player->getInventory()->getItem(2)->getCount(),
-                        ],
-                        "3" => [
-                            "item" => $player->getInventory()->getItem(3)->getId(),
-                            "count" => $player->getInventory()->getItem(3)->getCount()
-                        ],
-                        "4" => [
-                            "item" => $player->getInventory()->getItem(4)->getId(),
-                            "count" => $player->getInventory()->getItem(4)->getCount()
-                        ],
-                        "5" => [
-                            "item" => $player->getInventory()->getItem(5)->getId(),
-                            "count" => $player->getInventory()->getItem(5)->getCount()
-                        ],
-                        "6" => [
-                            "item" => $player->getInventory()->getItem(6)->getId(),
-                            "count" => $player->getInventory()->getItem(6)->getCount()
-                        ],
-                        "7" => [
-                            "item" => $player->getInventory()->getItem(7)->getId(),
-                            "count" => $player->getInventory()->getItem(7)->getCount()
-                        ],
-                        "8" => [
-                            "item" => $player->getInventory()->getItem(8)->getId(),
-                            "count" => $player->getInventory()->getItem(8)->getCount()
-                        ]
-                    ]);
-                } catch (Exception) {
-                    $player->kill();
-                    $player->setImmobile(false);
-                    $player->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
-                    unset(Loader::getInstance()->EditKit[$name]);
-                    return;
+                if ($player instanceof NeptunePlayer) {
+                    $player->saveKit();
                 }
-                Loader::getInstance()->KitData->save();
-                unset(Loader::getInstance()->EditKit[$name]);
-                $player->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
-                $player->kill();
-                $player->setImmobile(false);
             } else {
                 $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm");
                 $player->sendMessage(Loader::getPrefixCore() . "§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
             }
         } else if (isset(Loader::getInstance()->SumoSetup[$name])) {
             $event->cancel();
-            $args = explode(" ", $event->getMessage());
             $arena = Loader::getInstance()->SumoSetup[$name];
             if (Loader::getArenaFactory()->getSumoDArena() !== null) {
                 $arena->data["level"] = Loader::getArenaFactory()->getSumoDArena();
@@ -476,37 +406,13 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onLeft(PlayerQuitEvent $event)
+    public function onQuit(PlayerQuitEvent $event)
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        $player->getEffects()->clear();
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $event->setQuitMessage("§f[§c-§f] §c" . $player->getName());
-        Loader::getClickHandler()->removePlayerClickData($player);
-        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-            unset(Loader::getInstance()->BoxingPoint[$name]);
-        }
-        if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
-            Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name]] = 0;
-            unset(Loader::getInstance()->PlayerOpponent[$name]);
-        }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            $player->kill();
-            unset(Loader::getInstance()->CombatTimer[$name]);
-        }
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            unset(Loader::getInstance()->EditKit[$name]);
-        }
-        if ($player instanceof HorizonPlayer) {
-            if ($player->isDueling()) {
-                $player->kill();
-            }
-            $player->setInQueue(false);
-            $player->setCurrentKit(null);
-            $player->setGamemode(GameMode::SURVIVAL());
+        $event->setQuitMessage("§f[§c-§f] §c" . $name);
+        if ($player instanceof NeptunePlayer) {
+            $player->onQuit();
         }
     }
 
@@ -517,13 +423,13 @@ class PlayerListener implements Listener
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if ($player instanceof HorizonPlayer and $damager instanceof HorizonPlayer) {
+        if ($player instanceof NeptunePlayer and $damager instanceof NeptunePlayer) {
             $damager->setLastDamagePlayer($player->getName());
             $player->setLastDamagePlayer($damager->getName());
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } else if (!isset(Loader::getInstance()->PlayerOpponent[$player->getName()]) and !isset(Loader::getInstance()->PlayerOpponent[$damager->getName()])) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
                 Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
                 Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
                 Loader::getInstance()->CombatTimer[$player->getName()] = 10;
@@ -535,9 +441,7 @@ class PlayerListener implements Listener
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 } else if (Loader::getInstance()->PlayerOpponent[$player->getName()] === $damager->getName() and Loader::getInstance()->PlayerOpponent[$damager->getName()] === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName("aqua")) return;
-                    Loader::getInstance()->PlayerOpponent[$player->getName()] = $damager->getName();
-                    Loader::getInstance()->PlayerOpponent[$damager->getName()] = $player->getName();
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
                     Loader::getInstance()->CombatTimer[$player->getName()] = 10;
                     Loader::getInstance()->CombatTimer[$damager->getName()] = 10;
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
@@ -570,7 +474,7 @@ class PlayerListener implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
-        /* @var HorizonPlayer $entity */
+        /* @var NeptunePlayer $entity */
         if ($entity instanceof Player) {
             switch ($event->getCause()) {
                 case EntityDamageEvent::CAUSE_VOID:
@@ -596,18 +500,6 @@ class PlayerListener implements Listener
                         }
                     }
                     break;
-            }
-        }
-    }
-
-    public function onJump(PlayerJumpEvent $event)
-    {
-        $player = $event->getPlayer();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
-            if (isset(Loader::getInstance()->JumpCount[$player->getName()])) {
-                Loader::getInstance()->JumpCount[$player->getName()]++;
-            } else {
-                Loader::getInstance()->JumpCount[$player->getName()] = 1;
             }
         }
     }
@@ -698,7 +590,7 @@ class PlayerListener implements Listener
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
-            /* @var HorizonPlayer $player */
+            /* @var NeptunePlayer $player */
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($cause->getDamager() instanceof FistBot) {
                 foreach (Server::getInstance()->getWorldManager()->getWorldByName($cause->getDamager()->getWorld()->getFolderName())->getPlayers() as $p) {
@@ -706,10 +598,11 @@ class PlayerListener implements Listener
                 }
             } else if ($damager instanceof Player) {
                 $dname = $damager->getName() ?? "Unknown";
-                /* @var HorizonPlayer $damager */
                 Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
-                $player->setLastDamagePlayer("Unknown");
-                $damager->setLastDamagePlayer("Unknown");
+                foreach ([$player, $damager] as $p) {
+                    $p->setLastDamagePlayer("Unknown");
+                    $p->setLastDamagePlayer("Unknown");
+                }
                 foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                     if ($p->getWorld() === $damager->getWorld()) {
                         $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
@@ -729,12 +622,11 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        Loader::getInstance()->getScoreboardManager()->sb($player);
         if (isset(Loader::getInstance()->EditKit[$name])) {
             unset(Loader::getInstance()->EditKit[$name]);
             $player->setImmobile(false);
         }
-        /* @var HorizonPlayer $player */
+        /* @var NeptunePlayer $player */
         $player->setDueling(false);
         $player->setUnPVPTag();
     }
@@ -760,7 +652,7 @@ class PlayerListener implements Listener
         $from = $event->getFrom();
         $to = $event->getTo();
         if ($entity instanceof Player) {
-            if ($from->getWorld() !== $to->getWorld() and ($to->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld())) {
+            if ($from->getWorld() !== $to->getWorld() and $to->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 if (isset(Loader::getInstance()->TimerTask[$entity->getName()])) {
                     unset(Loader::getInstance()->TimerTask[$entity->getName()]);
                 } else if (isset(Loader::getInstance()->TimerData[$entity->getName()])) {

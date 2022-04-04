@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Task;
 
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
@@ -19,7 +19,7 @@ class HorizonTask extends Task
         $this->tick++;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
             if ($this->tick % 20 === 0) {
-                /* @var HorizonPlayer $player */
+                /* @var NeptunePlayer $player */
                 $player->updatePlayer();
             }
             $player->updateCPS();

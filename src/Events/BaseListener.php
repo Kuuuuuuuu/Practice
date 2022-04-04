@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Core\Events;
 
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Loader;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
@@ -50,7 +50,7 @@ class BaseListener implements Listener
                 }
             }
         } else {
-            /* @var $player HorizonPlayer */
+            /* @var $player NeptunePlayer */
             if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 if (!$player->isDueling()) {
                     $ev->cancel();
@@ -67,7 +67,7 @@ class BaseListener implements Listener
             Loader::getDeleteBlockHandler()->setBlockBuild($block);
             return;
         }
-        /* @var $player HorizonPlayer */
+        /* @var $player NeptunePlayer */
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             if (!$player->isDueling()) {
                 $ev->cancel();
@@ -100,7 +100,7 @@ class BaseListener implements Listener
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::getClickHandler()->addClick($player);
                 if (Loader::getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
-                    /* @var HorizonPlayer $player */
+                    /* @var NeptunePlayer $player */
                     $player->setLastDamagePlayer("Unknown");
                     $player->kill();
                 }

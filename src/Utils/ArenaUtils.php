@@ -27,7 +27,7 @@ use Kohaku\Core\Entity\FistBot;
 use Kohaku\Core\Entity\KillLeaderboard;
 use Kohaku\Core\Events\BaseListener;
 use Kohaku\Core\Events\PlayerListener;
-use Kohaku\Core\HorizonPlayer;
+use Kohaku\Core\NeptunePlayer;
 use Kohaku\Core\Items\Bow;
 use Kohaku\Core\Items\EnderPearl;
 use Kohaku\Core\Loader;
@@ -182,7 +182,7 @@ class ArenaUtils
         Loader::$YamlLoader = new YamlManager();
         Loader::$YamlLoader->loadArenas();
         Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::AQUA . "Horizon" . TextFormat::WHITE . "Core" . "]\n\n");
-        Server::getInstance()->getNetwork()->setName("§bHorizon §fNetwork");
+        Server::getInstance()->getNetwork()->setName("§9Neptune §fNetwork");
         $this->registerItems();
         $this->registerConfigs();
         $this->registerGenerator();
@@ -213,14 +213,14 @@ class ArenaUtils
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
-            "StartCombat" => "§bHorizon§f » §r§aYou Started combat!",
+            "StartCombat" => "§9Neptune§f » §r§aYou Started combat!",
             "AntiCheatName" => "§bGuardian §f» ",
-            "CooldownMessage" => "§bHorizon§f » §r§cYou can't chat for {cooldown} seconds!",
-            "StopCombat" => "§bHorizon§f » §r§aYou Cleared combat!",
-            "StartSkillMessage" => "§bHorizon§f » §r§aYou Started Skill!",
-            "NoPlayer" => "§bHorizon§f » §r§cPlayer not found!",
-            "SkillCleared" => "§bHorizon§f » §r§aSkill Cleared!",
-            "CantUseWantCombat" => "§bHorizon§f » §r§cYou can't use this command in combat!",
+            "CooldownMessage" => "§9Neptune§f » §r§cYou can't chat for {cooldown} seconds!",
+            "StopCombat" => "§9Neptune§f » §r§aYou Cleared combat!",
+            "StartSkillMessage" => "§9Neptune§f » §r§aYou Started Skill!",
+            "NoPlayer" => "§9Neptune§f » §r§cPlayer not found!",
+            "SkillCleared" => "§9Neptune§f » §r§aSkill Cleared!",
+            "CantUseWantCombat" => "§9Neptune§f » §r§cYou can't use this command in combat!",
             "BroadcastBanMessage" => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
             "KickBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
             "LoginBanMessage" => "§bGuardian\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
@@ -228,9 +228,9 @@ class ArenaUtils
             "NoBanPlayers" => "§bGuardian §f> §aNo ban players",
             "UnBanPlayer" => "§bGuardian §f> §b{player} §ahas been unban",
             "AutoUnBanPlayer" => "§bGuardian §f> §a{player} Has Auto Unban Already!",
-            "BanListTitle" => "§bHorizon §eBanSystem",
+            "BanListTitle" => "§9Neptune §eBanSystem",
             "BanListContent" => "§c§lChoose player",
-            "PlayerListTitle" => "§bHorizon §eBanSystem",
+            "PlayerListTitle" => "§9Neptune §eBanSystem",
             "PlayerListContent" => "§c§lChoose Player",
             "InfoUIContent" => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             "InfoUIUnBanButton" => "§aUnban",
@@ -333,7 +333,7 @@ class ArenaUtils
         $dname = $dplayer->getName();
         if ($arena === Loader::getArenaFactory()->getOITCArena()) {
             if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
-                if ($dplayer instanceof HorizonPlayer) {
+                if ($dplayer instanceof NeptunePlayer) {
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
@@ -347,7 +347,7 @@ class ArenaUtils
                 $dplayer->getInventory()->clearAll();
                 $dplayer->getArmorInventory()->clearAll();
                 $dplayer->setHealth(20);
-                if ($dplayer instanceof HorizonPlayer) {
+                if ($dplayer instanceof NeptunePlayer) {
                     try {
                         $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["0"]["item"], 0, $dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["1"]["item"], 0, $dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -411,10 +411,10 @@ class ArenaUtils
         $this->GiveItem($player);
         $this->addKill($dplayer);
         $this->handleStreak($dplayer, $player);
-        if ($player instanceof HorizonPlayer) {
+        if ($player instanceof NeptunePlayer) {
             $player->setLastDamagePlayer("Unknown");
         }
-        if ($dplayer instanceof HorizonPlayer) {
+        if ($dplayer instanceof NeptunePlayer) {
             $dplayer->setLastDamagePlayer("Unknown");
         }
     }
@@ -532,6 +532,17 @@ class ArenaUtils
             return;
         }
         $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
+    }
+
+    public function getChatFormat(Player $player, string $message): string
+    {
+        $name = $player->getName();
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]" . "§r§a > §r" . $message;
+        } else {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§r§a > §r" . $message;
+        }
+        return $nametag;
     }
 
     /**
