@@ -7,12 +7,7 @@ namespace Kohaku\Core;
 use Exception;
 use JsonException;
 use Kohaku\Core\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin,
-    network\mcpe\protocol\PlayerListPacket,
-    network\mcpe\protocol\types\PlayerListEntry,
-    player\Player,
-    Server
-};
+use pocketmine\{entity\Skin, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class HorizonPlayer extends Player
@@ -20,7 +15,6 @@ class HorizonPlayer extends Player
 
     public string $cape = "";
     public string $artifact = "";
-    public bool $vanish = false;
     public ?KitManager $duelKit;
     private float|int $xzKB = 0.4;
     private float|int $yKb = 0.4;
@@ -299,7 +293,6 @@ class HorizonPlayer extends Player
     {
         $name = $this->getName();
         $this->sec++;
-        $this->Vanish();
         if ($this->sec % 3 === 0) {
             $this->updateTag();
             $this->updateScoreboard();
@@ -324,30 +317,6 @@ class HorizonPlayer extends Player
                 unset(Loader::getInstance()->CombatTimer[$name]);
                 unset(Loader::getInstance()->PlayerOpponent[$name]);
                 $this->setUnPVPTag();
-            }
-        }
-    }
-
-    private function Vanish()
-    {
-        if ($this->vanish) {
-            foreach ($this->getEffects() as $effect) {
-                if ($effect->isVisible()) {
-                    $effect->setVisible(false);
-                }
-            }
-            foreach (Server::getInstance()->getOnlinePlayers() as $onlinePlayer) {
-                $onlinePlayer->hidePlayer($this);
-                $entry = new PlayerListEntry();
-                $entry->uuid = $this->getUniqueId();
-                $pk = new PlayerListPacket();
-                $pk->entries[] = $entry;
-                $pk->type = PlayerListPacket::TYPE_REMOVE;
-                $onlinePlayer->getNetworkSession()->sendDataPacket($pk);
-            }
-        } else {
-            foreach (Server::getInstance()->getOnlinePlayers() as $onlinePlayer) {
-                $onlinePlayer->showPlayer($this);
             }
         }
     }
