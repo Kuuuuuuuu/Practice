@@ -23,12 +23,14 @@ use Kohaku\Entity\ArrowEntity;
 use Kohaku\Entity\DeathLeaderboard;
 use Kohaku\Entity\EnderPearlEntity;
 use Kohaku\Entity\FallingWool;
+use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Entity\KillLeaderboard;
 use Kohaku\Events\BaseListener;
 use Kohaku\Events\PlayerListener;
 use Kohaku\Items\Bow;
 use Kohaku\Items\EnderPearl;
+use Kohaku\Items\FishingRod;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\SkyWars\Skywars;
@@ -202,6 +204,7 @@ class ArenaUtils
     {
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), "Ender Pearl"), true);
         ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), "Bow"), true);
+        ItemFactory::getInstance()->register(new FishingRod(new ItemIdentifier(ItemIds::FISHING_ROD, 0), "Fishing Rod"), true);
     }
 
     private function registerConfigs(): void
@@ -292,6 +295,9 @@ class ArenaUtils
         EntityFactory::getInstance()->register(ArrowEntity::class, function (World $world, CompoundTag $nbt): ArrowEntity {
             return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, true, $nbt);
         }, ['HArrow', 'horizon:arrow'], EntityLegacyIds::ARROW);
+        EntityFactory::getInstance()->register(FishingHook::class, function (World $world, CompoundTag $nbt): FishingHook {
+            return new FishingHook(EntityDataHelper::parseLocation($nbt, $world), null, null);
+        }, ['HHook', 'horizon:hook'], EntityLegacyIds::FISHING_HOOK);
     }
 
     public function loadallworlds()

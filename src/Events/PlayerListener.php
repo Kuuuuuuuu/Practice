@@ -10,6 +10,7 @@ namespace Kohaku\Events;
 
 use Exception;
 use JsonException;
+use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
@@ -156,7 +157,7 @@ class PlayerListener implements Listener
     public function onProjectile(ProjectileHitBlockEvent $event)
     {
         $entity = $event->getEntity();
-        if ($entity instanceof Arrow and ($entity->getOwningEntity()->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $entity->getOwningEntity()->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()))) {
+        if ($entity instanceof Arrow) {
             $entity->flagForDespawn();
             $entity->close();
         }

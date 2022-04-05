@@ -7,7 +7,10 @@ namespace Kohaku;
 use Exception;
 use JsonException;
 use Kohaku\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
+use pocketmine\{entity\Skin,
+    player\GameMode,
+    player\Player,
+    Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class NeptunePlayer extends Player
