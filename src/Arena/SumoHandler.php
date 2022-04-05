@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kohaku\Arena;
 
 use Exception;
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Listener;

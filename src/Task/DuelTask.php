@@ -2,8 +2,8 @@
 
 namespace Kohaku\Task;
 
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use Kohaku\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
 use pocketmine\scheduler\Task;
@@ -63,7 +63,7 @@ class DuelTask extends Task
                             $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                             $player->getInventory()->setContents($this->kit->getInventoryItems());
                             $player->setImmobile(true);
-                            $player->sendTitle("3", "", 1, 3, 1);
+                            $player->sendTitle("§d3", "", 1, 3, 1);
                             Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                         }
                     }
@@ -78,19 +78,21 @@ class DuelTask extends Task
                     break;
                 case 901:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle("2", "", 1, 3, 1);
+                        /* @var NeptunePlayer $player */
+                        $player->setCurrentKit(null);
+                        $player->sendTitle("§d2", "", 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                     }
                     break;
                 case 900:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle("1", "", 1, 3, 1);
+                        $player->sendTitle("§d1", "", 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                     }
                     break;
                 case 899:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle("Fight!", "", 1, 3, 1);
+                        $player->sendTitle("§dFight!", "", 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
                         $player->setImmobile(false);
                     }

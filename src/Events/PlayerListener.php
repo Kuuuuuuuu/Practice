@@ -10,7 +10,6 @@ namespace Kohaku\Events;
 
 use Exception;
 use JsonException;
-use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;

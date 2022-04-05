@@ -3,8 +3,8 @@
 namespace Kohaku\Arena;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use Kohaku\Task\DuelTask;
 use Kohaku\Utils\DuelGenerator;
 use Kohaku\Utils\Kits\KitManager;

@@ -41,6 +41,7 @@ use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\data\bedrock\EntityLegacyIds;
+use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
@@ -51,6 +52,7 @@ use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
@@ -59,6 +61,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\generator\GeneratorManager;
+use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\World;
 use SQLite3;
 use UnexpectedValueException;
@@ -109,6 +112,37 @@ class ArenaUtils
             return;
         }
         $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z, true);
+    }
+
+    public static function randomColor($excludedColors = []): string
+    {
+        $array = [
+            TextFormat::DARK_PURPLE => true,
+            TextFormat::GOLD => true,
+            TextFormat::RED => true,
+            TextFormat::GREEN => true,
+            TextFormat::LIGHT_PURPLE => true,
+            TextFormat::AQUA => true,
+            TextFormat::DARK_RED => true,
+            TextFormat::DARK_AQUA => true,
+            TextFormat::BLUE => true,
+            TextFormat::GRAY => true,
+            TextFormat::DARK_GREEN => true,
+            TextFormat::BLACK => true,
+            TextFormat::DARK_BLUE => true,
+            TextFormat::DARK_GRAY => true,
+            TextFormat::YELLOW => true,
+            TextFormat::WHITE => true
+        ];
+        $array2 = $array;
+        foreach ($excludedColors as $c) {
+            if (isset($array[$c]))
+                unset($array[$c]);
+        }
+        if (count($array) === 0) $array = $array2;
+        $size = count($array) - 1;
+        $keys = array_keys($array);
+        return (string)$keys[mt_rand(0, $size)];
     }
 
     public function getPlayerControls(Player $player): string
@@ -164,6 +198,17 @@ class ArenaUtils
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cMight be Using §aToolbox. Please Avoid that Player!");
             Loader::getInstance()->ToolboxCheck[strtolower($username)] = "Toolbox";
         }
+    }
+
+    public function spawnLightning(Player $player, Player $damager): void
+    {
+        $pos = $player->getPosition();
+        $light2 = AddActorPacket::create(Entity::nextRuntimeId(), 1, "minecraft:lightning_bolt", $player->getPosition()->asVector3(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch(), 0.0, [], [], []);
+        $block = $player->getWorld()->getBlock($player->getPosition()->floor()->down());
+        $particle = new BlockBreakParticle($block);
+        $player->getWorld()->addParticle($pos, $particle, $player->getWorld()->getPlayers());
+        $sound2 = PlaySoundPacket::create("ambient.weather.thunder", $pos->getX(), $pos->getY(), $pos->getZ(), 1, 1);
+        Server::getInstance()->broadcastPackets([$player, $damager], [$light2, $sound2]);
     }
 
     public function calculateTime(int $time): string
