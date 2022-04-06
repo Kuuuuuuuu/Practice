@@ -100,9 +100,10 @@ class BaseListener implements Listener
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::getClickHandler()->addClick($player);
                 if (Loader::getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
-                    /* @var NeptunePlayer $player */
-                    $player->setLastDamagePlayer("Unknown");
-                    $player->kill();
+                    if ($player instanceof NeptunePlayer) {
+                        $player->setLastDamagePlayer("Unknown");
+                        $player->kill();
+                    }
                 }
             }
         } else if ($event->getPacket()->pid() === AnimatePacket::NETWORK_ID) {

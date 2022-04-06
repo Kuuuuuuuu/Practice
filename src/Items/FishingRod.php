@@ -5,7 +5,6 @@ namespace Kohaku\Items;
 
 
 use Kohaku\Entity\FishingHook;
-use Kohaku\NeptunePlayer;
 use pocketmine\entity\Location;
 use pocketmine\item\FishingRod as FishingRodItem;
 use pocketmine\item\ItemIdentifier;
@@ -26,7 +25,6 @@ class FishingRod extends FishingRodItem
     {
         if (!$player->hasItemCooldown($this)) {
             $player->resetItemCooldown($this);
-            /* @var NeptunePlayer $player */
             $location = $player->getLocation();
             new FishingHook(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player, null);
             $location->getWorld()->addSound($location, new ThrowSound());

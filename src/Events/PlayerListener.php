@@ -67,90 +67,91 @@ class PlayerListener implements Listener
     public function onUse(PlayerItemUseEvent $event)
     {
         $player = $event->getPlayer();
-        /* @var NeptunePlayer $player */
         $item = $event->getItem();
         $name = $player->getName();
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            if ($item->getId() === ItemIds::ENDER_PEARL or $item->getId() === ItemIds::GOLDEN_APPLE) {
-                $event->cancel();
+        if ($player instanceof NeptunePlayer) {
+            if ($player->EditKit !== null) {
+                if ($item->getId() === ItemIds::ENDER_PEARL or $item->getId() === ItemIds::GOLDEN_APPLE) {
+                    $event->cancel();
+                }
             }
-        }
-        if ($player->SkillCooldown === false) {
-            if ($item->getCustomName() === "§r§6Reaper") {
-                $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
-                    if ($p->getName() !== $name) {
-                        if ($player->getPosition()->distance($p->getPosition()) <= 10) {
-                            $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
-                            $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
-                            $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
-                            $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+            if ($player->SkillCooldown === false) {
+                if ($item->getCustomName() === "§r§6Reaper") {
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
+                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
+                        if ($p->getName() !== $name) {
+                            if ($player->getPosition()->distance($p->getPosition()) <= 10) {
+                                $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
+                                $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
+                                $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
+                                $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+                                $player->SkillCooldown = true;
+                            }
+                        }
+                    }
+                } else if ($item->getCustomName() === "§r§6Ultimate Tank") {
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 120, 1, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 120, 1, false));
+                    $player->SkillCooldown = true;
+                } else if ($item->getCustomName() === "§r§6Ultimate Boxing") {
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
+                    $player->SkillCooldown = true;
+                } else if ($item->getCustomName() === "§r§6Ultimate Bower") {
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 120, 3, false));
+                    $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 120, 3, false));
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
+                    $player->SkillCooldown = true;
+                } else if ($item->getCustomName() === "§r§6Teleport") {
+                    $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
+                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
+                        if ($p->getName() !== $name) {
+                            $player->teleport($p->getPosition()->asVector3());
                             $player->SkillCooldown = true;
                         }
                     }
+                } else if ($item->getCustomName() === "§r§eLeap§r") {
+                    $directionvector = $player->getDirectionVector()->multiply(4 / 2);
+                    $dx = $directionvector->getX();
+                    $dy = $directionvector->getY();
+                    $dz = $directionvector->getZ();
+                    $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
+                    $player->SkillCooldown = true;
                 }
-            } else if ($item->getCustomName() === "§r§6Ultimate Tank") {
-                $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 120, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 120, 1, false));
-                $player->SkillCooldown = true;
-            } else if ($item->getCustomName() === "§r§6Ultimate Boxing") {
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
-                $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                $player->SkillCooldown = true;
-            } else if ($item->getCustomName() === "§r§6Ultimate Bower") {
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 120, 3, false));
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 120, 3, false));
-                $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                $player->SkillCooldown = true;
-            } else if ($item->getCustomName() === "§r§6Teleport") {
-                $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
-                    if ($p->getName() !== $name) {
-                        $player->teleport($p->getPosition()->asVector3());
-                        $player->SkillCooldown = true;
-                    }
+                Loader::getInstance()->getArenaUtils()->SkillCooldown($player);
+            }
+            if ($item->getCustomName() === "§r§dPlay") {
+                Loader::getFormUtils()->Form1($player);
+            } else if ($item->getCustomName() === "§r§dSettings") {
+                Loader::getFormUtils()->settingsForm($player);
+            } else if ($item->getCustomName() === "§r§dBot") {
+                Loader::getFormUtils()->botForm($player);
+            } else if ($item->getCustomName() === "§r§aStop Timer §f| §dClick to use") {
+                $player->TimerData = 0;
+                $player->TimerTask = false;
+                $player->teleport(new Vector3(275, 66, 212));
+                $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
+                $player->ParkourCheckPoint = new Vector3(275, 77, 212);
+            } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §dClick to use") {
+                if ($player->ParkourCheckPoint !== null) {
+                    $player->teleport($player->ParkourCheckPoint);
+                } else {
+                    $player->teleport(new Vector3(275, 77, 212));
                 }
-            } else if ($item->getCustomName() === "§r§eLeap§r") {
-                $directionvector = $player->getDirectionVector()->multiply(4 / 2);
-                $dx = $directionvector->getX();
-                $dy = $directionvector->getY();
-                $dz = $directionvector->getZ();
-                $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
-                $player->SkillCooldown = true;
+                $player->sendMessage(Loader::getPrefixCore() . "§aTeleport to Checkpoint");
+            } else if ($item->getCustomName() === "§r§cLeave Queue") {
+                $player->sendMessage(Loader::getPrefixCore() . "Left the queue");
+                $player->setCurrentKit(null);
+                $player->setInQueue(false);
+                Loader::getArenaUtils()->GiveItem($player);
+            } else if ($item->getCustomName() === "§r§dDuel") {
+                Loader::getFormUtils()->duelForm($player);
             }
-            Loader::getInstance()->getArenaUtils()->SkillCooldown($player);
-        }
-        if ($item->getCustomName() === "§r§dPlay") {
-            Loader::getFormUtils()->Form1($player);
-        } else if ($item->getCustomName() === "§r§dSettings") {
-            Loader::getFormUtils()->settingsForm($player);
-        } else if ($item->getCustomName() === "§r§dBot") {
-            Loader::getFormUtils()->botForm($player);
-        } else if ($item->getCustomName() === "§r§aStop Timer §f| §dClick to use") {
-            $player->TimerData = 0;
-            $player->TimerTask = false;
-            $player->teleport(new Vector3(275, 66, 212));
-            $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
-            $player->ParkourCheckPoint = new Vector3(275, 77, 212);
-        } else if ($item->getCustomName() === "§r§aBack to Checkpoint §f| §dClick to use") {
-            if ($player->ParkourCheckPoint !== null) {
-                $player->teleport($player->ParkourCheckPoint);
-            } else {
-                $player->teleport(new Vector3(275, 77, 212));
-            }
-            $player->sendMessage(Loader::getPrefixCore() . "§aTeleport to Checkpoint");
-        } else if ($item->getCustomName() === "§r§cLeave Queue") {
-            $player->sendMessage(Loader::getPrefixCore() . "Left the queue");
-            $player->setCurrentKit(null);
-            $player->setInQueue(false);
-            Loader::getArenaUtils()->GiveItem($player);
-        } else if ($item->getCustomName() === "§r§dDuel") {
-            Loader::getFormUtils()->duelForm($player);
         }
     }
 
@@ -310,18 +311,19 @@ class PlayerListener implements Listener
         $transaction = $event->getTransaction();
         $actions = $transaction->getActions();
         $player = $transaction->getSource();
-        /* @var NeptunePlayer $player */
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) or $player->isDueling()) {
-            return;
-        }
-        if ($transaction instanceof CraftingTransaction) {
-            $event->cancel();
-        }
-        foreach ($actions as $action) {
-            if ($player->getGamemode() === GameMode::CREATIVE() or isset(Loader::getInstance()->EditKit[$player->getName()])) {
+        if ($player instanceof NeptunePlayer) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) or $player->isDueling()) {
                 return;
-            } else {
+            }
+            if ($transaction instanceof CraftingTransaction) {
                 $event->cancel();
+            }
+            foreach ($actions as $action) {
+                if ($player->getGamemode() === GameMode::CREATIVE() or $player->EditKit !== null) {
+                    return;
+                } else {
+                    $event->cancel();
+                }
             }
         }
     }
@@ -336,74 +338,76 @@ class PlayerListener implements Listener
         $name = $player->getName();
         $args = explode(" ", $event->getMessage());
         $event->setFormat(Loader::getArenaUtils()->getChatFormat($player, $message));
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            $event->cancel();
-            if (mb_strtolower($args[0]) === "confirm") {
-                if ($player instanceof NeptunePlayer) {
-                    $player->saveKit();
+        if ($player instanceof NeptunePlayer) {
+            if ($player->EditKit !== null) {
+                $event->cancel();
+                if (mb_strtolower($args[0]) === "confirm") {
+                    if ($player instanceof NeptunePlayer) {
+                        $player->saveKit();
+                    }
+                } else {
+                    $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm");
+                    $player->sendMessage(Loader::getPrefixCore() . "§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
+                }
+            } else if (isset(Loader::getInstance()->SumoSetup[$name])) {
+                $event->cancel();
+                $arena = Loader::getInstance()->SumoSetup[$name];
+                if (Loader::getArenaFactory()->getSumoDArena() !== null) {
+                    $arena->data["level"] = Loader::getArenaFactory()->getSumoDArena();
+                }
+                switch ($args[0]) {
+                    case "help":
+                        $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup\n" .
+                            "§7help : Displays list of available setup commands\n" .
+                            "§7setspawn : Set arena spawns\n" .
+                            "§7enable : Enable the arena");
+                        break;
+                    case "setspawn":
+                        if (!isset($args[1])) {
+                            $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7setspawn <int: spawn>");
+                            break;
+                        } else if (!is_numeric($args[1])) {
+                            $player->sendMessage(Loader::getPrefixCore() . "§cType number!");
+                            break;
+                        } else if ((int)$args[1] > $arena->data["slots"]) {
+                            $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
+                            break;
+                        }
+                        $arena->data["spawns"]["spawn-$args[1]"]["x"] = $player->getPosition()->getX();
+                        $arena->data["spawns"]["spawn-$args[1]"]["y"] = $player->getPosition()->getY();
+                        $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
+                        $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
+                        break;
+                    case "enable":
+                        if (!$arena->setup) {
+                            $player->sendMessage(Loader::getPrefixCore() . "§6Arena is already enabled!");
+                            break;
+                        } else if (!$arena->enable()) {
+                            $player->sendMessage(Loader::getPrefixCore() . "§cCould not load arena, there are missing information!");
+                            break;
+                        }
+                        $player->sendMessage(Loader::getPrefixCore() . "§aArena enabled!");
+                        break;
+                    case "done":
+                        $player->sendMessage(Loader::getPrefixCore() . "§aYou are successfully leaved setup mode!");
+                        unset(Loader::getInstance()->SumoSetup[$name]);
+                        if (isset(Loader::getInstance()->SumoData[$name])) {
+                            unset(Loader::getInstance()->SumoData[$name]);
+                        }
+                        break;
+                    default:
+                        $player->sendMessage(Loader::getPrefixCore() . "§6You are in setup mode.\n" .
+                            "§7- use §lhelp §r§7to display available commands\n" .
+                            "§7- or §ldone §r§7to leave setup mode");
+                        break;
                 }
             } else {
-                $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm");
-                $player->sendMessage(Loader::getPrefixCore() . "§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
+                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+                $msg = new DiscordWebhookUtils();
+                $msg2 = str_replace(["@here", "@everyone"], "", $message);
+                $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . $player->PlayerOS . " " . $player->getDisplayName() . " > " . $msg2);
+                $web->send($msg);
             }
-        } else if (isset(Loader::getInstance()->SumoSetup[$name])) {
-            $event->cancel();
-            $arena = Loader::getInstance()->SumoSetup[$name];
-            if (Loader::getArenaFactory()->getSumoDArena() !== null) {
-                $arena->data["level"] = Loader::getArenaFactory()->getSumoDArena();
-            }
-            switch ($args[0]) {
-                case "help":
-                    $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup\n" .
-                        "§7help : Displays list of available setup commands\n" .
-                        "§7setspawn : Set arena spawns\n" .
-                        "§7enable : Enable the arena");
-                    break;
-                case "setspawn":
-                    if (!isset($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cUsage: §7setspawn <int: spawn>");
-                        break;
-                    } else if (!is_numeric($args[1])) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cType number!");
-                        break;
-                    } else if ((int)$args[1] > $arena->data["slots"]) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
-                        break;
-                    }
-                    $arena->data["spawns"]["spawn-$args[1]"]["x"] = $player->getPosition()->getX();
-                    $arena->data["spawns"]["spawn-$args[1]"]["y"] = $player->getPosition()->getY();
-                    $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
-                    $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
-                    break;
-                case "enable":
-                    if (!$arena->setup) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§6Arena is already enabled!");
-                        break;
-                    } else if (!$arena->enable()) {
-                        $player->sendMessage(Loader::getPrefixCore() . "§cCould not load arena, there are missing information!");
-                        break;
-                    }
-                    $player->sendMessage(Loader::getPrefixCore() . "§aArena enabled!");
-                    break;
-                case "done":
-                    $player->sendMessage(Loader::getPrefixCore() . "§aYou are successfully leaved setup mode!");
-                    unset(Loader::getInstance()->SumoSetup[$name]);
-                    if (isset(Loader::getInstance()->SumoData[$name])) {
-                        unset(Loader::getInstance()->SumoData[$name]);
-                    }
-                    break;
-                default:
-                    $player->sendMessage(Loader::getPrefixCore() . "§6You are in setup mode.\n" .
-                        "§7- use §lhelp §r§7to display available commands\n" .
-                        "§7- or §ldone §r§7to leave setup mode");
-                    break;
-            }
-        } else {
-            $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-            $msg = new DiscordWebhookUtils();
-            $msg2 = str_replace(["@here", "@everyone"], "", $message);
-            $msg->setContent(">>> " . $player->getNetworkSession()->getPing() . "ms | " . $player->PlayerOS . " " . $player->getDisplayName() . " > " . $msg2);
-            $web->send($msg);
         }
     }
 
@@ -489,8 +493,7 @@ class PlayerListener implements Listener
     public function onDamage(EntityDamageEvent $event)
     {
         $entity = $event->getEntity();
-        /* @var NeptunePlayer $entity */
-        if ($entity instanceof Player) {
+        if ($entity instanceof NeptunePlayer) {
             switch ($event->getCause()) {
                 case EntityDamageEvent::CAUSE_VOID:
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
@@ -522,7 +525,6 @@ class PlayerListener implements Listener
     public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();
-        /* @var NeptunePlayer $player */
         $name = $player->getName();
         $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
@@ -530,51 +532,53 @@ class PlayerListener implements Listener
                 $player->kill();
             }
         }
-        switch ($player->getWorld()) {
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
-                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                    $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
-                    $player->setMotion(new Vector3($smallpp->getX(), 1.5, $smallpp->getY()));
-                }
-                break;
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):
-                if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                    $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
-                }
-                break;
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
-                switch ($block->getId()) {
-                    case BlockLegacyIds::NOTE_BLOCK:
-                        if ($player->TimerTask === false) {
-                            $player->TimerTask = true;
-                        }
-                        break;
-                    case BlockLegacyIds::PODZOL:
-                        if ($player->TimerTask === true) {
-                            $player->TimerTask = false;
-                        }
-                        break;
-                    case BlockLegacyIds::LIT_REDSTONE_LAMP:
-                        if ($player->TimerTask === true) {
-                            $player->TimerTask = false;
-                            $mins = floor($player->TimerData / 6000);
-                            $secs = floor(($player->TimerData / 100) % 60);
-                            $mili = $player->TimerData % 100;
-                            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
-                            $player->ParkourCheckPoint = new Vector3(255, 77, 255);
-                            $player->teleport(new Vector3(275, 66, 212));
-                            Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
-                        }
-                        break;
-                    case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
-                        $vector = $player->getPosition()->asVector3();
-                        if ($player->ParkourCheckPoint !== $vector) {
-                            $player->ParkourCheckPoint = $vector;
-                        }
-                        break;
-                    default:
-                        return;
-                }
+        if ($player instanceof NeptunePlayer) {
+            switch ($player->getWorld()) {
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
+                    if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                        $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
+                        $player->setMotion(new Vector3($smallpp->getX(), 1.5, $smallpp->getY()));
+                    }
+                    break;
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):
+                    if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
+                        $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
+                    }
+                    break;
+                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
+                    switch ($block->getId()) {
+                        case BlockLegacyIds::NOTE_BLOCK:
+                            if ($player->TimerTask === false) {
+                                $player->TimerTask = true;
+                            }
+                            break;
+                        case BlockLegacyIds::PODZOL:
+                            if ($player->TimerTask === true) {
+                                $player->TimerTask = false;
+                            }
+                            break;
+                        case BlockLegacyIds::LIT_REDSTONE_LAMP:
+                            if ($player->TimerTask === true) {
+                                $player->TimerTask = false;
+                                $mins = floor($player->TimerData / 6000);
+                                $secs = floor(($player->TimerData / 100) % 60);
+                                $mili = $player->TimerData % 100;
+                                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . " §aHas Finished Parkour " . $mins . " : " . $secs . " : " . $mili));
+                                $player->ParkourCheckPoint = new Vector3(255, 77, 255);
+                                $player->teleport(new Vector3(275, 66, 212));
+                                Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
+                            }
+                            break;
+                        case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
+                            $vector = $player->getPosition()->asVector3();
+                            if ($player->ParkourCheckPoint !== $vector) {
+                                $player->ParkourCheckPoint = $vector;
+                            }
+                            break;
+                        default:
+                            return;
+                    }
+            }
         }
     }
 
@@ -585,7 +589,7 @@ class PlayerListener implements Listener
             $cause = $entity->getLastDamageCause();
             if ($cause instanceof EntityDamageByEntityEvent) {
                 $damager = $cause->getDamager();
-                if ($damager instanceof Player) {
+                if ($damager instanceof NeptunePlayer) {
                     $damager->sendMessage(Loader::getPrefixCore() . "§aYou have been killed a bot!");
                     $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                     Loader::getInstance()->getArenaUtils()->GiveItem($damager);
@@ -606,25 +610,26 @@ class PlayerListener implements Listener
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if ($cause instanceof EntityDamageByEntityEvent) {
-            /* @var NeptunePlayer $player */
-            $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-            if ($cause->getDamager() instanceof FistBot) {
-                foreach (Server::getInstance()->getWorldManager()->getWorldByName($cause->getDamager()->getWorld()->getFolderName())->getPlayers() as $p) {
-                    $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
-                }
-            } else if ($damager instanceof Player) {
-                $dname = $damager->getName() ?? "Unknown";
-                Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
-                foreach ([$player, $damager] as $p) {
-                    $p->setLastDamagePlayer("Unknown");
-                    $p->setLastDamagePlayer("Unknown");
-                }
-                foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
-                    if ($p->getWorld() === $damager->getWorld()) {
-                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
+            if ($player instanceof NeptunePlayer) {
+                $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
+                if ($cause->getDamager() instanceof FistBot) {
+                    foreach (Server::getInstance()->getWorldManager()->getWorldByName($cause->getDamager()->getWorld()->getFolderName())->getPlayers() as $p) {
+                        $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
                     }
+                } else if ($damager instanceof NeptunePlayer) {
+                    $dname = $damager->getName() ?? "Unknown";
+                    Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
+                    foreach ([$player, $damager] as $p) {
+                        $p->setLastDamagePlayer("Unknown");
+                        $p->setLastDamagePlayer("Unknown");
+                    }
+                    foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
+                        if ($p->getWorld() === $damager->getWorld()) {
+                            $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
+                        }
+                    }
+                    $damager->setHealth(20);
                 }
-                $damager->setHealth(20);
             }
         }
     }
@@ -638,22 +643,22 @@ class PlayerListener implements Listener
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            unset(Loader::getInstance()->EditKit[$name]);
-            $player->setImmobile(false);
+        if ($player instanceof NeptunePlayer) {
+            if ($player->EditKit !== null) {
+                $player->EditKit = null;
+                $player->setImmobile(false);
+            }
+            $player->setDueling(false);
+            $player->setUnPVPTag();
         }
-        /* @var NeptunePlayer $player */
-        $player->setDueling(false);
-        $player->setUnPVPTag();
     }
 
     public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
     {
         $player = $event->getPlayer();
         $msg = $event->getMessage();
-        $name = $player->getName();
         if ($player instanceof NeptunePlayer) {
-            if ($player->Combat === true or isset(Loader::getInstance()->EditKit[$name])) {
+            if ($player->Combat === true or $player->EditKit !== null) {
                 $msg = substr($msg, 1);
                 $msg = explode(" ", $msg);
                 if (in_array($msg[0], Loader::getInstance()->BanCommand)) {

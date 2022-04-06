@@ -27,6 +27,7 @@ class NeptunePlayer extends Player
     public bool $SkillCooldown = false;
     public ?Vector3 $ParkourCheckPoint = null;
     public bool $TimerTask = false;
+    public ?string $EditKit = null;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
     private int $sec = 0;
@@ -340,9 +341,6 @@ class NeptunePlayer extends Player
         Loader::getInstance()->getArenaUtils()->GiveItem($this);
         $this->LoadData();
         $this->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            unset(Loader::getInstance()->EditKit[$name]);
-        }
     }
 
     /**
@@ -424,14 +422,9 @@ class NeptunePlayer extends Player
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         Loader::getClickHandler()->removePlayerClickData($this);
-        if (isset(Loader::getInstance()->EditKit[$name])) {
-            unset(Loader::getInstance()->EditKit[$name]);
-        }
         if ($this->isDueling() or $this->Combat) {
             $this->kill();
         }
-        $this->setInQueue(false);
-        $this->setCurrentKit(null);
         $this->setGamemode(GameMode::SURVIVAL());
     }
 
@@ -489,11 +482,11 @@ class NeptunePlayer extends Player
             $this->kill();
             $this->setImmobile(false);
             $this->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
-            unset(Loader::getInstance()->EditKit[$name]);
+            $this->EditKit = null;
             return;
         }
         Loader::getInstance()->KitData->save();
-        unset(Loader::getInstance()->EditKit[$name]);
+        $this->EditKit = null;
         $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
         $this->kill();
         $this->setImmobile(false);

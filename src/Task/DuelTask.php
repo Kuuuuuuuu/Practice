@@ -78,8 +78,9 @@ class DuelTask extends Task
                     break;
                 case 901:
                     foreach ($this->getPlayers() as $player) {
-                        /* @var NeptunePlayer $player */
-                        $player->setCurrentKit(null);
+                        if ($player instanceof NeptunePlayer) {
+                            $player->setCurrentKit(null);
+                        }
                         $player->sendTitle("§d2", "", 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                     }

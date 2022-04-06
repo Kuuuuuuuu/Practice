@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kohaku\Task;
 
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -18,11 +18,12 @@ class NeptuneTask extends Task
     {
         $this->tick++;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($this->tick % 20 === 0) {
-                /* @var NeptunePlayer $player */
-                $player->updatePlayer();
+            if ($player instanceof NeptunePlayer) {
+                if ($this->tick % 20 === 0) {
+                    $player->updatePlayer();
+                }
+                $player->updateCPS();
             }
-            $player->updateCPS();
         }
         $this->updateServer();
     }

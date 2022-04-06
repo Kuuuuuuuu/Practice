@@ -56,7 +56,6 @@ class Loader extends PluginBase
     public array $SumoArenas = [];
     public array $SumoSetup = [];
     public array $SumoData = [];
-    public array $EditKit = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
     public array $BanCommand = [

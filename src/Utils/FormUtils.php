@@ -532,10 +532,11 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
+                    /* @var $player NeptunePlayer */
                     $player->getInventory()->clearAll();
                     $player->getArmorInventory()->clearAll();
                     $player->setImmobile(true);
-                    Loader::getInstance()->EditKit[$player->getName()] = "build";
+                    $player->EditKit = "build";
                     $player->sendMessage(Loader::getPrefixCore() . "§aEdit kit enabled");
                     $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
                     $player->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));

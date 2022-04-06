@@ -129,8 +129,9 @@ class SumoHandler implements Listener
                 }
             }
         }
-        /* @var NeptunePlayer $player */
-        $player->setPVPTag();
+        if ($player instanceof NeptunePlayer) {
+            $player->setPVPTag();
+        }
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getCursorInventory()->clearAll();
