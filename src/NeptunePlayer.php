@@ -226,13 +226,8 @@ class NeptunePlayer extends Player
 
     public function parkourTimer()
     {
-        $name = $this->getName();
         if ($this->TimerTask === true) {
-            if (isset($player->TimerData)) {
-                $this->TimerData += 5;
-            } else {
-                $this->TimerData = 0;
-            }
+            $this->TimerData += 5;
             $mins = floor($this->TimerData / 6000);
             $secs = floor(($this->TimerData / 100) % 60);
             $mili = $this->TimerData % 100;
@@ -245,7 +240,6 @@ class NeptunePlayer extends Player
 
     public function updatePlayer()
     {
-        $name = $this->getName();
         $this->sec++;
         $this->updateTag();
         if ($this->sec % 2 === 0) {
@@ -284,7 +278,6 @@ class NeptunePlayer extends Player
 
     public function setParkourTag()
     {
-        $name = $this->getName();
         $ping = $this->getNetworkSession()->getPing();
         $tagparkour = "§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]";
         $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
