@@ -19,7 +19,7 @@ class DuelGenerator extends Generator
 
     public function __construct()
     {
-        parent::__construct(0, "2;bedrock,stonebrick;1;");
+        parent::__construct(    0, "2;bedrock,stonebrick;1;");
         $this->options = FlatGeneratorOptions::parsePreset($this->preset);
         $this->generateBaseChunk();
     }

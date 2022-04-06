@@ -145,58 +145,28 @@ class ArenaUtils
         return (string)$keys[mt_rand(0, $size)];
     }
 
-    public function getPlayerControls(Player $player): string
-    {
-        if (!isset(Loader::getInstance()->PlayerControl[strtolower($player->getName())]) or Loader::getInstance()->PlayerControl[strtolower($player->getName())] == null) {
-            return "Unknown";
-        }
-        return Loader::getInstance()->ControlList[Loader::getInstance()->PlayerControl[strtolower($player->getName())]];
-    }
-
-    public function getPlayerDevices(Player $player): string
-    {
-        if (!isset(Loader::getInstance()->PlayerDevice[strtolower($player->getName())]) or Loader::getInstance()->PlayerDevice[strtolower($player->getName())] == null) {
-            return "Unknown";
-        }
-        return Loader::getInstance()->PlayerDevice[strtolower($player->getName())];
-    }
-
-    public function getPlayerOs(Player $player): string
-    {
-        if (!isset(Loader::getInstance()->PlayerOS[strtolower($player->getName())]) or Loader::getInstance()->PlayerOS[strtolower($player->getName())] == null) {
-            return "Unknown";
-        }
-        return Loader::getInstance()->OSList[Loader::getInstance()->PlayerOS[strtolower($player->getName())]];
-    }
-
-    public function getToolboxCheck(Player $player): string
-    {
-        return Loader::getInstance()->ToolboxCheck[strtolower($player->getName())] ?? "Unknown";
-    }
-
     public function DeviceCheck(Player $player): void
     {
         $username = $player->getName();
         $data = $player->getPlayerInfo()->getExtraData();
-        if ($data["CurrentInputMode"] !== null and $data["DeviceOS"] !== null and $data["DeviceModel"] !== null) {
-            Loader::getInstance()->PlayerControl[strtolower($username) ?? "Unknown"] = $data["CurrentInputMode"];
-            Loader::getInstance()->PlayerOS[strtolower($username) ?? "Unknown"] = $data["DeviceOS"];
-            Loader::getInstance()->PlayerDevice[strtolower($username) ?? "Unknown"] = $data["DeviceModel"];
-        }
-        Loader::getInstance()->ToolboxCheck[strtolower($username)] = "Normal";
-        $deviceOS = (int)$data["DeviceOS"];
-        $deviceModel = (string)$data["DeviceModel"];
-        if ($deviceOS !== 1) {
-            return;
-        }
-        $name = explode(" ", $deviceModel);
-        if (!isset($name[0])) {
-            return;
-        }
-        $check = strtoupper($name[0]);
-        if ($check !== $name[0]) {
-            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cMight be Using §aToolbox. Please Avoid that Player!");
-            Loader::getInstance()->ToolboxCheck[strtolower($username)] = "Toolbox";
+        if ($player instanceof NeptunePlayer) {
+            if ($data["CurrentInputMode"] !== null) $player->PlayerControl = Loader::getInstance()->ControlList[$data["CurrentInputMode"]];
+            if ($data["DeviceOS"] !== null) $player->PlayerOS = Loader::getInstance()->OSList[$data["DeviceOS"]];
+            if ($data["DeviceModel"] !== null) $player->PlayerDevice = $data["DeviceModel"];
+            $deviceOS = (int)$data["DeviceOS"];
+            $deviceModel = (string)$data["DeviceModel"];
+            if ($deviceOS !== 1) {
+                return;
+            }
+            $name = explode(" ", $deviceModel);
+            if (!isset($name[0])) {
+                return;
+            }
+            $check = strtoupper($name[0]);
+            if ($check !== $name[0]) {
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cMight be Using §aToolbox. Please Avoid that Player!");
+                $player->ToolboxStatus = "Toolbox";
+            }
         }
     }
 
@@ -360,17 +330,16 @@ class ArenaUtils
         }
     }
 
-    public function SkillCooldown(Player $player)
+    public function SkillCooldown(NeptunePlayer $player)
     {
         $name = $player->getName();
-        if (isset(Loader::getInstance()->SkillCooldown[$name]) and Loader::getInstance()->SkillCooldown[$name] === true) {
+        if ($player->SkillCooldown === true) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
-                $name = $player->getName();
                 if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
                     $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
                 }
                 $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-                unset(Loader::getInstance()->SkillCooldown[$name]);
+                $player->SkillCooldown = false;
             }), 250);
         }
     }
@@ -380,8 +349,6 @@ class ArenaUtils
      */
     public function DeathReset(Player $player, Player $dplayer, $arena = null): void
     {
-        $name = $player->getName();
-        $dname = $dplayer->getName();
         if ($arena === Loader::getArenaFactory()->getOITCArena()) {
             if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
                 if ($dplayer instanceof NeptunePlayer) {
@@ -434,26 +401,13 @@ class ArenaUtils
                 $dplayer->getInventory()->addItem($item);
             }
         }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            unset(Loader::getInstance()->CombatTimer[$name]);
-        }
-        if (isset(Loader::getInstance()->CombatTimer[$dname])) {
-            Loader::getInstance()->CombatTimer[$dname] = 0.5;
-        }
-        if (isset(Loader::getInstance()->SkillCooldown[$name])) {
-            unset(Loader::getInstance()->SkillCooldown[$name]);
-        }
-        if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
-            unset(Loader::getInstance()->PlayerOpponent[$name]);
-        }
-        if (isset(Loader::getInstance()->PlayerOpponent[$dname])) {
-            unset(Loader::getInstance()->PlayerOpponent[$dname]);
-        }
-        if (isset(Loader::getInstance()->BoxingPoint[$dname])) {
-            unset(Loader::getInstance()->BoxingPoint[$dname]);
-        }
-        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-            unset(Loader::getInstance()->BoxingPoint[$name]);
+        foreach ([$dplayer, $player] as $p) {
+            $p->CombatTime = 0.5;
+            $p->Opponent = null;
+            $p->SkillCooldown = false;
+            if ($p instanceof NeptunePlayer) {
+                $p->setLastDamagePlayer("Unknown");
+            }
         }
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -462,12 +416,6 @@ class ArenaUtils
         $this->GiveItem($player);
         $this->addKill($dplayer);
         $this->handleStreak($dplayer, $player);
-        if ($player instanceof NeptunePlayer) {
-            $player->setLastDamagePlayer("Unknown");
-        }
-        if ($dplayer instanceof NeptunePlayer) {
-            $dplayer->setLastDamagePlayer("Unknown");
-        }
     }
 
     public function addDeath(Player $player)

@@ -7,23 +7,31 @@ namespace Kohaku;
 use Exception;
 use JsonException;
 use Kohaku\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin,
-    player\GameMode,
-    player\Player,
-    Server};
+use pocketmine\{entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class NeptunePlayer extends Player
 {
-
+    public int $BoxingPoint = 0;
     public string $cape = "";
     public string $artifact = "";
+    public string $PlayerOS = "Unknown";
+    public string $PlayerControl = "Unknown";
+    public string $PlayerDevice = "Unknown";
     public ?KitManager $duelKit;
+    public string $ToolboxStatus = "Normal";
+    public bool $Combat = false;
+    public int|float $CombatTime = 0;
+    public int $TimerData = 0;
+    public ?string $Opponent = null;
+    public bool $SkillCooldown = false;
+    public ?Vector3 $ParkourCheckPoint = null;
+    public bool $TimerTask = false;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
     private int $sec = 0;
-    private array $validstuffs = [];
     private string $lastDamagePlayer = "Unknown";
+    private array $validstuffs = [];
     private bool $isDueling = false;
     private bool $inQueue = false;
 
@@ -219,21 +227,19 @@ class NeptunePlayer extends Player
     public function parkourTimer()
     {
         $name = $this->getName();
-        if (isset(Loader::getInstance()->TimerTask[$name])) {
-            if (Loader::getInstance()->TimerTask[$name] === true) {
-                if (isset(Loader::getInstance()->TimerData[$name])) {
-                    Loader::getInstance()->TimerData[$name] += 5;
-                } else {
-                    Loader::getInstance()->TimerData[$name] = 0;
-                }
-                $mins = floor(Loader::getInstance()->TimerData[$name] / 6000);
-                $secs = floor((Loader::getInstance()->TimerData[$name] / 100) % 60);
-                $mili = Loader::getInstance()->TimerData[$name] % 100;
-                $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+        if ($this->TimerTask === true) {
+            if (isset($player->TimerData)) {
+                $this->TimerData += 5;
             } else {
-                $this->sendTip("§a0 : 0 : 0");
-                Loader::getInstance()->TimerData[$name] = 0;
+                $this->TimerData = 0;
             }
+            $mins = floor($this->TimerData / 6000);
+            $secs = floor(($this->TimerData / 100) % 60);
+            $mili = $this->TimerData % 100;
+            $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+        } else {
+            $this->sendTip("§a0 : 0 : 0");
+            $this->TimerData = 0;
         }
     }
 
@@ -246,17 +252,17 @@ class NeptunePlayer extends Player
             $this->updateScoreboard();
             $this->updateNametag();
         }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            if (Loader::getInstance()->CombatTimer[$name] > 0) {
-                $percent = floatval(Loader::getInstance()->CombatTimer[$name] / 10);
+        if ($this->Combat === true) {
+            if ($this->CombatTime > 0) {
+                $percent = floatval($this->CombatTime / 10);
                 $this->getXpManager()->setXpProgress($percent);
-                Loader::getInstance()->CombatTimer[$name] -= 1;
+                $this->CombatTime -= 1;
             } else {
+                $this->Combat = false;
                 $this->getXpManager()->setXpProgress(0.0);
                 $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
-                unset(Loader::getInstance()->BoxingPoint[$name]);
-                unset(Loader::getInstance()->CombatTimer[$name]);
-                unset(Loader::getInstance()->PlayerOpponent[$name]);
+                $this->BoxingPoint = 0;
+                $this->Opponent = null;
                 $this->setUnPVPTag();
             }
         }
@@ -268,9 +274,9 @@ class NeptunePlayer extends Player
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             $this->setParkourTag();
         } else {
-            if (isset(Loader::getInstance()->CombatTimer[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+            if (isset(Loader::getInstance()->CombatTime[$name]) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $this->setPVPTag();
-            } else if (!isset(Loader::getInstance()->CombatTimer[$name])) {
+            } else if (!isset(Loader::getInstance()->CombatTime[$name])) {
                 $this->setUnPVPTag();
             }
         }
@@ -282,9 +288,9 @@ class NeptunePlayer extends Player
         $ping = $this->getNetworkSession()->getPing();
         $tagparkour = "§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]";
         $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-        $tagparkour = str_replace("{mili}", (string)floor(Loader::getInstance()->TimerData[$name] ?? 0 % 100), $tagparkour);
-        $tagparkour = str_replace("{secs}", (string)floor((Loader::getInstance()->TimerData[$name] ?? 0 / 100) % 60), $tagparkour);
-        $tagparkour = str_replace("{mins}", (string)floor(Loader::getInstance()->TimerData[$name] ?? 0 / 6000), $tagparkour);
+        $tagparkour = str_replace("{mili}", (string)floor($this->TimerData % 100), $tagparkour);
+        $tagparkour = str_replace("{secs}", (string)floor(($this->TimerData / 100) % 60), $tagparkour);
+        $tagparkour = str_replace("{mins}", (string)floor($this->TimerData / 6000), $tagparkour);
         $this->setScoreTag($tagparkour);
     }
 
@@ -298,7 +304,7 @@ class NeptunePlayer extends Player
 
     public function setUnPVPTag()
     {
-        $untagpvp = "§d" . Loader::getInstance()->getArenaUtils()->getPlayerOs($this) . " §f| §d" . Loader::getInstance()->getArenaUtils()->getPlayerControls($this) . " §f| §d" . Loader::getInstance()->getArenaUtils()->getToolboxCheck($this);
+        $untagpvp = "§d" . $this->PlayerOS . " §f| §d" . $this->PlayerControl . " §f| §d" . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
     }
 
@@ -425,21 +431,10 @@ class NeptunePlayer extends Player
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         Loader::getClickHandler()->removePlayerClickData($this);
-        if (isset(Loader::getInstance()->BoxingPoint[$name])) {
-            unset(Loader::getInstance()->BoxingPoint[$name]);
-        }
-        if (isset(Loader::getInstance()->PlayerOpponent[$name])) {
-            Loader::getInstance()->BoxingPoint[Loader::getInstance()->PlayerOpponent[$name]] = 0;
-            unset(Loader::getInstance()->PlayerOpponent[$name]);
-        }
-        if (isset(Loader::getInstance()->CombatTimer[$name])) {
-            $this->kill();
-            unset(Loader::getInstance()->CombatTimer[$name]);
-        }
         if (isset(Loader::getInstance()->EditKit[$name])) {
             unset(Loader::getInstance()->EditKit[$name]);
         }
-        if ($this->isDueling()) {
+        if ($this->isDueling() or $this->Combat) {
             $this->kill();
         }
         $this->setInQueue(false);

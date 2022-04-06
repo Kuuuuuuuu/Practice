@@ -2,8 +2,8 @@
 
 namespace Kohaku\Utils;
 
-use Kohaku\NeptunePlayer;
 use Kohaku\Loader;
+use Kohaku\NeptunePlayer;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -66,12 +66,11 @@ class ScoreboardManager
         }
     }
 
-    public function Boxing(Player $player): void
+    public function Boxing(NeptunePlayer $player): void
     {
-        $name = $player->getName();
-        $boxingp = Loader::getInstance()->BoxingPoint[$name] ?? 0;
-        $opponent = Loader::getInstance()->PlayerOpponent[$name] ?? "";
-        $opponentboxingp = Loader::getInstance()->BoxingPoint[$opponent] ?? 0;
+        $boxingp = $player->BoxingPoint;
+        $opponent = $player->Opponent;
+        $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent) ?? 0;
         $lines = [
             1 => "§7---------------§0",
             2 => "§dYour§f: §a$boxingp",
