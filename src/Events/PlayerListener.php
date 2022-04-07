@@ -427,9 +427,10 @@ class PlayerListener implements Listener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($player instanceof NeptunePlayer and $damager instanceof NeptunePlayer) {
-            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) return;
-            $damager->setLastDamagePlayer($player->getName());
-            $player->setLastDamagePlayer($damager->getName());
+            if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                $damager->setLastDamagePlayer($player->getName());
+                $player->setLastDamagePlayer($damager->getName());
+            }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } else if ($player->Opponent === null and $damager->Opponent === null) {
