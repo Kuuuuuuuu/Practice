@@ -34,7 +34,7 @@ class Bow extends ItemBow
             $player->getInventory()->contains($arrow) => $player->getInventory(),
             default => null
         };
-        if ($player->hasFiniteResources() && $inventory === null) {
+        if ($player->hasFiniteResources() and $inventory === null) {
             return ItemUseResult::FAIL();
         }
         $location = $player->getLocation();
@@ -43,7 +43,7 @@ class Bow extends ItemBow
         if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
             $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
         } else {
-            $baseForce = 2.4;
+            $baseForce = 3;
         }
         $entity = new ArrowEntity(Location::fromObject(
             $player->getEyePos(),
@@ -52,7 +52,6 @@ class Bow extends ItemBow
             -$location->pitch
         ), $player, $baseForce >= 1);
         $entity->setMotion($player->getDirectionVector());
-
         $infinity = $this->hasEnchantment(VanillaEnchantments::INFINITY());
         if ($infinity) {
             $entity->setPickupMode(Arrow::PICKUP_CREATIVE);
@@ -67,7 +66,7 @@ class Bow extends ItemBow
             $entity->setOnFire(intdiv($entity->getFireTicks(), 20) + 100);
         }
         $ev = new EntityShootBowEvent($player, $this, $entity, $baseForce * 3);
-        if ($baseForce < 0.1 || $diff < 5 || $player->isSpectator()) {
+        if ($baseForce < 0.1 or $diff < 5 or $player->isSpectator()) {
             $ev->cancel();
         }
         $ev->call();
