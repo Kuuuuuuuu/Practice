@@ -26,9 +26,8 @@ use Kohaku\Entity\FallingWool;
 use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Entity\KillLeaderboard;
-use Kohaku\Events\BaseListener;
 use Kohaku\Events\LunarListener;
-use Kohaku\Events\PlayerListener;
+use Kohaku\Events\NeptuneListener;
 use Kohaku\Items\Bow;
 use Kohaku\Items\EnderPearl;
 use Kohaku\Items\FishingRod;
@@ -279,8 +278,7 @@ class ArenaUtils
 
     private function registerEvents(): void
     {
-        Server::getInstance()->getPluginManager()->registerEvents(new PlayerListener(), Loader::getInstance());
-        Server::getInstance()->getPluginManager()->registerEvents(new BaseListener(), Loader::getInstance());
+        Server::getInstance()->getPluginManager()->registerEvents(new NeptuneListener(), Loader::getInstance());
         Server::getInstance()->getPluginManager()->registerEvents(new LunarListener(), Loader::getInstance());
     }
 
