@@ -91,7 +91,9 @@ class SumoScheduler extends Task
                                     Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo();
                                     $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
                                 }
-                                $player->setImmobile(false);
+                                if ($player->isImmobile()) {
+                                    $player->setImmobile(false);
+                                }
                             }
                         }
                     }
