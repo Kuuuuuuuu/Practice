@@ -16,7 +16,7 @@ class LunarListener implements Listener
         if ($player->isImmobile()) {
             if ($from->getX() != $to->getX() || $from->getY() != $to->getY() || $from->getZ() != $to->getZ()) {
                 $player->sendMessage(Loader::getPrefixCore() . "You Cannot Move when Immobile!");
-                $event->cancel();
+                $player->teleport($from->asVector3());
             }
         }
     }
