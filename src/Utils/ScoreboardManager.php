@@ -21,15 +21,16 @@ class ScoreboardManager
         $duel = $this->getDuelPlayer();
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
-            1 => "§7-----------------§7",
-            2 => "§dOnline§f: §a$on §dPing§f: §a$ping",
+            1 => "§7---------------§7",
+            2 => "§dOnline§f: §a$on",
+            3 => "§dPing§f: §a$ping",
             4 => "§a",
             5 => "§dK§f: §a$kills §dD§f: §a$deaths",
             6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
             7 => "§e",
             8 => "§dIn-Queue §a$queue",
             9 => "§dIn-Duel §a$duel",
-            10 => "§7-----------------"
+            10 => "§7---------------"
         ];
         Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
@@ -86,7 +87,9 @@ class ScoreboardManager
         $boxingp = $player->BoxingPoint;
         $opponent = $player->Opponent;
         if ($opponent !== null) {
-            $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent)->BoxingPoint;
+            $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
+            /** @var NeptunePlayer $oppopl */
+            $opponentboxingp = $oppopl->BoxingPoint;
         } else {
             $opponentboxingp = 0;
         }

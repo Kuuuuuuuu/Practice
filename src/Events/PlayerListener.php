@@ -342,9 +342,7 @@ class PlayerListener implements Listener
             if ($player->EditKit !== null) {
                 $event->cancel();
                 if (mb_strtolower($args[0]) === "confirm") {
-                    if ($player instanceof NeptunePlayer) {
-                        $player->saveKit();
-                    }
+                    $player->saveKit();
                 } else {
                     $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm");
                     $player->sendMessage(Loader::getPrefixCore() . "§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
@@ -429,6 +427,7 @@ class PlayerListener implements Listener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($player instanceof NeptunePlayer and $damager instanceof NeptunePlayer) {
+            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) return;
             $damager->setLastDamagePlayer($player->getName());
             $player->setLastDamagePlayer($damager->getName());
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
@@ -459,7 +458,9 @@ class PlayerListener implements Listener
                                 $boxingp = $p->BoxingPoint;
                                 $opponent = $p->Opponent;
                                 if ($opponent !== null) {
-                                    $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent)->BoxingPoint;
+                                    $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
+                                    /** @var NeptunePlayer $oppopl */
+                                    $opponentboxingp = $oppopl->BoxingPoint;
                                 } else {
                                     $opponentboxingp = 0;
                                 }
@@ -641,7 +642,6 @@ class PlayerListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         $player->getEffects()->clear();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();

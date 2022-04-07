@@ -38,6 +38,7 @@ class HubCommand extends Command
             $sender->getEffects()->clear();
             Loader::getInstance()->getScoreboardManager()->sb($sender);
             Loader::getInstance()->getArenaUtils()->GiveItem($sender);
+            $sender->setLastDamagePlayer("Unknown");
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);
             }
