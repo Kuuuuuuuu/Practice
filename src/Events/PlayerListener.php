@@ -458,7 +458,11 @@ class PlayerListener implements Listener
                             foreach ([$damager, $player] as $p) {
                                 $boxingp = $p->BoxingPoint;
                                 $opponent = $p->Opponent;
-                                $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent)->BoxingPoint ?? 0;
+                                if ($opponent !== null) {
+                                    $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent)->BoxingPoint;
+                                } else {
+                                    $opponentboxingp = 0;
+                                }
                                 $lines = [
                                     1 => "§7---------------§0",
                                     2 => "§dYour§f: §a$boxingp",

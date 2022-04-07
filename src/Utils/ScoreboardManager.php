@@ -85,7 +85,11 @@ class ScoreboardManager
     {
         $boxingp = $player->BoxingPoint;
         $opponent = $player->Opponent;
-        $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent) ?? 0;
+        if ($opponent !== null) {
+            $opponentboxingp = Server::getInstance()->getPlayerByPrefix($opponent)->BoxingPoint;
+        } else {
+            $opponentboxingp = 0;
+        }
         $lines = [
             1 => "§7---------------§0",
             2 => "§dYour§f: §a$boxingp",
