@@ -35,7 +35,7 @@ class ClickHandler
 
     public function getClicks(Player $player, float $deltaTime = 1.0, int $roundPrecision = 1): float
     {
-        if (!isset($this->clicksData[mb_strtolower($player->getName())]) || empty($this->clicksData[mb_strtolower($player->getName())])) {
+        if (!isset($this->clicksData[mb_strtolower($player->getName())]) or empty($this->clicksData[mb_strtolower($player->getName())])) {
             return 0;
         }
         $ct = microtime(true);

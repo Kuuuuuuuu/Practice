@@ -150,6 +150,11 @@ class Loader extends PluginBase
         return self::$duelmanager;
     }
 
+    public static function getInstance(): Loader
+    {
+        return self::$plugin;
+    }
+
     public function onLoad(): void
     {
         self::$plugin = $this;
@@ -169,7 +174,7 @@ class Loader extends PluginBase
 
     public function onEnable(): void
     {
-        Loader::getInstance()->getArenaUtils()->Enable();
+        $this->getArenaUtils()->Enable();
     }
 
     public static function getArenaUtils(): ArenaUtils
@@ -177,16 +182,11 @@ class Loader extends PluginBase
         return self::$arenautils;
     }
 
-    public static function getInstance(): Loader
-    {
-        return self::$plugin;
-    }
-
     /**
      * @throws JsonException
      */
     public function onDisable(): void
     {
-        Loader::getArenaUtils()->Disable();
+        self::getArenaUtils()->Disable();
     }
 }

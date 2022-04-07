@@ -332,7 +332,6 @@ class ArenaUtils
 
     public function SkillCooldown(NeptunePlayer $player)
     {
-        $name = $player->getName();
         if ($player->SkillCooldown === true) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
                 if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
@@ -435,10 +434,6 @@ class ArenaUtils
 
     public function GiveItem(Player $player)
     {
-        $player->getOffHandInventory()->clearAll();
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->getEffects()->clear();
         $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName("§r§dPlay");
         $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
@@ -447,10 +442,14 @@ class ArenaUtils
         $item3->setCustomName("§r§dBot");
         $item4 = ItemFactory::getInstance()->get(ItemIds::BOOK, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName("§r§dDuel");
-        $player->getInventory()->setItem(4, $item3);
+        $player->getOffHandInventory()->clearAll();
+        $player->getInventory()->clearAll();
+        $player->getArmorInventory()->clearAll();
+        $player->getEffects()->clear();
         $player->getInventory()->setItem(0, $item);
-        $player->getInventory()->setItem(1, $item4);
         $player->getInventory()->setItem(8, $item2);
+        $player->getInventory()->setItem(4, $item3);
+        $player->getInventory()->setItem(1, $item4);
     }
 
     public function addKill(Player $player)
@@ -469,10 +468,8 @@ class ArenaUtils
         $killer = $this->getData($player->getName());
         $loser = $this->getData($death->getName());
         $oldStreak = $loser->getStreak();
-        if ($oldStreak >= 5) {
-            $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
-            $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
-        }
+        $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
+        $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
         $newStreak = $killer->getStreak();
         if (is_int($newStreak / 10)) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");

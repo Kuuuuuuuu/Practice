@@ -45,8 +45,8 @@ class FistBot extends Human
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         }
-        $roundedHealth = round($this->getHealth());
-        $this->setNameTag(TextFormat::BOLD . "§dPracticeBot " . "\n" . TextFormat::RED . "$roundedHealth");
+        $health = round($this->getHealth());
+        $this->setNameTag(TextFormat::BOLD . "§dPracticeBot " . "\n" . TextFormat::RED . "$health");
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
             $this->speed = 2;
@@ -111,7 +111,7 @@ class FistBot extends Human
             if ($killer instanceof Player) {
                 $deltaX = $this->getPosition()->getX() - $killer->getPosition()->getX();
                 $deltaZ = $this->getPosition()->getZ() - $killer->getPosition()->getZ();
-                $this->knockBack($deltaX, $deltaZ);
+                $this->knockBack($deltaX, $deltaZ, 0.45);
             }
         }
         if ($entity instanceof Player) {
@@ -143,6 +143,7 @@ class FistBot extends Human
                 $motion->y = $yKb;
             }
             if ($this->isAlive() and !$this->isClosed()) {
+                $this->move(0, 0, 0);
                 $this->setMotion($motion);
             }
         }
