@@ -115,19 +115,21 @@ class DuelTask extends Task
     {
         foreach ($this->getPlayers() as $online) {
             if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
-                $online->sendMessage("§f-----------------------");
-                $winnerMessage = "§aWinner: §f";
-                $winnerMessage .= $this->winner !== null ? $this->winner->getName() : "None";
-                $online->sendMessage($winnerMessage);
-                $loserMessage = "§cLoser: §f";
-                $loserMessage .= $this->loser !== null ? $this->loser->getName() : "None";
-                $online->sendMessage($loserMessage);
-                $online->sendMessage("§f-----------------------");
-                Loader::getArenaUtils()->GiveItem($online);
-                Loader::getScoreboardManager()->sb($online);
-                /* @var $online NeptunePlayer */
-                $online->setCurrentKit(null);
-                $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                if ($online instanceof NeptunePlayer) {
+                    $online->sendMessage("§f-----------------------");
+                    $winnerMessage = "§aWinner: §f";
+                    $winnerMessage .= $this->winner !== null ? $this->winner->getName() : "None";
+                    $online->sendMessage($winnerMessage);
+                    $loserMessage = "§cLoser: §f";
+                    $loserMessage .= $this->loser !== null ? $this->loser->getName() : "None";
+                    $online->sendMessage($loserMessage);
+                    $online->sendMessage("§f-----------------------");
+                    Loader::getArenaUtils()->GiveItem($online);
+                    Loader::getScoreboardManager()->sb($online);
+                    $online->setDueling(false);
+                    $online->setCurrentKit(null);
+                    $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                }
             }
         }
         if (!$this->getHandler()->isCancelled()) {

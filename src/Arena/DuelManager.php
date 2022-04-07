@@ -28,17 +28,14 @@ class DuelManager
     public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
         $worldName = "Duel-" . Uuid::uuid4();
-        $player1->getInventory()->clearAll();
-        $player2->getInventory()->clearAll();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
-        $this->addMatch($worldName, new DuelTask($worldName, $player1, $player2, $kit));
-        $player1->setDueling(true);
-        $player2->setDueling(true);
         foreach ([$player1, $player2] as $player) {
-            Loader::getScoreboardManager()->sb2($player);
+            $player->getInventory()->clearAll();
+            $player->setDueling(true);
         }
+        $this->addMatch($worldName, new DuelTask($worldName, $player1, $player2, $kit));
     }
 
     #[Pure] public function addMatch(string $name, DuelTask $task): void
