@@ -468,9 +468,11 @@ class ArenaUtils
         $killer = $this->getData($player->getName());
         $loser = $this->getData($death->getName());
         $oldStreak = $loser->getStreak();
-        $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
-        $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
         $newStreak = $killer->getStreak();
+        if ($oldStreak > 10) {
+            $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
+            $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
+        }
         if (is_int($newStreak / 10)) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
         }
