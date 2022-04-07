@@ -11,7 +11,6 @@ use Kohaku\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\WorldCreationOptions;
-use Ramsey\Uuid\Uuid;
 
 class DuelManager
 {
@@ -27,7 +26,7 @@ class DuelManager
 
     public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
-        $worldName = "Duel-" . Uuid::uuid4();
+        $worldName = "Duel-" . $player1->getName() . "-" . $player2->getName();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);

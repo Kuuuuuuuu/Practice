@@ -13,25 +13,25 @@ use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 class NeptunePlayer extends Player
 {
     public int $BoxingPoint = 0;
+    public int $TimerData = 0;
     public string $cape = "";
     public string $artifact = "";
     public string $PlayerOS = "Unknown";
     public string $PlayerControl = "Unknown";
     public string $PlayerDevice = "Unknown";
-    public ?KitManager $duelKit;
     public string $ToolboxStatus = "Normal";
+    public string $lastDamagePlayer = "Unknown";
+    public ?string $EditKit = null;
+    public ?string $Opponent = null;
+    public ?Vector3 $ParkourCheckPoint = null;
+    public ?KitManager $duelKit = null;
     public bool $Combat = false;
     public int|float $CombatTime = 0;
-    public int $TimerData = 0;
-    public ?string $Opponent = null;
     public bool $SkillCooldown = false;
-    public ?Vector3 $ParkourCheckPoint = null;
     public bool $TimerTask = false;
-    public ?string $EditKit = null;
+    private int $sec = 0;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
-    private int $sec = 0;
-    private string $lastDamagePlayer = "Unknown";
     private array $validstuffs = [];
     private bool $isDueling = false;
     private bool $inQueue = false;
@@ -333,7 +333,6 @@ class NeptunePlayer extends Player
      */
     public function onJoin()
     {
-        $name = $this->getName();
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
@@ -416,7 +415,6 @@ class NeptunePlayer extends Player
 
     public function onQuit()
     {
-        $name = $this->getName();
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
