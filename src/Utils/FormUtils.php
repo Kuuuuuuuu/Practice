@@ -276,7 +276,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function getQueue(string $kit): int
+    private function getQueue(string $kit): int
     {
         $kitcount = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
@@ -487,7 +487,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public static function getArtifactForm(Player $player): bool
+    public function getArtifactForm(Player $player): bool
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
             if ($event instanceof NeptunePlayer) {
