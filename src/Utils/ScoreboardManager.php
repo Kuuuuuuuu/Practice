@@ -18,16 +18,18 @@ class ScoreboardManager
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();
         $queue = $this->getQueuePlayer();
+        $duel = $this->getDuelPlayer();
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
-            1 => "§7---------------§7",
+            1 => "§7-----------------§7",
             2 => "§dOnline§f: §a$on §dPing§f: §a$ping",
             4 => "§a",
             5 => "§dK§f: §a$kills §dD§f: §a$deaths",
             6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
             7 => "§e",
             8 => "§dIn-Queue §a$queue",
-            9 => "§7---------------"
+            9 => "§dIn-Duel §a$duel",
+            10 => "§7-----------------"
         ];
         Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
@@ -35,7 +37,7 @@ class ScoreboardManager
         }
     }
 
-    public function getQueuePlayer(): int
+    private function getQueuePlayer(): int
     {
         $queue = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
@@ -46,6 +48,19 @@ class ScoreboardManager
             }
         }
         return $queue ?? 0;
+    }
+
+    private function getDuelPlayer(): int
+    {
+        $duel = 0;
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            if ($player instanceof NeptunePlayer) {
+                if ($player->isDueling()) {
+                    $duel += 1;
+                }
+            }
+        }
+        return $duel ?? 0;
     }
 
     public function sb2(Player $player): void
