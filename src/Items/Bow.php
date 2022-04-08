@@ -43,7 +43,7 @@ class Bow extends ItemBow
         if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
             $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
         } else {
-            $baseForce = 3;
+            $baseForce = 2.5;
         }
         $entity = new ArrowEntity(Location::fromObject(
             $player->getEyePos(),
@@ -66,8 +66,14 @@ class Bow extends ItemBow
             $entity->setOnFire(intdiv($entity->getFireTicks(), 20) + 100);
         }
         $ev = new EntityShootBowEvent($player, $this, $entity, $baseForce * 3);
-        if ($baseForce < 0.1 or $diff < 5 or $player->isSpectator()) {
-            $ev->cancel();
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+            if ($baseForce < 0.1 or $diff < 5 or $player->isSpectator()) {
+                $ev->cancel();
+            }
+        } else {
+            if ($baseForce < 0.1 or $diff < 2 or $player->isSpectator()) {
+                $ev->cancel();
+            }
         }
         $ev->call();
         $entity = $ev->getProjectile();

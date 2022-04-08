@@ -728,7 +728,6 @@ class NeptuneListener implements Listener
                     }
                     foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
                         if ($p->getWorld() === $damager->getWorld()) {
-                            Loader::getArenaUtils()->spawnLightning($player, $damager);
                             $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
                         }
                     }
