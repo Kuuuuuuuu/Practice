@@ -52,9 +52,8 @@ class DuelManager
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        if (Loader::getArenaUtils()->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name")) {
-            $this->removeMatch($name);
-        }
+        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        $this->removeMatch($name);
     }
 
     public function removeMatch($name): void

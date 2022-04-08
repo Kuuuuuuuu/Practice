@@ -133,5 +133,6 @@ class DuelTask extends Task
             }
         }
         Loader::getInstance()->getDuelManager()->stopMatch($this->level->getFolderName());
+        $this->getHandler()->cancel();
     }
 }
