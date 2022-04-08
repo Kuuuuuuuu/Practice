@@ -12,7 +12,6 @@ use JsonException;
 use Kohaku\Arena\ArenaFactory;
 use Kohaku\Arena\ArenaManager;
 use Kohaku\Arena\DuelManager;
-use Kohaku\Arena\SumoHandler;
 use Kohaku\Utils\ArenaUtils;
 use Kohaku\Utils\BotUtils;
 use Kohaku\Utils\ClickHandler;
@@ -48,7 +47,6 @@ class Loader extends PluginBase
     public Config $ArtifactData;
     public Config $KitData;
     public SQLite3 $BanData;
-    public ?SumoHandler $WaitingSumo;
     public int $RestartTime = 31;
     public int $DeleteBlockTime = 8;
     public int $MaximumCPS = 20;
