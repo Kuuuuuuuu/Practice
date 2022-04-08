@@ -22,7 +22,7 @@ class DuelTask extends Task
     private ?NeptunePlayer $winner = null;
     private ?NeptunePlayer $loser = null;
     private KitManager $kit;
-    private ?Task $scheduler = null;
+    private ?self $scheduler;
 
     public function __construct(string $name, NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit)
     {
