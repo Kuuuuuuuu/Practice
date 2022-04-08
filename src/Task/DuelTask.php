@@ -132,11 +132,12 @@ class DuelTask extends Task
                 }
             }
         }
-        if (Server::getInstance()->getWorldManager()->isWorldLoaded($this->level->getFolderName())) {
-            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()));
+        $name = $this->level->getFolderName();
+        if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
+            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$this->level->getFolderName()");
-        Loader::getDuelManager()->removeMatch($this->level->getFolderName());
+        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        Loader::getDuelManager()->removeMatch($name);
         $this->getHandler()->cancel();
     }
 }
