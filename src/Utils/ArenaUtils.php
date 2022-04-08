@@ -8,7 +8,6 @@ use DateTime;
 use Exception;
 use JsonException;
 use Kohaku\Arena\DuelManager;
-use Kohaku\Arena\SumoHandler;
 use Kohaku\Commands\BroadcastCommand;
 use Kohaku\Commands\CoreCommand;
 use Kohaku\Commands\HubCommand;
@@ -480,46 +479,12 @@ class ArenaUtils
 
     public function JoinRandomArenaSumo(Player $player)
     {
-        $arena = $this->getRandomSumoArenas();
+        $arena = Loader::getInstance()->WaitingSumo;
         if (!is_null($arena)) {
             $arena->joinToArena($player);
             return;
         }
         $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
-    }
-
-    public function getRandomSumoArenas(): ?SumoHandler
-    {
-        $availableArenas = [];
-        foreach (Loader::getInstance()->SumoArenas as $index => $arena) {
-            $availableArenas[$index] = $arena;
-        }
-        foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 or $arena->setup or count($arena->players) >= 2) {
-                unset($availableArenas[$index]);
-            }
-        }
-        $arenasByPlayers = [];
-        foreach ($availableArenas as $index => $arena) {
-            $arenasByPlayers[$index] = count($arena->players);
-        }
-        arsort($arenasByPlayers);
-        $top = -1;
-        $availableArenas = [];
-        foreach ($arenasByPlayers as $index => $players) {
-            if ($top === -1) {
-                $top = $players;
-                $availableArenas[] = $index;
-            } else {
-                if ($top === $players) {
-                    $availableArenas[] = $index;
-                }
-            }
-        }
-        if (empty($availableArenas)) {
-            return null;
-        }
-        return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
     }
 
     public function JoinRandomArenaSkywars(Player $player)
