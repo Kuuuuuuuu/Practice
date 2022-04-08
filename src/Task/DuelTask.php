@@ -14,7 +14,6 @@ use pocketmine\world\WorldException;
 
 class DuelTask extends Task
 {
-    public self $scheduler;
     private int $time = 903;
     private int $tick = 0;
     private NeptunePlayer $player1;
@@ -30,7 +29,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = $this, 1);
+        $this->setHandler(Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1));
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -133,12 +132,11 @@ class DuelTask extends Task
                 }
             }
         }
-        Loader::getInstance()->getDuelManager()->stopMatch($this->level->getFolderName());
+        if (Server::getInstance()->getWorldManager()->isWorldLoaded($this->level->getFolderName())) {
+            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()));
+        }
+        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$this->level->getFolderName()");
+        Loader::getDuelManager()->removeMatch($this->level->getFolderName());
         $this->getHandler()->cancel();
-    }
-
-    public function __destruct()
-    {
-        unset($this->scheduler);
     }
 }
