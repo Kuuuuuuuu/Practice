@@ -14,6 +14,7 @@ use pocketmine\world\WorldException;
 
 class DuelTask extends Task
 {
+    public self $scheduler;
     private int $time = 903;
     private int $tick = 0;
     private NeptunePlayer $player1;
@@ -29,7 +30,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        $this->setHandler(Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1));
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = $this, 20);
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;

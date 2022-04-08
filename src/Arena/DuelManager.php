@@ -54,6 +54,9 @@ class DuelManager
         }
         Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
         $this->removeMatch($name);
+        $match = $this->getMatches()[$name];
+        /* @var $match DuelTask */
+        unset($match->scheduler);
     }
 
     public function removeMatch($name): void
