@@ -30,7 +30,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = $this, 20);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = $this, 1);
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -135,5 +135,10 @@ class DuelTask extends Task
         }
         Loader::getInstance()->getDuelManager()->stopMatch($this->level->getFolderName());
         $this->getHandler()->cancel();
+    }
+
+    public function __destruct()
+    {
+        unset($this->scheduler);
     }
 }
