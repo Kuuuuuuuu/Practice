@@ -5,7 +5,6 @@ namespace Kohaku\Arena;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
-use Kohaku\Task\DuelTask;
 use Kohaku\Utils\DuelGenerator;
 use Kohaku\Utils\Kits\KitManager;
 use pocketmine\Server;
@@ -34,10 +33,10 @@ class DuelManager
             $player->getInventory()->clearAll();
             $player->setDueling(true);
         }
-        $this->addMatch($worldName, $this->getMatches()[$worldName]["Task"] = new DuelTask($worldName, $player1, $player2, $kit));
+        $this->addMatch($worldName, new DuelFactory($worldName, $player1, $player2, $kit));
     }
 
-    #[Pure] public function addMatch(string $name, DuelTask $task): void
+    #[Pure] public function addMatch(string $name, DuelFactory $task): void
     {
         $this->getMatches()[$name] = $task;
     }
@@ -53,12 +52,7 @@ class DuelManager
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
         Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
-        unset($this->getMatches()[$name]["Task"]);
-        $this->removeMatch($name);
-    }
-
-    public function removeMatch($name): void
-    {
+        unset(Loader::getInstance()->CoreTask->DuelTask[$name]);
         if ($this->isMatch($name)) {
             unset($this->matches[$name]);
         }

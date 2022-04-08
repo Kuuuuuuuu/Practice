@@ -12,6 +12,7 @@ use JsonException;
 use Kohaku\Arena\ArenaFactory;
 use Kohaku\Arena\ArenaManager;
 use Kohaku\Arena\DuelManager;
+use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\ArenaUtils;
 use Kohaku\Utils\BotUtils;
 use Kohaku\Utils\ClickHandler;
@@ -58,6 +59,7 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
+    public ?NeptuneTask $CoreTask;
     public array $BanCommand = [
         "hub",
         "kill"

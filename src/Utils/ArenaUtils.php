@@ -283,7 +283,7 @@ class ArenaUtils
 
     private function registerTasks(): void
     {
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new NeptuneTask(), 1);
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(Loader::getInstance()->CoreTask = new NeptuneTask(), 1);
     }
 
     private function registerEntity(): void

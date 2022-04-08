@@ -760,7 +760,7 @@ class NeptuneListener implements Listener
         $player = $event->getPlayer();
         $msg = $event->getMessage();
         if ($player instanceof NeptunePlayer) {
-            if ($player->Combat === true or $player->EditKit !== null) {
+            if ($player->Combat === true or $player->EditKit !== null or $player->isDueling()) {
                 $msg = substr($msg, 1);
                 $msg = explode(" ", $msg);
                 if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
