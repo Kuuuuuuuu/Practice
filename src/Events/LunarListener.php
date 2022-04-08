@@ -23,7 +23,7 @@ class LunarListener implements Listener
         }
     }
 
-    public function onDamage(EntityDamageByEntityEvent $event)
+    /*public function onDamage(EntityDamageByEntityEvent $event)
     {
         $entity = $event->getEntity();
         $damager = $event->getDamager();
@@ -33,6 +33,6 @@ class LunarListener implements Listener
                 $event->cancel();
             }
         }
-    }
+    }*/
     //TODO: Make Anti-Fly & Kill Aura
 }
