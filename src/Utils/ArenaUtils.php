@@ -64,7 +64,6 @@ use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\World;
 use SQLite3;
-use UnexpectedValueException;
 use ZipArchive;
 
 class ArenaUtils
@@ -564,10 +563,10 @@ class ArenaUtils
         Loader::$YamlLoader->saveArenas();
     }
 
-    public function deleteDir($dirPath): void
+    public function deleteDir($dirPath): bool
     {
         if (!is_dir($dirPath)) {
-            throw new UnexpectedValueException("dirPath must be a directory");
+            return false;
         }
         if (!str_ends_with($dirPath, '/')) {
             $dirPath .= '/';
@@ -581,6 +580,7 @@ class ArenaUtils
             }
         }
         rmdir($dirPath);
+        return true;
     }
 
     public function loadMap(string $folderName, bool $justSave = false): ?World

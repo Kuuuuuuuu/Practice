@@ -49,11 +49,12 @@ class DuelManager
 
     public function stopMatch(string $name)
     {
-        $this->removeMatch($name);
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        if (Loader::getArenaUtils()->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name")) {
+            $this->removeMatch($name);
+        }
     }
 
     public function removeMatch($name): void
