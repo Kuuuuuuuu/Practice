@@ -83,7 +83,7 @@ class SumoHandler implements Listener
         if (!$this->data["enabled"]) {
             Loader::getInstance()->getLogger()->error("Can not load arena: Arena is not enabled!");
             return;
-        } else if (!$restart) {
+        } elseif (!$restart) {
             Server::getInstance()->getPluginManager()->registerEvents($this, Loader::getInstance());
             if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"])) {
                 Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
@@ -112,10 +112,10 @@ class SumoHandler implements Listener
         if (!$this->data["enabled"]) {
             $player->sendMessage(Loader::getPrefixCore() . "§eThe game is in configurating!");
             return;
-        } else if (count($this->players) >= $this->data["slots"]) {
+        } elseif (count($this->players) >= $this->data["slots"]) {
             $player->sendMessage(Loader::getPrefixCore() . "§eThe game is full!");
             return;
-        } else if ($this->inGame($player)) {
+        } elseif ($this->inGame($player)) {
             $player->sendMessage(Loader::getPrefixCore() . "You are already in the queue/game!");
             return;
         }

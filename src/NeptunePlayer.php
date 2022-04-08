@@ -50,7 +50,7 @@ class NeptunePlayer extends Player
                 try {
                     if ($this->isDueling()) {
                         $attackSpeed = 8;
-                    } else if (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                    } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     } else {
                         $attackSpeed = 10;
@@ -74,7 +74,7 @@ class NeptunePlayer extends Player
             if ($this->isDueling()) {
                 $this->yKb = 0.301;
                 $this->xzKB = 0.311;
-            } else if (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+            } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["hkb"];
                 $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["ykb"];
             } else {
@@ -270,7 +270,7 @@ class NeptunePlayer extends Player
         } else {
             if ($this->Combat === true or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $this->setPVPTag();
-            } else if ($this->Combat === false) {
+            } elseif ($this->Combat === false) {
                 $this->setUnPVPTag();
             }
         }
@@ -305,9 +305,9 @@ class NeptunePlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             Loader::getInstance()->getScoreboardManager()->sb($this);
-        } else if ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
             Loader::getInstance()->getScoreboardManager()->sb2($this);
-        } else if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
             Loader::getInstance()->getScoreboardManager()->Boxing($this);
         }
     }

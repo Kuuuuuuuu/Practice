@@ -359,7 +359,7 @@ class ArenaUtils
                     $dplayer->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                 }
             }
-        } else if ($arena === Loader::getArenaFactory()->getBuildArena()) {
+        } elseif ($arena === Loader::getArenaFactory()->getBuildArena()) {
             if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 $dplayer->getInventory()->clearAll();
                 $dplayer->getArmorInventory()->clearAll();
@@ -389,11 +389,11 @@ class ArenaUtils
                 $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             }
-        } else if ($arena === Loader::getArenaFactory()->getBoxingArena()) {
+        } elseif ($arena === Loader::getArenaFactory()->getBoxingArena()) {
             if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                 $dplayer->setHealth(20);
             }
-        } else if ($arena === Loader::getArenaFactory()->getComboArena()) {
+        } elseif ($arena === Loader::getArenaFactory()->getComboArena()) {
             if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
                 $dplayer->getInventory()->clearAll();
                 $item = ItemFactory::getInstance()->get(466, 0, 3);
@@ -495,7 +495,7 @@ class ArenaUtils
             $availableArenas[$index] = $arena;
         }
         foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 or $arena->setup) {
+            if ($arena->phase !== 0 or $arena->setup or count($arena->players) >= 2) {
                 unset($availableArenas[$index]);
             }
         }

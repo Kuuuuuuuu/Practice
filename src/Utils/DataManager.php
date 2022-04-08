@@ -146,25 +146,25 @@ class DataManager
         $format = "§6Rookie";
         if ($this->elo >= 1200 and $this->elo < 1400) {
             $format = "§fSilver";
-        } else if ($this->elo >= 1400 and $this->elo < 1600) {
+        } elseif ($this->elo >= 1400 and $this->elo < 1600) {
             $format = "§eGold";
-        } else if ($this->elo >= 1600 and $this->elo < 1800) {
+        } elseif ($this->elo >= 1600 and $this->elo < 1800) {
             $format = "§dPlatinum";
-        } else if ($this->elo >= 1800 and $this->elo < 2000) {
+        } elseif ($this->elo >= 1800 and $this->elo < 2000) {
             $format = "§bDiamond";
-        } else if ($this->elo >= 2000 and $this->elo < 2200) {
+        } elseif ($this->elo >= 2000 and $this->elo < 2200) {
             $format = "§6Master";
-        } else if ($this->elo >= 2200 and $this->elo < 2400) {
+        } elseif ($this->elo >= 2200 and $this->elo < 2400) {
             $format = "§3Grandmaster";
-        } else if ($this->elo >= 2400 and $this->elo < 2600) {
+        } elseif ($this->elo >= 2400 and $this->elo < 2600) {
             $format = "§4Challenger";
-        } else if ($this->elo >= 2600 and $this->elo < 2800) {
+        } elseif ($this->elo >= 2600 and $this->elo < 2800) {
             $format = "§5Legend";
-        } else if ($this->elo >= 2800 and $this->elo < 3000) {
+        } elseif ($this->elo >= 2800 and $this->elo < 3000) {
             $format = "§6Legendary";
-        } else if ($this->elo >= 3000 and $this->elo < 3200) {
+        } elseif ($this->elo >= 3000 and $this->elo < 3200) {
             $format = "§7Godlike";
-        } else if ($this->elo >= 3200) {
+        } elseif ($this->elo >= 3200) {
             $format = "§cUnbeatable";
         }
         return $format;

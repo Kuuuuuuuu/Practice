@@ -85,7 +85,7 @@ class SumoScheduler extends Task
                                     $this->plugin->disconnectPlayer($player);
                                     Loader::getInstance()->getArenaUtils()->addDeath($player);
                                     $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
-                                } else if ($player->getPosition()->getY() <= 50) {
+                                } elseif ($player->getPosition()->getY() <= 50) {
                                     $this->plugin->disconnectPlayer($player);
                                     Loader::getInstance()->getArenaUtils()->addDeath($player);
                                     Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo();
