@@ -34,7 +34,7 @@ class DuelManager
             $player->getInventory()->clearAll();
             $player->setDueling(true);
         }
-        $this->addMatch($worldName, new DuelTask($worldName, $player1, $player2, $kit));
+        $this->addMatch($worldName, $this->getMatches()[$worldName]["Task"] = new DuelTask($worldName, $player1, $player2, $kit));
     }
 
     #[Pure] public function addMatch(string $name, DuelTask $task): void
@@ -53,6 +53,7 @@ class DuelManager
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
         Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        unset($this->getMatches()[$name]["Task"]);
         $this->removeMatch($name);
     }
 

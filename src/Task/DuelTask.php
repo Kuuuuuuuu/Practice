@@ -22,7 +22,6 @@ class DuelTask extends Task
     private ?NeptunePlayer $winner = null;
     private ?NeptunePlayer $loser = null;
     private KitManager $kit;
-    private ?self $scheduler;
 
     public function __construct(string $name, NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit)
     {
@@ -30,7 +29,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this->scheduler = $this, 1);
+        $this->setHandler(Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1));
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -133,9 +132,6 @@ class DuelTask extends Task
                 }
             }
         }
-        if ($this->scheduler !== null) {
-            unset($this->scheduler);
-            Loader::getDuelManager()->stopMatch($this->level->getFolderName());
-        }
+        Loader::getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }
