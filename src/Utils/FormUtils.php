@@ -492,7 +492,9 @@ class FormUtils
         $form = new SimpleForm(function (Player $event, $data = null) {
             if ($event instanceof NeptunePlayer) {
                 if ($data !== null) {
-                    if ($data === "None") return;
+                    if ($data === "None") {
+                        return;
+                    }
                     $cosmetic = Loader::getCosmeticHandler();
                     if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
                         if (str_contains($data, 'SP-')) {

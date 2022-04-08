@@ -29,7 +29,7 @@ class DuelTask extends Task
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        $this->setHandler(Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1));
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask($this, 1);
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -132,12 +132,9 @@ class DuelTask extends Task
                 }
             }
         }
-        $name = $this->level->getFolderName();
-        if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
-            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
+        if (!$this->getHandler()->isCancelled()) {
+            $this->getHandler()->cancel();
+            Loader::getDuelManager()->stopMatch($this->level->getFolderName());
         }
-        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
-        Loader::getDuelManager()->removeMatch($name);
-        $this->getHandler()->cancel();
     }
 }
