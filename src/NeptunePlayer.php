@@ -29,6 +29,7 @@ class NeptunePlayer extends Player
     public int|float $CombatTime = 0;
     public bool $SkillCooldown = false;
     public bool $TimerTask = false;
+    public array $points = [];
     private int $sec = 0;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;

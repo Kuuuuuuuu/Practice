@@ -15,7 +15,6 @@ use pocketmine\world\WorldException;
 class DuelFactory
 {
     private int $time = 903;
-    private int $tick = 0;
     private NeptunePlayer $player1;
     private NeptunePlayer $player2;
     private World $level;
@@ -55,7 +54,7 @@ class DuelFactory
             }
         }
         switch ($this->time) {
-            case 902:
+            case 903:
                 foreach ($this->getPlayers() as $player) {
                     if ($player instanceof NeptunePlayer) {
                         $player->setGamemode(GameMode::SURVIVAL());
@@ -75,7 +74,7 @@ class DuelFactory
                 }, function (): void {
                 });
                 break;
-            case 901:
+            case 902:
                 foreach ($this->getPlayers() as $player) {
                     if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(null);
@@ -84,13 +83,13 @@ class DuelFactory
                     Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                 }
                 break;
-            case 900:
+            case 901:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle("§d1", "", 1, 3, 1);
                     Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                 }
                 break;
-            case 899:
+            case 900:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle("§dFight!", "", 1, 3, 1);
                     Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
