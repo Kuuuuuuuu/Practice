@@ -49,6 +49,7 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
+use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\inventory\transaction\CraftingTransaction;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -187,6 +188,12 @@ class NeptuneListener implements Listener
                 }), 100);
             }
         }
+    }
+
+    public function onQuery(QueryRegenerateEvent $ev)
+    {
+        $ev->getQueryInfo()->setPlugins(["NeptuneCore"]);
+        $ev->getQueryInfo()->setWorld("NeptuneLobby");
     }
 
     public function onDropItem(PlayerDropItemEvent $event): void
