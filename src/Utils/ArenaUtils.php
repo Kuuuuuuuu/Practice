@@ -350,11 +350,11 @@ class ArenaUtils
     /**
      * @throws Exception
      */
-    public function DeathReset(Player $player, Player $dplayer, $arena = null): void
+    public function DeathReset(NeptunePlayer $player, NeptunePlayer $dplayer, $arena = null): void
     {
-        if ($arena === Loader::getArenaFactory()->getOITCArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
-                if ($dplayer instanceof NeptunePlayer) {
+        if ($dplayer->isAlive()) {
+            if ($arena === Loader::getArenaFactory()->getOITCArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
@@ -362,13 +362,11 @@ class ArenaUtils
                     $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     $dplayer->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
                 }
-            }
-        } elseif ($arena === Loader::getArenaFactory()->getBuildArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
-                $dplayer->getInventory()->clearAll();
-                $dplayer->getArmorInventory()->clearAll();
-                $dplayer->setHealth(20);
-                if ($dplayer instanceof NeptunePlayer) {
+            } elseif ($arena === Loader::getArenaFactory()->getBuildArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+                    $dplayer->getInventory()->clearAll();
+                    $dplayer->getArmorInventory()->clearAll();
+                    $dplayer->setHealth(20);
                     try {
                         $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["0"]["item"], 0, $dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["1"]["item"], 0, $dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -387,21 +385,21 @@ class ArenaUtils
                         $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::COBWEB, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SHEARS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
+                    $dplayer->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $dplayer->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                    $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 }
-                $dplayer->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-            }
-        } elseif ($arena === Loader::getArenaFactory()->getBoxingArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
-                $dplayer->setHealth(20);
-            }
-        } elseif ($arena === Loader::getArenaFactory()->getComboArena()) {
-            if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
-                $dplayer->getInventory()->clearAll();
-                $item = ItemFactory::getInstance()->get(466, 0, 3);
-                $dplayer->getInventory()->addItem($item);
+            } elseif ($arena === Loader::getArenaFactory()->getBoxingArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+                    $dplayer->setHealth(20);
+                }
+            } elseif ($arena === Loader::getArenaFactory()->getComboArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
+                    $dplayer->getInventory()->clearAll();
+                    $item = ItemFactory::getInstance()->get(466, 0, 3);
+                    $dplayer->getInventory()->addItem($item);
+                }
             }
         }
         foreach ([$dplayer, $player] as $p) {
