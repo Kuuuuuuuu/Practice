@@ -10,6 +10,7 @@ namespace Kohaku\Commands;
 use JsonException;
 use Kohaku\Entity\DeathLeaderboard;
 use Kohaku\Entity\KillLeaderboard;
+use Kohaku\Entity\ParkourLeaderboard;
 use Kohaku\Loader;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
@@ -43,7 +44,7 @@ class CoreCommand extends Command
                         $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " make <mode> <world>" . Color::AQUA . " - create new Arena for FFA");
                         $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " remove <mode>" . Color::AQUA . " - delete Arena for FFA");
-                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd - setleader - removeleader");
+                        $sender->sendMessage(Color::GREEN . "/" . $commandLabel . Color::AQUA . " addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - setparkourleader - removeleader");
                         $sender->sendMessage(Color::GREEN . "Modes: " . Color::AQUA . "fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars");
                         break;
                     case "make":
@@ -266,6 +267,10 @@ class CoreCommand extends Command
                         break;
                     case "setdeathleader":
                         $npc = new DeathLeaderboard($sender->getLocation(), $sender->getSkin());
+                        $npc->spawnToAll();
+                        break;
+                    case "setparkourleader":
+                        $npc = new ParkourLeaderboard($sender->getLocation(), $sender->getSkin());
                         $npc->spawnToAll();
                         break;
                     case "removeleader":

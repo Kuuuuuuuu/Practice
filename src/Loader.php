@@ -43,6 +43,7 @@ class Loader extends PluginBase
     public static ArenaUtils $arenautils;
     public static ScoreboardManager $scoremanager;
     public static DuelManager $duelmanager;
+    public ?NeptuneTask $CoreTask;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -59,7 +60,7 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
-    public ?NeptuneTask $CoreTask;
+    public array $ParkourLeaderboard = [];
     public array $BanCommand = [
         "hub",
         "kill"

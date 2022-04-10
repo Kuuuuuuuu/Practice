@@ -26,6 +26,7 @@ use Kohaku\Entity\FallingWool;
 use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Entity\KillLeaderboard;
+use Kohaku\Entity\ParkourLeaderboard;
 use Kohaku\Events\AntiCheatListener;
 use Kohaku\Events\NeptuneListener;
 use Kohaku\Items\Bow;
@@ -299,6 +300,10 @@ class ArenaUtils
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
+        EntityFactory::getInstance()->register(ParkourLeaderboard::class, function (World $world, CompoundTag $nbt): ParkourLeaderboard {
+            return new ParkourLeaderboard(EntityDataHelper::parseLocation($nbt, $world), ParkourLeaderboard
+                ::parseSkinNBT($nbt), $nbt);
+        }, ['ParkourLeaderboard']);
         EntityFactory::getInstance()->register(FistBot::class, function (World $world, CompoundTag $nbt): FistBot {
             return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
                 ::parseSkinNBT($nbt), $nbt);

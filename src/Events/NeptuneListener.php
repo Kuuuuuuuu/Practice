@@ -670,6 +670,7 @@ class NeptuneListener implements Listener
                                 $player->ParkourCheckPoint = new Vector3(255, 77, 255);
                                 $player->teleport(new Vector3(275, 66, 212));
                                 Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
+                                Loader::getInstance()->ParkourLeaderboard[$player->getName()] = $player->TimerData;
                             }
                             break;
                         case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
