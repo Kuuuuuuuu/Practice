@@ -751,7 +751,6 @@ class NeptuneListener implements Listener
                 $player->setImmobile(false);
             }
             $player->setDueling(false);
-            $player->setUnPVPTag();
         }
     }
 

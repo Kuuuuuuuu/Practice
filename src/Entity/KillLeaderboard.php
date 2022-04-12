@@ -15,8 +15,6 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 class KillLeaderboard extends Human
 {
-    private int $tick = 0;
-
     /**
      * @throws JsonException
      */
@@ -39,23 +37,20 @@ class KillLeaderboard extends Human
 
     public function onUpdate(int $currentTick): bool
     {
-        $this->tick++;
-        if ($this->tick % 25 === 0) {
-            $subtitle = "";
-            $tops = Loader::getInstance()->KillLeaderboard;
-            if (count($tops) > 0) {
-                arsort($tops);
-                $i = 1;
-                foreach ($tops as $name => $wins) {
-                    $subtitle .= " §7[§d# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Kills\n";
-                    if ($i >= 10) {
-                        break;
-                    }
-                    ++$i;
+        $subtitle = "";
+        $tops = Loader::getInstance()->KillLeaderboard;
+        if (count($tops) > 0) {
+            arsort($tops);
+            $i = 1;
+            foreach ($tops as $name => $wins) {
+                $subtitle .= " §7[§d# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Kills\n";
+                if ($i >= 10) {
+                    break;
                 }
+                ++$i;
             }
-            $this->setNameTag("§dMost Kills Players\n" . $subtitle);
         }
+        $this->setNameTag("§dMost Kills Players\n" . $subtitle);
         $this->setNameTagAlwaysVisible(true);
         return parent::onUpdate($currentTick);
     }

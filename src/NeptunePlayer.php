@@ -214,20 +214,16 @@ class NeptunePlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
-    public function onUpdate(int $currentTick): bool
+    public function update()
     {
-        // TODO: Implement Task More Stable
         $this->tick++;
-        if ($this->tick % 10 === 0) {
-            $this->updateTag();
-        }
         if ($this->tick % 20 === 0) {
-            if ($this->Combat === true) {
-                if ($this->CombatTime > 0) {
-                    $percent = floatval($this->CombatTime / 10);
-                    $this->getXpManager()->setXpProgress($percent);
-                    $this->CombatTime -= 1;
-                } else {
+            $this->updateTag();
+            if ($this->Combat) {
+                $percent = floatval($this->CombatTime / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                $this->CombatTime -= 1;
+                if ($this->CombatTime <= 0) {
                     $this->Combat = false;
                     $this->getXpManager()->setXpProgress(0.0);
                     $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
@@ -237,28 +233,25 @@ class NeptunePlayer extends Player
                 }
             }
         }
-        if ($this->tick % 40 === 0) {
+        if ($this->tick % 50 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
         }
         $this->updateCPS();
-        return parent::onUpdate($currentTick);
     }
 
-    public function updateTag()
+    private function updateTag()
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             $this->setParkourTag();
-        } else {
-            if ($this->Combat === true or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
-                $this->setPVPTag();
-            } elseif ($this->Combat === false) {
-                $this->setUnPVPTag();
-            }
+        } elseif ($this->Combat === true or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+            $this->setPVPTag();
+        } elseif ($this->Combat === false) {
+            $this->setUnPVPTag();
         }
     }
 
-    public function setParkourTag()
+    private function setParkourTag()
     {
         $ping = $this->getNetworkSession()->getPing();
         $tagparkour = "§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]";
@@ -269,7 +262,7 @@ class NeptunePlayer extends Player
         $this->setScoreTag($tagparkour);
     }
 
-    public function setPVPTag()
+    private function setPVPTag()
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = Loader::getClickHandler()->getClicks($this);
@@ -277,13 +270,13 @@ class NeptunePlayer extends Player
         $this->setScoreTag($tagpvp);
     }
 
-    public function setUnPVPTag()
+    private function setUnPVPTag()
     {
         $untagpvp = "§d" . $this->PlayerOS . " §f| §d" . $this->PlayerControl . " §f| §d" . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
     }
 
-    public function updateScoreboard()
+    private function updateScoreboard()
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             Loader::getInstance()->getScoreboardManager()->sb($this);
@@ -294,7 +287,7 @@ class NeptunePlayer extends Player
         }
     }
 
-    public function updateNametag()
+    private function updateNametag()
     {
         $name = $this->getName();
         if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
@@ -305,7 +298,7 @@ class NeptunePlayer extends Player
         $this->setNameTag($nametag);
     }
 
-    public function updateCPS()
+    private function updateCPS()
     {
         switch ($this->getWorld()) {
             case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
@@ -317,7 +310,7 @@ class NeptunePlayer extends Player
         }
     }
 
-    public function parkourTimer()
+    private function parkourTimer()
     {
         if ($this->TimerTask === true) {
             $this->TimerData += 5;

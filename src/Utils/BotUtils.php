@@ -2,7 +2,6 @@
 
 namespace Kohaku\Utils;
 
-use JetBrains\PhpStorm\Pure;
 use Kohaku\Entity\FistBot;
 use pocketmine\player\Player;
 
