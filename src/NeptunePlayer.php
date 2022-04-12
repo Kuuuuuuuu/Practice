@@ -217,17 +217,18 @@ class NeptunePlayer extends Player
 
     public function onUpdate(int $currentTick): bool
     {
+        // TODO: Implement Task More Stable
         $this->tick++;
         if ($this->tick % 5 === 0) {
             $this->updateTag();
+        }
+        if ($this->tick % 20 === 0) {
+            $this->updateAnticheat();
             if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
                 if ($this->getPosition()->getY() <= 0) {
                     $this->kill();
                 }
             }
-        }
-        if ($this->tick % 20 === 0) {
-            $this->updateAnticheat();
         }
         if ($this->tick % 40 === 0) {
             $this->updateScoreboard();
