@@ -220,6 +220,11 @@ class NeptunePlayer extends Player
         $this->tick++;
         if ($this->tick % 5 === 0) {
             $this->updateTag();
+            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+                if ($this->getPosition()->getY() <= 0) {
+                    $this->kill();
+                }
+            }
         }
         if ($this->tick % 20 === 0) {
             $this->updateAnticheat();

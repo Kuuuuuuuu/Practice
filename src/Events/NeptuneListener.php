@@ -636,11 +636,6 @@ class NeptuneListener implements Listener
         $player = $event->getPlayer();
         $name = $player->getName();
         $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
-            if ($player->getPosition()->getY() <= 0) {
-                $player->kill();
-            }
-        }
         if ($player instanceof NeptunePlayer) {
             switch ($player->getWorld()) {
                 case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
@@ -685,8 +680,6 @@ class NeptuneListener implements Listener
                                 $player->ParkourCheckPoint = $vector;
                             }
                             break;
-                        default:
-                            return;
                     }
             }
         }
