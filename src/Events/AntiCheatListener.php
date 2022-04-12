@@ -22,7 +22,6 @@ class AntiCheatListener implements Listener
         $name = $player->getName();
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
-            $player->lastPos = $player->getPosition()->asVector3();
             if (!$player->isCreative() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 if ($from->getY() <= $to->getY()) {
                     if ($player->GetInAirTicks() > 20) {

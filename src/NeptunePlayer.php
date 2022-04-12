@@ -30,7 +30,6 @@ class NeptunePlayer extends Player
     public bool $SkillCooldown = false;
     public bool $TimerTask = false;
     public array $points = [];
-    public ?Vector3 $lastPos = null;
     private int $tick = 0;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
@@ -219,14 +218,22 @@ class NeptunePlayer extends Player
     {
         // TODO: Implement Task More Stable
         $this->tick++;
-        if ($this->tick % 5 === 0) {
+        if ($this->tick % 10 === 0) {
             $this->updateTag();
         }
         if ($this->tick % 20 === 0) {
-            $this->updateAnticheat();
-            if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
-                if ($this->getPosition()->getY() <= 0) {
-                    $this->kill();
+            if ($this->Combat === true) {
+                if ($this->CombatTime > 0) {
+                    $percent = floatval($this->CombatTime / 10);
+                    $this->getXpManager()->setXpProgress($percent);
+                    $this->CombatTime -= 1;
+                } else {
+                    $this->Combat = false;
+                    $this->getXpManager()->setXpProgress(0.0);
+                    $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                    $this->BoxingPoint = 0;
+                    $this->Opponent = null;
+                    $this->setUnPVPTag();
                 }
             }
         }
@@ -235,20 +242,6 @@ class NeptunePlayer extends Player
             $this->updateNametag();
         }
         $this->updateCPS();
-        if ($this->Combat === true) {
-            if ($this->CombatTime > 0) {
-                $percent = floatval($this->CombatTime / 10);
-                $this->getXpManager()->setXpProgress($percent);
-                $this->CombatTime -= 0.5;
-            } else {
-                $this->Combat = false;
-                $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
-                $this->BoxingPoint = 0;
-                $this->Opponent = null;
-                $this->setUnPVPTag();
-            }
-        }
         return parent::onUpdate($currentTick);
     }
 
@@ -288,15 +281,6 @@ class NeptunePlayer extends Player
     {
         $untagpvp = "§d" . $this->PlayerOS . " §f| §d" . $this->PlayerControl . " §f| §d" . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
-    }
-
-    public function updateAnticheat()
-    {
-        if ($this->lastPos !== null) {
-            if ($this->getPosition()->asVector3()->distance($this->lastPos) > 2 and $this->isOnGround()) {
-                $this->sendMessage(Loader::getPrefixCore() . "§cYou moved too fast!");
-            }
-        }
     }
 
     public function updateScoreboard()
