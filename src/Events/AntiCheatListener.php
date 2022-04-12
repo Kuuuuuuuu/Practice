@@ -9,8 +9,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\player\Player;
-use pocketmine\Server;
-use Throwable;
 
 class AntiCheatListener implements Listener
 {
@@ -21,10 +19,10 @@ class AntiCheatListener implements Listener
     {
         $player = $event->getPlayer();
         $from = $event->getFrom();
-        $pos = $player->getPosition()->asVector3();
         $name = $player->getName();
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
+            $player->lastPos = $player->getPosition()->asVector3();
             if (!$player->isCreative() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 if ($from->getY() <= $to->getY()) {
                     if ($player->GetInAirTicks() > 20) {
@@ -45,68 +43,12 @@ class AntiCheatListener implements Listener
                     $player->points[$name]["fly"] = 0.0;
                 }
             }
-            /*try {
-                if ($event->getTo()->distance($event->getFrom()) > 0) {
-                    if (!isset($player->lastpos[$name][0])) {
-                        $player->lastpos[$name][0]["pos"] = $pos;
-                        $player->lastpos[$name][0]["time"] = microtime(true);
-                    } else {
-                        array_unshift($player->lastpos[$name], [
-                            "pos" => $pos,
-                            "time" => microtime(true)
-                        ]);
-                        if (count($player->lastpos[$name][0]) > 2) {
-                            array_pop($player->lastpos[$name]);
-                        }
-                        if (!isset($this->data[$name])) {
-                            self::$data[$name] = [];
-                        }
-                        $distance = $player->lastpos[$name][0]["pos"]->distance($player->lastpos[$name][1]["pos"]);
-                        $time = $player->lastpos[$name][0]["time"] - $player->lastpos[$name][1]["time"];
-                        array_unshift(self::$data[$name], [
-                            "distance" => $distance,
-                            "time" => $time,
-                            "timestamp" => microtime(true)
-                        ]);
-                        if (count(self::$data[$name]) > 100) {
-                            array_pop(self::$data[$name]);
-                        }
-                    }
-                }
-            } catch (Throwable $error) {
-                //Loader::getArenaUtils()::getLogger($error->getMessage() . "\n" . $error->getTraceAsString());
-            }
-            if (self::calculateSpeed($player) > 20) {
-                Server::getInstance()->getLogger()->info("§c" . $name . self::calculateSpeed($player));
-                $player->sendMessage(Loader::getPrefixCore() . "Speed hack detected!");
-            }*/
             if ($player->isImmobile()) {
                 if ($from->getX() != $to->getX() or $from->getY() != $to->getY() or $from->getZ() != $to->getZ()) {
                     $player->teleport($from->asVector3());
                 }
             }
         }
-    }
-
-    public static function calculateSpeed(Player $p, int $precision = 2): ?float
-    {
-        try {
-            $name = $p->getName();
-            if (isset(self::$data[$name])) {
-                $data = array_filter(self::$data[$name], function ($entry): bool {
-                    return (microtime(true) - $entry["timestamp"]) <= 1;
-                });
-                $speeds = [];
-                foreach ($data as $entry) {
-                    $time = $entry["time"];
-                    $speeds[] = ($entry["distance"] / $time);
-                }
-                return round(array_sum($speeds) / count($speeds), $precision);
-            }
-        } catch (Throwable $error) {
-            //Loader::getArenaUtils()::getLogger($error->getMessage() . "\n" . $error->getTraceAsString());
-        }
-        return null;
     }
 
     //TODO: Make Anti-Fly & Kill Aura

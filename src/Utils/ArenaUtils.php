@@ -7,7 +7,6 @@ namespace Kohaku\Utils;
 use DateTime;
 use Exception;
 use JsonException;
-use Kohaku\Arena\DuelManager;
 use Kohaku\Arena\SumoHandler;
 use Kohaku\Commands\BroadcastCommand;
 use Kohaku\Commands\CoreCommand;
@@ -145,6 +144,19 @@ class ArenaUtils
         return (string)$keys[mt_rand(0, $size)];
     }
 
+    /**
+     * @throws Exception
+     */
+
+    function generateUUID()
+    {
+        $data = random_bytes(16);
+        assert(strlen($data) == 16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
     public function DeviceCheck(Player $player): void
     {
         $username = $player->getName();
@@ -195,9 +207,6 @@ class ArenaUtils
 
     public function Enable()
     {
-        Loader::$duelmanager = new DuelManager();
-        Loader::$YamlLoader = new YamlManager();
-        Loader::$YamlLoader->loadArenas();
         Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Neptune" . TextFormat::WHITE . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§dNeptune §fNetwork");
         $this->registerItems();
@@ -563,7 +572,6 @@ class ArenaUtils
         Loader::getInstance()->getLogger()->info(TextFormat::RED . "Disable Yeet");
         $this->loadMap("BUild");
         $this->killbot();
-        Loader::$YamlLoader->saveArenas();
     }
 
     public function deleteDir($dirPath): bool

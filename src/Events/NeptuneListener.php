@@ -192,7 +192,6 @@ class NeptuneListener implements Listener
 
     public function onQuery(QueryRegenerateEvent $ev)
     {
-        $ev->getQueryInfo()->setPlugins(["NeptuneCore"]);
         $ev->getQueryInfo()->setWorld("NeptuneLobby");
     }
 

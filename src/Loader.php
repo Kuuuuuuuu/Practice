@@ -29,20 +29,20 @@ use SQLite3;
 
 class Loader extends PluginBase
 {
-    public static self $plugin;
-    public static ClickHandler $cps;
-    public static ScoreboardsUtils $score;
-    public static FormUtils $form;
-    public static ArenaFactory $arenafac;
-    public static ArenaManager $arena;
-    public static YamlManager $YamlLoader;
-    public static DeleteBlocksHandler $blockhandle;
-    public static BotUtils $bot;
-    public static KnockbackManager $knockback;
-    public static CosmeticHandler $cosmetics;
-    public static ArenaUtils $arenautils;
-    public static ScoreboardManager $scoremanager;
-    public static DuelManager $duelmanager;
+    private static self $plugin;
+    private static YamlManager $YamlLoader;
+    private static ClickHandler $cps;
+    private static ScoreboardsUtils $score;
+    private static FormUtils $form;
+    private static ArenaFactory $arenafac;
+    private static ArenaManager $arena;
+    private static DeleteBlocksHandler $blockhandle;
+    private static BotUtils $bot;
+    private static KnockbackManager $knockback;
+    private static CosmeticHandler $cosmetics;
+    private static ArenaUtils $arenautils;
+    private static ScoreboardManager $scoremanager;
+    private static DuelManager $duelmanager;
     public ?NeptuneTask $CoreTask;
     public Config|array $MessageData;
     public Config $CapeData;
@@ -173,10 +173,13 @@ class Loader extends PluginBase
         self::$cosmetics = new CosmeticHandler();
         self::$arenautils = new ArenaUtils();
         self::$scoremanager = new ScoreboardManager();
+        self::$duelmanager = new DuelManager();
     }
 
     public function onEnable(): void
     {
+        self::$YamlLoader = new YamlManager();
+        self::$YamlLoader->loadArenas();
         $this->getArenaUtils()->Enable();
     }
 
@@ -190,6 +193,7 @@ class Loader extends PluginBase
      */
     public function onDisable(): void
     {
+        self::$YamlLoader->saveArenas();
         self::getArenaUtils()->Disable();
     }
 }

@@ -30,8 +30,8 @@ class NeptunePlayer extends Player
     public bool $SkillCooldown = false;
     public bool $TimerTask = false;
     public array $points = [];
-    public array $lastpos = [];
-    private int $sec = 0;
+    public ?Vector3 $lastPos = null;
+    private int $tick = 0;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
     private array $validstuffs = [];
@@ -215,45 +215,25 @@ class NeptunePlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
-    public function updateCPS()
+    public function onUpdate(int $currentTick): bool
     {
-        switch ($this->getWorld()) {
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
-                $this->parkourTimer();
-                break;
-            default:
-                $this->sendTip("§dCPS: §f" . Loader::getClickHandler()->getClicks($this));
-                break;
+        $this->tick++;
+        if ($this->tick % 5 === 0) {
+            $this->updateTag();
         }
-    }
-
-    public function parkourTimer()
-    {
-        if ($this->TimerTask === true) {
-            $this->TimerData += 5;
-            $mins = floor($this->TimerData / 6000);
-            $secs = floor(($this->TimerData / 100) % 60);
-            $mili = $this->TimerData % 100;
-            $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
-        } else {
-            $this->sendTip("§a0 : 0 : 0");
-            $this->TimerData = 0;
+        if ($this->tick % 20 === 0) {
+            $this->updateAnticheat();
         }
-    }
-
-    public function updatePlayer()
-    {
-        $this->sec++;
-        $this->updateTag();
-        if ($this->sec % 2 === 0) {
+        if ($this->tick % 40 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
         }
+        $this->updateCPS();
         if ($this->Combat === true) {
             if ($this->CombatTime > 0) {
                 $percent = floatval($this->CombatTime / 10);
                 $this->getXpManager()->setXpProgress($percent);
-                $this->CombatTime -= 1;
+                $this->CombatTime -= 0.5;
             } else {
                 $this->Combat = false;
                 $this->getXpManager()->setXpProgress(0.0);
@@ -263,6 +243,7 @@ class NeptunePlayer extends Player
                 $this->setUnPVPTag();
             }
         }
+        return parent::onUpdate($currentTick);
     }
 
     public function updateTag()
@@ -303,6 +284,15 @@ class NeptunePlayer extends Player
         $this->setScoreTag($untagpvp);
     }
 
+    public function updateAnticheat()
+    {
+        if ($this->lastPos !== null) {
+            if ($this->getPosition()->asVector3()->distance($this->lastPos) > 2 and $this->isOnGround()) {
+                $this->sendMessage(Loader::getPrefixCore() . "§cYou moved too fast!");
+            }
+        }
+    }
+
     public function updateScoreboard()
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
@@ -323,6 +313,32 @@ class NeptunePlayer extends Player
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
+    }
+
+    public function updateCPS()
+    {
+        switch ($this->getWorld()) {
+            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
+                $this->parkourTimer();
+                break;
+            default:
+                $this->sendTip("§dCPS: §f" . Loader::getClickHandler()->getClicks($this));
+                break;
+        }
+    }
+
+    public function parkourTimer()
+    {
+        if ($this->TimerTask === true) {
+            $this->TimerData += 5;
+            $mins = floor($this->TimerData / 6000);
+            $secs = floor(($this->TimerData / 100) % 60);
+            $mili = $this->TimerData % 100;
+            $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+        } else {
+            $this->sendTip("§a0 : 0 : 0");
+            $this->TimerData = 0;
+        }
     }
 
     public function setDueling(bool $playing): void
