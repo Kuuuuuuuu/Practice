@@ -38,8 +38,8 @@ use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
-use pocketmine\block\BlockFactory;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\utils\DyeColor;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
@@ -50,6 +50,7 @@ use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
@@ -71,10 +72,34 @@ class ArenaUtils
 
     public static function generateFallingWoolBlock(Location $location): FallingWool
     {
-        $fallingBlock = new FallingWool($location, BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, rand(0, 15)));
+        $fallingBlock = new FallingWool($location, VanillaBlocks::WOOL()->setColor(self::randomDyeColor()));
         $fallingBlock->setMotion(new Vector3(-sin(mt_rand(1, 360) / 60 * M_PI), 0.95, cos(mt_rand(1, 360) / 60 * M_PI)));
         $fallingBlock->spawnToAll();
         return $fallingBlock;
+    }
+
+    public static function randomDyeColor(): DyeColor
+    {
+        $array = [
+            DyeColor::BLACK(),
+            DyeColor::BLUE(),
+            DyeColor::BROWN(),
+            DyeColor::CYAN(),
+            DyeColor::GRAY(),
+            DyeColor::GREEN(),
+            DyeColor::LIGHT_BLUE(),
+            DyeColor:: LIGHT_GRAY(),
+            DyeColor::LIME(),
+            DyeColor::MAGENTA(),
+            DyeColor::ORANGE(),
+            DyeColor::PINK(),
+            DyeColor::PURPLE(),
+            DyeColor::RED(),
+            DyeColor::WHITE(),
+            DyeColor::YELLOW()
+        ];
+        $size = count($array) - 1;
+        return $array[mt_rand(0, $size)];
     }
 
     public static function playSound(string $soundName, Player $player): void
@@ -90,27 +115,13 @@ class ArenaUtils
         $player->getNetworkSession()->sendDataPacket($pk, true);
     }
 
-    public static function getLogger(string $err)
-    {
-        $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
-        $msg = new DiscordWebhookUtils();
-        $e->setTitle("Error");
-        $e->setFooter("Made By KohakuChan");
-        $e->setTimestamp(new Datetime());
-        $e->setColor(0x00ff00);
-        $e->setDescription("Error: " . $err);
-        $msg->addEmbed($e);
-        $web->send($msg);
-    }
-
     public static function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
     {
         if ($world->isChunkPopulated($x, $z)) {
             ($callable)();
             return;
         }
-        $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z, true);
+        $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z);
     }
 
     public static function randomColor($excludedColors = []): string
@@ -198,14 +209,14 @@ class ArenaUtils
         return gmdate("i:s", $time);
     }
 
-    public function randomSpawn(Player $p)
+    public function randomSpawn(Player $p): void
     {
         $x = $z = mt_rand(0, 15);
         $y = $p->getWorld()->getHighestBlockAt($p->getPosition()->getFloorX(), $p->getPosition()->getFloorZ() + 1);
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
 
-    public function Enable()
+    public function Enable(): void
     {
         Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Neptune" . TextFormat::WHITE . "]\n\n");
         Server::getInstance()->getNetwork()->setName("§dNeptune §fNetwork");
@@ -224,7 +235,21 @@ class ArenaUtils
         }
     }
 
-    private function registerItems()
+    public static function getLogger(string $err): void
+    {
+        $e = new DiscordWebhookEmbed();
+        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+        $msg = new DiscordWebhookUtils();
+        $e->setTitle("Error");
+        $e->setFooter("Made By KohakuChan");
+        $e->setTimestamp(new Datetime());
+        $e->setColor(0x00ff00);
+        $e->setDescription("Error: " . $err);
+        $msg->addEmbed($e);
+        $web->send($msg);
+    }
+
+    private function registerItems(): void
     {
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), "Ender Pearl"), true);
         ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), "Bow"), true);
@@ -266,7 +291,7 @@ class ArenaUtils
         Loader::getInstance()->BanData->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
     }
 
-    public function registerGenerator()
+    public function registerGenerator(): void
     {
         GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, "Duel", fn() => null);
     }
@@ -299,7 +324,7 @@ class ArenaUtils
     private function registerEntity(): void
     {
         EntityFactory::getInstance()->register(FallingWool::class, function (World $world, CompoundTag $nbt): FallingWool {
-            return new FallingWool(EntityDataHelper::parseLocation($nbt, $world), BlockFactory::getInstance()->get(BlockLegacyIds::WOOL, 0), $nbt);
+            return new FallingWool(EntityDataHelper::parseLocation($nbt, $world), VanillaBlocks::WOOL(), $nbt);
         }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
         EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): KillLeaderboard {
             return new KillLeaderboard(EntityDataHelper::parseLocation($nbt, $world), KillLeaderboard
@@ -328,7 +353,7 @@ class ArenaUtils
         }, ['HHook', 'horizon:hook'], EntityLegacyIds::FISHING_HOOK);
     }
 
-    public function loadallworlds()
+    public function loadallworlds(): void
     {
         foreach (glob(Server::getInstance()->getDataPath() . "worlds/*") as $world) {
             $world = str_replace(Server::getInstance()->getDataPath() . "worlds/", "", $world);
@@ -343,12 +368,12 @@ class ArenaUtils
         }
     }
 
-    public function SkillCooldown(NeptunePlayer $player)
+    public function SkillCooldown(NeptunePlayer $player): void
     {
         if ($player->isSkillCooldown()) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
                 if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                    $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
+                    $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
                 }
                 $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
                 $player->setSkillCooldown(false);
@@ -367,9 +392,9 @@ class ArenaUtils
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
-                    $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::STONE_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-                    $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::BOW, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    $dplayer->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                    $dplayer->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
+                    $dplayer->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    $dplayer->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
                 }
             } elseif ($arena === Loader::getArenaFactory()->getBuildArena()) {
                 if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
@@ -377,28 +402,28 @@ class ArenaUtils
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
                     try {
-                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["0"]["item"], 0, $dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["1"]["item"], 0, $dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(2, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["2"]["item"], 0, $dplayer->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(3, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["3"]["item"], 0, $dplayer->getKit()["0"]["3"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(4, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["4"]["item"], 0, $dplayer->getKit()["0"]["4"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(5, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["5"]["item"], 0, $dplayer->getKit()["0"]["5"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["6"]["item"], 0, $dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["7"]["item"], 0, $dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get($dplayer->getKit()["0"]["8"]["item"], 0, $dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["0"]["item"], 0, (int)$dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["1"]["item"], 0, (int)$dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["2"]["item"], 0, (int)$dplayer->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["3"]["item"], 0, (int)$dplayer->getKit()["0"]["3"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["4"]["item"], 0, (int)$dplayer->getKit()["0"]["4"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["5"]["item"], 0, (int)$dplayer->getKit()["0"]["5"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["6"]["item"], 0, (int)$dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["7"]["item"], 0, (int)$dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["8"]["item"], 0, (int)$dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     } catch (Exception) {
-                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::WOOL, 0, 128)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::COBWEB, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::SHEARS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
-                    $dplayer->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::IRON_HELMET, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                    $dplayer->getArmorInventory()->setChestplate(ItemFactory::getInstance()->get(ItemIds::IRON_CHESTPLATE, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                    $dplayer->getArmorInventory()->setLeggings(ItemFactory::getInstance()->get(ItemIds::IRON_LEGGINGS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                    $dplayer->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::IRON_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 }
+                $dplayer->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                $dplayer->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                $dplayer->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                $dplayer->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             } elseif ($arena === Loader::getArenaFactory()->getBoxingArena()) {
                 if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                     $dplayer->setHealth(20);
@@ -428,7 +453,7 @@ class ArenaUtils
         $this->handleStreak($dplayer, $player);
     }
 
-    public function addDeath(Player $player)
+    public function addDeath(Player $player): void
     {
         if (!isset(Loader::getInstance()->DeathLeaderboard[$player->getName()])) {
             Loader::getInstance()->DeathLeaderboard[$player->getName()] = 1;
@@ -443,15 +468,15 @@ class ArenaUtils
         return new DataManager($name);
     }
 
-    public function GiveItem(Player $player)
+    public function GiveItem(Player $player): void
     {
-        $item = ItemFactory::getInstance()->get(ItemIds::GOLD_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName("§r§dPlay");
-        $item2 = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item2 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item2->setCustomName("§r§dSettings");
-        $item3 = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item3 = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName("§r§dBot");
-        $item4 = ItemFactory::getInstance()->get(ItemIds::BOOK, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4 = VanillaItems::BOOK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName("§r§dDuel");
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
@@ -463,7 +488,7 @@ class ArenaUtils
         $player->getInventory()->setItem(1, $item4);
     }
 
-    public function addKill(Player $player)
+    public function addKill(Player $player): void
     {
         $data = $this->getData($player->getName());
         if (!isset(Loader::getInstance()->KillLeaderboard[$player->getName()])) {
@@ -474,7 +499,7 @@ class ArenaUtils
         $data->addKill();
     }
 
-    public function handleStreak(Player $player, Player $death)
+    public function handleStreak(Player $player, Player $death): void
     {
         $killer = $this->getData($player->getName());
         $loser = $this->getData($death->getName());
@@ -489,7 +514,7 @@ class ArenaUtils
         }
     }
 
-    public function JoinRandomArenaSumo(Player $player)
+    public function JoinRandomArenaSumo(Player $player): void
     {
         $arena = $this->getRandomSumoArenas();
         if (!is_null($arena)) {
@@ -533,16 +558,6 @@ class ArenaUtils
         return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
     }
 
-    public function JoinRandomArenaSkywars(Player $player)
-    {
-        $arena = Skywars::getInstance()->getRandomArenas();
-        if (!is_null($arena)) {
-            $arena->joinToArena($player);
-            return;
-        }
-        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
-    }
-
     public function getChatFormat(Player $player, string $message): string
     {
         $name = $player->getName();
@@ -557,7 +572,7 @@ class ArenaUtils
     /**
      * @throws JsonException
      */
-    public function Disable()
+    public function Disable(): void
     {
         foreach (Loader::getDuelManager()->getMatches() as $activeMatch => $matchTask) {
             Loader::getDuelManager()->stopMatch($activeMatch);
@@ -619,7 +634,7 @@ class ArenaUtils
         return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
     }
 
-    public function killbot()
+    public function killbot(): void
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {

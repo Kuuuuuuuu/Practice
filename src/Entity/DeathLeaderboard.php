@@ -52,7 +52,7 @@ class DeathLeaderboard extends Human
             }
         }
         $this->setNameTag("§dMost Death Players\n" . $subtitle);
-        $this->setNameTagAlwaysVisible(true);
+        $this->setNameTagAlwaysVisible();
         return parent::onUpdate($currentTick);
     }
 }

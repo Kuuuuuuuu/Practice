@@ -45,7 +45,7 @@ class DeleteBlocksHandler
             if ($sec <= 0) {
                 $level->addParticle($blockvec, new BlockPunchParticle($block, RuntimeBlockMapping::getInstance()->toRuntimeId($block->getFullId())));
                 $level->addSound($blockvec, new BlockPunchSound($block));
-                $level->setBlock($blockvec, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), true);
+                $level->setBlock($blockvec, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0));
                 unset($this->buildBlocks[$pos]);
             } else {
                 $this->buildBlocks[$pos]--;

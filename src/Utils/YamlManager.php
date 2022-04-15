@@ -24,18 +24,18 @@ class YamlManager
         }
     }
 
-    public function loadArenas()
+    public function loadArenas(): void
     {
         foreach (glob(Loader::getInstance()->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . "*.yml") as $arenaFile) {
             $config = new Config($arenaFile, Config::YAML);
-            Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler($config->getAll(false));
+            Loader::getInstance()->SumoArenas[basename($arenaFile, ".yml")] = new SumoHandler($config->getAll());
         }
     }
 
     /**
      * @throws JsonException
      */
-    public function saveArenas()
+    public function saveArenas(): void
     {
         foreach (Loader::getInstance()->SumoArenas as $fileName => $arena) {
             $config = new Config(Loader::getInstance()->getDataFolder() . "SumoArenas" . DIRECTORY_SEPARATOR . $fileName . ".yml", Config::YAML);

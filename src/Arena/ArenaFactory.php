@@ -99,7 +99,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setFistArena(Player $player, string $world)
+    public function setFistArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Fist", $world);
@@ -159,7 +159,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setOITCArena(Player $player, string $world)
+    public function setOITCArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("OITC", $world);
@@ -171,7 +171,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setSkywarsArena(Player $player, string $world)
+    public function setSkywarsArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Skywars", $world);
@@ -183,7 +183,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setBotArena(Player $player, string $world)
+    public function setBotArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Bot", $world);
@@ -195,7 +195,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setBuildArena(Player $player, string $world)
+    public function setBuildArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Build", $world);
@@ -206,7 +206,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function setResistanceArena(Player $player, string $world)
+    public function setResistanceArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Resistance", $world);
@@ -217,7 +217,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function setSumoD(Player $player, string $world)
+    public function setSumoD(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("SumoD", $world);
@@ -229,7 +229,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setKitPVPArena(Player $player, string $world)
+    public function setKitPVPArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("KitPVP", $world);
@@ -241,7 +241,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setBoxingArena(Player $player, string $world)
+    public function setBoxingArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Boxing", $world);
@@ -253,7 +253,7 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setParkourArena(Player $player, string $world)
+    public function setParkourArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Parkour", $world);
@@ -264,7 +264,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function setComboArena(Player $player, string $world)
+    public function setComboArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Combo", $world);
@@ -275,7 +275,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function setKnockbackArena(Player $player, string $world)
+    public function setKnockbackArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->set("Knockback", $world);
@@ -286,7 +286,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeOITC(Player $player)
+    public function removeOITC(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("OITC");
@@ -297,7 +297,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeBuild(Player $player)
+    public function removeBuild(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Build");
@@ -308,7 +308,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeFist(Player $player)
+    public function removeFist(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Fist");
@@ -319,7 +319,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeBot(Player $player)
+    public function removeBot(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Bot");
@@ -330,7 +330,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeKnockback(Player $player)
+    public function removeKnockback(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Knockback");
@@ -341,7 +341,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeSkywars(Player $player)
+    public function removeSkywars(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Skywars");
@@ -352,7 +352,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeParkour(Player $player)
+    public function removeParkour(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Parkour");
@@ -363,7 +363,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeSumoD(Player $player)
+    public function removeSumoD(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("SumoD");
@@ -374,7 +374,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeBoxing(Player $player)
+    public function removeBoxing(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Boxing");
@@ -385,7 +385,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeResistance(Player $player)
+    public function removeResistance(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Resistance");
@@ -396,7 +396,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeCombo(Player $player)
+    public function removeCombo(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("Combo");
@@ -407,7 +407,7 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeKitPVP(Player $player)
+    public function removeKitPVP(Player $player): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . "data/arenas.yml", Config::YAML);
         $data->remove("KitPVP");

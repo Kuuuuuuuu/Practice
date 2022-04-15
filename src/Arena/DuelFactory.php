@@ -38,7 +38,7 @@ class DuelFactory
         $this->player2 = $player2;
     }
 
-    public function update()
+    public function update(): void
     {
         foreach ($this->getPlayers() as $player) {
             if ($player->isOnline()) {
@@ -60,7 +60,7 @@ class DuelFactory
                         $player->setGamemode(GameMode::SURVIVAL());
                         $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                         $player->getInventory()->setContents($this->kit->getInventoryItems());
-                        $player->setImmobile(true);
+                        $player->setImmobile();
                         $player->sendTitle("§d3", "", 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
                     }

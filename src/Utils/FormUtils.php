@@ -32,7 +32,7 @@ class FormUtils
 
     private array $players = [];
 
-    public function Form1($player)
+    public function Form1($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -67,9 +67,6 @@ class FormUtils
                 case 8:
                     Loader::getArenaManager()->onJoinBuild($player);
                     break;
-                case 9:
-                    Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
-                    break;
                 default:
                     print "Error";
             }
@@ -86,13 +83,10 @@ class FormUtils
         $form->addButton("§aKitPVP\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, "textures/ui/recipe_book_icon.png");
         $form->addButton("§aOITC\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, "textures/items/bow_standby.png");
         $form->addButton("§aBuild\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, "textures/items/diamond_pickaxe.png");
-        if (Server::getInstance()->getPluginManager()->getPlugin("HorizonSW")) {
-            $form->addButton("§aSkywars\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSkywarsArena() ?? null) ?? 0, 0, "textures/items/diamond_shovel.png");
-        }
         $player->sendForm($form);
     }
 
-    private function formkit(Player $player)
+    private function formkit(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -128,7 +122,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    private function assasins(Player $player)
+    private function assasins(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);
         $item = ItemFactory::getInstance()->get(ItemIds::IRON_SWORD, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
@@ -198,7 +192,7 @@ class FormUtils
         $player->getArmorInventory()->setBoots(ItemFactory::getInstance()->get(ItemIds::DIAMOND_BOOTS, 0, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
     }
 
-    public function duelForm(Player $player)
+    public function duelForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -284,7 +278,7 @@ class FormUtils
         return $kitcount ?? 0;
     }
 
-    public function settingsForm($player)
+    public function settingsForm($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -320,7 +314,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function NickForm($player)
+    public function NickForm($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -351,7 +345,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function CustomNickForm($player)
+    public function CustomNickForm($player): void
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
             $result = $data;
@@ -377,7 +371,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function reportForm($player)
+    public function reportForm($player): void
     {
         $list = [];
         foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
@@ -413,7 +407,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function openCapesUI($player)
+    public function openCapesUI($player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             $result = $data;
@@ -447,7 +441,7 @@ class FormUtils
     /**
      * @throws JsonException
      */
-    public function openCapeListUI($player)
+    public function openCapeListUI($player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             $result = $data;
@@ -516,7 +510,7 @@ class FormUtils
         return true;
     }
 
-    public function editkitform($player)
+    public function editkitform($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;
@@ -528,7 +522,7 @@ class FormUtils
                     if ($player instanceof NeptunePlayer) {
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();
-                        $player->setImmobile(true);
+                        $player->setImmobile();
                         $player->EditKit = "build";
                         $player->sendMessage(Loader::getPrefixCore() . "§aEdit kit enabled");
                         $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");

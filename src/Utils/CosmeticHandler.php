@@ -340,7 +340,7 @@ class CosmeticHandler
         }
     }
 
-    public function resetSkin(Player $player)
+    public function resetSkin(Player $player): void
     {
         try {
             $name = $player->getName();

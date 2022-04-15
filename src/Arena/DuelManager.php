@@ -46,7 +46,7 @@ class DuelManager
         return $this->matches;
     }
 
-    public function stopMatch(string $name)
+    public function stopMatch(string $name): void
     {
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));

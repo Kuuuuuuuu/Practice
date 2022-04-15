@@ -17,6 +17,7 @@ use Kohaku\Task\ParkourFinishTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\projectile\Arrow;
@@ -56,6 +57,7 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
@@ -96,7 +98,7 @@ class NeptuneListener implements Listener
                                 $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
-                                $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+                                $player->getArmorInventory()->setHelmet(VanillaItems::WITHER_SKELETON_SKULL()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
                                 $player->setSkillCooldown(true);
                             }
                         }
@@ -183,7 +185,7 @@ class NeptuneListener implements Listener
             if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
                 Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) and $entity->isAlive()) {
-                        $entity->getOffHandInventory()->setItem(0, ItemFactory::getInstance()->get(ItemIds::ARROW, 0, 1));
+                        $entity->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
                     }
                 }), 100);
             }
@@ -336,9 +338,9 @@ class NeptuneListener implements Listener
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             if ($block->getId() === BlockLegacyIds::WOOL or $block->getId() === BlockLegacyIds::COBWEB) {
-                $ev->setDropsVariadic(ItemFactory::getInstance()->get(ItemIds::AIR));
+                $ev->setDropsVariadic(VanillaItems::AIR());
                 if ($block->getId() === BlockLegacyIds::WOOL) {
-                    $player->getInventory()->addItem(ItemFactory::getInstance()->get(ItemIds::WOOL, 0, 1));
+                    $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
                     Loader::getDeleteBlockHandler()->setBlockBuild($block, true);
                 }
             } else {

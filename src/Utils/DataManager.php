@@ -86,14 +86,14 @@ class DataManager
         return $this->deaths;
     }
 
-    public function addKill()
+    public function addKill(): void
     {
         $this->kills++;
         $this->killStreak++;
         $this->save();
     }
 
-    private function save()
+    private function save(): void
     {
         yaml_emit_file($this->getPath(), ["name" => $this->player, "kills" => $this->kills, "killstreak" => $this->killStreak, "kdr" => $this->getKdr(), "deaths" => $this->deaths, "elo" => $this->elo, "tag" => $this->tag]);
     }
@@ -134,7 +134,7 @@ class DataManager
         return $this->elo;
     }
 
-    public function addDeath()
+    public function addDeath(): void
     {
         $this->deaths++;
         $this->killStreak = 0;
@@ -178,7 +178,7 @@ class DataManager
         return $this->tag;
     }
 
-    public function setTag(string $tag)
+    public function setTag(string $tag): void
     {
         $this->tag = $tag;
         $this->save();

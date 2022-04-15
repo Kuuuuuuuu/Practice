@@ -57,7 +57,7 @@ class FistBot extends Human
         } else {
             $this->attackTargetPlayer();
             if (!$this->isSprinting()) {
-                $this->setSprinting(true);
+                $this->setSprinting();
             }
         }
         return $this->isAlive();

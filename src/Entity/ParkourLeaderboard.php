@@ -51,7 +51,7 @@ class ParkourLeaderboard extends Human
             }
         }
         $this->setNameTag("§dMost Fastest Parkour Players\n" . $subtitle);
-        $this->setNameTagAlwaysVisible(true);
+        $this->setNameTagAlwaysVisible();
         return parent::onUpdate($currentTick);
     }
 }

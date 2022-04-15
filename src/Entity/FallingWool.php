@@ -13,8 +13,8 @@ class FallingWool extends FallingBlock
     protected function initEntity(CompoundTag $nbt): void
     {
         parent::initEntity($nbt);
-        $this->setForceMovementUpdate(true);
-        $this->setSilent(true);
+        $this->setForceMovementUpdate();
+        $this->setSilent();
         $this->setCanSaveWithChunk(false);
     }
 

@@ -132,7 +132,7 @@ class SumoHandler implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getCursorInventory()->clearAll();
-        $player->setImmobile(true);
+        $player->setImmobile();
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999999 * 20, 10, false));
         $player->setGamemode(Gamemode::ADVENTURE());
         $player->setHealth(20);
