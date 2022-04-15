@@ -12,7 +12,6 @@ use pocketmine\Server;
 
 class NeptuneTask extends Task
 {
-
     public array $DuelTask = [];
     private int $tick = 0;
 

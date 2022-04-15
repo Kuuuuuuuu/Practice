@@ -474,9 +474,10 @@ class NeptuneListener implements Listener
                             $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data["slots"]} slots!");
                             break;
                         }
-                        $arena->data["spawns"]["spawn-$args[1]"]["x"] = $player->getPosition()->getX();
-                        $arena->data["spawns"]["spawn-$args[1]"]["y"] = $player->getPosition()->getY();
-                        $arena->data["spawns"]["spawn-$args[1]"]["z"] = $player->getPosition()->getZ();
+                        $data = $arena->data["spawns"]["spawn-$args[1]"];
+                        $data["x"] = $player->getPosition()->getX();
+                        $data["y"] = $player->getPosition()->getY();
+                        $data["z"] = $player->getPosition()->getZ();
                         $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . " Y: " . round($player->getPosition()->getY()) . " Z: " . round($player->getPosition()->getZ()));
                         break;
                     case "enable":
@@ -697,8 +698,8 @@ class NeptuneListener implements Listener
                 if ($damager instanceof NeptunePlayer) {
                     $damager->sendMessage(Loader::getPrefixCore() . "§aYou have been killed a bot!");
                     $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-                    Loader::getInstance()->getArenaUtils()->GiveItem($damager);
                     $damager->setHealth(20);
+                    Loader::getInstance()->getArenaUtils()->GiveItem($damager);
                 }
             }
         }
@@ -717,21 +718,12 @@ class NeptuneListener implements Listener
         if ($cause instanceof EntityDamageByEntityEvent) {
             if ($player instanceof NeptunePlayer) {
                 $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-                if ($cause->getDamager() instanceof FistBot) {
-                    foreach (Server::getInstance()->getWorldManager()->getWorldByName($cause->getDamager()->getWorld()->getFolderName())->getPlayers() as $p) {
-                        $p->sendMessage(Loader::getPrefixCore() . $name . " §ahas been killed by a bot!");
-                    }
-                } elseif ($damager instanceof NeptunePlayer) {
+                if ($damager instanceof NeptunePlayer) {
                     $dname = $damager->getName() ?? "Unknown";
                     Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                     foreach ([$player, $damager] as $p) {
                         $p->setLastDamagePlayer("Unknown");
-                        $p->setLastDamagePlayer("Unknown");
-                    }
-                    foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
-                        if ($p->getWorld() === $damager->getWorld()) {
-                            $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
-                        }
+                        $p->sendMessage(Loader::getPrefixCore() . "§a" . $name . " §fhas been killed by §c" . $dname);
                     }
                     $damager->setHealth(20);
                 }
