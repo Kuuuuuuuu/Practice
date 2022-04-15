@@ -85,7 +85,7 @@ class ScoreboardManager
     public function Boxing(NeptunePlayer $player): void
     {
         $boxingp = $player->BoxingPoint;
-        $opponent = $player->Opponent;
+        $opponent = $player->getOpponent();
         if ($opponent !== null) {
             $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
             /** @var NeptunePlayer $oppopl */

@@ -70,15 +70,6 @@ class FormUtils
                 case 9:
                     Loader::getInstance()->getArenaUtils()->JoinRandomArenaSkywars($player);
                     break;
-                case 10:
-                    if ($player instanceof NeptunePlayer) {
-                        $player->setCurrentKit(KitRegistry::fromString("Fist"));
-                        $player->setInQueue(true);
-                        $player->getInventory()->clearAll();
-                        $player->checkQueue();
-                        $player->getInventory()->setItem(8, ItemFactory::getInstance()->get(ItemIds::COMPASS, 0, 1)->setCustomName("§r§cLeave Queue")->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    }
-                    break;
                 default:
                     print "Error";
             }

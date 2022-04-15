@@ -345,13 +345,13 @@ class ArenaUtils
 
     public function SkillCooldown(NeptunePlayer $player)
     {
-        if ($player->SkillCooldown === true) {
+        if ($player->isSkillCooldown()) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
                 if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
                     $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::AIR));
                 }
                 $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-                $player->SkillCooldown = false;
+                $player->setSkillCooldown(false);
             }), 250);
         }
     }
@@ -413,8 +413,8 @@ class ArenaUtils
         }
         foreach ([$dplayer, $player] as $p) {
             $p->CombatTime = 0.5;
-            $p->Opponent = null;
-            $p->SkillCooldown = false;
+            $p->setOpponent(null);
+            $p->setSkillCooldown(false);
             if ($p instanceof NeptunePlayer) {
                 $p->setLastDamagePlayer("Unknown");
             }

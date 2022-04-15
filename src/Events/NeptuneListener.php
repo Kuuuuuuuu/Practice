@@ -87,7 +87,7 @@ class NeptuneListener implements Listener
                     $event->cancel();
                 }
             }
-            if ($player->SkillCooldown === false) {
+            if (!$player->isSkillCooldown()) {
                 if ($item->getCustomName() === "§r§6Reaper") {
                     $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
                     foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
@@ -97,7 +97,7 @@ class NeptuneListener implements Listener
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
                                 $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
                                 $player->getArmorInventory()->setHelmet(ItemFactory::getInstance()->get(ItemIds::SKULL, 1, 1)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
-                                $player->SkillCooldown = true;
+                                $player->setSkillCooldown(true);
                             }
                         }
                     }
@@ -106,25 +106,25 @@ class NeptuneListener implements Listener
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 120, 1, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::HEALTH_BOOST(), 120, 1, false));
-                    $player->SkillCooldown = true;
+                    $player->setSkillCooldown(true);
                 } elseif ($item->getCustomName() === "§r§6Ultimate Boxing") {
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                     $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                    $player->SkillCooldown = true;
+                    $player->setSkillCooldown(true);
                 } elseif ($item->getCustomName() === "§r§6Ultimate Bower") {
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 120, 1, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 120, 1, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 120, 3, false));
                     $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 120, 3, false));
                     $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
-                    $player->SkillCooldown = true;
+                    $player->setSkillCooldown(true);
                 } elseif ($item->getCustomName() === "§r§6Teleport") {
                     $player->sendMessage(Loader::getInstance()->MessageData["StartSkillMessage"]);
                     foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
                         if ($p->getName() !== $name) {
                             $player->teleport($p->getPosition()->asVector3());
-                            $player->SkillCooldown = true;
+                            $player->setSkillCooldown(true);
                         }
                     }
                 } elseif ($item->getCustomName() === "§r§eLeap§r") {
@@ -133,7 +133,7 @@ class NeptuneListener implements Listener
                     $dy = $directionvector->getY();
                     $dz = $directionvector->getZ();
                     $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
-                    $player->SkillCooldown = true;
+                    $player->setSkillCooldown(true);
                 }
                 Loader::getInstance()->getArenaUtils()->SkillCooldown($player);
             }
@@ -145,7 +145,7 @@ class NeptuneListener implements Listener
                 Loader::getFormUtils()->botForm($player);
             } elseif ($item->getCustomName() === "§r§aStop Timer §f| §dClick to use") {
                 $player->TimerData = 0;
-                $player->TimerTask = false;
+                $player->setStartTimer(false);
                 $player->teleport(new Vector3(275, 66, 212));
                 $player->sendMessage(Loader::getPrefixCore() . "§aYou Has been reset!");
                 $player->ParkourCheckPoint = new Vector3(275, 77, 212);
@@ -536,31 +536,33 @@ class NeptuneListener implements Listener
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
-            } elseif ($player->Opponent === null and $damager->Opponent === null) {
+            } elseif ($player->getOpponent() === null and $damager->getOpponent() === null) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
-                $player->Opponent = $damager->getName();
-                $damager->Opponent = $player->getName();
+                $player->setOpponent($damager->getName());
+                $damager->setOpponent($player->getName());
                 foreach ([$player, $damager] as $p) {
+                    /* @var NeptunePlayer $p */
                     $p->sendMessage(Loader::getInstance()->MessageData["StartCombat"]);
-                    $p->Combat = true;
+                    $p->setCombat(true);
                     $p->CombatTime = 10;
                 }
-            } elseif ($player->Opponent !== null and $damager->Opponent !== null) {
-                if ($player->Opponent !== $damager->getName() and $damager->Opponent !== $player->getName()) {
+            } elseif ($player->getOpponent() !== null and $damager->getOpponent() !== null) {
+                if ($player->getOpponent() !== $damager->getName() and $damager->getOpponent() !== $player->getName()) {
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                } elseif ($player->Opponent === $damager->getName() and $damager->Opponent === $player->getName()) {
+                } elseif ($player->getOpponent() === $damager->getName() and $damager->getOpponent() === $player->getName()) {
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
                     foreach ([$player, $damager] as $p) {
-                        $p->Combat = true;
+                        /* @var NeptunePlayer $p */
                         $p->CombatTime = 10;
                     }
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                         if ($damager->BoxingPoint <= 100) {
                             $damager->BoxingPoint += 1;
                             foreach ([$damager, $player] as $p) {
+                                /* @var NeptunePlayer $p */
                                 $boxingp = $p->BoxingPoint;
-                                $opponent = $p->Opponent;
+                                $opponent = $p->getOpponent();
                                 if ($opponent !== null) {
                                     $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                                     /** @var NeptunePlayer $oppopl */
@@ -585,10 +587,10 @@ class NeptuneListener implements Listener
                         }
                     }
                 }
-            } elseif ($player->Opponent !== null and $damager->Opponent === null) {
+            } elseif ($player->getOpponent() !== null and $damager->getOpponent() === null) {
                 $event->cancel();
                 $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-            } elseif ($player->Opponent === null and $damager->Opponent !== null) {
+            } elseif ($player->getOpponent() === null and $damager->getOpponent() !== null) {
                 $event->cancel();
                 $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
             }
@@ -652,18 +654,18 @@ class NeptuneListener implements Listener
                 case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
                     switch ($block->getId()) {
                         case BlockLegacyIds::NOTE_BLOCK:
-                            if ($player->TimerTask === false) {
-                                $player->TimerTask = true;
+                            if (!$player->isStartTimer()) {
+                                $player->setStartTimer(true);
                             }
                             break;
                         case BlockLegacyIds::PODZOL:
-                            if ($player->TimerTask === true) {
-                                $player->TimerTask = false;
+                            if ($player->isStartTimer()) {
+                                $player->setStartTimer(false);
                             }
                             break;
                         case BlockLegacyIds::LIT_REDSTONE_LAMP:
-                            if ($player->TimerTask === true) {
-                                $player->TimerTask = false;
+                            if ($player->isStartTimer()) {
+                                $player->setStartTimer(false);
                                 $mins = floor($player->TimerData / 6000);
                                 $secs = floor(($player->TimerData / 100) % 60);
                                 $mili = $player->TimerData % 100;
@@ -759,7 +761,7 @@ class NeptuneListener implements Listener
         $player = $event->getPlayer();
         $msg = $event->getMessage();
         if ($player instanceof NeptunePlayer) {
-            if ($player->Combat === true or $player->EditKit !== null or $player->isDueling()) {
+            if ($player->isCombat() or $player->EditKit !== null or $player->isDueling()) {
                 $msg = substr($msg, 1);
                 $msg = explode(" ", $msg);
                 if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
@@ -777,7 +779,7 @@ class NeptuneListener implements Listener
         $to = $event->getTo();
         if ($entity instanceof NeptunePlayer) {
             if ($from->getWorld() !== $to->getWorld() and $to->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                $entity->TimerTask = false;
+                $entity->setStartTimer(false);
                 $entity->TimerData = 0;
             }
         }

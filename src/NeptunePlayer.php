@@ -22,14 +22,14 @@ class NeptunePlayer extends Player
     public string $ToolboxStatus = "Normal";
     public string $lastDamagePlayer = "Unknown";
     public ?string $EditKit = null;
-    public ?string $Opponent = null;
     public ?Vector3 $ParkourCheckPoint = null;
     public ?KitManager $duelKit = null;
-    public bool $Combat = false;
     public int|float $CombatTime = 0;
-    public bool $SkillCooldown = false;
-    public bool $TimerTask = false;
     public array $points = [];
+    private ?string $Opponent = null;
+    private bool $SkillCooldown = false;
+    private bool $TimerTask = false;
+    private bool $Combat = false;
     private int $tick = 0;
     private float $xzKB = 0.4;
     private float $yKb = 0.4;
@@ -219,21 +219,21 @@ class NeptunePlayer extends Player
         $this->tick++;
         if ($this->tick % 20 === 0) {
             $this->updateTag();
-            if ($this->Combat) {
+            if ($this->isCombat()) {
                 $percent = floatval($this->CombatTime / 10);
                 $this->getXpManager()->setXpProgress($percent);
                 $this->CombatTime -= 1;
                 if ($this->CombatTime <= 0) {
-                    $this->Combat = false;
+                    $this->setCombat(false);
                     $this->getXpManager()->setXpProgress(0.0);
                     $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
                     $this->BoxingPoint = 0;
-                    $this->Opponent = null;
+                    $this->setOpponent(null);
                     $this->setUnPVPTag();
                 }
             }
         }
-        if ($this->tick % 50 === 0) {
+        if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
         }
@@ -244,9 +244,9 @@ class NeptunePlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
             $this->setParkourTag();
-        } elseif ($this->Combat === true or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+        } elseif ($this->isCombat() or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
-        } elseif ($this->Combat === false) {
+        } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
         }
     }
@@ -260,6 +260,16 @@ class NeptunePlayer extends Player
         $tagparkour = str_replace("{secs}", (string)floor(($this->TimerData / 100) % 60), $tagparkour);
         $tagparkour = str_replace("{mins}", (string)floor($this->TimerData / 6000), $tagparkour);
         $this->setScoreTag($tagparkour);
+    }
+
+    public function isCombat(): bool
+    {
+        return $this->Combat;
+    }
+
+    public function setCombat(bool $bool): void
+    {
+        $this->Combat = $bool;
     }
 
     private function setPVPTag()
@@ -312,7 +322,7 @@ class NeptunePlayer extends Player
 
     private function parkourTimer()
     {
-        if ($this->TimerTask === true) {
+        if ($this->isStartTimer()) {
             $this->TimerData += 5;
             $mins = floor($this->TimerData / 6000);
             $secs = floor(($this->TimerData / 100) % 60);
@@ -320,8 +330,15 @@ class NeptunePlayer extends Player
             $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
         } else {
             $this->sendTip("§a0 : 0 : 0");
-            $this->TimerData = 0;
+            if ($this->TimerData !== 0) {
+                $this->TimerData = 0;
+            }
         }
+    }
+
+    public function isStartTimer(): bool
+    {
+        return $this->TimerTask;
     }
 
     public function setDueling(bool $playing): void
@@ -391,8 +408,9 @@ class NeptunePlayer extends Player
                     Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
                     $this->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $player->getName());
                     $player->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $this->getName());
-                    $player->setInQueue(false);
-                    $this->setInQueue(false);
+                    foreach ([$player, $this] as $p) {
+                        $p->setInQueue(false);
+                    }
                     return;
                 }
             }
@@ -420,7 +438,7 @@ class NeptunePlayer extends Player
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         Loader::getClickHandler()->removePlayerClickData($this);
-        if ($this->isDueling() or $this->Combat) {
+        if ($this->isDueling() or $this->isCombat()) {
             $this->kill();
         }
         $this->setGamemode(GameMode::SURVIVAL());
@@ -488,5 +506,36 @@ class NeptunePlayer extends Player
         $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
         $this->kill();
         $this->setImmobile(false);
+    }
+
+    public function setStartTimer(bool $bool): void
+    {
+        $this->TimerTask = $bool;
+    }
+
+    public function isSkillCooldown(): bool
+    {
+        return $this->SkillCooldown;
+    }
+
+    public function setSkillCooldown(bool $bool): void
+    {
+        $this->SkillCooldown = $bool;
+    }
+
+    public function getOpponent(): ?string
+    {
+        return $this->Opponent;
+    }
+
+    public function setOpponent(?string $name): void
+    {
+        $this->Opponent = $name;
+    }
+
+    public function __destruct()
+    {
+        parent::__destruct();
+        Loader::getInstance()->getLogger()->info("Destroyed by garbage collector");
     }
 }
