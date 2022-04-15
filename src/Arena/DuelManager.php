@@ -52,7 +52,7 @@ class DuelManager
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
         Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
-        unset(Loader::getInstance()->CoreTask->DuelTask[$name]);
+        unset(Loader::getCoreTask()->DuelTask[$name]);
         if ($this->isMatch($name)) {
             unset($this->matches[$name]);
         }

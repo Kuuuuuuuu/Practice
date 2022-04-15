@@ -29,8 +29,8 @@ class DuelFactory
         if ($world === null) {
             throw new WorldException("World does not exist");
         }
-        if (Loader::getInstance()->CoreTask instanceof NeptuneTask) {
-            Loader::getInstance()->CoreTask->DuelTask[$name] = $this;
+        if (Loader::getCoreTask() instanceof NeptuneTask) {
+            Loader::getCoreTask()->DuelTask[$name] = $this;
         }
         $this->level = $world;
         $this->kit = $kit;

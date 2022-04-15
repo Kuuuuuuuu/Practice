@@ -43,7 +43,7 @@ class Loader extends PluginBase
     private static ArenaUtils $arenautils;
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
-    public ?NeptuneTask $CoreTask;
+    private static ?NeptuneTask $CoreTask;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -87,6 +87,16 @@ class Loader extends PluginBase
         "Switch",
         "XboxOne"
     ];
+
+    public static function getCoreTask(): ?NeptuneTask
+    {
+        return self::$CoreTask;
+    }
+
+    public static function setCoreTask(NeptuneTask $task)
+    {
+        self::$CoreTask = $task;
+    }
 
     public static function getScoreboardTitle(): string
     {

@@ -13,8 +13,6 @@ use pocketmine\player\Player;
 class AntiCheatListener implements Listener
 {
 
-    public static array $data = [];
-
     public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();

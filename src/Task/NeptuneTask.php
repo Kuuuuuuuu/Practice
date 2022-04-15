@@ -16,6 +16,11 @@ class NeptuneTask extends Task
     public array $DuelTask = [];
     private int $tick = 0;
 
+    public function __Construct()
+    {
+        Loader::setCoreTask($this);
+    }
+
     public function onRun(): void
     {
         $this->tick++;
