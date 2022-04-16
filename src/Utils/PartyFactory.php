@@ -68,7 +68,7 @@ class PartyFactory
     {
         $online = [];
         foreach ($this->members as $member) {
-            $player = Server::getInstance()->getPlayerExact($member->getName());
+            $player = Server::getInstance()->getPlayerExact($member);
             if ($player !== null) {
                 $online[] = $player->getName();
             }

@@ -760,7 +760,7 @@ class FormUtils
         $capacity = $party->getCapacity();
         $form->setTitle('§6Members (' . $members . '/' . $capacity . ')');
         foreach ($party->getMembers() as $members) {
-            $players = Server::getInstance()->getPlayerExact($members);
+            $players = Server::getInstance()->getPlayerExact($members->getName());
             /* @var NeptunePlayer $players */
             $form->addButton($members . "\n" . $players->getPartyRank(), -1, '', $members);
         }
