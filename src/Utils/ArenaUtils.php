@@ -65,6 +65,7 @@ use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\World;
 use SQLite3;
+use Throwable;
 use ZipArchive;
 
 class ArenaUtils
@@ -260,8 +261,8 @@ class ArenaUtils
     {
         @mkdir(Loader::getInstance()->getDataFolder() . "data/");
         @mkdir(Loader::getInstance()->getDataFolder() . "players/");
+        @mkdir(Loader::getInstance()->getDataFolder() . "Kits/");
         Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . "ArtifactData.yml", Config::YAML);
-        Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . "KitData.json", Config::JSON);
         Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
         Loader::getInstance()->saveResource("config.yml");
         Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
@@ -401,17 +402,10 @@ class ArenaUtils
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
-                    try {
-                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["0"]["item"], 0, (int)$dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["1"]["item"], 0, (int)$dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["2"]["item"], 0, (int)$dplayer->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["3"]["item"], 0, (int)$dplayer->getKit()["0"]["3"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["4"]["item"], 0, (int)$dplayer->getKit()["0"]["4"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["5"]["item"], 0, (int)$dplayer->getKit()["0"]["5"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["6"]["item"], 0, (int)$dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["7"]["item"], 0, (int)$dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["8"]["item"], 0, (int)$dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    } catch (Exception) {
+                    $kit = $this->getKitContains($dplayer, "build");
+                    if ($kit !== null) {
+                        $dplayer->getInventory()->setContents($kit);
+                    } else {
                         $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -451,6 +445,18 @@ class ArenaUtils
         $this->GiveItem($player);
         $this->addKill($dplayer);
         $this->handleStreak($dplayer, $player);
+    }
+
+    public function getKitContains(NeptunePlayer $player, string $mode): ?array
+    {
+        $config = $this->getKitData($player);
+        $contents = $config->get(mb_strtolower($mode));
+        return $contents !== false ? $contents : null;
+    }
+
+    private function getKitData(NeptunePlayer $player): Config
+    {
+        return new Config(Loader::getInstance()->getDataFolder() . "Kits/" . strtolower($player->getName()) . ".sl", Config::SERIALIZED);
     }
 
     public function addDeath(Player $player): void
@@ -642,6 +648,18 @@ class ArenaUtils
                     $entity->close();
                 }
             }
+        }
+    }
+
+    public function saveKitContains(NeptunePlayer $player, string $mode): bool
+    {
+        try {
+            $config = $this->getKitData($player);
+            $config->set($mode, $player->getInventory()->getContents(true));
+            $config->save();
+            return true;
+        } catch (Throwable) {
+            return false;
         }
     }
 }

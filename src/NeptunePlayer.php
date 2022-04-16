@@ -133,11 +133,6 @@ class NeptunePlayer extends Player
         }
     }
 
-    public function getKit(): array
-    {
-        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : "");
-    }
-
     public function getAllArtifact()
     {
         $this->setValidStuffs("Adidas");
@@ -449,63 +444,19 @@ class NeptunePlayer extends Player
         $this->duelKit = $kit;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function saveKit()
     {
-        $name = $this->getName();
-        try {
-            Loader::getInstance()->KitData->set($name, [
-                "0" => [
-                    "item" => $this->getInventory()->getItem(0)->getId(),
-                    "count" => $this->getInventory()->getItem(0)->getCount(),
-                ],
-                "1" => [
-                    "item" => $this->getInventory()->getItem(1)->getId(),
-                    "count" => $this->getInventory()->getItem(1)->getCount()
-                ],
-                "2" => [
-                    "item" => $this->getInventory()->getItem(2)->getId(),
-                    "count" => $this->getInventory()->getItem(2)->getCount(),
-                ],
-                "3" => [
-                    "item" => $this->getInventory()->getItem(3)->getId(),
-                    "count" => $this->getInventory()->getItem(3)->getCount()
-                ],
-                "4" => [
-                    "item" => $this->getInventory()->getItem(4)->getId(),
-                    "count" => $this->getInventory()->getItem(4)->getCount()
-                ],
-                "5" => [
-                    "item" => $this->getInventory()->getItem(5)->getId(),
-                    "count" => $this->getInventory()->getItem(5)->getCount()
-                ],
-                "6" => [
-                    "item" => $this->getInventory()->getItem(6)->getId(),
-                    "count" => $this->getInventory()->getItem(6)->getCount()
-                ],
-                "7" => [
-                    "item" => $this->getInventory()->getItem(7)->getId(),
-                    "count" => $this->getInventory()->getItem(7)->getCount()
-                ],
-                "8" => [
-                    "item" => $this->getInventory()->getItem(8)->getId(),
-                    "count" => $this->getInventory()->getItem(8)->getCount()
-                ]
-            ]);
-        } catch (Exception) {
+        if (!Loader::getArenaUtils()->saveKitContains($this, mb_strtolower($this->EditKit))) {
             $this->kill();
             $this->setImmobile(false);
             $this->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
             $this->EditKit = null;
-            return;
+        } else {
+            $this->EditKit = null;
+            $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
+            $this->kill();
+            $this->setImmobile(false);
         }
-        Loader::getInstance()->KitData->save();
-        $this->EditKit = null;
-        $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
-        $this->kill();
-        $this->setImmobile(false);
     }
 
     public function setStartTimer(bool $bool): void

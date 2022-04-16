@@ -21,18 +21,17 @@ class AntiCheatListener implements Listener
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
             if (!$player->isCreative() and !$player->isSpectator() and !$player->getAllowFlight()) {
-                if ($from->getY() <= $to->getY()) {
-                    if ($player->GetInAirTicks() > 20) {
-                        $maxY = $player->getWorld()->getHighestBlockAt(floor($from->getX()), floor($to->getZ()));
-                        if ($from->getY() - 2 > $maxY) {
-                            if (!isset($player->points[$name])) {
-                                $player->points[$name]["fly"] = 0;
-                            } else {
-                                $player->points[$name]["fly"] += 1.0;
-                                if ($player->points[$name]["fly"] > 5.0) {
-                                    $event->cancel();
-                                    $player->sendMessage(Loader::getPrefixCore() . "Fly hack detected!");
-                                }
+                $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
+                if ($player->getInAirTicks() > 20 and $dY >= 0) {
+                    $maxY = $player->getWorld()->getHighestBlockAt(floor($event->getTo()->getX()), floor($event->getTo()->getZ()));
+                    if ($to->getY() - 5 > $maxY) {
+                        if (!isset($player->points[$name])) {
+                            $player->points[$name]["fly"] = 1.0;
+                        } else {
+                            $player->points[$name]["fly"] += 1.0;
+                            if ($player->points[$name]["fly"] > 5.0) {
+                                $event->cancel();
+                                $player->sendMessage(Loader::getPrefixCore() . "Fly hack detected!");
                             }
                         }
                     }
@@ -56,11 +55,17 @@ class AntiCheatListener implements Listener
         $damager = $event->getDamager();
         $cause = $event->getCause();
         if ($cause !== EntityDamageEvent::CAUSE_PROJECTILE) {
-            if ($entity instanceof Player && $damager instanceof Player) {
-                if ($entity->getPosition()->distance($damager->getPosition()) > 5.5) {
+            if ($entity instanceof Player and $damager instanceof Player) {
+                if ($entity->getPosition()->distance($damager->getPosition()) > $this->CalculateReach($damager)) {
                     $event->cancel();
                 }
             }
         }
+    }
+
+    private function CalculateReach(Player $damager): float
+    {
+        $projected = $damager->isOnGround() ? 4 : 6.2;
+        return ($damager->getNetworkSession()->getPing() * 0.002) + $projected;
     }
 }

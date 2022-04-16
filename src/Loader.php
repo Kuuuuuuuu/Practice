@@ -47,7 +47,6 @@ class Loader extends PluginBase
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
-    public Config $KitData;
     public SQLite3 $BanData;
     public int $RestartTime = 31;
     public int $DeleteBlockTime = 8;
