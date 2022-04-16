@@ -7,7 +7,7 @@ namespace Kohaku;
 use Exception;
 use JsonException;
 use Kohaku\Utils\Kits\KitManager;
-use pocketmine\{entity\Location, entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
+use pocketmine\{entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class NeptunePlayer extends Player
@@ -26,7 +26,6 @@ class NeptunePlayer extends Player
     public ?KitManager $duelKit = null;
     public int|float $CombatTime = 0;
     public array $points = [];
-    public ?Location $lastpos = null;
     private ?string $Opponent = null;
     private bool $SkillCooldown = false;
     private bool $TimerTask = false;
@@ -214,12 +213,6 @@ class NeptunePlayer extends Player
     {
         $this->tick++;
         if ($this->tick % 20 === 0) {
-            if ($this->lastpos instanceof Location) {
-                if ($this->getLocation()->distance($this->lastpos) > 2 and $this->lastpos->getWorld() === $this->getLocation()->getWorld()) {
-                    $this->kill();
-                    $this->sendMessage(Loader::getPrefixCore() . "§cYou moved too fast! You have been killed.");
-                }
-            }
             $this->updateTag();
             if ($this->isCombat()) {
                 $percent = floatval($this->CombatTime / 10);
