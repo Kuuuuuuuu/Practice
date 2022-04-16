@@ -580,7 +580,7 @@ class FormUtils
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot create a party here.');
                         return;
                     }
-                    PartyManager::createParty($player);
+                    $this->createParty($player);
                     break;
                 case 'invites':
                     $this->invitesForm($player);
@@ -627,6 +627,19 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    public function createParty(NeptunePlayer $player): void
+    {
+        $form = new CustomForm(function (NeptunePlayer $player, array $data = null): void {
+            if ($data === null) return;
+            $name = $data[0];
+            PartyManager::createParty($player, $name, $data[1]);
+        });
+        $form->setTitle('§dNeptune §cParty');
+        $form->addInput('§aParty Name');
+        $form->addSlider('§aParty Size', 2, 100, 1);
+        $player->sendForm($form);
+    }
+
     public function invitesForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
@@ -648,7 +661,7 @@ class FormUtils
         });
         $form->setTitle('§dNeptune §cInvites');
         foreach (PartyManager::getInvites($player) as $invite) {
-            $party = $invite->getParty()->getName() . "'s Party";
+            $party = $invite->getParty()->getName();
             $form->addButton($party, -1, '', $invite->getParty()->getName());
         }
         $form->addButton('§dBack', -1, '', 'exit');
@@ -722,7 +735,7 @@ class FormUtils
         });
         $form->setTitle('§dNeptune §cParties');
         foreach (Loader::getInstance()->PartyData as $party) {
-            $name = $party->getName() . "'s Party";
+            $name = $party->getName();
             $members = count($party->getMembers());
             $capacity = $party->getCapacity();
             $form->addButton($name . ' (' . $members . '/' . $capacity . ')', -1, '', $party->getName());

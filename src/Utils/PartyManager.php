@@ -11,10 +11,9 @@ use pocketmine\player\Player;
 class PartyManager
 {
 
-    public static function createParty(Player $player): void
+    public static function createParty(Player $player, string $name, int $capacity): void
     {
-        $capacity = 100;
-        $party = new PartyFactory($player->getName(), $player->getName(), [$player], $capacity, false, PartyFactory::IDLE);
+        $party = new PartyFactory($name, $player->getName(), [$player], $capacity, false, PartyFactory::IDLE);
         Loader::getInstance()->PartyData[] = $party;
         if ($player instanceof NeptunePlayer) {
             $player->setParty($party);
