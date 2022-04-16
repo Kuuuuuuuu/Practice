@@ -28,7 +28,7 @@ class PartyManager
         $result = null;
         if (isset($player) or !is_null($player)) {
             foreach (Loader::getInstance()->PartyData as $party) {
-                if ($party->isMember($player->getName()) or $party->isLeader($player->getName())) {
+                if ($party->isMember($player) or $party->isLeader($player)) {
                     $result = $party;
                 }
             }

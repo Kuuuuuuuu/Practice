@@ -623,7 +623,7 @@ class FormUtils
                 $form->addButton('§dDisband', -1, '', 'disband');
             }
         }
-        $form->addButton('List', -1, '', 'list');
+        $form->addButton('§dList', -1, '', 'list');
         $player->sendForm($form);
     }
 
