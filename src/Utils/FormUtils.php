@@ -632,7 +632,7 @@ class FormUtils
         $form = new CustomForm(function (NeptunePlayer $player, array $data = null): void {
             if ($data === null) return;
             $name = $data[0];
-            PartyManager::createParty($player, $name, $data[1]);
+            PartyManager::createParty($player, $name, (int)$data[1]);
         });
         $form->setTitle('§dNeptune §cParty');
         $form->addInput('§aParty Name');
