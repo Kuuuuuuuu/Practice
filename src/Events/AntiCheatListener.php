@@ -20,6 +20,7 @@ class AntiCheatListener implements Listener
         $name = $player->getName();
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
+            $player->lastpos = $player->getLocation();
             if (!$player->isCreative() and !$player->isOnGround() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
                 if ($player->getInAirTicks() > $this->CalculateAirTick($player) and $dY >= 0) {
@@ -49,7 +50,7 @@ class AntiCheatListener implements Listener
 
     //TODO: Make Anti-Fly & Kill Aura
 
-    private function CalculateAirTick(Player $player)
+    private function CalculateAirTick(Player $player): int
     {
         if ($player->getNetworkSession()->getPing() < 20) {
             return 15;
