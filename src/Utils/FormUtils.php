@@ -631,6 +631,10 @@ class FormUtils
     {
         $form = new CustomForm(function (NeptunePlayer $player, array $data = null): void {
             if ($data === null) return;
+            if ($data[0] === null or $data[0] === '' or strlen($data[0]) >= 15) {
+                $player->sendMessage(Loader::getPrefixCore() . '§cInvalid party name.');
+                return;
+            }
             $name = $data[0];
             PartyManager::createParty($player, $name, (int)$data[1]);
         });
