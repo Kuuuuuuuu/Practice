@@ -23,7 +23,7 @@ class AntiCheatListener implements Listener
             $player->lastpos = $player->getLocation();
             if (!$player->isCreative() and !$player->isOnGround() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
-                if ($player->getInAirTicks() > 20) {
+                if ($player->getInAirTicks() > 20 and $dY >= 0) {
                     $maxY = $player->getWorld()->getHighestBlockAt(floor($to->getX()), floor($to->getZ()));
                     if ($to->getY() - 5 > $maxY) {
                         if (!isset($player->points[$name])) {
