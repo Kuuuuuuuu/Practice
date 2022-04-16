@@ -607,7 +607,7 @@ class FormUtils
                     break;
             }
         });
-        $form->setTitle('Party');
+        $form->setTitle('§dNeptune §cParty');
         $party = $player->getParty();
         if (!$player->isInParty()) {
             $form->addButton('§dCreate', -1, '', 'create');
@@ -762,7 +762,7 @@ class FormUtils
         foreach ($party->getMembers() as $members) {
             $players = Server::getInstance()->getPlayerExact($members->getName());
             /* @var NeptunePlayer $players */
-            $form->addButton($members . "\n" . $players->getPartyRank(), -1, '', $members);
+            $form->addButton($members->getName() . "\n" . $players->getPartyRank(), -1, '', $members->getName());
         }
         $form->addButton('§dBack', -1, '', 'exit');
         $player->sendForm($form);
