@@ -50,14 +50,14 @@ class SumoScheduler extends Task
                                     $this->startTime--;
                                     foreach ($this->plugin->players as $player) {
                                         /** @var $player Player */
-                                        $player->sendTitle("§d" . $this->startTime, "", 1, 3, 1);
-                                        Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                                        $player->sendTitle('§d' . $this->startTime, '', 1, 3, 1);
+                                        Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                                     }
                                 }
                                 if ($this->startTime === 0) {
                                     $this->plugin->startGame();
                                     foreach ($this->plugin->players as $player) {
-                                        Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
+                                        Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $player);
                                     }
                                 }
                             } else {
@@ -80,16 +80,16 @@ class SumoScheduler extends Task
                         }
                         if ($this->tick % 5 === 0) {
                             foreach ($this->plugin->players as $player) {
-                                /** @var $player Player */
+                                /* @var Player $player */
                                 if ($player->getWorld() !== $this->plugin->level) {
                                     $this->plugin->disconnectPlayer($player);
                                     Loader::getInstance()->getArenaUtils()->addDeath($player);
-                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
+                                    $player->sendMessage(Loader::getPrefixCore() . '§cYou lost Elo ' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . ' Elos!');
                                 } elseif ($player->getPosition()->getY() <= 50) {
                                     $this->plugin->disconnectPlayer($player);
                                     Loader::getInstance()->getArenaUtils()->addDeath($player);
                                     Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo();
-                                    $player->sendMessage(Loader::getPrefixCore() . "§cYou lost Elo " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . " Elos!");
+                                    $player->sendMessage(Loader::getPrefixCore() . '§cYou lost Elo ' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->removeElo() . ' Elos!');
                                 }
                                 if ($player->isImmobile()) {
                                     $player->setImmobile(false);

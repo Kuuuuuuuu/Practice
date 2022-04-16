@@ -15,10 +15,10 @@ abstract class KitManager
 
     public function getName(): string
     {
-        return $this->kitName ?? "none";
+        return $this->kitName ?? 'none';
     }
 
-    public abstract function getArmorItems(): array;
+    abstract public function getArmorItems(): array;
 
-    public abstract function getInventoryItems(): array;
+    abstract public function getInventoryItems(): array;
 }

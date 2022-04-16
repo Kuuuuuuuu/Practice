@@ -28,33 +28,33 @@ class DataManager
         if (is_file($path)) {
             $data = yaml_parse_file($path);
             $this->data = $data;
-            if (isset($data["kills"])) {
-                $this->kills = $data["kills"];
+            if (isset($data['kills'])) {
+                $this->kills = $data['kills'];
             } else {
                 $this->kills = 0;
             }
-            if (isset($data["deaths"])) {
-                $this->deaths = $data["deaths"];
+            if (isset($data['deaths'])) {
+                $this->deaths = $data['deaths'];
             } else {
                 $this->deaths = 0;
             }
-            if (isset($data["killstreak"])) {
-                $this->killStreak = $data["killstreak"];
+            if (isset($data['killstreak'])) {
+                $this->killStreak = $data['killstreak'];
             } else {
                 $this->killStreak = 0;
             }
-            if (isset($data["kdr"])) {
-                $this->kdr = $data["kdr"];
+            if (isset($data['kdr'])) {
+                $this->kdr = $data['kdr'];
             } else {
                 $this->kdr = 0;
             }
-            if (isset($data["elo"])) {
-                $this->elo = $data["elo"];
+            if (isset($data['elo'])) {
+                $this->elo = $data['elo'];
             } else {
                 $this->elo = 1000;
             }
-            if (isset($data["tag"])) {
-                $this->tag = $data["tag"];
+            if (isset($data['tag'])) {
+                $this->tag = $data['tag'];
             } else {
                 $this->tag = null;
             }
@@ -63,7 +63,7 @@ class DataManager
 
     #[Pure] private function getPath(): string
     {
-        return Loader::getInstance()->getDataFolder() . "players/" . strtolower($this->player) . ".yml";
+        return Loader::getInstance()->getDataFolder() . 'players/' . strtolower($this->player) . '.yml';
     }
 
     public function getName(): string
@@ -95,7 +95,7 @@ class DataManager
 
     private function save(): void
     {
-        yaml_emit_file($this->getPath(), ["name" => $this->player, "kills" => $this->kills, "killstreak" => $this->killStreak, "kdr" => $this->getKdr(), "deaths" => $this->deaths, "elo" => $this->elo, "tag" => $this->tag]);
+        yaml_emit_file($this->getPath(), ['name' => $this->player, 'kills' => $this->kills, 'killstreak' => $this->killStreak, 'kdr' => $this->getKdr(), 'deaths' => $this->deaths, 'elo' => $this->elo, 'tag' => $this->tag]);
     }
 
     public function getKdr(): float|int
@@ -143,29 +143,29 @@ class DataManager
 
     public function getRank(): string
     {
-        $format = "§6Rookie";
+        $format = '§6Rookie';
         if ($this->elo >= 1200 and $this->elo < 1400) {
-            $format = "§fSilver";
+            $format = '§fSilver';
         } elseif ($this->elo >= 1400 and $this->elo < 1600) {
-            $format = "§eGold";
+            $format = '§eGold';
         } elseif ($this->elo >= 1600 and $this->elo < 1800) {
-            $format = "§dPlatinum";
+            $format = '§dPlatinum';
         } elseif ($this->elo >= 1800 and $this->elo < 2000) {
-            $format = "§bDiamond";
+            $format = '§bDiamond';
         } elseif ($this->elo >= 2000 and $this->elo < 2200) {
-            $format = "§6Master";
+            $format = '§6Master';
         } elseif ($this->elo >= 2200 and $this->elo < 2400) {
-            $format = "§3Grandmaster";
+            $format = '§3Grandmaster';
         } elseif ($this->elo >= 2400 and $this->elo < 2600) {
-            $format = "§4Challenger";
+            $format = '§4Challenger';
         } elseif ($this->elo >= 2600 and $this->elo < 2800) {
-            $format = "§5Legend";
+            $format = '§5Legend';
         } elseif ($this->elo >= 2800 and $this->elo < 3000) {
-            $format = "§6Legendary";
+            $format = '§6Legendary';
         } elseif ($this->elo >= 3000 and $this->elo < 3200) {
-            $format = "§7Godlike";
+            $format = '§7Godlike';
         } elseif ($this->elo >= 3200) {
-            $format = "§cUnbeatable";
+            $format = '§cUnbeatable';
         }
         return $format;
     }

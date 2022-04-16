@@ -9,11 +9,11 @@ use pocketmine\form\FormValidationException;
 class SimpleForm extends Form
 {
 
-    const IMAGE_TYPE_PATH = 0;
-    const IMAGE_TYPE_URL = 1;
+    public const IMAGE_TYPE_PATH = 0;
+    public const IMAGE_TYPE_URL = 1;
 
     /** @var string */
-    private string $content = "";
+    private string $content = '';
 
     private array $labelMap = [];
 
@@ -23,19 +23,19 @@ class SimpleForm extends Form
     public function __construct(?callable $callable)
     {
         parent::__construct($callable);
-        $this->data["type"] = "form";
-        $this->data["title"] = "";
-        $this->data["content"] = $this->content;
-        $this->data["buttons"] = [];
+        $this->data['type'] = 'form';
+        $this->data['title'] = '';
+        $this->data['content'] = $this->content;
+        $this->data['buttons'] = [];
     }
 
     public function processData(&$data): void
     {
         if ($data !== null) {
             if (!is_int($data)) {
-                throw new FormValidationException("Expected an integer response, got " . gettype($data));
+                throw new FormValidationException('Expected an integer response, got ' . gettype($data));
             }
-            $count = count($this->data["buttons"]);
+            $count = count($this->data['buttons']);
             if ($data >= $count || $data < 0) {
                 throw new FormValidationException("Button $data does not exist");
             }
@@ -48,7 +48,7 @@ class SimpleForm extends Form
      */
     public function setTitle(string $title): void
     {
-        $this->data["title"] = $title;
+        $this->data['title'] = $title;
     }
 
     /**
@@ -56,7 +56,7 @@ class SimpleForm extends Form
      */
     public function getTitle(): string
     {
-        return $this->data["title"];
+        return $this->data['title'];
     }
 
     /**
@@ -64,7 +64,7 @@ class SimpleForm extends Form
      */
     public function getContent(): string
     {
-        return $this->data["content"];
+        return $this->data['content'];
     }
 
     /**
@@ -72,7 +72,7 @@ class SimpleForm extends Form
      */
     public function setContent(string $content): void
     {
-        $this->data["content"] = $content;
+        $this->data['content'] = $content;
     }
 
     /**
@@ -81,14 +81,14 @@ class SimpleForm extends Form
      * @param string $imagePath
      * @param string|null $label
      */
-    public function addButton(string $text, int $imageType = -1, string $imagePath = "", ?string $label = null): void
+    public function addButton(string $text, int $imageType = -1, string $imagePath = '', ?string $label = null): void
     {
-        $content = ["text" => $text];
+        $content = ['text' => $text];
         if ($imageType !== -1) {
-            $content["image"]["type"] = $imageType === 0 ? "path" : "url";
-            $content["image"]["data"] = $imagePath;
+            $content['image']['type'] = $imageType === 0 ? 'path' : 'url';
+            $content['image']['data'] = $imagePath;
         }
-        $this->data["buttons"][] = $content;
+        $this->data['buttons'][] = $content;
         $this->labelMap[] = $label ?? count($this->labelMap);
     }
 

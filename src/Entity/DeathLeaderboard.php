@@ -38,13 +38,13 @@ class DeathLeaderboard extends Human
 
     public function onUpdate(int $currentTick): bool
     {
-        $subtitle = "";
+        $subtitle = '';
         $tops = Loader::getInstance()->DeathLeaderboard;
         if (count($tops) > 0) {
             arsort($tops);
             $i = 1;
             foreach ($tops as $name => $wins) {
-                $subtitle .= " §7[§d# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e Deaths\n";
+                $subtitle .= ' §7[§d# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e Deaths\n";
                 if ($i >= 10) {
                     break;
                 }

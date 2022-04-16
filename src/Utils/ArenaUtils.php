@@ -159,7 +159,7 @@ class ArenaUtils
      * @throws Exception
      */
 
-    function generateUUID()
+    public function generateUUID()
     {
         $data = random_bytes(16);
         assert(strlen($data) == 16);
@@ -173,22 +173,22 @@ class ArenaUtils
         $username = $player->getName();
         $data = $player->getPlayerInfo()->getExtraData();
         if ($player instanceof NeptunePlayer) {
-            if ($data["CurrentInputMode"] !== null) $player->PlayerControl = Loader::getInstance()->ControlList[$data["CurrentInputMode"]];
-            if ($data["DeviceOS"] !== null) $player->PlayerOS = Loader::getInstance()->OSList[$data["DeviceOS"]];
-            if ($data["DeviceModel"] !== null) $player->PlayerDevice = $data["DeviceModel"];
-            $deviceOS = (int)$data["DeviceOS"];
-            $deviceModel = (string)$data["DeviceModel"];
+            if ($data['CurrentInputMode'] !== null) $player->PlayerControl = Loader::getInstance()->ControlList[$data['CurrentInputMode']];
+            if ($data['DeviceOS'] !== null) $player->PlayerOS = Loader::getInstance()->OSList[$data['DeviceOS']];
+            if ($data['DeviceModel'] !== null) $player->PlayerDevice = $data['DeviceModel'];
+            $deviceOS = (int)$data['DeviceOS'];
+            $deviceModel = (string)$data['DeviceModel'];
             if ($deviceOS !== 1) {
                 return;
             }
-            $name = explode(" ", $deviceModel);
+            $name = explode(' ', $deviceModel);
             if (!isset($name[0])) {
                 return;
             }
             $check = strtoupper($name[0]);
             if ($check !== $name[0]) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§e" . $username . " §cMight be Using §aToolbox. Please Avoid that Player!");
-                $player->ToolboxStatus = "Toolbox";
+                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§e' . $username . ' §cMight be Using §aToolbox. Please Avoid that Player!');
+                $player->ToolboxStatus = 'Toolbox';
             }
         }
     }
@@ -196,17 +196,17 @@ class ArenaUtils
     public function spawnLightning(Player $player, Player $damager): void
     {
         $pos = $player->getPosition();
-        $light2 = AddActorPacket::create(Entity::nextRuntimeId(), 1, "minecraft:lightning_bolt", $player->getPosition()->asVector3(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch(), 0.0, [], [], []);
+        $light2 = AddActorPacket::create(Entity::nextRuntimeId(), 1, 'minecraft:lightning_bolt', $player->getPosition()->asVector3(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch(), 0.0, [], [], []);
         $block = $player->getWorld()->getBlock($player->getPosition()->floor()->down());
         $particle = new BlockBreakParticle($block);
         $player->getWorld()->addParticle($pos, $particle, $player->getWorld()->getPlayers());
-        $sound2 = PlaySoundPacket::create("ambient.weather.thunder", $pos->getX(), $pos->getY(), $pos->getZ(), 1, 1);
+        $sound2 = PlaySoundPacket::create('ambient.weather.thunder', $pos->getX(), $pos->getY(), $pos->getZ(), 1, 1);
         Server::getInstance()->broadcastPackets([$player, $damager], [$light2, $sound2]);
     }
 
     public function calculateTime(int $time): string
     {
-        return gmdate("i:s", $time);
+        return gmdate('i:s', $time);
     }
 
     public function randomSpawn(Player $p): void
@@ -218,8 +218,8 @@ class ArenaUtils
 
     public function Enable(): void
     {
-        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Neptune" . TextFormat::WHITE . "]\n\n");
-        Server::getInstance()->getNetwork()->setName("§dNeptune §fNetwork");
+        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . 'Neptune' . TextFormat::WHITE . "]\n\n");
+        Server::getInstance()->getNetwork()->setName('§dNeptune §fNetwork');
         $this->registerItems();
         $this->registerConfigs();
         $this->registerGenerator();
@@ -238,77 +238,77 @@ class ArenaUtils
     public static function getLogger(string $err): void
     {
         $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
         $msg = new DiscordWebhookUtils();
-        $e->setTitle("Error");
-        $e->setFooter("Made By KohakuChan");
+        $e->setTitle('Error');
+        $e->setFooter('Made By KohakuChan');
         $e->setTimestamp(new Datetime());
         $e->setColor(0x00ff00);
-        $e->setDescription("Error: " . $err);
+        $e->setDescription('Error: ' . $err);
         $msg->addEmbed($e);
         $web->send($msg);
     }
 
     private function registerItems(): void
     {
-        ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), "Ender Pearl"), true);
-        ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), "Bow"), true);
-        ItemFactory::getInstance()->register(new FishingRod(new ItemIdentifier(ItemIds::FISHING_ROD, 0), "Fishing Rod"), true);
+        ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
+        ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), 'Bow'), true);
+        ItemFactory::getInstance()->register(new FishingRod(new ItemIdentifier(ItemIds::FISHING_ROD, 0), 'Fishing Rod'), true);
     }
 
     private function registerConfigs(): void
     {
-        @mkdir(Loader::getInstance()->getDataFolder() . "data/");
-        @mkdir(Loader::getInstance()->getDataFolder() . "players/");
-        @mkdir(Loader::getInstance()->getDataFolder() . "Kits/");
-        Loader::getInstance()->saveResource("config.yml");
-        Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . "KitData.json", Config::JSON);
-        Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . "ArtifactData.yml", Config::YAML);
-        Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . "CapeData.yml", Config::YAML);
-        Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . "messages.yml", Config::YAML, array(
-            "StartCombat" => "§dNeptune§f » §r§aYou Started combat!",
-            "AntiCheatName" => "§fLunar §f» ",
-            "CooldownMessage" => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
-            "StopCombat" => "§dNeptune§f » §r§aYou Cleared combat!",
-            "StartSkillMessage" => "§dNeptune§f » §r§aYou Started Skill!",
-            "NoPlayer" => "§dNeptune§f » §r§cPlayer not found!",
-            "SkillCleared" => "§dNeptune§f » §r§aSkill Cleared!",
-            "CantUseWantCombat" => "§dNeptune§f » §r§cYou can't use this command in combat!",
-            "BroadcastBanMessage" => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
-            "KickBanMessage" => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
-            "LoginBanMessage" => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
-            "BanMyself" => "§dNeptune§f » §cYou can't ban yourself",
-            "NoBanPlayers" => "§dNeptune§f » §aNo ban players",
-            "UnBanPlayer" => "§dNeptune§f » §b{player} §ahas been unban",
-            "AutoUnBanPlayer" => "§dNeptune§f »» §a{player} Has Auto Unban Already!",
-            "BanListTitle" => "§dNeptune §eBanSystem",
-            "BanListContent" => "§c§lChoose player",
-            "PlayerListTitle" => "§dNeptune §eBanSystem",
-            "PlayerListContent" => "§c§lChoose Player",
-            "InfoUIContent" => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
-            "InfoUIUnBanButton" => "§aUnban",
+        @mkdir(Loader::getInstance()->getDataFolder() . 'data/');
+        @mkdir(Loader::getInstance()->getDataFolder() . 'players/');
+        @mkdir(Loader::getInstance()->getDataFolder() . 'Kits/');
+        Loader::getInstance()->saveResource('config.yml');
+        Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
+        Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
+        Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
+        Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, array(
+            'StartCombat' => '§dNeptune§f » §r§aYou Started combat!',
+            'AntiCheatName' => '§fLunar §f» ',
+            'CooldownMessage' => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
+            'StopCombat' => '§dNeptune§f » §r§aYou Cleared combat!',
+            'StartSkillMessage' => '§dNeptune§f » §r§aYou Started Skill!',
+            'NoPlayer' => '§dNeptune§f » §r§cPlayer not found!',
+            'SkillCleared' => '§dNeptune§f » §r§aSkill Cleared!',
+            'CantUseWantCombat' => "§dNeptune§f » §r§cYou can't use this command in combat!",
+            'BroadcastBanMessage' => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
+            'KickBanMessage' => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            'LoginBanMessage' => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            'BanMyself' => "§dNeptune§f » §cYou can't ban yourself",
+            'NoBanPlayers' => '§dNeptune§f » §aNo ban players',
+            'UnBanPlayer' => '§dNeptune§f » §b{player} §ahas been unban',
+            'AutoUnBanPlayer' => '§dNeptune§f »» §a{player} Has Auto Unban Already!',
+            'BanListTitle' => '§dNeptune §eBanSystem',
+            'BanListContent' => '§c§lChoose player',
+            'PlayerListTitle' => '§dNeptune §eBanSystem',
+            'PlayerListContent' => '§c§lChoose Player',
+            'InfoUIContent' => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
+            'InfoUIUnBanButton' => '§aUnban',
         )))->getAll();
-        Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . "Ban.db");
-        Loader::getInstance()->BanData->exec("CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);");
+        Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . 'Ban.db');
+        Loader::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
 
     public function registerGenerator(): void
     {
-        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, "Duel", fn() => null);
+        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, 'Duel', fn() => null);
     }
 
     private function registerCommands(): void
     {
-        Server::getInstance()->getCommandMap()->register("hub", new HubCommand());
-        Server::getInstance()->getCommandMap()->register("tban", new TbanCommand());
-        Server::getInstance()->getCommandMap()->register("tcheck", new TcheckCommand());
-        Server::getInstance()->getCommandMap()->register("tps", new TpsCommand());
-        Server::getInstance()->getCommandMap()->register("core", new CoreCommand());
-        Server::getInstance()->getCommandMap()->register("Restart", new RestartCommand());
-        Server::getInstance()->getCommandMap()->register("sumo", new SumoCommand());
-        Server::getInstance()->getCommandMap()->register("broadcast", new BroadcastCommand());
-        Server::getInstance()->getCommandMap()->register("pinfo", new PlayerInfoCommand());
-        Server::getInstance()->getCommandMap()->register("settag", new SetTagCommand());
+        Server::getInstance()->getCommandMap()->register('hub', new HubCommand());
+        Server::getInstance()->getCommandMap()->register('tban', new TbanCommand());
+        Server::getInstance()->getCommandMap()->register('tcheck', new TcheckCommand());
+        Server::getInstance()->getCommandMap()->register('tps', new TpsCommand());
+        Server::getInstance()->getCommandMap()->register('core', new CoreCommand());
+        Server::getInstance()->getCommandMap()->register('Restart', new RestartCommand());
+        Server::getInstance()->getCommandMap()->register('sumo', new SumoCommand());
+        Server::getInstance()->getCommandMap()->register('broadcast', new BroadcastCommand());
+        Server::getInstance()->getCommandMap()->register('pinfo', new PlayerInfoCommand());
+        Server::getInstance()->getCommandMap()->register('settag', new SetTagCommand());
     }
 
     private function registerEvents(): void
@@ -356,8 +356,8 @@ class ArenaUtils
 
     public function loadallworlds(): void
     {
-        foreach (glob(Server::getInstance()->getDataPath() . "worlds/*") as $world) {
-            $world = str_replace(Server::getInstance()->getDataPath() . "worlds/", "", $world);
+        foreach (glob(Server::getInstance()->getDataPath() . 'worlds/*') as $world) {
+            $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
             if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
                 continue;
             }
@@ -369,23 +369,25 @@ class ArenaUtils
         }
     }
 
-    public function SkillCooldown(NeptunePlayer $player): void
+    public function SkillCooldown(Player $player): void
     {
-        if ($player->isSkillCooldown()) {
-            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
-                if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                    $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
-                }
-                $player->sendMessage(Loader::getInstance()->MessageData["SkillCleared"]);
-                $player->setSkillCooldown(false);
-            }), 250);
+        if ($player instanceof NeptunePlayer) {
+            if ($player->isSkillCooldown()) {
+                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
+                    if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                        $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
+                    }
+                    $player->sendMessage(Loader::getInstance()->MessageData['SkillCleared']);
+                    $player->setSkillCooldown(false);
+                }), 250);
+            }
         }
     }
 
     /**
      * @throws Exception
      */
-    public function DeathReset(NeptunePlayer $player, NeptunePlayer $dplayer, $arena = null): void
+    public function DeathReset(Player $player, NeptunePlayer $dplayer, $arena = null): void
     {
         if ($dplayer->isAlive()) {
             if ($arena === Loader::getArenaFactory()->getOITCArena()) {
@@ -403,15 +405,15 @@ class ArenaUtils
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
                     try {
-                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["0"]["item"], 0, (int)$dplayer->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["1"]["item"], 0, (int)$dplayer->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["2"]["item"], 0, (int)$dplayer->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["3"]["item"], 0, (int)$dplayer->getKit()["0"]["3"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["4"]["item"], 0, (int)$dplayer->getKit()["0"]["4"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["5"]["item"], 0, (int)$dplayer->getKit()["0"]["5"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["6"]["item"], 0, (int)$dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["7"]["item"], 0, (int)$dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["8"]["item"], 0, (int)$dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['0']['item'], 0, (int)$dplayer->getKit()['0']['0']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['1']['item'], 0, (int)$dplayer->getKit()['0']['1']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['2']['item'], 0, (int)$dplayer->getKit()['0']['2']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['3']['item'], 0, (int)$dplayer->getKit()['0']['3']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['4']['item'], 0, (int)$dplayer->getKit()['0']['4']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['5']['item'], 0, (int)$dplayer->getKit()['0']['5']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['6']['item'], 0, (int)$dplayer->getKit()['0']['6']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['7']['item'], 0, (int)$dplayer->getKit()['0']['7']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']['8']['item'], 0, (int)$dplayer->getKit()['0']['8']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     } catch (Throwable) {
                         $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -442,7 +444,7 @@ class ArenaUtils
             $p->setOpponent(null);
             $p->setSkillCooldown(false);
             if ($p instanceof NeptunePlayer) {
-                $p->setLastDamagePlayer("Unknown");
+                $p->setLastDamagePlayer('Unknown');
             }
         }
         $player->getInventory()->clearAll();
@@ -472,13 +474,15 @@ class ArenaUtils
     public function GiveItem(Player $player): void
     {
         $item = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item->setCustomName("§r§dPlay");
+        $item->setCustomName('§r§dPlay');
         $item2 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item2->setCustomName("§r§dSettings");
+        $item2->setCustomName('§r§dSettings');
         $item3 = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item3->setCustomName("§r§dBot");
+        $item3->setCustomName('§r§dBot');
         $item4 = VanillaItems::BOOK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item4->setCustomName("§r§dDuel");
+        $item4->setCustomName('§r§dDuel');
+        $item5 = VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item5->setCustomName('§r§dParty');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -487,6 +491,7 @@ class ArenaUtils
         $player->getInventory()->setItem(8, $item2);
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(1, $item4);
+        $player->getInventory()->setItem(2, $item5);
     }
 
     public function addKill(Player $player): void
@@ -507,11 +512,11 @@ class ArenaUtils
         $oldStreak = $loser->getStreak();
         $newStreak = $killer->getStreak();
         if ($oldStreak > 10) {
-            $death->sendMessage(Loader::getPrefixCore() . "§r§aYour " . $oldStreak . " killstreak was ended by " . $player->getName() . "!");
-            $player->sendMessage(Loader::getPrefixCore() . "§r§aYou have ended " . $death->getName() . "'s " . $oldStreak . " killstreak!");
+            $death->sendMessage(Loader::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
+            $player->sendMessage(Loader::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreak!');
         }
         if (is_int($newStreak / 10)) {
-            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§a" . $player->getName() . " is on a " . $newStreak . " killstreak!");
+            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreak!');
         }
     }
 
@@ -522,7 +527,7 @@ class ArenaUtils
             $arena->joinToArena($player);
             return;
         }
-        $player->sendMessage(Loader::getPrefixCore() . "§e All the arenas are full!");
+        $player->sendMessage(Loader::getPrefixCore() . '§e All the arenas are full!');
     }
 
     public function getRandomSumoArenas(): ?SumoHandler
@@ -562,10 +567,10 @@ class ArenaUtils
     public function getChatFormat(Player $player, string $message): string
     {
         $name = $player->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]" . "§r§a > §r" . $message;
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]' . '§r§a > §r' . $message;
         } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $player->getDisplayName() . "§r§a > §r" . $message;
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
         }
         return $nametag;
     }
@@ -579,14 +584,14 @@ class ArenaUtils
             Loader::getDuelManager()->stopMatch($activeMatch);
         }
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            if (str_contains(mb_strtolower($world->getFolderName()), "duel")) {
+            if (str_contains(mb_strtolower($world->getFolderName()), 'duel')) {
                 $name = $world->getFolderName();
                 Server::getInstance()->getWorldManager()->unloadWorld($world);
                 $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
             }
         }
-        Loader::getInstance()->getLogger()->info(TextFormat::RED . "Disable Yeet");
-        $this->loadMap("BUild");
+        Loader::getInstance()->getLogger()->info(TextFormat::RED . 'Disable Yeet');
+        $this->loadMap('BUild');
         $this->killbot();
     }
 
@@ -617,16 +622,16 @@ class ArenaUtils
         }
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . "worlds" . DIRECTORY_SEPARATOR . $folderName);
+            $this->deleteDir(Server::getInstance()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $folderName);
         }
-        $zipPath = Loader::getInstance()->getDataFolder() . "Maps" . DIRECTORY_SEPARATOR . $folderName . ".zip";
+        $zipPath = Loader::getInstance()->getDataFolder() . 'Maps' . DIRECTORY_SEPARATOR . $folderName . '.zip';
         if (!file_exists($zipPath)) {
             Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found, try save level in setup mode.");
             return null;
         }
         $zipArchive = new ZipArchive();
         $zipArchive->open($zipPath);
-        $zipArchive->extractTo(Server::getInstance()->getDataPath() . "worlds");
+        $zipArchive->extractTo(Server::getInstance()->getDataPath() . 'worlds');
         $zipArchive->close();
         if ($justSave) {
             return null;

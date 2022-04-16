@@ -6,12 +6,9 @@ namespace Kohaku\Utils;
 
 use Kohaku\Loader;
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
 use pocketmine\Server;
-use pocketmine\world\particle\BlockPunchParticle;
 use pocketmine\world\sound\BlockPunchSound;
 
 class DeleteBlocksHandler
@@ -43,9 +40,8 @@ class DeleteBlocksHandler
             $block = $level->getBlockAt($x, $y, $z);
             $blockvec = new Vector3($x, $y, $z);
             if ($sec <= 0) {
-                $level->addParticle($blockvec, new BlockPunchParticle($block, RuntimeBlockMapping::getInstance()->toRuntimeId($block->getFullId())));
                 $level->addSound($blockvec, new BlockPunchSound($block));
-                $level->setBlock($blockvec, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0));
+                $level->setBlock($blockvec, VanillaBlocks::AIR());
                 unset($this->buildBlocks[$pos]);
             } else {
                 $this->buildBlocks[$pos]--;

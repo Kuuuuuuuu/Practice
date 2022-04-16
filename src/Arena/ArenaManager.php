@@ -6,7 +6,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Arena;
 
-use Exception;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use pocketmine\block\VanillaBlocks;
@@ -28,14 +27,14 @@ class ArenaManager
     public function onJoinParkour(Player $player): void
     {
         if (Loader::getArenaFactory()->getParkourArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
         $item2 = VanillaItems::COMPASS();
         $item3 = VanillaItems::FEATHER();
-        $item2->setCustomName("§r§aStop Timer §f| §dClick to use");
-        $item3->setCustomName("§r§aBack to Checkpoint §f| §dClick to use");
+        $item2->setCustomName('§r§aStop Timer §f| §dClick to use');
+        $item3->setCustomName('§r§aBack to Checkpoint §f| §dClick to use');
         $player->getInventory()->clearAll();
         $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
@@ -53,7 +52,7 @@ class ArenaManager
     public function onJoinBoxing(Player $player): void
     {
         if (Loader::getArenaFactory()->getBoxingArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getBoxingArena());
@@ -73,7 +72,7 @@ class ArenaManager
     public function onJoinFist(Player $player): void
     {
         if (Loader::getArenaFactory()->getFistArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getFistArena());
@@ -92,7 +91,7 @@ class ArenaManager
     public function onJoinCombo(Player $player): void
     {
         if (Loader::getArenaFactory()->getFistArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getComboArena());
@@ -113,7 +112,7 @@ class ArenaManager
     public function onJoinKnockback(Player $player): void
     {
         if (Loader::getArenaFactory()->getKnockbackArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKnockbackArena());
@@ -125,7 +124,7 @@ class ArenaManager
         $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 99999, 4, false));
         $arrow = VanillaItems::ARROW();
         $leap = VanillaItems::FEATHER();
-        $leap->setCustomName("§r§eLeap§r");
+        $leap->setCustomName('§r§eLeap§r');
         $bow = VanillaItems::BOW();
         $bow->addEnchantment(new EnchantmentInstance(VanillaEnchantments::INFINITY(), 1));
         $bow->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
@@ -148,7 +147,7 @@ class ArenaManager
     public function onJoinKitpvp(Player $player): void
     {
         if (Loader::getArenaFactory()->getKitPVPArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getKitPVPArena());
@@ -167,7 +166,7 @@ class ArenaManager
     public function onJoinOITC(Player $player): void
     {
         if (Loader::getArenaFactory()->getOITCArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         $random = Loader::getArenaFactory()->getRandomSpawnOitc();
@@ -176,7 +175,7 @@ class ArenaManager
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())->getSafeSpawn());
-        $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
+        $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
         $pos = $player->getPosition();
         Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
@@ -189,7 +188,7 @@ class ArenaManager
     public function onJoinResistance(Player $player): void
     {
         if (Loader::getArenaFactory()->getResistanceArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getResistanceArena());
@@ -205,10 +204,10 @@ class ArenaManager
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
     }
 
-    public function onJoinBuild(NeptunePlayer $player): void
+    public function onJoinBuild(Player $player): void
     {
         if (Loader::getArenaFactory()->getBuildArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . "§cArena is not set!");
+            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
         $random = Loader::getArenaFactory()->getRandomSpawnBuild();
@@ -218,15 +217,17 @@ class ArenaManager
         $player->getEffects()->clear();
         $player->setHealth(20);
         try {
-            $player->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["0"]["item"], 0, (int)$player->getKit()["0"]["0"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["1"]["item"], 0, (int)$player->getKit()["0"]["1"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["2"]["item"], 0, (int)$player->getKit()["0"]["2"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["3"]["item"], 0, (int)$player->getKit()["0"]["3"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["4"]["item"], 0, (int)$player->getKit()["0"]["4"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["5"]["item"], 0, (int)$player->getKit()["0"]["5"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["6"]["item"], 0, (int)$player->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["7"]["item"], 0, (int)$player->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["8"]["item"], 0, (int)$player->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+            if ($player instanceof NeptunePlayer) {
+                $player->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$player->getKit()['0']['0']['item'], 0, (int)$player->getKit()['0']['0']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$player->getKit()['0']['1']['item'], 0, (int)$player->getKit()['0']['1']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$player->getKit()['0']['2']['item'], 0, (int)$player->getKit()['0']['2']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$player->getKit()['0']['3']['item'], 0, (int)$player->getKit()['0']['3']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$player->getKit()['0']['4']['item'], 0, (int)$player->getKit()['0']['4']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$player->getKit()['0']['5']['item'], 0, (int)$player->getKit()['0']['5']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$player->getKit()['0']['6']['item'], 0, (int)$player->getKit()['0']['6']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$player->getKit()['0']['7']['item'], 0, (int)$player->getKit()['0']['7']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$player->getKit()['0']['8']['item'], 0, (int)$player->getKit()['0']['8']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+            }
         } catch (Throwable) {
             $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -240,7 +241,7 @@ class ArenaManager
         $player->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())->getSafeSpawn());
-        $player->teleport(new Vector3($random["x"], $random["y"], $random["z"]));
+        $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
         $pos = $player->getPosition();
         Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
             $player->teleport($pos);

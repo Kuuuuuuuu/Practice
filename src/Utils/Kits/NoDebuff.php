@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Kohaku\Utils\Kits;
 
-use pocketmine\data\bedrock\PotionTypeIds;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 
 class NoDebuff extends KitManager
@@ -27,9 +24,9 @@ class NoDebuff extends KitManager
         $contents[] = VanillaItems::DIAMOND_SWORD();
         $contents[] = VanillaItems::ENDER_PEARL()->setCount(16);
         $contents[] = VanillaItems::STEAK()->setCount(64);
-        $contents[] = ItemFactory::getInstance()->get(ItemIds::POTION, PotionTypeIds::SWIFTNESS, 2);
+        $contents[] = VanillaItems::SWIFTNESS_POTION()->setCount(2);
         for ($i = 0; $i < 32; $i++) {
-            $contents[] = ItemFactory::getInstance()->get(ItemIds::SPLASH_POTION, PotionTypeIds::STRONG_HEALING, 1);
+            $contents[] = VanillaItems::STRONG_HEALING_POTION();
         }
         return $contents;
     }

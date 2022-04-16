@@ -17,10 +17,10 @@ class BroadcastCommand extends Command
     public function __construct()
     {
         parent::__construct(
-            "broadcast",
-            "Broadcast a message to all players",
-            "/broadcast <message>",
-            ["bc"]
+            'broadcast',
+            'Broadcast a message to all players',
+            '/broadcast <message>',
+            ['bc']
         );
     }
 
@@ -28,19 +28,19 @@ class BroadcastCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($args == null) {
-                $sender->sendMessage(Loader::getPrefixCore() . "§cPlease enter a message");
+                $sender->sendMessage(Loader::getPrefixCore() . '§cPlease enter a message');
                 return;
             }
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                    $message = implode(" ", $args);
+                    $message = implode(' ', $args);
                     $player->sendMessage(Loader::getPrefixCore() . $message);
                 }
             } else {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 }

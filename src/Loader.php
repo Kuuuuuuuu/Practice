@@ -61,31 +61,33 @@ class Loader extends PluginBase
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
     public array $ParkourLeaderboard = [];
+    public array $PartyData = [];
+    public array $PartyInvite = [];
     public array $BanCommand = [
-        "hub",
-        "kill"
+        'hub',
+        'kill'
     ];
     public array $ControlList = [
-        "Unknown",
-        "Mouse",
-        "Touch",
-        "Controller"
+        'Unknown',
+        'Mouse',
+        'Touch',
+        'Controller'
     ];
     public array $OSList = [
-        "Unknown",
-        "Android",
-        "iOS",
-        "macOS",
-        "FireOS",
-        "GearVR",
-        "HoloLens",
-        "Windows",
-        "Windows",
-        "EducalVersion",
-        "Dedicated",
-        "PlayStation",
-        "Switch",
-        "XboxOne"
+        'Unknown',
+        'Android',
+        'iOS',
+        'macOS',
+        'FireOS',
+        'GearVR',
+        'HoloLens',
+        'Windows',
+        'Windows',
+        'EducalVersion',
+        'Dedicated',
+        'PlayStation',
+        'Switch',
+        'XboxOne'
     ];
 
     public static function getCoreTask(): ?NeptuneTask
@@ -100,12 +102,12 @@ class Loader extends PluginBase
 
     public static function getScoreboardTitle(): string
     {
-        return "§f» §dNeptune §f«";
+        return '§f» §dNeptune §f«';
     }
 
     public static function getPrefixCore(): string
     {
-        return "§dNeptune§f » §r";
+        return '§dNeptune§f » §r';
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler

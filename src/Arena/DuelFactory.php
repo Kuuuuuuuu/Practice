@@ -27,7 +27,7 @@ class DuelFactory
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
-            throw new WorldException("World does not exist");
+            throw new WorldException('World does not exist');
         }
         if (Loader::getCoreTask() instanceof NeptuneTask) {
             Loader::getCoreTask()->DuelTask[$name] = $this;
@@ -61,8 +61,8 @@ class DuelFactory
                         $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                         $player->getInventory()->setContents($this->kit->getInventoryItems());
                         $player->setImmobile();
-                        $player->sendTitle("§d3", "", 1, 3, 1);
-                        Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                        $player->sendTitle('§d3', '', 1, 3, 1);
+                        Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                     }
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
@@ -79,20 +79,20 @@ class DuelFactory
                     if ($player instanceof NeptunePlayer) {
                         $player->setCurrentKit(null);
                     }
-                    $player->sendTitle("§d2", "", 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                    $player->sendTitle('§d2', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                 }
                 break;
             case 901:
                 foreach ($this->getPlayers() as $player) {
-                    $player->sendTitle("§d1", "", 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound("random.click", $player);
+                    $player->sendTitle('§d1', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                 }
                 break;
             case 900:
                 foreach ($this->getPlayers() as $player) {
-                    $player->sendTitle("§dFight!", "", 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound("random.anvil_use", $player);
+                    $player->sendTitle('§dFight!', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $player);
                     $player->setImmobile(false);
                 }
                 break;
@@ -114,14 +114,14 @@ class DuelFactory
             foreach ($this->getPlayers() as $online) {
                 if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof NeptunePlayer) {
-                        $online->sendMessage("§f-----------------------");
-                        $winnerMessage = "§aWinner: §f";
-                        $winnerMessage .= $this->winner !== null ? $this->winner->getName() : "None";
+                        $online->sendMessage('§f-----------------------');
+                        $winnerMessage = '§aWinner: §f';
+                        $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
                         $online->sendMessage($winnerMessage);
-                        $loserMessage = "§cLoser: §f";
-                        $loserMessage .= $this->loser !== null ? $this->loser->getName() : "None";
+                        $loserMessage = '§cLoser: §f';
+                        $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
-                        $online->sendMessage("§f-----------------------");
+                        $online->sendMessage('§f-----------------------');
                         Loader::getArenaUtils()->GiveItem($online);
                         Loader::getScoreboardManager()->sb($online);
                         $online->setDueling(false);

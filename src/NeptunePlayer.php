@@ -7,20 +7,22 @@ namespace Kohaku;
 use Exception;
 use JsonException;
 use Kohaku\Utils\Kits\KitManager;
+use Kohaku\Utils\PartyFactory;
 use pocketmine\{entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use Kohaku\Utils\PartyManager;
 
 class NeptunePlayer extends Player
 {
     public int $BoxingPoint = 0;
     public int $TimerData = 0;
-    public string $cape = "";
-    public string $artifact = "";
-    public string $PlayerOS = "Unknown";
-    public string $PlayerControl = "Unknown";
-    public string $PlayerDevice = "Unknown";
-    public string $ToolboxStatus = "Normal";
-    public string $lastDamagePlayer = "Unknown";
+    public string $cape = '';
+    public string $artifact = '';
+    public string $PlayerOS = 'Unknown';
+    public string $PlayerControl = 'Unknown';
+    public string $PlayerDevice = 'Unknown';
+    public string $ToolboxStatus = 'Normal';
+    public string $lastDamagePlayer = 'Unknown';
     public ?string $EditKit = null;
     public ?Vector3 $ParkourCheckPoint = null;
     public ?KitManager $duelKit = null;
@@ -36,6 +38,8 @@ class NeptunePlayer extends Player
     private array $validstuffs = [];
     private bool $isDueling = false;
     private bool $inQueue = false;
+    private ?PartyFactory $party;
+    private ?string $partyrank;
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -76,8 +80,8 @@ class NeptunePlayer extends Player
                 $this->yKb = 0.301;
                 $this->xzKB = 0.311;
             } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["hkb"];
-                $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())["ykb"];
+                $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
+                $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
             } else {
                 $this->xzKB = 0.4;
                 $this->yKb = 0.4;
@@ -135,68 +139,68 @@ class NeptunePlayer extends Player
 
     public function getAllArtifact()
     {
-        $this->setValidStuffs("Adidas");
-        $this->setValidStuffs("AngelWing");
-        $this->setValidStuffs("AngelWingV2");
-        $this->setValidStuffs("Antler");
-        $this->setValidStuffs("Axe");
-        $this->setValidStuffs("BackCap");
-        $this->setValidStuffs("Backpack");
-        $this->setValidStuffs("BackStabKnife");
-        $this->setValidStuffs("Bald Headband");
-        $this->setValidStuffs("Banana");
-        $this->setValidStuffs("BlackAngleSet");
-        $this->setValidStuffs("BlazeRod");
-        $this->setValidStuffs("BlueWing");
-        $this->setValidStuffs("Boxing");
-        $this->setValidStuffs("Bubble");
-        $this->setValidStuffs("Creeper");
-        $this->setValidStuffs("Crown");
-        $this->setValidStuffs("CrownV2");
-        $this->setValidStuffs("DevilHaloWing");
-        $this->setValidStuffs("DevilWing");
-        $this->setValidStuffs("Dollar");
-        $this->setValidStuffs("DragonWing");
-        $this->setValidStuffs("EnderTail");
-        $this->setValidStuffs("EnderWing");
-        $this->setValidStuffs("Fox");
-        $this->setValidStuffs("Glasses");
-        $this->setValidStuffs("Goat");
-        $this->setValidStuffs("Gudoudame");
-        $this->setValidStuffs("Halo");
-        $this->setValidStuffs("HeadphoneNote");
-        $this->setValidStuffs("Headphones");
-        $this->setValidStuffs("Kaqune");
-        $this->setValidStuffs("Katana");
-        $this->setValidStuffs("Koala");
-        $this->setValidStuffs("LightSaber");
-        $this->setValidStuffs("LouisVuitton");
-        $this->setValidStuffs("MiniAngelWing");
-        $this->setValidStuffs("MiniAngelWingV2");
-        $this->setValidStuffs("MLG RUSH 1st");
-        $this->setValidStuffs("Moustache");
-        $this->setValidStuffs("Neckite");
-        $this->setValidStuffs("Nike");
-        $this->setValidStuffs("PhantomWing");
-        $this->setValidStuffs("Questionmark");
-        $this->setValidStuffs("Rabbit Costume");
-        $this->setValidStuffs("Rabbit");
-        $this->setValidStuffs("RedWing");
-        $this->setValidStuffs("Rich Bandanna");
-        $this->setValidStuffs("Santa");
-        $this->setValidStuffs("Sickle");
-        $this->setValidStuffs("SP-BananaMan");
-        $this->setValidStuffs("Susanno");
-        $this->setValidStuffs("SusanooBlue");
-        $this->setValidStuffs("SusanooPurple");
-        $this->setValidStuffs("SWAT Shield");
-        $this->setValidStuffs("ThunderCloud");
-        $this->setValidStuffs("UFO");
-        $this->setValidStuffs("Viking");
-        $this->setValidStuffs("Wave Bandanna");
-        $this->setValidStuffs("White Heart");
-        $this->setValidStuffs("Witchhat");
-        $this->setValidStuffs("Wither Head");
+        $this->setValidStuffs('Adidas');
+        $this->setValidStuffs('AngelWing');
+        $this->setValidStuffs('AngelWingV2');
+        $this->setValidStuffs('Antler');
+        $this->setValidStuffs('Axe');
+        $this->setValidStuffs('BackCap');
+        $this->setValidStuffs('Backpack');
+        $this->setValidStuffs('BackStabKnife');
+        $this->setValidStuffs('Bald Headband');
+        $this->setValidStuffs('Banana');
+        $this->setValidStuffs('BlackAngleSet');
+        $this->setValidStuffs('BlazeRod');
+        $this->setValidStuffs('BlueWing');
+        $this->setValidStuffs('Boxing');
+        $this->setValidStuffs('Bubble');
+        $this->setValidStuffs('Creeper');
+        $this->setValidStuffs('Crown');
+        $this->setValidStuffs('CrownV2');
+        $this->setValidStuffs('DevilHaloWing');
+        $this->setValidStuffs('DevilWing');
+        $this->setValidStuffs('Dollar');
+        $this->setValidStuffs('DragonWing');
+        $this->setValidStuffs('EnderTail');
+        $this->setValidStuffs('EnderWing');
+        $this->setValidStuffs('Fox');
+        $this->setValidStuffs('Glasses');
+        $this->setValidStuffs('Goat');
+        $this->setValidStuffs('Gudoudame');
+        $this->setValidStuffs('Halo');
+        $this->setValidStuffs('HeadphoneNote');
+        $this->setValidStuffs('Headphones');
+        $this->setValidStuffs('Kaqune');
+        $this->setValidStuffs('Katana');
+        $this->setValidStuffs('Koala');
+        $this->setValidStuffs('LightSaber');
+        $this->setValidStuffs('LouisVuitton');
+        $this->setValidStuffs('MiniAngelWing');
+        $this->setValidStuffs('MiniAngelWingV2');
+        $this->setValidStuffs('MLG RUSH 1st');
+        $this->setValidStuffs('Moustache');
+        $this->setValidStuffs('Neckite');
+        $this->setValidStuffs('Nike');
+        $this->setValidStuffs('PhantomWing');
+        $this->setValidStuffs('Questionmark');
+        $this->setValidStuffs('Rabbit Costume');
+        $this->setValidStuffs('Rabbit');
+        $this->setValidStuffs('RedWing');
+        $this->setValidStuffs('Rich Bandanna');
+        $this->setValidStuffs('Santa');
+        $this->setValidStuffs('Sickle');
+        $this->setValidStuffs('SP-BananaMan');
+        $this->setValidStuffs('Susanno');
+        $this->setValidStuffs('SusanooBlue');
+        $this->setValidStuffs('SusanooPurple');
+        $this->setValidStuffs('SWAT Shield');
+        $this->setValidStuffs('ThunderCloud');
+        $this->setValidStuffs('UFO');
+        $this->setValidStuffs('Viking');
+        $this->setValidStuffs('Wave Bandanna');
+        $this->setValidStuffs('White Heart');
+        $this->setValidStuffs('Witchhat');
+        $this->setValidStuffs('Wither Head');
     }
 
     public function getLastDamagePlayer(): string
@@ -221,7 +225,7 @@ class NeptunePlayer extends Player
                 if ($this->CombatTime <= 0) {
                     $this->setCombat(false);
                     $this->getXpManager()->setXpProgress(0.0);
-                    $this->sendMessage(Loader::getInstance()->MessageData["StopCombat"]);
+                    $this->sendMessage(Loader::getInstance()->MessageData['StopCombat']);
                     $this->BoxingPoint = 0;
                     $this->setOpponent(null);
                     $this->setUnPVPTag();
@@ -249,11 +253,11 @@ class NeptunePlayer extends Player
     private function setParkourTag()
     {
         $ping = $this->getNetworkSession()->getPing();
-        $tagparkour = "§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]";
-        $tagparkour = str_replace("{ping}", (string)$ping, $tagparkour);
-        $tagparkour = str_replace("{mili}", (string)floor($this->TimerData % 100), $tagparkour);
-        $tagparkour = str_replace("{secs}", (string)floor(($this->TimerData / 100) % 60), $tagparkour);
-        $tagparkour = str_replace("{mins}", (string)floor($this->TimerData / 6000), $tagparkour);
+        $tagparkour = '§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]';
+        $tagparkour = str_replace('{ping}', (string)$ping, $tagparkour);
+        $tagparkour = str_replace('{mili}', (string)floor($this->TimerData % 100), $tagparkour);
+        $tagparkour = str_replace('{secs}', (string)floor(($this->TimerData / 100) % 60), $tagparkour);
+        $tagparkour = str_replace('{mins}', (string)floor($this->TimerData / 6000), $tagparkour);
         $this->setScoreTag($tagparkour);
     }
 
@@ -271,13 +275,13 @@ class NeptunePlayer extends Player
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = Loader::getClickHandler()->getClicks($this);
-        $tagpvp = "§d" . $ping . "§fms §f| §d" . $nowcps . " §fCPS";
+        $tagpvp = '§d' . $ping . '§fms §f| §d' . $nowcps . ' §fCPS';
         $this->setScoreTag($tagpvp);
     }
 
     private function setUnPVPTag()
     {
-        $untagpvp = "§d" . $this->PlayerOS . " §f| §d" . $this->PlayerControl . " §f| §d" . $this->ToolboxStatus;
+        $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl . ' §f| §d' . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
     }
 
@@ -295,10 +299,10 @@ class NeptunePlayer extends Player
     private function updateNametag()
     {
         $name = $this->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== "") {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName() . " §f[" . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . "§f]";
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]';
         } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . "§a " . $this->getDisplayName();
+            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
     }
@@ -310,7 +314,7 @@ class NeptunePlayer extends Player
                 $this->parkourTimer();
                 break;
             default:
-                $this->sendTip("§dCPS: §f" . Loader::getClickHandler()->getClicks($this));
+                $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
                 break;
         }
     }
@@ -322,9 +326,9 @@ class NeptunePlayer extends Player
             $mins = floor($this->TimerData / 6000);
             $secs = floor(($this->TimerData / 100) % 60);
             $mili = $this->TimerData % 100;
-            $this->sendTip("§a" . $mins . " : " . $secs . " : " . $mili);
+            $this->sendTip('§a' . $mins . ' : ' . $secs . ' : ' . $mili);
         } else {
-            $this->sendTip("§a0 : 0 : 0");
+            $this->sendTip('§a0 : 0 : 0');
             if ($this->TimerData !== 0) {
                 $this->TimerData = 0;
             }
@@ -351,7 +355,7 @@ class NeptunePlayer extends Player
         $this->getArmorInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($this);
         $this->LoadData();
-        $this->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
+        $this->sendMessage(Loader::getPrefixCore() . '§eLoading Player Data');
     }
 
     /**
@@ -359,8 +363,8 @@ class NeptunePlayer extends Player
      */
     public function LoadData()
     {
-        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : "";
-        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : "";
+        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : '';
+        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : '';
         $this->setCosmetic();
     }
 
@@ -369,15 +373,15 @@ class NeptunePlayer extends Player
      */
     public function setCosmetic(): void
     {
-        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/artifact/" . Loader::getInstance()->ArtifactData->get($this->getName()) . ".png")) {
-            if ($this->getStuff() !== "" or $this->getStuff() !== null) {
+        if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/artifact/' . Loader::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
+            if ($this->getStuff() !== '' or $this->getStuff() !== null) {
                 Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
             }
         } else {
             Loader::getInstance()->ArtifactData->remove($this->getName());
             Loader::getInstance()->ArtifactData->save();
         }
-        if (file_exists(Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . Loader::getInstance()->CapeData->get($this->getName()) . ".png")) {
+        if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . Loader::getInstance()->CapeData->get($this->getName()) . '.png')) {
             $oldSkin = $this->getSkin();
             $capeData = Loader::getCosmeticHandler()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
@@ -396,13 +400,13 @@ class NeptunePlayer extends Player
 
     public function checkQueue(): void
     {
-        $this->sendMessage(Loader::getPrefixCore() . "Entering queue...");
+        $this->sendMessage(Loader::getPrefixCore() . 'Entering queue...');
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
             if ($player instanceof NeptunePlayer and $player->getName() !== $this->getName()) {
                 if ($player->isInQueue() and $this->getDuelKit() === $player->getDuelKit()) {
                     Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
-                    $this->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $player->getName());
-                    $player->sendMessage(Loader::getPrefixCore() . "Found a match against §c" . $this->getName());
+                    $this->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $player->getName());
+                    $player->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $this->getName());
                     foreach ([$player, $this] as $p) {
                         $p->setInQueue(false);
                     }
@@ -449,53 +453,53 @@ class NeptunePlayer extends Player
         $name = $this->getName();
         try {
             Loader::getInstance()->KitData->set($name, [
-                "0" => [
-                    "item" => $this->getInventory()->getItem(0)->getId(),
-                    "count" => $this->getInventory()->getItem(0)->getCount(),
+                '0' => [
+                    'item' => $this->getInventory()->getItem(0)->getId(),
+                    'count' => $this->getInventory()->getItem(0)->getCount(),
                 ],
-                "1" => [
-                    "item" => $this->getInventory()->getItem(1)->getId(),
-                    "count" => $this->getInventory()->getItem(1)->getCount()
+                '1' => [
+                    'item' => $this->getInventory()->getItem(1)->getId(),
+                    'count' => $this->getInventory()->getItem(1)->getCount()
                 ],
-                "2" => [
-                    "item" => $this->getInventory()->getItem(2)->getId(),
-                    "count" => $this->getInventory()->getItem(2)->getCount(),
+                '2' => [
+                    'item' => $this->getInventory()->getItem(2)->getId(),
+                    'count' => $this->getInventory()->getItem(2)->getCount(),
                 ],
-                "3" => [
-                    "item" => $this->getInventory()->getItem(3)->getId(),
-                    "count" => $this->getInventory()->getItem(3)->getCount()
+                '3' => [
+                    'item' => $this->getInventory()->getItem(3)->getId(),
+                    'count' => $this->getInventory()->getItem(3)->getCount()
                 ],
-                "4" => [
-                    "item" => $this->getInventory()->getItem(4)->getId(),
-                    "count" => $this->getInventory()->getItem(4)->getCount()
+                '4' => [
+                    'item' => $this->getInventory()->getItem(4)->getId(),
+                    'count' => $this->getInventory()->getItem(4)->getCount()
                 ],
-                "5" => [
-                    "item" => $this->getInventory()->getItem(5)->getId(),
-                    "count" => $this->getInventory()->getItem(5)->getCount()
+                '5' => [
+                    'item' => $this->getInventory()->getItem(5)->getId(),
+                    'count' => $this->getInventory()->getItem(5)->getCount()
                 ],
-                "6" => [
-                    "item" => $this->getInventory()->getItem(6)->getId(),
-                    "count" => $this->getInventory()->getItem(6)->getCount()
+                '6' => [
+                    'item' => $this->getInventory()->getItem(6)->getId(),
+                    'count' => $this->getInventory()->getItem(6)->getCount()
                 ],
-                "7" => [
-                    "item" => $this->getInventory()->getItem(7)->getId(),
-                    "count" => $this->getInventory()->getItem(7)->getCount()
+                '7' => [
+                    'item' => $this->getInventory()->getItem(7)->getId(),
+                    'count' => $this->getInventory()->getItem(7)->getCount()
                 ],
-                "8" => [
-                    "item" => $this->getInventory()->getItem(8)->getId(),
-                    "count" => $this->getInventory()->getItem(8)->getCount()
+                '8' => [
+                    'item' => $this->getInventory()->getItem(8)->getId(),
+                    'count' => $this->getInventory()->getItem(8)->getCount()
                 ]
             ]);
         } catch (Exception) {
             $this->kill();
             $this->setImmobile(false);
-            $this->sendMessage(Loader::getPrefixCore() . "§cAn error occurred while saving your kit.");
+            $this->sendMessage(Loader::getPrefixCore() . '§cAn error occurred while saving your kit.');
             $this->EditKit = null;
             return;
         }
         Loader::getInstance()->KitData->save();
         $this->EditKit = null;
-        $this->sendMessage(Loader::getPrefixCore() . "§aYou have successfully saved your kit!");
+        $this->sendMessage(Loader::getPrefixCore() . '§aYou have successfully saved your kit!');
         $this->kill();
         $this->setImmobile(false);
     }
@@ -527,12 +531,41 @@ class NeptunePlayer extends Player
 
     public function getKit(): array
     {
-        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : "");
+        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : '');
     }
 
     public function __destruct()
     {
         parent::__destruct();
-        Loader::getInstance()->getLogger()->info("Destroyed by garbage collector");
+        Loader::getInstance()->getLogger()->info('Destroyed by garbage collector');
+    }
+
+    public function getParty(): ?PartyFactory
+    {
+        $result = null;
+        if ($this->isInParty()) {
+            $result = $this->party;
+        }
+        return $result;
+    }
+
+    public function setParty(?PartyFactory $party)
+    {
+        $this->party = $party;
+    }
+
+    public function isInParty(): bool
+    {
+        return PartyManager::getPartyFromPlayer($this) !== null;
+    }
+
+    public function getPartyRank(): ?string
+    {
+        return $this->partyrank;
+    }
+
+    public function setPartyRank(?string $rank)
+    {
+        $this->partyrank = $rank;
     }
 }

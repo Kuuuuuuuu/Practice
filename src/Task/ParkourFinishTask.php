@@ -30,7 +30,7 @@ class ParkourFinishTask extends Task
             $location = $this->player->getLocation();
             $fallingWool = ArenaUtils::generateFallingWoolBlock($location);
             $this->fallingBlocks[] = $fallingWool;
-            ArenaUtils::playSound("block.bamboo.break", $this->player);
+            ArenaUtils::playSound('block.bamboo.break', $this->player);
             $this->amount--;
             return;
         }

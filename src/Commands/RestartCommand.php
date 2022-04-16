@@ -15,7 +15,7 @@ class RestartCommand extends Command
 
     public function __construct()
     {
-        parent::__construct("Restart", "Restart Server Command", null, ["restart"]);
+        parent::__construct('Restart', 'Restart Server Command', null, ['restart']);
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args)
@@ -26,12 +26,12 @@ class RestartCommand extends Command
                 if ($args != null) {
                     Loader::getInstance()->RestartTime = (int)implode($args);
                 }
-                $sender->sendMessage(Loader::getPrefixCore() . "§aServer restarting...");
+                $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');
             } else {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 }

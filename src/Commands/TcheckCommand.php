@@ -20,9 +20,9 @@ class TcheckCommand extends Command
     public function __construct()
     {
         parent::__construct(
-            "tcheck",
-            "Unban a player",
-            "/tcheck"
+            'tcheck',
+            'Unban a player',
+            '/tcheck'
         );
     }
 
@@ -32,10 +32,10 @@ class TcheckCommand extends Command
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 $this->openTcheckUI($sender);
             } else {
-                $sender->sendMessage(Loader::getPrefixCore() . "§cYou cannot execute this command.");
+                $sender->sendMessage(Loader::getPrefixCore() . '§cYou cannot execute this command.');
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 
@@ -49,19 +49,19 @@ class TcheckCommand extends Command
             $this->openInfoUI($player);
             return true;
         });
-        $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers;");
+        $banInfo = Loader::getInstance()->BanData->query('SELECT * FROM banPlayers;');
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (empty($array)) {
-            $player->sendMessage(Loader::getInstance()->MessageData["NoBanPlayers"]);
+            $player->sendMessage(Loader::getInstance()->MessageData['NoBanPlayers']);
             return true;
         }
-        $form->setTitle(Loader::getInstance()->MessageData["BanListTitle"]);
-        $form->setContent(Loader::getInstance()->MessageData["BanListContent"]);
-        $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers;");
+        $form->setTitle(Loader::getInstance()->MessageData['BanListTitle']);
+        $form->setContent(Loader::getInstance()->MessageData['BanListContent']);
+        $banInfo = Loader::getInstance()->BanData->query('SELECT * FROM banPlayers;');
         $i = -1;
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
-            $form->addButton(TextFormat::BOLD . "$banPlayer", -1, "", $banPlayer);
+            $form->addButton(TextFormat::BOLD . "$banPlayer", -1, '', $banPlayer);
             $i = $i + 1;
         }
         $player->sendForm($form);
@@ -81,10 +81,10 @@ class TcheckCommand extends Command
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
                     Loader::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
-                    $player->sendMessage(str_replace(["{player}"], [$banplayer], Loader::getInstance()->MessageData["UnBanPlayer"]));
-                    $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get("api"));
+                    $player->sendMessage(str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['UnBanPlayer']));
+                    $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
                     $msg = new DiscordWebhookUtils();
-                    $msg->setContent(">>> " . str_replace(["{player}"], [$banplayer], Loader::getInstance()->MessageData["UnBanPlayer"]));
+                    $msg->setContent('>>> ' . str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['UnBanPlayer']));
                     $web->send($msg);
                 }
                 unset(Loader::getInstance()->targetPlayer[$player->getName()]);
@@ -105,7 +105,7 @@ class TcheckCommand extends Command
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
                     Loader::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
-                    $player->sendMessage(str_replace(["{player}"], [$banplayer], Loader::getInstance()->MessageData["AutoUnBanPlayer"]));
+                    $player->sendMessage(str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['AutoUnBanPlayer']));
                 }
                 unset(Loader::getInstance()->targetPlayer[$player->getName()]);
                 return true;
@@ -120,8 +120,8 @@ class TcheckCommand extends Command
             $second = ceil($remainingSec);
         }
         $form->setTitle(TextFormat::BOLD . $banPlayer);
-        $form->setContent(str_replace(["{day}", "{hour}", "{minute}", "{second}", "{reason}", "{staff}"], [$day, $hour, $minute, $second, $reason, $staff], Loader::getInstance()->MessageData["InfoUIContent"]));
-        $form->addButton(Loader::getInstance()->MessageData["InfoUIUnBanButton"]);
+        $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], Loader::getInstance()->MessageData['InfoUIContent']));
+        $form->addButton(Loader::getInstance()->MessageData['InfoUIUnBanButton']);
         $player->sendForm($form);
         return true;
     }

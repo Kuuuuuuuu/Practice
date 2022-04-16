@@ -6,7 +6,6 @@ namespace Kohaku\Arena;
 
 use Exception;
 use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Listener;
@@ -53,26 +52,26 @@ class SumoHandler implements Listener
         if (empty($this->data)) {
             return false;
         }
-        if ($this->data["level"] == null) {
+        if ($this->data['level'] == null) {
             return false;
         }
-        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data["level"])) {
+        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data['level'])) {
             return false;
         } else {
-            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"]))
-                Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
-            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data["level"]);
+            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data['level']))
+                Server::getInstance()->getWorldManager()->loadWorld($this->data['level']);
+            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data['level']);
         }
-        if (!is_int($this->data["slots"])) {
+        if (!is_int($this->data['slots'])) {
             return false;
         }
-        if (!is_array($this->data["spawns"])) {
+        if (!is_array($this->data['spawns'])) {
             return false;
         }
-        if (count($this->data["spawns"]) != $this->data["slots"]) {
+        if (count($this->data['spawns']) != $this->data['slots']) {
             return false;
         }
-        $this->data["enabled"] = true;
+        $this->data['enabled'] = true;
         $this->setup = false;
         if ($loadArena) $this->loadArena();
         return true;
@@ -80,19 +79,19 @@ class SumoHandler implements Listener
 
     public function loadArena(bool $restart = false)
     {
-        if (!$this->data["enabled"]) {
-            Loader::getInstance()->getLogger()->error("Can not load arena: Arena is not enabled!");
+        if (!$this->data['enabled']) {
+            Loader::getInstance()->getLogger()->error('Can not load arena: Arena is not enabled!');
             return;
         } elseif (!$restart) {
             Server::getInstance()->getPluginManager()->registerEvents($this, Loader::getInstance());
-            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data["level"])) {
-                Server::getInstance()->getWorldManager()->loadWorld($this->data["level"]);
+            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data['level'])) {
+                Server::getInstance()->getWorldManager()->loadWorld($this->data['level']);
             }
-            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data["level"]);
+            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data['level']);
         } else {
             $this->scheduler->reloadTimer();
         }
-        $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data["level"]);
+        $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data['level']);
         $this->phase = static::PHASE_LOBBY;
         $this->players = [];
     }
@@ -100,30 +99,30 @@ class SumoHandler implements Listener
     private function createBasicData()
     {
         $this->data = [
-            "level" => null,
-            "slots" => 2,
-            "spawns" => [],
-            "enabled" => false
+            'level' => null,
+            'slots' => 2,
+            'spawns' => [],
+            'enabled' => false
         ];
     }
 
     public function joinToArena(Player $player)
     {
-        if (!$this->data["enabled"]) {
-            $player->sendMessage(Loader::getPrefixCore() . "§eThe game is in configurating!");
+        if (!$this->data['enabled']) {
+            $player->sendMessage(Loader::getPrefixCore() . '§eThe game is in configurating!');
             return;
-        } elseif (count($this->players) >= $this->data["slots"]) {
-            $player->sendMessage(Loader::getPrefixCore() . "§eThe game is full!");
+        } elseif (count($this->players) >= $this->data['slots']) {
+            $player->sendMessage(Loader::getPrefixCore() . '§eThe game is full!');
             return;
         } elseif ($this->inGame($player)) {
-            $player->sendMessage(Loader::getPrefixCore() . "You are already in the queue/game!");
+            $player->sendMessage(Loader::getPrefixCore() . 'You are already in the queue/game!');
             return;
         }
         $selected = false;
-        for ($lS = 1; $lS <= $this->data["slots"]; $lS++) {
+        for ($lS = 1; $lS <= $this->data['slots']; $lS++) {
             if (!$selected) {
                 if (!isset($this->players[$index = "spawn-$lS"])) {
-                    $player->teleport(Position::fromObject(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"]), $this->level));
+                    $player->teleport(Position::fromObject(new Vector3($this->data['spawns'][$index]['x'], $this->data['spawns'][$index]['y'], $this->data['spawns'][$index]['z']), $this->level));
                     $this->players[$index] = $player;
                     $selected = true;
                 }
@@ -174,7 +173,7 @@ class SumoHandler implements Listener
         }
         if ($player instanceof Player and $player->isOnline()) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
-            $player->sendMessage(Loader::getPrefixCore() . "§r§eYou got " . Loader::getInstance()->getArenaUtils()->getData($player->getName())->addElo() . " Elos!");
+            $player->sendMessage(Loader::getPrefixCore() . '§r§eYou got ' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->addElo() . ' Elos!');
         }
         $this->phase = self::PHASE_RESTART;
     }
@@ -201,8 +200,8 @@ class SumoHandler implements Listener
                             $index = $i;
                         }
                     }
-                    if ($player->getPosition()->asVector3()->distance(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"])) > 0.5) {
-                        $player->teleport(new Vector3($this->data["spawns"][$index]["x"], $this->data["spawns"][$index]["y"], $this->data["spawns"][$index]["z"]));
+                    if ($player->getPosition()->asVector3()->distance(new Vector3($this->data['spawns'][$index]['x'], $this->data['spawns'][$index]['y'], $this->data['spawns'][$index]['z'])) > 0.5) {
+                        $player->teleport(new Vector3($this->data['spawns'][$index]['x'], $this->data['spawns'][$index]['y'], $this->data['spawns'][$index]['z']));
                     }
                 }
             }
@@ -215,13 +214,13 @@ class SumoHandler implements Listener
     public function disconnectPlayer(Player $player)
     {
         if ($this->phase === self::PHASE_LOBBY) {
-            $index = "";
+            $index = '';
             foreach ($this->players as $i => $p) {
                 if ($p->getId() === $player->getId()) {
                     $index = $i;
                 }
             }
-            if ($index !== "") {
+            if ($index !== '') {
                 unset($this->players[$index]);
             }
         } else {

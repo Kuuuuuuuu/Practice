@@ -37,13 +37,13 @@ class ParkourLeaderboard extends Human
 
     public function onUpdate(int $currentTick): bool
     {
-        $subtitle = "";
+        $subtitle = '';
         $tops = Loader::getInstance()->ParkourLeaderboard;
         if (count($tops) > 0) {
             asort($tops);
             $i = 1;
             foreach ($tops as $name => $wins) {
-                $subtitle .= " §7[§d# " . $i . "§7]. §f" . $name . "§7: §f" . $wins . "§e MS\n";
+                $subtitle .= ' §7[§d# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e MS\n";
                 if ($i >= 10) {
                     break;
                 }

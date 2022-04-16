@@ -22,10 +22,10 @@ class ScoreboardsUtils
             $this->remove($player);
         }
         $pk = new SetDisplayObjectivePacket();
-        $pk->displaySlot = "sidebar";
+        $pk->displaySlot = 'sidebar';
         $pk->objectiveName = $objectiveName;
         $pk->displayName = $displayName;
-        $pk->criteriaName = "dummy";
+        $pk->criteriaName = 'dummy';
         $pk->sortOrder = 0;
         $player->getNetworkSession()->sendDataPacket($pk);
         $this->scoreboards[$player->getName()] = $objectiveName;
@@ -35,7 +35,7 @@ class ScoreboardsUtils
     {
         $objectiveName = $this->scoreboards[$player->getName()] ?? null;
         $pk = new RemoveObjectivePacket();
-        $pk->objectiveName = $objectiveName ?? "Unknown";
+        $pk->objectiveName = $objectiveName ?? 'Unknown';
         $player->getNetworkSession()->sendDataPacket($pk);
         unset($this->scoreboards[$player->getName()]);
     }

@@ -25,7 +25,7 @@ class DuelManager
 
     public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
-        $worldName = "Duel-" . $player1->getName() . "-" . $player2->getName();
+        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);

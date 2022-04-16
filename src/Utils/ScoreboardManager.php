@@ -21,18 +21,18 @@ class ScoreboardManager
         $duel = $this->getDuelPlayer();
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
-            1 => "§7---------------§7",
+            1 => '§7---------------§7',
             2 => "§dOnline§f: §a$on",
             3 => "§dPing§f: §a$ping",
-            4 => "§a",
+            4 => '§a',
             5 => "§dK§f: §a$kills §dD§f: §a$deaths",
             6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
-            7 => "§e",
+            7 => '§e',
             8 => "§dIn-Queue §a$queue",
             9 => "§dIn-Duel §a$duel",
-            10 => "§7---------------"
+            10 => '§7---------------'
         ];
-        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
+        Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             Loader::getScoreboardUtils()->setLine($player, $line, $content);
         }
@@ -70,38 +70,40 @@ class ScoreboardManager
         $server = Server::getInstance();
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
-            1 => "§7---------------§0",
+            1 => '§7---------------§0',
             2 => "§dOnline§f: §a$on",
             3 => "§dPing§f: §a$ping",
             4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            5 => "§7---------------"
+            5 => '§7---------------'
         ];
-        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
+        Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             Loader::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 
-    public function Boxing(NeptunePlayer $player): void
+    public function Boxing(Player $player): void
     {
-        $boxingp = $player->BoxingPoint;
-        $opponent = $player->getOpponent();
-        if ($opponent !== null) {
-            $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
-            /** @var NeptunePlayer $oppopl */
-            $opponentboxingp = $oppopl->BoxingPoint;
-        } else {
-            $opponentboxingp = 0;
-        }
-        $lines = [
-            1 => "§7---------------§0",
-            2 => "§dYour§f: §a$boxingp",
-            3 => "§dOpponent§f: §c$opponentboxingp",
-            4 => "§7---------------"
-        ];
-        Loader::getScoreboardUtils()->new($player, "ObjectiveName", Loader::getScoreboardTitle());
-        foreach ($lines as $line => $content) {
-            Loader::getScoreboardUtils()->setLine($player, $line, $content);
+        if ($player instanceof NeptunePlayer) {
+            $boxingp = $player->BoxingPoint;
+            $opponent = $player->getOpponent();
+            if ($opponent !== null) {
+                $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
+                /** @var NeptunePlayer $oppopl */
+                $opponentboxingp = $oppopl->BoxingPoint;
+            } else {
+                $opponentboxingp = 0;
+            }
+            $lines = [
+                1 => '§7---------------§0',
+                2 => "§dYour§f: §a$boxingp",
+                3 => "§dOpponent§f: §c$opponentboxingp",
+                4 => '§7---------------'
+            ];
+            Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
+            foreach ($lines as $line => $content) {
+                Loader::getScoreboardUtils()->setLine($player, $line, $content);
+            }
         }
     }
 }

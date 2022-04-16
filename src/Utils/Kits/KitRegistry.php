@@ -24,11 +24,11 @@ class KitRegistry
 
     protected static function setup(): void
     {
-        self::register(new BuildUHC("BuildUHC"));
-        self::register(new Classic("Classic"));
-        self::register(new Fist("Fist"));
-        self::register(new NoDebuff("NoDebuff"));
-        self::register(new SG("SG"));
+        self::register(new BuildUHC('BuildUHC'));
+        self::register(new Classic('Classic'));
+        self::register(new Fist('Fist'));
+        self::register(new NoDebuff('NoDebuff'));
+        self::register(new SG('SG'));
     }
 
     public static function register(KitManager $kit): void

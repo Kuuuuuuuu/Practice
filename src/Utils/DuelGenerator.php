@@ -19,7 +19,7 @@ class DuelGenerator extends Generator
 
     public function __construct()
     {
-        $array = ["grass", "stone", "stonebrick", "dirt", "planks"];
+        $array = ['grass', 'stone', 'stonebrick', 'dirt', 'planks'];
         $random = array_rand($array);
         parent::__construct(0, "2;bedrock,$random;1;");
         $this->options = FlatGeneratorOptions::parsePreset($this->preset);

@@ -63,12 +63,12 @@ class CosmeticHandler
         $checkFileAvailable = [];
         $allFiles = scandir($this->artifactFolder);
         foreach ($allFiles as $allFilesName) {
-            if (strpos($allFilesName, ".json")) {
+            if (strpos($allFilesName, '.json')) {
                 $checkFileAvailable[] = str_replace('.json', '', $allFilesName);
             }
         }
         foreach ($checkFileAvailable as $value) {
-            if (!in_array($value . ".png", $allFiles)) {
+            if (!in_array($value . '.png', $allFiles)) {
                 unset($checkFileAvailable[array_search($value, $checkFileAvailable)]);
             }
         }
@@ -128,8 +128,8 @@ class CosmeticHandler
     {
         $list = array();
         foreach (array_diff(scandir($this->capeFolder)) as $data) {
-            $dat = explode(".", $data);
-            if ($dat[1] === "png") {
+            $dat = explode('.', $data);
+            if ($dat[1] === 'png') {
                 $list[] = $dat[0];
             }
         }
@@ -140,14 +140,14 @@ class CosmeticHandler
     {
         try {
             $path = $this->dataFolder;
-            if (!file_exists($path . "skin")) {
-                mkdir($path . "skin");
+            if (!file_exists($path . 'skin')) {
+                mkdir($path . 'skin');
             }
             $img = $this->skinDataToImage($skin);
             if ($img === null) {
                 return;
             }
-            imagepng($img, $path . "skin/" . $name . ".png");
+            imagepng($img, $path . 'skin/' . $name . '.png');
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;
@@ -188,17 +188,53 @@ class CosmeticHandler
         }
     }
 
+    public function setCostume(Player $player, string $stuffName): void
+    {
+        $imagePath = $this->artifactFolder . $stuffName . '.png';
+        $geometryPath = $this->artifactFolder . $stuffName . '.json';
+        $skin = $this->loadSkin($imagePath, $geometryPath, $player->getSkin()->getSkinId(), 'geometry.cosmetic/artifact');
+        if ($skin !== null) {
+            $player->setSkin($skin);
+            $player->sendSkin();
+        }
+    }
+
+    public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
+    {
+        try {
+            $img = @imagecreatefrompng($imagePath);
+            $size = getimagesize($imagePath);
+            $skinBytes = '';
+            for ($y = 0; $y < $size[1]; $y++) {
+                for ($x = 0; $x < $size[0]; $x++) {
+                    $pixelColor = @imagecolorat($img, $x, $y);
+                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
+                    $r = ($pixelColor >> 16) & 0xff;
+                    $g = ($pixelColor >> 8) & 0xff;
+                    $b = $pixelColor & 0xff;
+                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
+                }
+            }
+            @imagedestroy($img);
+            return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
+        } catch (Exception $e) {
+            ArenaUtils::getLogger((string)$e);
+            return null;
+        }
+    }
+
     public function setSkin(Player $player, string $stuffName)
     {
         try {
-            $imagePath = $this->getSaveSkin($player->getName());
-            $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-            /* @var $player NeptunePlayer */
-            $cape = $player->getCape() ?? null;
-            $capeData = ($cape !== "" and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
-            $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
-            $player->setSkin($skin);
-            $player->sendSkin();
+            if ($player instanceof NeptunePlayer) {
+                $imagePath = $this->getSaveSkin($player->getName());
+                $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
+                $cape = $player->getCape() ?? null;
+                $capeData = ($cape !== '' and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
+                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
+                $player->setSkin($skin);
+                $player->sendSkin();
+            }
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;
@@ -215,8 +251,8 @@ class CosmeticHandler
         try {
             $size = getimagesize($imagePath);
             $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
-            $geometryPath = $this->artifactFolder . $stuffName . ".json";
-            return $this->loadSkin($imagePath, $geometryPath, $skinID, "geometry.cosmetic/artifact");
+            $geometryPath = $this->artifactFolder . $stuffName . '.json';
+            return $this->loadSkin($imagePath, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;
@@ -229,9 +265,9 @@ class CosmeticHandler
             $path = $this->artifactFolder;
             $down = imagecreatefrompng($skinPath);
             if ($size[0] * $size[1] * $size[2] === 65536) {
-                $upper = $this->resizeImage($path . $stuffName . ".png", 128, 128);
+                $upper = $this->resizeImage($path . $stuffName . '.png', 128, 128);
             } else {
-                $upper = $this->resizeImage($path . $stuffName . ".png", 64, 64);
+                $upper = $this->resizeImage($path . $stuffName . '.png', 64, 64);
             }
             imagecolortransparent($upper, imagecolorallocatealpha($upper, 0, 0, 0, 127));
             imagealphablending($down, true);
@@ -280,34 +316,10 @@ class CosmeticHandler
         }
     }
 
-    public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
-    {
-        try {
-            $img = @imagecreatefrompng($imagePath);
-            $size = getimagesize($imagePath);
-            $skinBytes = "";
-            for ($y = 0; $y < $size[1]; $y++) {
-                for ($x = 0; $x < $size[0]; $x++) {
-                    $pixelColor = @imagecolorat($img, $x, $y);
-                    $a = ((~($pixelColor >> 24)) << 1) & 0xff;
-                    $r = ($pixelColor >> 16) & 0xff;
-                    $g = ($pixelColor >> 8) & 0xff;
-                    $b = $pixelColor & 0xff;
-                    $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
-                }
-            }
-            @imagedestroy($img);
-            return new Skin($skinID, $skinBytes, "", $geometryName, file_get_contents($geometryPath));
-        } catch (Exception $e) {
-            ArenaUtils::getLogger((string)$e);
-            return null;
-        }
-    }
-
     public function createCape($capeName): ?string
     {
         try {
-            $path = Loader::getInstance()->getDataFolder() . "cosmetic/capes/" . "$capeName.png";
+            $path = Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . "$capeName.png";
             $img = @imagecreatefrompng($path);
             $bytes = '';
             $l = (int)@getimagesize($path)[1];
@@ -329,23 +341,12 @@ class CosmeticHandler
         }
     }
 
-    public function setCostume(Player $player, string $stuffName): void
-    {
-        $imagePath = $this->artifactFolder . $stuffName . ".png";
-        $geometryPath = $this->artifactFolder . $stuffName . ".json";
-        $skin = $this->loadSkin($imagePath, $geometryPath, $player->getSkin()->getSkinId(), "geometry.cosmetic/artifact");
-        if ($skin !== null) {
-            $player->setSkin($skin);
-            $player->sendSkin();
-        }
-    }
-
     public function resetSkin(Player $player): void
     {
         try {
             $name = $player->getName();
             $imagePath = $this->getSaveSkin($name);
-            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), "geometry.humanoid.customSlim");
+            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), 'geometry.humanoid.customSlim');
             if ($skin !== null) {
                 $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
                 $player->setSkin($skin);

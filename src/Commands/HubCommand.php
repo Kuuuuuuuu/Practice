@@ -17,9 +17,9 @@ class HubCommand extends Command
     public function __construct()
     {
         parent::__construct(
-            "hub",
-            "Teleport to the hub",
-            "/hub"
+            'hub',
+            'Teleport to the hub',
+            '/hub'
         );
     }
 
@@ -31,19 +31,19 @@ class HubCommand extends Command
                 return;
             }
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-            $sender->sendMessage(Loader::getPrefixCore() . "§aTeleported to Hub!");
+            $sender->sendMessage(Loader::getPrefixCore() . '§aTeleported to Hub!');
             $sender->setGamemode(GameMode::ADVENTURE());
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
             Loader::getInstance()->getScoreboardManager()->sb($sender);
             Loader::getInstance()->getArenaUtils()->GiveItem($sender);
-            $sender->setLastDamagePlayer("Unknown");
+            $sender->setLastDamagePlayer('Unknown');
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . "§cYou can only use this command in-game!");
+            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 }
