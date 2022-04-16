@@ -54,8 +54,8 @@ class PartyManager
     {
         $invite = new PartyInvite($party, $sender->getName(), $target->getName());
         Loader::getInstance()->PartyInvite[] = $invite;
-        $sender->sendMessage('§aYou invited ' . $target->getDisplayName() . ' to your party.');
-        $target->sendMessage('§a' . $sender->getDisplayName() . ' invited you to their party.');
+        $sender->sendMessage(Loader::getPrefixCore() . '§aYou invited ' . $target->getDisplayName() . ' to your party.');
+        $target->sendMessage(Loader::getPrefixCore() . '§a' . $sender->getDisplayName() . ' invited you to their party.');
     }
 
     public static function getInvite($invite)

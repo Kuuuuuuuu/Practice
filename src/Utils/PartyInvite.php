@@ -73,13 +73,13 @@ class PartyInvite
         $sender = Server::getInstance()->getPlayerExact($this->sender);
         $target = Server::getInstance()->getPlayerExact($this->target);
         if ($sender !== null) {
-            $sender->sendMessage('§a' . $target->getDisplayName() . ' accepted your invitation.');
-            $target->sendMessage('§aInvitation accepted.');
+            $sender->sendMessage(Loader::getPrefixCore() . '§a' . $target->getDisplayName() . ' accepted your invitation.');
+            $target->sendMessage(Loader::getPrefixCore() . '§aInvitation accepted.');
         }
         if ($this->doesPartyExist()) {
             $this->party->addMember($target);
         } else {
-            $target->sendMessage('§cThat party no longer exists.');
+            $target->sendMessage(Loader::getPrefixCore() . '§cThat party no longer exists.');
         }
         $this->clear();
     }
@@ -99,8 +99,8 @@ class PartyInvite
         $sender = Server::getInstance()->getPlayerExact($this->sender);
         $target = Server::getInstance()->getPlayerExact($this->target);
         if ($sender !== null) {
-            $sender->sendMessage('§c' . $target->getDisplayName() . ' declined your invitation.');
-            $target->sendMessage('§aInvitation declined.');
+            $sender->sendMessage(Loader::getPrefixCore() . '§c' . $target->getDisplayName() . ' declined your invitation.');
+            $target->sendMessage(Loader::getPrefixCore() . '§aInvitation declined.');
         }
         $this->clear();
     }

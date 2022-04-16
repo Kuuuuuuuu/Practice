@@ -129,7 +129,7 @@ class PartyFactory
             $player->setParty($this);
             $player->setPartyRank(self::MEMBER);
         }
-        $player->sendMessage('§aYou joined the party.');
+        $player->sendMessage(Loader::getPrefixCore() . '§aYou joined the party.');
     }
 
     public function sendMessage(string $message): void
@@ -150,7 +150,7 @@ class PartyFactory
             $player->setParty(null);
             $player->setPartyRank(null);
         }
-        $player->sendMessage('§aYou left the party.');
+        $player->sendMessage(Loader::getPrefixCore() . '§aYou left the party.');
     }
 
     public function kickMember(Player $player): void
@@ -168,7 +168,7 @@ class PartyFactory
     {
         $leader = Server::getInstance()->getPlayerExact($this->leader);
         if ($leader !== null) {
-            $leader->sendMessage('§aYou disbanded your party.');
+            $leader->sendMessage(Loader::getPrefixCore() .'§aYou disbanded your party.');
             unset($this->members[array_search($leader->getName(), $this->members)]);
             if ($leader instanceof NeptunePlayer) {
                 $leader->setParty(null);
