@@ -8,9 +8,9 @@ use Exception;
 use JsonException;
 use Kohaku\Utils\Kits\KitManager;
 use Kohaku\Utils\PartyFactory;
+use Kohaku\Utils\PartyManager;
 use pocketmine\{entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
-use Kohaku\Utils\PartyManager;
 
 class NeptunePlayer extends Player
 {
@@ -434,10 +434,37 @@ class NeptunePlayer extends Player
     public function onQuit()
     {
         Loader::getClickHandler()->removePlayerClickData($this);
+        $party = $this->getParty();
+        if (!is_null($party)) {
+            if ($party->isLeader($this)) {
+                $party->disband();
+            } else {
+                $party->removeMember($this);
+            }
+        }
         if ($this->isDueling() or $this->isCombat()) {
             $this->kill();
         }
         $this->setGamemode(GameMode::SURVIVAL());
+    }
+
+    public function getParty(): ?PartyFactory
+    {
+        $result = null;
+        if ($this->isInParty()) {
+            $result = $this->party;
+        }
+        return $result;
+    }
+
+    public function setParty(?PartyFactory $party)
+    {
+        $this->party = $party;
+    }
+
+    public function isInParty(): bool
+    {
+        return PartyManager::getPartyFromPlayer($this) !== null;
     }
 
     public function setCurrentKit(?KitManager $kit): void
@@ -538,25 +565,6 @@ class NeptunePlayer extends Player
     {
         parent::__destruct();
         Loader::getInstance()->getLogger()->info('Destroyed by garbage collector');
-    }
-
-    public function getParty(): ?PartyFactory
-    {
-        $result = null;
-        if ($this->isInParty()) {
-            $result = $this->party;
-        }
-        return $result;
-    }
-
-    public function setParty(?PartyFactory $party)
-    {
-        $this->party = $party;
-    }
-
-    public function isInParty(): bool
-    {
-        return PartyManager::getPartyFromPlayer($this) !== null;
     }
 
     public function getPartyRank(): ?string
