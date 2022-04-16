@@ -23,7 +23,7 @@ class AntiCheatListener implements Listener
             if (!$player->isCreative() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
                 if ($player->getInAirTicks() > 20 and $dY >= 0) {
-                    $maxY = $player->getWorld()->getHighestBlockAt(floor($event->getTo()->getX()), floor($event->getTo()->getZ()));
+                    $maxY = $player->getWorld()->getHighestBlockAt(floor($to->getX()), floor($to->getZ()));
                     if ($to->getY() - 5 > $maxY) {
                         if (!isset($player->points[$name])) {
                             $player->points[$name]["fly"] = 1.0;
@@ -39,11 +39,11 @@ class AntiCheatListener implements Listener
                     $player->points[$name]["fly"] = 0.0;
                 }
             }
-            if ($player->isImmobile()) {
+            /*if ($player->isImmobile()) {
                 if ($from->getX() != $to->getX() or $from->getY() != $to->getY() or $from->getZ() != $to->getZ()) {
                     $player->teleport($from->asVector3());
                 }
-            }
+            }*/
         }
     }
 

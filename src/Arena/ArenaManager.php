@@ -20,6 +20,7 @@ use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use Throwable;
 
 class ArenaManager
 {
@@ -226,7 +227,7 @@ class ArenaManager
             $player->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["6"]["item"], 0, (int)$player->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $player->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["7"]["item"], 0, (int)$player->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $player->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$player->getKit()["0"]["8"]["item"], 0, (int)$player->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-        } catch (Exception) {
+        } catch (Throwable) {
             $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
             $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));

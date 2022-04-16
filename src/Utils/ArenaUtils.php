@@ -33,7 +33,6 @@ use Kohaku\Items\EnderPearl;
 use Kohaku\Items\FishingRod;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
-use Kohaku\SkyWars\Skywars;
 use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookEmbed;
@@ -65,6 +64,7 @@ use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\World;
 use SQLite3;
+use Throwable;
 use ZipArchive;
 
 class ArenaUtils
@@ -412,7 +412,7 @@ class ArenaUtils
                         $dplayer->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["6"]["item"], 0, (int)$dplayer->getKit()["0"]["6"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["7"]["item"], 0, (int)$dplayer->getKit()["0"]["7"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$dplayer->getKit()["0"]["8"]["item"], 0, (int)$dplayer->getKit()["0"]["8"]["count"])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    } catch (Exception) {
+                    } catch (Throwable) {
                         $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
@@ -432,7 +432,7 @@ class ArenaUtils
             } elseif ($arena === Loader::getArenaFactory()->getComboArena()) {
                 if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
                     $dplayer->getInventory()->clearAll();
-                    $item = ItemFactory::getInstance()->get(466, 0, 3);
+                    $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
                     $dplayer->getInventory()->addItem($item);
                 }
             }
