@@ -20,7 +20,7 @@ class AntiCheatListener implements Listener
         $name = $player->getName();
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
-            $player->lastpos = $player->getLocation();
+            /*$player->lastpos = $player->getLocation();
             if (!$player->isCreative() and !$player->isOnGround() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
                 if ($player->getInAirTicks() > 20 and $dY >= 0) {
@@ -39,7 +39,7 @@ class AntiCheatListener implements Listener
                     $player->points[$name]["fly"] = 0.0;
                 }
             }
-            /*if ($player->isImmobile()) {
+            if ($player->isImmobile()) {
                 if ($from->getX() != $to->getX() or $from->getY() != $to->getY() or $from->getZ() != $to->getZ()) {
                     $player->teleport($from->asVector3());
                 }
