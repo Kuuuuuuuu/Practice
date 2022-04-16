@@ -20,16 +20,16 @@ class AntiCheatListener implements Listener
         $name = $player->getName();
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
-            if (!$player->isCreative() and !$player->isSpectator() and !$player->getAllowFlight()) {
+            if (!$player->isCreative() and !$player->isOnGround() and !$player->isSpectator() and !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
-                if ($player->getInAirTicks() > 20 and $dY >= 0) {
+                if ($player->getInAirTicks() > $this->CalculateAirTick($player) and $dY >= 0) {
                     $maxY = $player->getWorld()->getHighestBlockAt(floor($to->getX()), floor($to->getZ()));
-                    if ($to->getY() - 5 > $maxY) {
+                    if ($to->getY() - 3 > $maxY) {
                         if (!isset($player->points[$name])) {
                             $player->points[$name]["fly"] = 1.0;
                         } else {
                             $player->points[$name]["fly"] += 1.0;
-                            if ($player->points[$name]["fly"] > 5.0) {
+                            if ($player->points[$name]["fly"] > 3.0) {
                                 $event->cancel();
                                 $player->sendMessage(Loader::getPrefixCore() . "Fly hack detected!");
                             }
@@ -48,6 +48,15 @@ class AntiCheatListener implements Listener
     }
 
     //TODO: Make Anti-Fly & Kill Aura
+
+    private function CalculateAirTick(Player $player)
+    {
+        if ($player->getNetworkSession()->getPing() < 20) {
+            return 15;
+        } else {
+            return 17;
+        }
+    }
 
     public function onDamage(EntityDamageByEntityEvent $event)
     {
