@@ -352,7 +352,6 @@ class NeptunePlayer extends Player
         Loader::getInstance()->getArenaUtils()->GiveItem($this);
         $this->LoadData();
         $this->sendMessage(Loader::getPrefixCore() . "§eLoading Player Data");
-        var_dump(Loader::getArenaUtils()->getKitContains($this, "build"));
     }
 
     /**
