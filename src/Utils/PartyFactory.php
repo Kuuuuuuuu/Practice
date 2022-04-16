@@ -56,7 +56,7 @@ class PartyFactory
 
     public function setMembers(array $members): void
     {
-        $this->members = $members;
+        $this->members[] = $members;
     }
 
     public function getCapacity(): int
@@ -68,7 +68,7 @@ class PartyFactory
     {
         $online = [];
         foreach ($this->members as $member) {
-            $player = Server::getInstance()->getPlayerExact($member);
+            $player = Server::getInstance()->getPlayerExact($member->getName());
             if ($player !== null) {
                 $online[] = $player->getName();
             }
