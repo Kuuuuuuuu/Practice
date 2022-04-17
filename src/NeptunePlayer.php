@@ -313,7 +313,7 @@ class NeptunePlayer extends Player
     /**
      * @throws JsonException
      */
-    public function LoadData()
+    private function LoadData()
     {
         $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : '';
         $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : '';
