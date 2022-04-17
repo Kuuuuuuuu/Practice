@@ -624,7 +624,7 @@ class NeptuneListener implements Listener
     {
         $player = $event->getPlayer();
         //$block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-        if ($player->getPosition() <= 1) {
+        if ($player->getPosition()->getY() <= 1) {
             $player->kill();
         }
     }
