@@ -56,7 +56,7 @@ class Loader extends PluginBase
     public int $DeleteBlockTime = 8;
     public int $MaximumCPS = 20;
     public bool $Restarted = false;
-    public float $EnderPearlForce = 2.5;
+    public float|int $EnderPearlForce = 3;
     public array $targetPlayer = [];
     public array $SumoArenas = [];
     public array $SumoSetup = [];
