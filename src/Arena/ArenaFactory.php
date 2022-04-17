@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kohaku\Arena;
 
-use Exception;
 use JsonException;
 use Kohaku\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use Throwable;
 
 class ArenaFactory
 {
@@ -18,7 +18,7 @@ class ArenaFactory
     {
         try {
             return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers()) ?? 'Error';
-        } catch (Exception) {
+        } catch (Throwable) {
             return 'Error';
         }
     }

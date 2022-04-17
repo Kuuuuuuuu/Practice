@@ -193,15 +193,12 @@ class ArenaManager
         $player->setHealth(20);
         try {
             if ($player instanceof NeptunePlayer) {
-                $player->getInventory()->setItem(0, ItemFactory::getInstance()->get((int)$player->getKit()['0']['0']['item'], 0, (int)$player->getKit()['0']['0']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(1, ItemFactory::getInstance()->get((int)$player->getKit()['0']['1']['item'], 0, (int)$player->getKit()['0']['1']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(2, ItemFactory::getInstance()->get((int)$player->getKit()['0']['2']['item'], 0, (int)$player->getKit()['0']['2']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(3, ItemFactory::getInstance()->get((int)$player->getKit()['0']['3']['item'], 0, (int)$player->getKit()['0']['3']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(4, ItemFactory::getInstance()->get((int)$player->getKit()['0']['4']['item'], 0, (int)$player->getKit()['0']['4']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(5, ItemFactory::getInstance()->get((int)$player->getKit()['0']['5']['item'], 0, (int)$player->getKit()['0']['5']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(6, ItemFactory::getInstance()->get((int)$player->getKit()['0']['6']['item'], 0, (int)$player->getKit()['0']['6']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(7, ItemFactory::getInstance()->get((int)$player->getKit()['0']['7']['item'], 0, (int)$player->getKit()['0']['7']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                $player->getInventory()->setItem(8, ItemFactory::getInstance()->get((int)$player->getKit()['0']['8']['item'], 0, (int)$player->getKit()['0']['8']['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                for ($i = 0; $i < $player->getInventory()->getSize(); $i++) {
+                    $player->getInventory()->setItem($i, ItemFactory::getInstance()->get((int)$player->getKit()['0']["$i"]['item'], 0, (int)$player->getKit()['0']["$i"]['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                    if ($i > $player->getInventory()->getSize()) {
+                        break;
+                    }
+                }
             }
         } catch (Throwable) {
             $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));

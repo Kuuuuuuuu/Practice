@@ -37,6 +37,7 @@ class NeptunePlayer extends Player
     private bool $inQueue = false;
     private ?PartyFactory $party;
     private ?string $partyrank;
+    private array $savekitcache = [];
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -430,45 +431,18 @@ class NeptunePlayer extends Player
     {
         $name = $this->getName();
         try {
-            Loader::getInstance()->KitData->set($name, [
-                '0' => [
-                    'item' => $this->getInventory()->getItem(0)->getId(),
-                    'count' => $this->getInventory()->getItem(0)->getCount(),
-                ],
-                '1' => [
-                    'item' => $this->getInventory()->getItem(1)->getId(),
-                    'count' => $this->getInventory()->getItem(1)->getCount()
-                ],
-                '2' => [
-                    'item' => $this->getInventory()->getItem(2)->getId(),
-                    'count' => $this->getInventory()->getItem(2)->getCount(),
-                ],
-                '3' => [
-                    'item' => $this->getInventory()->getItem(3)->getId(),
-                    'count' => $this->getInventory()->getItem(3)->getCount()
-                ],
-                '4' => [
-                    'item' => $this->getInventory()->getItem(4)->getId(),
-                    'count' => $this->getInventory()->getItem(4)->getCount()
-                ],
-                '5' => [
-                    'item' => $this->getInventory()->getItem(5)->getId(),
-                    'count' => $this->getInventory()->getItem(5)->getCount()
-                ],
-                '6' => [
-                    'item' => $this->getInventory()->getItem(6)->getId(),
-                    'count' => $this->getInventory()->getItem(6)->getCount()
-                ],
-                '7' => [
-                    'item' => $this->getInventory()->getItem(7)->getId(),
-                    'count' => $this->getInventory()->getItem(7)->getCount()
-                ],
-                '8' => [
-                    'item' => $this->getInventory()->getItem(8)->getId(),
-                    'count' => $this->getInventory()->getItem(8)->getCount()
-                ]
-            ]);
-        } catch (Exception) {
+            for ($i = 0; $i < $this->getInventory()->getSize(); $i++) {
+                $this->savekitcache[$i] = [
+                    'item' => $this->getInventory()->getItem($i)->getId(),
+                    'count' => $this->getInventory()->getItem($i)->getCount()
+                ];
+                if ($i > $this->getInventory()->getSize()) {
+                    break;
+                }
+            }
+            Loader::getInstance()->KitData->set($name, $this->savekitcache);
+        } catch (Exception $exception) {
+            Loader::getInstance()->getLogger()->error($exception->getMessage());
             $this->kill();
             $this->setImmobile(false);
             $this->sendMessage(Loader::getPrefixCore() . '§cAn error occurred while saving your kit.');
