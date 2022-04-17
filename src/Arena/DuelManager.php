@@ -5,10 +5,10 @@ namespace Kohaku\Arena;
 use JetBrains\PhpStorm\Pure;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
-use Kohaku\Utils\DuelGenerator;
 use Kohaku\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
 
 class DuelManager
@@ -16,18 +16,12 @@ class DuelManager
     use SingletonTrait;
 
     private array $matches = [];
-    private Loader $plugin;
-
-    public function __construct()
-    {
-        self::$instance = $this;
-    }
 
     public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
         $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName();
         $world = new WorldCreationOptions();
-        $world->setGeneratorClass(DuelGenerator::class);
+        $world->setGeneratorClass(Flat::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         foreach ([$player1, $player2] as $player) {
             $player->getInventory()->clearAll();

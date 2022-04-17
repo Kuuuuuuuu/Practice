@@ -222,7 +222,6 @@ class ArenaUtils
         Server::getInstance()->getNetwork()->setName('§dNeptune §fNetwork');
         $this->registerItems();
         $this->registerConfigs();
-        $this->registerGenerator();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
@@ -290,11 +289,6 @@ class ArenaUtils
         )))->getAll();
         Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . 'Ban.db');
         Loader::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
-    }
-
-    public function registerGenerator(): void
-    {
-        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, 'Duel', fn() => null);
     }
 
     private function registerCommands(): void

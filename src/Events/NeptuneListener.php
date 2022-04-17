@@ -196,6 +196,7 @@ class NeptuneListener implements Listener
     public function onQuery(QueryRegenerateEvent $ev)
     {
         $ev->getQueryInfo()->setWorld('NeptuneLobby');
+        $ev->getQueryInfo()->setPlugins([Loader::getInstance()]);
     }
 
     public function onDropItem(PlayerDropItemEvent $event): void

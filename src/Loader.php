@@ -69,7 +69,7 @@ class Loader extends PluginBase
     ];
     public array $ControlList = [
         'Unknown',
-        'Mouse',
+        'Keyboard',
         'Touch',
         'Controller'
     ];
@@ -81,13 +81,13 @@ class Loader extends PluginBase
         'FireOS',
         'GearVR',
         'HoloLens',
-        'Windows',
-        'Windows',
+        'Win10',
+        'Win32',
         'EducalVersion',
         'Dedicated',
-        'PlayStation',
+        'PS4',
         'Switch',
-        'XboxOne'
+        'Xbox'
     ];
 
     public static function getCoreTask(): ?NeptuneTask
