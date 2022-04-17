@@ -9,13 +9,12 @@ use JsonException;
 use Kohaku\Utils\Kits\KitManager;
 use Kohaku\Utils\PartyFactory;
 use Kohaku\Utils\PartyManager;
-use pocketmine\{entity\Skin, math\Vector3, player\GameMode, player\Player, Server};
+use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 
 class NeptunePlayer extends Player
 {
     public int $BoxingPoint = 0;
-    public int $TimerData = 0;
     public string $cape = '';
     public string $artifact = '';
     public string $PlayerOS = 'Unknown';
@@ -24,13 +23,11 @@ class NeptunePlayer extends Player
     public string $ToolboxStatus = 'Normal';
     public string $lastDamagePlayer = 'Unknown';
     public ?string $EditKit = null;
-    public ?Vector3 $ParkourCheckPoint = null;
     public ?KitManager $duelKit = null;
     public int|float $CombatTime = 0;
     public array $points = [];
     private ?string $Opponent = null;
     private bool $SkillCooldown = false;
-    private bool $TimerTask = false;
     private bool $Combat = false;
     private int $tick = 0;
     private float $xzKB = 0.4;
@@ -236,29 +233,16 @@ class NeptunePlayer extends Player
             $this->updateScoreboard();
             $this->updateNametag();
         }
-        $this->updateCPS();
+        $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
     }
 
     private function updateTag()
     {
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())) {
-            $this->setParkourTag();
-        } elseif ($this->isCombat() or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+        if ($this->isCombat() or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
         } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
         }
-    }
-
-    private function setParkourTag()
-    {
-        $ping = $this->getNetworkSession()->getPing();
-        $tagparkour = '§f[§d {mins} §f: §d{secs} §f: §d{mili} {ping}ms §f]';
-        $tagparkour = str_replace('{ping}', (string)$ping, $tagparkour);
-        $tagparkour = str_replace('{mili}', (string)floor($this->TimerData % 100), $tagparkour);
-        $tagparkour = str_replace('{secs}', (string)floor(($this->TimerData / 100) % 60), $tagparkour);
-        $tagparkour = str_replace('{mins}', (string)floor($this->TimerData / 6000), $tagparkour);
-        $this->setScoreTag($tagparkour);
     }
 
     public function isCombat(): bool
@@ -305,39 +289,6 @@ class NeptunePlayer extends Player
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
-    }
-
-    private function updateCPS()
-    {
-        switch ($this->getWorld()) {
-            case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
-                $this->parkourTimer();
-                break;
-            default:
-                $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
-                break;
-        }
-    }
-
-    private function parkourTimer()
-    {
-        if ($this->isStartTimer()) {
-            $this->TimerData += 5;
-            $mins = floor($this->TimerData / 6000);
-            $secs = floor(($this->TimerData / 100) % 60);
-            $mili = $this->TimerData % 100;
-            $this->sendTip('§a' . $mins . ' : ' . $secs . ' : ' . $mili);
-        } else {
-            $this->sendTip('§a0 : 0 : 0');
-            if ($this->TimerData !== 0) {
-                $this->TimerData = 0;
-            }
-        }
-    }
-
-    public function isStartTimer(): bool
-    {
-        return $this->TimerTask;
     }
 
     public function setDueling(bool $playing): void
@@ -529,11 +480,6 @@ class NeptunePlayer extends Player
         $this->sendMessage(Loader::getPrefixCore() . '§aYou have successfully saved your kit!');
         $this->kill();
         $this->setImmobile(false);
-    }
-
-    public function setStartTimer(bool $bool): void
-    {
-        $this->TimerTask = $bool;
     }
 
     public function isSkillCooldown(): bool

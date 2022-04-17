@@ -10,7 +10,6 @@ namespace Kohaku\Commands;
 use JsonException;
 use Kohaku\Entity\DeathLeaderboard;
 use Kohaku\Entity\KillLeaderboard;
-use Kohaku\Entity\ParkourLeaderboard;
 use Kohaku\Loader;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\permission\DefaultPermissions;
@@ -44,18 +43,18 @@ class CoreCommand extends Command
                     $sender->sendMessage(Color::BOLD . Color::GREEN . Loader::getPrefixCore());
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
-                    $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - setparkourleader - removeleader');
-                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                    $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - removeleader');
+                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                     break;
                 case 'make':
                 case 'create':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                     }
                     if (!isset($args[2])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                     }
                     switch ($args[1]) {
                         case 'fist':
@@ -65,15 +64,6 @@ class CoreCommand extends Command
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
                                 Loader::getArenaFactory()->setFistArena($sender, $args[2]);
-                            }
-                            break;
-                        case 'Parkour':
-                            if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                            } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
-                                Loader::getArenaFactory()->setParkourArena($sender, $args[2]);
                             }
                             break;
                         case 'Boxing':
@@ -168,7 +158,7 @@ class CoreCommand extends Command
                             break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                             break;
                     }
                     break;
@@ -215,7 +205,7 @@ class CoreCommand extends Command
                 case 'remove':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                         return false;
                     }
                     switch ($args[1]) {
@@ -224,9 +214,6 @@ class CoreCommand extends Command
                             break;
                         case 'Boxing':
                             Loader::getArenaFactory()->removeBoxing($sender);
-                            break;
-                        case 'Parkour':
-                            Loader::getArenaFactory()->removeParkour($sender);
                             break;
                         case 'Combo':
                             Loader::getArenaFactory()->removeCombo($sender);
@@ -257,7 +244,7 @@ class CoreCommand extends Command
                             break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Parkour, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
                             break;
                     }
                     break;
@@ -267,10 +254,6 @@ class CoreCommand extends Command
                     break;
                 case 'setdeathleader':
                     $npc = new DeathLeaderboard($sender->getLocation(), $sender->getSkin());
-                    $npc->spawnToAll();
-                    break;
-                case 'setparkourleader':
-                    $npc = new ParkourLeaderboard($sender->getLocation(), $sender->getSkin());
                     $npc->spawnToAll();
                     break;
                 case 'removeleader':

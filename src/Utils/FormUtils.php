@@ -44,30 +44,27 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    Loader::getArenaManager()->onJoinParkour($player);
-                    break;
-                case 1:
                     Loader::getArenaManager()->onJoinBoxing($player);
                     break;
-                case 2:
+                case 1:
                     Loader::getArenaManager()->onJoinFist($player);
                     break;
-                case 3:
+                case 2:
                     Loader::getArenaManager()->onJoinCombo($player);
                     break;
-                case 4:
+                case 3:
                     Loader::getArenaManager()->onJoinKnockback($player);
                     break;
-                case 5:
+                case 4:
                     Loader::getArenaManager()->onJoinResistance($player);
                     break;
-                case 6:
+                case 5:
                     $this->formkit($player);
                     break;
-                case 7:
+                case 6:
                     Loader::getArenaManager()->onJoinOITC($player);
                     break;
-                case 8:
+                case 7:
                     Loader::getArenaManager()->onJoinBuild($player);
                     break;
                 default:
@@ -77,7 +74,6 @@ class FormUtils
         });
 
         $form->setTitle('§dNeptune §cMenu');
-        $form->addButton("§aParkour\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getParkourArena() ?? null) ?? 0, 0, 'textures/items/name_tag.png');
         $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, 'textures/items/diamond_sword.png');
         $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, 'textures/items/beef_cooked.png');
         $form->addButton("§aCombo\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena() ?? null) ?? 0, 0, 'textures/items/apple_golden.png');
@@ -574,11 +570,8 @@ class FormUtils
                 case 'create':
                     if ($player->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou are already in a party.');
-                        return;
-                    }
-                    if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    } else if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot create a party here.');
-                        return;
                     }
                     $this->createParty($player);
                     break;
@@ -718,19 +711,12 @@ class FormUtils
                     if ($party === null) return;
                     if ($player->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou are already in a party.');
-                        return;
-                    }
-                    if (!PartyManager::doesPartyExist($party)) {
+                    } else if (!PartyManager::doesPartyExist($party)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party does not exist.');
-                        return;
-                    }
-                    if ($party->isClosed()) {
+                    } else if ($party->isClosed()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party is closed.');
-                        return;
-                    }
-                    if ($party->isFull()) {
+                    } else if ($party->isFull()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party is full.');
-                        return;
                     }
                     $party->addMember($player);
                     break;
@@ -761,11 +747,8 @@ class FormUtils
                     $party = $player->getParty();
                     if (!$party->isLeader($player)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage party members.');
-                        return;
-                    }
-                    if ($player->getName() === $data) {
+                    } else if ($player->getName() === $data) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage yourself.');
-                        return;
                     }
                     $this->targetPlayer[$player->getName()] = $data;
                     $this->managePartyMemberForm($player);
@@ -822,19 +805,12 @@ class FormUtils
                     $party = $player->getParty();
                     if ($target === null) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player is offline.');
-                        return;
-                    }
-                    if ($target->getName() === $player->getName()) {
+                    } else if ($target->getName() === $player->getName()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot invite yourself.');
-                        return;
-                    }
-                    if (PartyManager::hasInvite($target, $party)) {
+                    } else if (PartyManager::hasInvite($target, $party)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player has already been invited to your party.');
-                        return;
-                    }
-                    if ($target->isInParty()) {
+                    } else if ($target->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player is already in a party.');
-                        return;
                     }
                     PartyManager::invitePlayer($party, $player, $target);
                     break;

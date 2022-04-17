@@ -19,7 +19,7 @@ class DeleteBlocksHandler
     public function setBlockBuild(Block $block, bool $break = false): void
     {
         $pos = $block->getPosition()->getX() . ':' . $block->getPosition()->getY() . ':' . $block->getPosition()->getZ() . ':' . $block->getPosition()->getWorld()->getFolderName();
-        if ($break && isset($this->buildBlocks[$pos])) {
+        if ($break and isset($this->buildBlocks[$pos])) {
             unset($this->buildBlocks[$pos]);
         } else {
             $this->buildBlocks[$pos] = Loader::getInstance()->DeleteBlockTime;

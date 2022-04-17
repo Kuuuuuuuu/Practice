@@ -13,7 +13,6 @@ use JsonException;
 use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
-use Kohaku\Task\ParkourFinishTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
@@ -28,7 +27,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
-use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -144,19 +142,6 @@ class NeptuneListener implements Listener
                 Loader::getFormUtils()->settingsForm($player);
             } elseif ($item->getCustomName() === '§r§dBot') {
                 Loader::getFormUtils()->botForm($player);
-            } elseif ($item->getCustomName() === '§r§aStop Timer §f| §dClick to use') {
-                $player->TimerData = 0;
-                $player->setStartTimer(false);
-                $player->teleport(new Vector3(275, 66, 212));
-                $player->sendMessage(Loader::getPrefixCore() . '§aYou Has been reset!');
-                $player->ParkourCheckPoint = new Vector3(275, 77, 212);
-            } elseif ($item->getCustomName() === '§r§aBack to Checkpoint §f| §dClick to use') {
-                if ($player->ParkourCheckPoint !== null) {
-                    $player->teleport($player->ParkourCheckPoint);
-                } else {
-                    $player->teleport(new Vector3(275, 77, 212));
-                }
-                $player->sendMessage(Loader::getPrefixCore() . '§aTeleport to Checkpoint');
             } elseif ($item->getCustomName() === '§r§cLeave Queue') {
                 $player->sendMessage(Loader::getPrefixCore() . 'Left the queue');
                 $player->setCurrentKit(null);
@@ -295,7 +280,7 @@ class NeptuneListener implements Listener
         $name = $player->getName();
         $cosmetic = Loader::getCosmeticHandler();
         if ($player instanceof NeptunePlayer) {
-            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 or strlen($event->getNewSkin()->getSkinData()) <= 8192 or $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
                 copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
                 $cosmetic->resetSkin($player);
                 $case = 1;
@@ -395,7 +380,7 @@ class NeptuneListener implements Listener
         $player = $event->getOrigin()->getPlayer();
         $packet = $event->getPacket();
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
-            if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData || $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
+            if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData or $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::getClickHandler()->addClick($player);
                 if (Loader::getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
                     if ($player instanceof NeptunePlayer) {
@@ -536,7 +521,7 @@ class NeptuneListener implements Listener
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
             }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } elseif ($player->getOpponent() === null and $damager->getOpponent() === null) {
                 if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
@@ -638,54 +623,9 @@ class NeptuneListener implements Listener
     public function onMove(PlayerMoveEvent $event)
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
-        $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
-        if ($player instanceof NeptunePlayer) {
-            switch ($player->getWorld()) {
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()):
-                    if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                        $smallpp = $player->getDirectionPlane()->normalize()->multiply(2 * 3.75 / 20);
-                        $player->setMotion(new Vector3($smallpp->getX(), 1.5, $smallpp->getY()));
-                    }
-                    break;
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()):
-                    if ($block->getId() === BlockLegacyIds::GOLD_BLOCK) {
-                        $player->getEffects()->add(new EffectInstance(VanillaEffects::LEVITATION(), 100, 3, false));
-                    }
-                    break;
-                case Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena()):
-                    switch ($block->getId()) {
-                        case BlockLegacyIds::NOTE_BLOCK:
-                            if (!$player->isStartTimer()) {
-                                $player->setStartTimer(true);
-                            }
-                            break;
-                        case BlockLegacyIds::PODZOL:
-                            if ($player->isStartTimer()) {
-                                $player->setStartTimer(false);
-                            }
-                            break;
-                        case BlockLegacyIds::LIT_REDSTONE_LAMP:
-                            if ($player->isStartTimer()) {
-                                $player->setStartTimer(false);
-                                $mins = floor($player->TimerData / 6000);
-                                $secs = floor(($player->TimerData / 100) % 60);
-                                $mili = $player->TimerData % 100;
-                                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . ($name . ' §aHas Finished Parkour ' . $mins . ' : ' . $secs . ' : ' . $mili));
-                                $player->ParkourCheckPoint = new Vector3(255, 77, 255);
-                                $player->teleport(new Vector3(275, 66, 212));
-                                Loader::getInstance()->getScheduler()->scheduleDelayedRepeatingTask(new ParkourFinishTask($player, $player->getWorld()), 0, 2);
-                                Loader::getInstance()->ParkourLeaderboard[$player->getName()] = $player->TimerData;
-                            }
-                            break;
-                        case BlockLegacyIds::REPEATING_COMMAND_BLOCK:
-                            $vector = $player->getPosition()->asVector3();
-                            if ($player->ParkourCheckPoint !== $vector) {
-                                $player->ParkourCheckPoint = $vector;
-                            }
-                            break;
-                    }
-            }
+        //$block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
+        if ($player->getPosition() <= 1) {
+            $player->kill();
         }
     }
 
@@ -761,19 +701,6 @@ class NeptuneListener implements Listener
                     $event->cancel();
                     $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
                 }
-            }
-        }
-    }
-
-    public function onTeleport(EntityTeleportEvent $event)
-    {
-        $entity = $event->getEntity();
-        $from = $event->getFrom();
-        $to = $event->getTo();
-        if ($entity instanceof NeptunePlayer) {
-            if ($from->getWorld() !== $to->getWorld() and $to->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                $entity->setStartTimer(false);
-                $entity->TimerData = 0;
             }
         }
     }

@@ -24,31 +24,6 @@ use Throwable;
 class ArenaManager
 {
 
-    public function onJoinParkour(Player $player): void
-    {
-        if (Loader::getArenaFactory()->getParkourArena() == null) {
-            $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
-            return;
-        }
-        Server::getInstance()->getWorldManager()->loadWorld(Loader::getArenaFactory()->getParkourArena());
-        $item2 = VanillaItems::COMPASS();
-        $item3 = VanillaItems::FEATHER();
-        $item2->setCustomName('§r§aStop Timer §f| §dClick to use');
-        $item3->setCustomName('§r§aBack to Checkpoint §f| §dClick to use');
-        $player->getInventory()->clearAll();
-        $player->getEffects()->clear();
-        $player->getArmorInventory()->clearAll();
-        $player->setHealth(20);
-        $player->getInventory()->setItem(0, $item2);
-        $player->getInventory()->setItem(8, $item3);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getParkourArena())->getSafeSpawn());
-        $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 10, $player->getPosition()->asPosition()->z));
-        $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
-            $player->teleport($pos);
-        });
-    }
-
     public function onJoinBoxing(Player $player): void
     {
         if (Loader::getArenaFactory()->getBoxingArena() == null) {

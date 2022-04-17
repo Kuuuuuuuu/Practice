@@ -29,6 +29,9 @@ use SQLite3;
 
 class Loader extends PluginBase
 {
+    private const PREFIX = '§dNeptune§f » §r';
+    private const SBPREFIX = '§f» §dNeptune §f«';
+
     private static self $plugin;
     private static YamlManager $YamlLoader;
     private static ClickHandler $cps;
@@ -60,7 +63,6 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
-    public array $ParkourLeaderboard = [];
     public array $PartyData = [];
     public array $PartyInvite = [];
     public array $BanCommand = [
@@ -102,12 +104,12 @@ class Loader extends PluginBase
 
     public static function getScoreboardTitle(): string
     {
-        return '§f» §dNeptune §f«';
+        return self::SBPREFIX;
     }
 
     public static function getPrefixCore(): string
     {
-        return '§dNeptune§f » §r';
+        return self::PREFIX;
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler

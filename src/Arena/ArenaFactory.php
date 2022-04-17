@@ -19,7 +19,7 @@ class ArenaFactory
         try {
             return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers()) ?? 'Error';
         } catch (Exception) {
-            return 'Error ';
+            return 'Error';
         }
     }
 
@@ -69,12 +69,6 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Bot');
-    }
-
-    public function getParkourArena(): string
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Parkour');
     }
 
     public function getComboArena(): string
@@ -252,18 +246,6 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-
-    public function setParkourArena(Player $player, string $world): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('Parkour', $world);
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
-    }
-
-    /**
-     * @throws JsonException
-     */
     public function setComboArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -345,17 +327,6 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Skywars');
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function removeParkour(Player $player): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('Parkour');
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
     }

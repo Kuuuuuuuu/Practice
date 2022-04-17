@@ -19,9 +19,9 @@ class PartyFactory
     public array $members = [];
     private string $name;
     private string $leader;
-    private int $capacity = 8;
-    private bool $closed = false;
-    private int $status = 0;
+    private int $capacity;
+    private bool $closed;
+    private int $status;
 
     public function __construct(string $name, string $leader, array $members, int $capacity, bool $closed, int $status)
     {

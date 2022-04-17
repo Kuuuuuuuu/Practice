@@ -25,7 +25,6 @@ use Kohaku\Entity\FallingWool;
 use Kohaku\Entity\FishingHook;
 use Kohaku\Entity\FistBot;
 use Kohaku\Entity\KillLeaderboard;
-use Kohaku\Entity\ParkourLeaderboard;
 use Kohaku\Events\AntiCheatListener;
 use Kohaku\Events\NeptuneListener;
 use Kohaku\Items\Bow;
@@ -37,13 +36,10 @@ use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
-use pocketmine\block\utils\DyeColor;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
-use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
-use pocketmine\entity\Location;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\ItemFactory;
@@ -52,7 +48,6 @@ use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
@@ -60,8 +55,6 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
-use pocketmine\world\generator\GeneratorManager;
-use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\World;
 use SQLite3;
 use Throwable;
@@ -69,38 +62,6 @@ use ZipArchive;
 
 class ArenaUtils
 {
-
-    public static function generateFallingWoolBlock(Location $location): FallingWool
-    {
-        $fallingBlock = new FallingWool($location, VanillaBlocks::WOOL()->setColor(self::randomDyeColor()));
-        $fallingBlock->setMotion(new Vector3(-sin(mt_rand(1, 360) / 60 * M_PI), 0.95, cos(mt_rand(1, 360) / 60 * M_PI)));
-        $fallingBlock->spawnToAll();
-        return $fallingBlock;
-    }
-
-    public static function randomDyeColor(): DyeColor
-    {
-        $array = [
-            DyeColor::BLACK(),
-            DyeColor::BLUE(),
-            DyeColor::BROWN(),
-            DyeColor::CYAN(),
-            DyeColor::GRAY(),
-            DyeColor::GREEN(),
-            DyeColor::LIGHT_BLUE(),
-            DyeColor:: LIGHT_GRAY(),
-            DyeColor::LIME(),
-            DyeColor::MAGENTA(),
-            DyeColor::ORANGE(),
-            DyeColor::PINK(),
-            DyeColor::PURPLE(),
-            DyeColor::RED(),
-            DyeColor::WHITE(),
-            DyeColor::YELLOW()
-        ];
-        $size = count($array) - 1;
-        return $array[mt_rand(0, $size)];
-    }
 
     public static function playSound(string $soundName, Player $player): void
     {
@@ -124,37 +85,6 @@ class ArenaUtils
         $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z);
     }
 
-    public static function randomColor($excludedColors = []): string
-    {
-        $array = [
-            TextFormat::DARK_PURPLE => true,
-            TextFormat::GOLD => true,
-            TextFormat::RED => true,
-            TextFormat::GREEN => true,
-            TextFormat::LIGHT_PURPLE => true,
-            TextFormat::AQUA => true,
-            TextFormat::DARK_RED => true,
-            TextFormat::DARK_AQUA => true,
-            TextFormat::BLUE => true,
-            TextFormat::GRAY => true,
-            TextFormat::DARK_GREEN => true,
-            TextFormat::BLACK => true,
-            TextFormat::DARK_BLUE => true,
-            TextFormat::DARK_GRAY => true,
-            TextFormat::YELLOW => true,
-            TextFormat::WHITE => true
-        ];
-        $array2 = $array;
-        foreach ($excludedColors as $c) {
-            if (isset($array[$c]))
-                unset($array[$c]);
-        }
-        if (count($array) === 0) $array = $array2;
-        $size = count($array) - 1;
-        $keys = array_keys($array);
-        return (string)$keys[mt_rand(0, $size)];
-    }
-
     /**
      * @throws Exception
      */
@@ -162,7 +92,7 @@ class ArenaUtils
     public function generateUUID()
     {
         $data = random_bytes(16);
-        assert(strlen($data) == 16);
+        assert(strlen($data) === 16);
         $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
@@ -191,17 +121,6 @@ class ArenaUtils
                 $player->ToolboxStatus = 'Toolbox';
             }
         }
-    }
-
-    public function spawnLightning(Player $player, Player $damager): void
-    {
-        $pos = $player->getPosition();
-        $light2 = AddActorPacket::create(Entity::nextRuntimeId(), 1, 'minecraft:lightning_bolt', $player->getPosition()->asVector3(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch(), 0.0, [], [], []);
-        $block = $player->getWorld()->getBlock($player->getPosition()->floor()->down());
-        $particle = new BlockBreakParticle($block);
-        $player->getWorld()->addParticle($pos, $particle, $player->getWorld()->getPlayers());
-        $sound2 = PlaySoundPacket::create('ambient.weather.thunder', $pos->getX(), $pos->getY(), $pos->getZ(), 1, 1);
-        Server::getInstance()->broadcastPackets([$player, $damager], [$light2, $sound2]);
     }
 
     public function calculateTime(int $time): string
@@ -329,10 +248,6 @@ class ArenaUtils
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
-        EntityFactory::getInstance()->register(ParkourLeaderboard::class, function (World $world, CompoundTag $nbt): ParkourLeaderboard {
-            return new ParkourLeaderboard(EntityDataHelper::parseLocation($nbt, $world), ParkourLeaderboard
-                ::parseSkinNBT($nbt), $nbt);
-        }, ['ParkourLeaderboard']);
         EntityFactory::getInstance()->register(FistBot::class, function (World $world, CompoundTag $nbt): FistBot {
             return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
                 ::parseSkinNBT($nbt), $nbt);
