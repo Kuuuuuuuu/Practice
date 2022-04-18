@@ -379,25 +379,28 @@ class ArenaUtils
 
     public function GiveItem(Player $player): void
     {
-        $item = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName('§r§dPlay');
-        $item2 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item2 = VanillaItems::CLOCK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item2->setCustomName('§r§dSettings');
-        $item3 = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName('§r§dBot');
-        $item4 = VanillaItems::BOOK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName('§r§dDuel');
-        $item5 = VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item5 = VanillaItems::BOOK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item5->setCustomName('§r§dParty');
+        $item6 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item6->setCustomName('§r§dProfile');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
         $player->getInventory()->setItem(0, $item);
         $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->setItem(4, $item3);
+        $player->getInventory()->setItem(7, $item5);
         $player->getInventory()->setItem(1, $item4);
-        $player->getInventory()->setItem(2, $item5);
+        $player->getInventory()->setItem(2, $item3);
+        $player->getInventory()->setItem(4, $item6);
     }
 
     public function addKill(Player $player): void

@@ -151,6 +151,8 @@ class NeptuneListener implements Listener
                 Loader::getFormUtils()->duelForm($player);
             } elseif ($item->getCustomName() === '§r§dParty') {
                 Loader::getFormUtils()->partyForm($player);
+            } elseif ($item->getCustomName() === '§r§dProfile') {
+                Loader::getFormUtils()->ProfileForm($player, null);
             }
         }
     }
@@ -520,6 +522,8 @@ class NeptuneListener implements Listener
             if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
+            } else {
+                Loader::getFormUtils()->ProfileForm($damager, $player);
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();

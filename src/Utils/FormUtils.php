@@ -855,4 +855,28 @@ class FormUtils
         }
         $player->sendForm($form);
     }
+
+    public function ProfileForm(NeptunePlayer $player, ?NeptunePlayer $player2): void
+    {
+        $form = new CustomForm(function (Player $player, $data) {
+        });
+        $form->setTitle('§dNeptune §cProfile');
+        if ($player2 !== null) {
+            $data = Loader::getArenaUtils()->getData($player2->getName());
+        } else {
+            $data = Loader::getArenaUtils()->getData($player->getName());
+        }
+        $form->addLabel('§0--------------------------------------' .
+            '§aKills§f: §e' . $data->getKills() .
+            "\n§e" .
+            "\n§aDeath§f: §e" . $data->getDeaths() .
+            "\n§e" .
+            "\n§aRank§f: §e" . $data->getRank() .
+            "\n§e" .
+            "\n§aKDR§f: §e" . $data->getKDR() .
+            "\n§e" .
+            "\n§aElo§f: §e" . $data->getElo() .
+            '0--------------------------------------');
+        $player->sendForm($form);
+    }
 }
