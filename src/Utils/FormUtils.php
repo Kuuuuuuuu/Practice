@@ -866,7 +866,7 @@ class FormUtils
         } else {
             $data = Loader::getArenaUtils()->getData($player->getName());
         }
-        $form->addLabel('§0--------------------------------------' .
+        $form->addLabel(
             '§aKills§f: §e' . $data->getKills() .
             "\n§e" .
             "\n§aDeath§f: §e" . $data->getDeaths() .
@@ -875,8 +875,8 @@ class FormUtils
             "\n§e" .
             "\n§aKDR§f: §e" . $data->getKDR() .
             "\n§e" .
-            "\n§aElo§f: §e" . $data->getElo() .
-            '0--------------------------------------');
+            "\n§aElo§f: §e" . $data->getElo()
+        );
         $player->sendForm($form);
     }
 }
