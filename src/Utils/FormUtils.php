@@ -860,12 +860,15 @@ class FormUtils
     {
         $form = new CustomForm(function (Player $player, $data) {
         });
-        $form->setTitle('§dNeptune §cProfile');
+
         if ($player2 !== null) {
             $data = Loader::getArenaUtils()->getData($player2->getName());
+            $name = $player2->getName();
         } else {
             $data = Loader::getArenaUtils()->getData($player->getName());
+            $name = $player->getName();
         }
+        $form->setTitle("$name's §cProfile");
         $form->addLabel(
             '§aKills§f: §e' . $data->getKills() .
             "\n§e" .
