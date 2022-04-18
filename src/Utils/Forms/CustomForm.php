@@ -21,7 +21,7 @@ class CustomForm extends Form {
         $this->data['content'] = [];
     }
 
-    public function processData(&$data) : void {
+    public function processData($data) : void {
         if($data !== null && !is_array($data)) {
             throw new FormValidationException('Expected an array response, got ' . gettype($data));
         }

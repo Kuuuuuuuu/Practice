@@ -49,7 +49,7 @@ abstract class Form implements IForm{
         }
     }
 
-    public function processData(&$data) : void {
+    public function processData($data) : void {
     }
 
     #[ReturnTypeWillChange] public function jsonSerialize(){
