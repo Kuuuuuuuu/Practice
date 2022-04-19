@@ -523,7 +523,9 @@ class NeptuneListener implements Listener
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
             } else {
-                Loader::getFormUtils()->ProfileForm($damager, $player);
+                if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
+                    Loader::getFormUtils()->ProfileForm($damager, $player);
+                }
             }
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
