@@ -28,14 +28,14 @@ class SimpleForm extends Form
         $this->data['buttons'] = [];
     }
 
-    public function processData($data): void
+    public function processData(&$data): void
     {
         if ($data !== null) {
             if (!is_int($data)) {
                 throw new FormValidationException('Expected an integer response, got ' . gettype($data));
             }
             $count = count($this->data['buttons']);
-            if ($data >= $count or $data < 0) {
+            if ($data >= $count || $data < 0) {
                 throw new FormValidationException("Button $data does not exist");
             }
             $data = $this->labelMap[$data] ?? null;
@@ -90,5 +90,4 @@ class SimpleForm extends Form
         $this->data['buttons'][] = $content;
         $this->labelMap[] = $label ?? count($this->labelMap);
     }
-
 }
