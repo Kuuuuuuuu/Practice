@@ -3,17 +3,20 @@
 namespace Kohaku\Arena;
 
 use Kohaku\Entity\FistBot;
+use Kohaku\Events\NeptuneListener;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\Task\NeptuneTask;
 use pocketmine\entity\Location;
+use pocketmine\event\entity\EntityDeathEvent;
+use pocketmine\event\Listener;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-class BotDuelFactory
+class BotDuelFactory implements Listener
 {
     private int $time = 903;
     private NeptunePlayer $player1;
@@ -35,15 +38,58 @@ class BotDuelFactory
         $this->player2 = null;
     }
 
+    public function EntityDeath(EntityDeathEvent $event)
+    {
+        $entity = $event->getEntity();
+        if ($entity instanceof FistBot) {
+            $this->onEnd($this->player1);
+        }
+    }
+
+    public function onEnd($playerLeft = null): void
+    {
+        if (!$this->ended) {
+            $loserMessage = '';
+            $winnerMessage = '';
+            if ($this->player1->isOnline()) {
+                $this->player1->sendMessage('§f-----------------------');
+            }
+            if ($playerLeft instanceof NeptunePlayer) {
+                $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
+                $loserMessage = '§cLoser: §fFistBot';
+            } else if ($playerLeft === null) {
+                $winnerMessage = '§aWinner: §fFistBot';
+                $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
+            }
+            if ($this->player2->isAlive() or !$this->player2->isClosed()) {
+                $this->player2->close();
+            }
+            if ($this->player1->isOnline()) {
+                $this->player1->sendMessage($winnerMessage);
+                $this->player1->sendMessage($loserMessage);
+                $this->player1->sendMessage('§f-----------------------');
+                $this->player1->setDueling(false);
+                $this->player1->setCurrentKit(null);
+                $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                Loader::getArenaUtils()->GiveItem($this->player1);
+                Loader::getScoreboardManager()->sb($this->player1);
+            }
+        }
+        $this->ended = true;
+        Loader::getBotDuelManager()->stopMatch($this->level->getFolderName());
+    }
+
+    public function PlayerDeath(EntityDeathEvent $event)
+    {
+        $entity = $event->getEntity();
+        if ($entity instanceof NeptunePlayer) {
+            $this->onEnd();
+        }
+    }
+
     public function update(): void
     {
-        if ($this->player1->isOnline()) {
-            if (!$this->player1->isDueling()) {
-                $this->onEnd($this->player1);
-            } else {
-                $this->onEnd();
-            }
-        } else {
+        if (!$this->player1->isOnline()) {
             $this->onEnd();
         }
         switch ($this->time) {
@@ -95,39 +141,6 @@ class BotDuelFactory
                 break;
         }
         $this->time--;
-    }
-
-    public function onEnd($playerLeft = null): void
-    {
-        if (!$this->ended) {
-            $loserMessage = '';
-            $winnerMessage = '';
-            if ($this->player1->isOnline()) {
-                $this->player1->sendMessage('§f-----------------------');
-            }
-            if ($playerLeft instanceof NeptunePlayer) {
-                $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
-                $loserMessage = '§cLoser: §fFistBot';
-            } else if ($playerLeft === null) {
-                $winnerMessage = '§aWinner: §fFistBot';
-                $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
-            }
-            if ($this->player2->isAlive() or !$this->player2->isClosed()) {
-                $this->player2->close();
-            }
-            if ($this->player1->isOnline()) {
-                $this->player1->sendMessage($winnerMessage);
-                $this->player1->sendMessage($loserMessage);
-                $this->player1->sendMessage('§f-----------------------');
-                $this->player1->setDueling(false);
-                $this->player1->setCurrentKit(null);
-                $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
-                Loader::getArenaUtils()->GiveItem($this->player1);
-                Loader::getScoreboardManager()->sb($this->player1);
-            }
-            $this->ended = true;
-        }
-        Loader::getBotDuelManager()->stopMatch($this->level->getFolderName());
     }
 
     public function getPlayers(): array
