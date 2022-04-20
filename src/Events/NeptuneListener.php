@@ -48,6 +48,7 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
+use pocketmine\event\server\NetworkInterfaceRegisterEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\inventory\transaction\CraftingTransaction;
@@ -61,6 +62,8 @@ use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
+use pocketmine\network\mcpe\raklib\RakLibInterface;
+use pocketmine\network\query\DedicatedQueryNetworkInterface;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
@@ -69,6 +72,8 @@ use pocketmine\Server;
 
 class NeptuneListener implements Listener
 {
+
+    protected bool $networkRegistered = false;
 
     public function onCreation(PlayerCreationEvent $event)
     {
@@ -710,6 +715,21 @@ class NeptuneListener implements Listener
                     $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
                 }
             }
+        }
+    }
+
+    public function onNetworkRegister(NetworkInterfaceRegisterEvent $event): void
+    {
+        $interface = $event->getInterface();
+        if ($interface instanceof RakLibInterface and !$interface instanceof RaklibNeptune) {
+            $event->cancel();
+            if (!$this->networkRegistered) {
+                $server = Server::getInstance();
+                $server->getNetwork()->registerInterface(new RaklibNeptune($server, $server->getIp(), $server->getPort(), false));
+                $this->networkRegistered = true;
+            }
+        } elseif ($interface instanceof DedicatedQueryNetworkInterface) {
+            $event->cancel();
         }
     }
 }
