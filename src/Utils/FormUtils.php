@@ -18,7 +18,6 @@ use Kohaku\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
-use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -546,12 +545,9 @@ class FormUtils
             }
             switch ($result) {
                 case 0:
-                    $player->getInventory()->clearAll();
-                    $player->getArmorInventory()->clearAll();
-                    $player->getOffHandInventory()->clearAll();
-                    $player->getEffects()->clear();
-                    $player->teleport(new Location(255, 6, 255, Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()), 0, 0));
-                    Loader::getBotUtils()->spawnFistBot($player, true);
+                    /* @var $player NeptunePlayer */
+                    $player->setCurrentKit(KitRegistry::fromString('Fist'));
+                    $player->queueBotDuel();
                     break;
             }
             return true;

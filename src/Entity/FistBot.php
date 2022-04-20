@@ -2,7 +2,7 @@
 
 namespace Kohaku\Entity;
 
-use Kohaku\Loader;
+use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
@@ -18,7 +18,7 @@ class FistBot extends Human
 {
 
     private string $target;
-    private float $speed = 0.8;
+    private float $speed = 0.75;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
     {
@@ -41,12 +41,12 @@ class FistBot extends Human
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
-        if ($x != 0 || $z != 0) {
+        if ($x != 0 or $z != 0) {
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         }
         $health = round($this->getHealth());
-        $this->setNameTag(TextFormat::BOLD . '§dPracticeBot ' . "\n" . TextFormat::RED . "$health");
+        $this->setNameTag(TextFormat::BOLD . '§dFistBot ' . "\n" . TextFormat::RED . "$health");
         if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
             $this->teleport($this->getTargetPlayer()->getPosition());
             $this->speed = 2;
@@ -80,6 +80,7 @@ class FistBot extends Human
         }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
             if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.2) {
+                $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();
                 $this->getTargetPlayer()->attack($event);
@@ -95,13 +96,12 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 2.5 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
     {
         parent::attack($source);
-        $entity = $source->getEntity();
         if ($source->isCancelled()) {
             $source->cancel();
             return;
@@ -112,12 +112,6 @@ class FistBot extends Human
                 $deltaX = $this->getPosition()->getX() - $killer->getPosition()->getX();
                 $deltaZ = $this->getPosition()->getZ() - $killer->getPosition()->getZ();
                 $this->knockBack($deltaX, $deltaZ, 0.45);
-            }
-        }
-        if ($entity instanceof Player) {
-            if ($entity->getName() !== $this->target) {
-                $source->cancel();
-                $entity->sendMessage(Loader::getPrefixCore() . "You can't attack this bot!");
             }
         }
     }
@@ -147,5 +141,10 @@ class FistBot extends Human
                 $this->setMotion($motion);
             }
         }
+    }
+
+    public function getName(): string
+    {
+        return 'FistBot';
     }
 }

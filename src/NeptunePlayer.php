@@ -372,6 +372,12 @@ class NeptunePlayer extends Player
         return $this->duelKit ?? null;
     }
 
+    public function queueBotDuel(): void
+    {
+        Loader::getInstance()->getBotDuelManager()->createMatch($this, $this->getDuelKit());
+        $this->setInQueue(false);
+    }
+
     public function onQuit()
     {
         Loader::getClickHandler()->removePlayerClickData($this);
@@ -463,7 +469,7 @@ class NeptunePlayer extends Player
     public function __destruct()
     {
         parent::__destruct();
-        Loader::getInstance()->getLogger()->info('Destroyed by garbage collector');
+        // TODO: Make this to remove player data when onQuit() is called
     }
 
     public function getPartyRank(): ?string

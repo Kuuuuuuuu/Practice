@@ -11,6 +11,7 @@ namespace Kohaku;
 use JsonException;
 use Kohaku\Arena\ArenaFactory;
 use Kohaku\Arena\ArenaManager;
+use Kohaku\Arena\BotDuelManager;
 use Kohaku\Arena\DuelManager;
 use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\ArenaUtils;
@@ -47,6 +48,7 @@ class Loader extends PluginBase
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
     private static ?NeptuneTask $CoreTask;
+    private static BotDuelManager $botduelmanager;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
@@ -167,6 +169,11 @@ class Loader extends PluginBase
         return self::$duelmanager;
     }
 
+    public static function getBotDuelManager(): BotDuelManager
+    {
+        return self::$botduelmanager;
+    }
+
     public static function getInstance(): Loader
     {
         return self::$plugin;
@@ -188,6 +195,7 @@ class Loader extends PluginBase
         self::$arenautils = new ArenaUtils();
         self::$scoremanager = new ScoreboardManager();
         self::$duelmanager = new DuelManager();
+        self::$botduelmanager = new BotDuelManager();
     }
 
     public function onEnable(): void
