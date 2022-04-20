@@ -13,6 +13,7 @@ use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
@@ -193,20 +194,16 @@ class ArenaManager
         $player->setHealth(20);
         try {
             if ($player instanceof NeptunePlayer) {
-                for ($i = 0; $i < $player->getInventory()->getSize(); $i++) {
-                    // TODO: Implement this lol
-                    $player->getInventory()->setItem($i, ItemFactory::getInstance()->get((int)$player->getKit()['0']["$i"]['item'], 0, (int)$player->getKit()['0']["$i"]['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    if ($i > $player->getInventory()->getSize()) {
-                        break;
-                    }
+                foreach (Loader::getInstance()->KitData->get($player->getName()) as $slot => $item) {
+                    $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
                 }
             }
         } catch (Throwable) {
             $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-            $player->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+            $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
+            $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
+            $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
+            $player->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
             $player->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
         }
         $player->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));

@@ -26,7 +26,7 @@ class FistBot extends Human
         $this->target = $target;
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
-        $this->gravity = 0.08;
+        $this->gravity = 0.079;
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
@@ -75,11 +75,11 @@ class FistBot extends Human
 
     private function attackTargetPlayer(): void
     {
-        if (mt_rand(0, 100) % 4 === 0) {
+        if (mt_rand(0, 100) % 3 === 0) {
             $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
         }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.45) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.2) {
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();
                 $this->getTargetPlayer()->attack($event);
@@ -124,8 +124,8 @@ class FistBot extends Human
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        $xzKB = 0.388;
-        $yKb = 0.499;
+        $xzKB = 0.299;
+        $yKb = 0.301;
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
             return;

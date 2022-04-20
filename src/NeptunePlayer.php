@@ -420,14 +420,9 @@ class NeptunePlayer extends Player
     {
         $name = $this->getName();
         try {
-            for ($i = 0; $i < $this->getInventory()->getSize(); $i++) {
-                $this->savekitcache[$i] = [
-                    'item' => $this->getInventory()->getItem($i)->getId(),
-                    'count' => $this->getInventory()->getItem($i)->getCount()
-                ];
-                if ($i > $this->getInventory()->getSize()) {
-                    break;
-                }
+            // TODO: implement
+            foreach ($this->getInventory()->getContents() as $slot => $item) {
+                $this->savekitcache[$slot] = $item->jsonSerialize();
             }
             Loader::getInstance()->KitData->set($name, $this->savekitcache);
         } catch (Exception $exception) {
@@ -463,11 +458,6 @@ class NeptunePlayer extends Player
     public function setOpponent(?string $name): void
     {
         $this->Opponent = $name;
-    }
-
-    public function getKit(): array
-    {
-        return array(Loader::getInstance()->KitData->get($this->getName()) ? Loader::getInstance()->KitData->get($this->getName()) : '');
     }
 
     public function __destruct()

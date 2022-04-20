@@ -42,6 +42,7 @@ use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
@@ -314,18 +315,15 @@ class ArenaUtils
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
                     try {
-                        for ($i = 0; $i < $dplayer->getInventory()->getSize(); $i++) {
-                            $dplayer->getInventory()->setItem($i, ItemFactory::getInstance()->get((int)$dplayer->getKit()['0']["$i"]['item'], 0, (int)$dplayer->getKit()['0']["$i"]['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                            if ($i > $dplayer->getInventory()->getSize()) {
-                                break;
-                            }
+                        foreach (Loader::getInstance()->KitData->get($player->getName()) as $slot => $item) {
+                            $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
                         }
                     } catch (Throwable) {
                         $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
+                        $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
+                        $dplayer->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
+                        $dplayer->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
                         $dplayer->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     }
                 }

@@ -517,10 +517,10 @@ class FormUtils
                         $player->sendMessage(Loader::getPrefixCore() . '§aEdit kit enabled');
                         $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
                         $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128)->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $player->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
+                        $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
+                        $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
+                        $player->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
                         $player->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $player->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $player->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
