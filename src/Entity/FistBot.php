@@ -31,6 +31,10 @@ class FistBot extends Human
 
     public function entityBaseTick(int $tickDiff = 1): bool
     {
+        if ($this->getTargetPlayer() === null) {
+            $this->close();
+            return false;
+        }
         parent::entityBaseTick($tickDiff);
         if (!$this->isAlive() or $this->getTargetPlayer() === null or !$this->getTargetPlayer()->isAlive()) {
             if (!$this->closed) {
@@ -41,10 +45,16 @@ class FistBot extends Human
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
-        if ($x != 0 or $z != 0) {
+        $y = $position->y - $this->getLocation()->getY();
+        if ($this->getTargetPlayer()->isSprinting()) {
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
+        } else {
+            $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
+            $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
+        $this->location->yaw = rad2deg(atan2(-$x, $z));
+        $this->location->pitch = rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         $health = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . '§dFistBot ' . "\n" . TextFormat::RED . "$health");
         if ($this->getTargetPlayer() === null or $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
@@ -59,9 +69,9 @@ class FistBot extends Human
         return $this->isAlive();
     }
 
-    private function getTargetPlayer(): Player
+    private function getTargetPlayer(): ?Player
     {
-        return Server::getInstance()->getPlayerByPrefix($this->target);
+        return Server::getInstance()->getPlayerByPrefix($this->target) ?? null;
     }
 
     private function getSpeed(): float
@@ -71,11 +81,8 @@ class FistBot extends Human
 
     private function attackTargetPlayer(): void
     {
-        if (mt_rand(0, 100) % 5 === 0) {
-            $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
-        }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.4) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.5) {
                 $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();
@@ -132,9 +139,11 @@ class FistBot extends Human
             if ($motion->y > $yKb) {
                 $motion->y = $yKb;
             }
+            $motion->x = $motion->x * 0.65;
+            $motion->y = $motion->y * 1.25;
+            $motion->z = $motion->z * 0.65;
             if ($this->isAlive() and !$this->isClosed()) {
                 $this->setMotion($motion);
-                $this->motion = new Vector3(0, 0, 0);
             }
         }
     }
