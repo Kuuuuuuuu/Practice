@@ -35,7 +35,7 @@ class BotDuelFactory
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
-        $this->player2 = new FistBot(new Location(100, 4, 100, Server::getInstance()->getWorldManager()->getWorldByName($name), 0, 0), $player1->getSkin());
+        $this->player2 = new FistBot(new Location(0, 4, 0, Server::getInstance()->getWorldManager()->getWorldByName($name), 0, 0), $player1->getSkin());
     }
 
     public function update(): void
