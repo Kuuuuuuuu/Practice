@@ -17,7 +17,7 @@ class BotDuelFactory
 {
     private int $time = 903;
     private NeptunePlayer $player1;
-    private FistBot $player2;
+    private ?FistBot $player2;
     private World $level;
     private bool $ended = false;
 
@@ -32,7 +32,7 @@ class BotDuelFactory
         }
         $this->level = $world;
         $this->player1 = $player1;
-        $this->player2 = new FistBot(new Location(0, 4, 0, Server::getInstance()->getWorldManager()->getWorldByName($name), 0, 0), $player1->getSkin());
+        $this->player2 = null;
     }
 
     public function update(): void
@@ -47,14 +47,13 @@ class BotDuelFactory
         switch ($this->time) {
             case 903:
                 foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof FistBot) {
-                        $player->setImmobile();
-                    }
                     if ($player instanceof NeptunePlayer) {
-                        $player->setImmobile();
-                        $player->setGamemode(GameMode::SURVIVAL());
-                        $player->sendTitle('§d3', '', 1, 3, 1);
-                        Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                        if ($this->player1->isOnline()) {
+                            $player->setImmobile();
+                            $player->setGamemode(GameMode::SURVIVAL());
+                            $player->sendTitle('§d3', '', 1, 3, 1);
+                            Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                        }
                     }
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
@@ -62,22 +61,29 @@ class BotDuelFactory
                 }, function (): void {
                 });
                 $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                    $this->player2->teleport(new Position(15, 4, 10, $this->level));
+                    $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin());
+                    $this->player2->setImmobile();
                 }, function (): void {
                 });
                 break;
             case 902:
-                $this->player1->setCurrentKit(null);
-                $this->player1->sendTitle('§d2', '', 1, 3, 1);
-                Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                if ($this->player1->isOnline()) {
+                    $this->player1->setCurrentKit(null);
+                    $this->player1->sendTitle('§d2', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                }
                 break;
             case 901:
-                $this->player1->sendTitle('§d1', '', 1, 3, 1);
-                Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                if ($this->player1->isOnline()) {
+                    $this->player1->sendTitle('§d1', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                }
                 break;
             case 900:
-                $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
-                Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
+                if ($this->player1->isOnline()) {
+                    $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
+                }
                 foreach ($this->getPlayers() as $p) {
                     $p->setImmobile(false);
                 }
@@ -94,7 +100,7 @@ class BotDuelFactory
         if (!$this->ended) {
             $loserMessage = '';
             $winnerMessage = '';
-            if ($this->player1->isConnected()) {
+            if ($this->player1->isOnline()) {
                 $this->player1->sendMessage('§f-----------------------');
             }
             if ($playerLeft instanceof NeptunePlayer) {
@@ -107,7 +113,7 @@ class BotDuelFactory
             if ($this->player2->isAlive() or !$this->player2->isClosed()) {
                 $this->player2->close();
             }
-            if ($this->player1->isConnected()) {
+            if ($this->player1->isOnline()) {
                 $this->player1->sendMessage($winnerMessage);
                 $this->player1->sendMessage($loserMessage);
                 $this->player1->sendMessage('§f-----------------------');
