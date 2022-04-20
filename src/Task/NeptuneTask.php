@@ -12,7 +12,7 @@ use pocketmine\Server;
 
 class NeptuneTask extends Task
 {
-    public array $DuelTask = [];
+    private array $DuelTask = [];
     private int $tick = 0;
 
     public function __Construct()
@@ -51,5 +51,15 @@ class NeptuneTask extends Task
                 }
             }
         }
+    }
+
+    public function addDuelTask(string $name, DuelFactory $duel): void
+    {
+        $this->DuelTask[$name] = $duel;
+    }
+
+    public function removeDuelTask(string $name): void
+    {
+        unset($this->DuelTask[$name]);
     }
 }

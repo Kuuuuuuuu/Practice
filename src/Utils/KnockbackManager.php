@@ -42,16 +42,16 @@ class KnockbackManager
         }
     }
 
-    public function getKnockback(string $world): mixed
+    public function getKnockback(string $world): ?array
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
-        return $data->get($world);
+        return $data->get($world) ?? null;
     }
 
-    public function getAttackspeed(string $world): mixed
+    public function getAttackspeed(string $world): ?int
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
-        return $data->get($world);
+        return $data->get($world) ?? null;
     }
 
     /**
