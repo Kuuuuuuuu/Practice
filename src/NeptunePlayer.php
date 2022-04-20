@@ -222,6 +222,7 @@ class NeptunePlayer extends Player
             $this->updateScoreboard();
             $this->updateNametag();
         }
+        // TODO: Change this to ClickHandler
         $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
     }
 

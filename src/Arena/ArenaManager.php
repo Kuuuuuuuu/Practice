@@ -194,6 +194,7 @@ class ArenaManager
         try {
             if ($player instanceof NeptunePlayer) {
                 for ($i = 0; $i < $player->getInventory()->getSize(); $i++) {
+                    // TODO: Implement this lol
                     $player->getInventory()->setItem($i, ItemFactory::getInstance()->get((int)$player->getKit()['0']["$i"]['item'], 0, (int)$player->getKit()['0']["$i"]['count'])->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     if ($i > $player->getInventory()->getSize()) {
                         break;
