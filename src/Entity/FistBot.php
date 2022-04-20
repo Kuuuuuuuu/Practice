@@ -18,7 +18,7 @@ class FistBot extends Human
 {
 
     private string $target;
-    private float $speed = 0.75;
+    private float $speed = 0.5;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
     {
@@ -47,10 +47,6 @@ class FistBot extends Human
         }
         $health = round($this->getHealth());
         $this->setNameTag(TextFormat::BOLD . '§dFistBot ' . "\n" . TextFormat::RED . "$health");
-        if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) > 10) {
-            $this->teleport($this->getTargetPlayer()->getPosition());
-            $this->speed = 2;
-        }
         if ($this->getTargetPlayer() === null or $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
             $this->flagForDespawn();
             return false;
