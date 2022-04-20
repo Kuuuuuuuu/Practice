@@ -29,12 +29,6 @@ class FistBot extends Human
         $this->gravity = 0.08;
     }
 
-    public function onUpdate(int $currentTick): bool
-    {
-        $this->motion = new Vector3(0, 0, 0);
-        return parent::onUpdate($currentTick);
-    }
-
     public function entityBaseTick(int $tickDiff = 1): bool
     {
         parent::entityBaseTick($tickDiff);
@@ -98,7 +92,7 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 3 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 4 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
@@ -113,7 +107,7 @@ class FistBot extends Human
             if ($killer instanceof Player) {
                 $deltaX = $this->getPosition()->getX() - $killer->getPosition()->getX();
                 $deltaZ = $this->getPosition()->getZ() - $killer->getPosition()->getZ();
-                $this->knockBack($deltaX, $deltaZ, 0.45);
+                $this->knockBack($deltaX, $deltaZ);
             }
         }
     }
@@ -140,6 +134,7 @@ class FistBot extends Human
             }
             if ($this->isAlive() and !$this->isClosed()) {
                 $this->setMotion($motion);
+                $this->motion = new Vector3(0, 0, 0);
             }
         }
     }
