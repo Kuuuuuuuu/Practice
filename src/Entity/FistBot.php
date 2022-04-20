@@ -18,7 +18,7 @@ class FistBot extends Human
 {
 
     private string $target;
-    private float $speed = 0.5;
+    private float $speed = 0.7;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
     {
@@ -71,11 +71,11 @@ class FistBot extends Human
 
     private function attackTargetPlayer(): void
     {
-        if (mt_rand(0, 100) % 3 === 0) {
+        if (mt_rand(0, 100) % 5 === 0) {
             $this->lookAt($this->getTargetPlayer()->getPosition()->asVector3());
         }
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.2) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.4) {
                 $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();

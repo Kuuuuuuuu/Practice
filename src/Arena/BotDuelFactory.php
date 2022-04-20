@@ -123,6 +123,7 @@ class BotDuelFactory
                 $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
                 Loader::getArenaUtils()->GiveItem($this->player1);
                 Loader::getScoreboardManager()->sb($this->player1);
+                $this->player1->setHealth(20);
             }
         }
         $this->ended = true;

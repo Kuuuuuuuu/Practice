@@ -126,6 +126,7 @@ class DuelFactory
                         Loader::getScoreboardManager()->sb($online);
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
+                        $online->setHealth(20);
                         $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
                     }
                 }
