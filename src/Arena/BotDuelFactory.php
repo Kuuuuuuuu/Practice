@@ -6,7 +6,6 @@ use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\Task\NeptuneTask;
-use Kohaku\Utils\Kits\KitManager;
 use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
@@ -20,10 +19,9 @@ class BotDuelFactory
     private NeptunePlayer $player1;
     private FistBot $player2;
     private World $level;
-    private KitManager $kit;
     private bool $ended = false;
 
-    public function __construct(string $name, NeptunePlayer $player1, KitManager $kit)
+    public function __construct(string $name, NeptunePlayer $player1)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
@@ -33,7 +31,6 @@ class BotDuelFactory
             Loader::getCoreTask()->addBotDuelTask($name, $this);
         }
         $this->level = $world;
-        $this->kit = $kit;
         $this->player1 = $player1;
         $this->player2 = new FistBot(new Location(0, 4, 0, Server::getInstance()->getWorldManager()->getWorldByName($name), 0, 0), $player1->getSkin());
     }
@@ -52,14 +49,10 @@ class BotDuelFactory
                 foreach ($this->getPlayers() as $player) {
                     if ($player instanceof FistBot) {
                         $player->setImmobile();
-                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                        $player->getInventory()->setContents($this->kit->getInventoryItems());
                     }
                     if ($player instanceof NeptunePlayer) {
                         $player->setImmobile();
                         $player->setGamemode(GameMode::SURVIVAL());
-                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                        $player->getInventory()->setContents($this->kit->getInventoryItems());
                         $player->sendTitle('§d3', '', 1, 3, 1);
                         Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                     }

@@ -546,7 +546,6 @@ class FormUtils
             switch ($result) {
                 case 0:
                     /* @var $player NeptunePlayer */
-                    $player->setCurrentKit(KitRegistry::fromString('Fist'));
                     $player->queueBotDuel();
                     break;
             }

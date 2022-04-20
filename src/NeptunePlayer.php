@@ -374,7 +374,7 @@ class NeptunePlayer extends Player
 
     public function queueBotDuel(): void
     {
-        Loader::getInstance()->getBotDuelManager()->createMatch($this, $this->getDuelKit());
+        Loader::getInstance()->getBotDuelManager()->createMatch($this);
         $this->setInQueue(false);
     }
 

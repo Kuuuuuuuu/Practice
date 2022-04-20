@@ -3,11 +3,8 @@
 namespace Kohaku\Arena;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
-use Kohaku\Utils\Kits\KitManager;
-use pocketmine\entity\Location;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
@@ -19,7 +16,7 @@ class BotDuelManager
 
     private array $matches = [];
 
-    public function createMatch(NeptunePlayer $player, KitManager $kit): void
+    public function createMatch(NeptunePlayer $player): void
     {
         $worldName = 'Bot-' . $player->getName();
         $world = new WorldCreationOptions();
@@ -27,7 +24,7 @@ class BotDuelManager
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         $player->getInventory()->clearAll();
         $player->setDueling(true);
-        $this->addMatch($worldName, new BotDuelFactory($worldName, $player, $kit));
+        $this->addMatch($worldName, new BotDuelFactory($worldName, $player));
     }
 
     #[Pure] public function addMatch(string $name, BotDuelFactory $task): void
