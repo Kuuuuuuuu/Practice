@@ -18,7 +18,7 @@ class FistBot extends Human
 {
 
     private string $target;
-    private float $speed = 0.7;
+    private float $speed = 0.85;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
     {
@@ -26,7 +26,13 @@ class FistBot extends Human
         $this->target = $target;
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
-        $this->gravity = 0.079;
+        $this->gravity = 0.08;
+    }
+
+    public function onUpdate(int $currentTick): bool
+    {
+        $this->motion = new Vector3(0, 0, 0);
+        return parent::onUpdate($currentTick);
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
@@ -92,7 +98,7 @@ class FistBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 2.5 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 3 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
@@ -133,7 +139,6 @@ class FistBot extends Human
                 $motion->y = $yKb;
             }
             if ($this->isAlive() and !$this->isClosed()) {
-                $this->move(0, 0, 0);
                 $this->setMotion($motion);
             }
         }
