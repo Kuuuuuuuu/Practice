@@ -3,5 +3,5 @@ api: 4.0.0
 version: 1.5
 src-namespace-prefix: Kohaku
 main: Kohaku\Loader
-load: STARTUP
+load: POSTWORLD
 author: Kuu
