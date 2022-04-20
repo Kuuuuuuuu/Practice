@@ -40,6 +40,8 @@ class BotDuelFactory
         if ($this->player1->isOnline()) {
             if (!$this->player1->isDueling()) {
                 $this->onEnd($this->player1);
+            } else {
+                $this->onEnd();
             }
         } else {
             $this->onEnd();

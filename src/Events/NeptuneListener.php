@@ -10,7 +10,6 @@ namespace Kohaku\Events;
 
 use Exception;
 use JsonException;
-use Kohaku\Entity\FistBot;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
@@ -25,7 +24,6 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\inventory\CraftItemEvent;
@@ -639,23 +637,6 @@ class NeptuneListener implements Listener
         //$block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
         if ($player->getPosition()->getY() <= 1) {
             $player->kill();
-        }
-    }
-
-    public function onEntityDeath(EntityDeathEvent $event)
-    {
-        $entity = $event->getEntity();
-        if ($entity instanceof FistBot) {
-            $cause = $entity->getLastDamageCause();
-            if ($cause instanceof EntityDamageByEntityEvent) {
-                $damager = $cause->getDamager();
-                if ($damager instanceof NeptunePlayer) {
-                    $damager->sendMessage(Loader::getPrefixCore() . '§aYou have been killed a bot!');
-                    $damager->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
-                    $damager->setHealth(20);
-                    Loader::getInstance()->getArenaUtils()->GiveItem($damager);
-                }
-            }
         }
     }
 
