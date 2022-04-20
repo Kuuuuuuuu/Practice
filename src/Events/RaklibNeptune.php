@@ -26,7 +26,6 @@ use Exception;
 use pocketmine\network\mcpe\compression\ZlibCompressor;
 use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\NetworkSession;
-use pocketmine\network\mcpe\PacketBroadcaster;
 use pocketmine\network\mcpe\protocol\PacketPool;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
@@ -59,50 +58,25 @@ use function substr;
 
 class RaklibNeptune extends RakLibInterface
 {
-    /**
-     * Sometimes this gets changed when the MCPE-layer protocol gets broken to the point where old and new can't
-     * communicate. It's important that we check this to avoid catastrophes.
-     */
     private const MCPE_RAKNET_PROTOCOL_VERSION = 10;
-
     private const MCPE_RAKNET_PACKET_ID = "\xfe";
-
-    /** @var Server */
     private Server $server;
-
-    /** @var Network */
     private Network $network;
-
-    /** @var int */
     private int $rakServerId;
-
-    /** @var RakLibServer */
     private RakLibServer $rakLib;
-
-    /** @var NetworkSession[] */
     private array $sessions = [];
-
-    /** @var RakLibToUserThreadMessageReceiver */
     private RakLibToUserThreadMessageReceiver $eventReceiver;
-    /** @var UserToRakLibThreadMessageSender */
     private UserToRakLibThreadMessageSender $interface;
-
-    /** @var SleeperNotifier */
     private SleeperNotifier $sleeper;
-
-    /** @var PacketBroadcaster */
-    private $broadcaster;
+    private StandardPacketBroadcaster $broadcaster;
 
     public function __construct(Server $server, string $ip, int $port, bool $ipV6)
     {
         $this->server = $server;
         $this->rakServerId = mt_rand(0, PHP_INT_MAX);
-
         $this->sleeper = new SleeperNotifier();
-
         $mainToThreadBuffer = new Threaded();
         $threadToMainBuffer = new Threaded();
-
         $this->rakLib = new RakLibServer(
             $this->server->getLogger(),
             $mainToThreadBuffer,
@@ -113,13 +87,8 @@ class RaklibNeptune extends RakLibInterface
             self::MCPE_RAKNET_PROTOCOL_VERSION,
             $this->sleeper
         );
-        $this->eventReceiver = new RakLibToUserThreadMessageReceiver(
-            new PthreadsChannelReader($threadToMainBuffer)
-        );
-        $this->interface = new UserToRakLibThreadMessageSender(
-            new PthreadsChannelWriter($mainToThreadBuffer)
-        );
-
+        $this->eventReceiver = new RakLibToUserThreadMessageReceiver(new PthreadsChannelReader($threadToMainBuffer));
+        $this->interface = new UserToRakLibThreadMessageSender(new PthreadsChannelWriter($mainToThreadBuffer));
         $this->broadcaster = new StandardPacketBroadcaster($this->server);
     }
 
@@ -128,13 +97,13 @@ class RaklibNeptune extends RakLibInterface
         $this->server->getTickSleeper()->addNotifier($this->sleeper, function (): void {
             while ($this->eventReceiver->handle($this)) ;
         });
-        $this->server->getLogger()->debug('Waiting for RakLib to start...');
+        $this->server->getLogger()->debug('RaklibNeptune Created');
         try {
             $this->rakLib->startAndWait();
         } catch (SocketException $e) {
             throw new NetworkInterfaceStartException($e->getMessage(), 0, $e);
         }
-        $this->server->getLogger()->debug('RakLib booted successfully');
+        $this->server->getLogger()->debug('RakLibNeptune booted successfully');
     }
 
     public function setNetwork(Network $network): void
@@ -197,7 +166,7 @@ class RaklibNeptune extends RakLibInterface
     public function onPacketReceive(int $sessionId, string $packet): void
     {
         if (isset($this->sessions[$sessionId])) {
-            if ($packet === '' || $packet[0] !== self::MCPE_RAKNET_PACKET_ID) {
+            if ($packet === '' or $packet[0] !== self::MCPE_RAKNET_PACKET_ID) {
                 $this->sessions[$sessionId]->getLogger()->debug('Non-FE packet received: ' . base64_encode($packet));
                 return;
             }
@@ -222,7 +191,7 @@ class RaklibNeptune extends RakLibInterface
         }
     }
 
-    public function blockAddress(string $address, int $timeout = 300): void
+    public function blockAddress(string $address, int $timeout = 0): void
     {
     }
 
