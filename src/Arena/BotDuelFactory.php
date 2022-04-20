@@ -7,6 +7,7 @@ use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\Kits\KitManager;
+use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
 use pocketmine\world\Position;
@@ -22,7 +23,7 @@ class BotDuelFactory
     private KitManager $kit;
     private bool $ended = false;
 
-    public function __construct(string $name, NeptunePlayer $player1, FistBot $player2, KitManager $kit)
+    public function __construct(string $name, NeptunePlayer $player1, KitManager $kit)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
@@ -34,7 +35,7 @@ class BotDuelFactory
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
-        $this->player2 = $player2;
+        $this->player2 = new FistBot(new Location(0, 4, 0, Server::getInstance()->getWorldManager()->getWorldByName($name), 0, 0), $player1->getSkin());
     }
 
     public function update(): void

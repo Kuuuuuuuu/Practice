@@ -38,7 +38,7 @@ class NeptuneTask extends Task
             Loader::getDeleteBlockHandler()->update();
             if (count($this->DuelTask) > 0) {
                 foreach ($this->DuelTask as $duel) {
-                    if ($duel instanceof DuelFactory) {
+                    if ($duel instanceof DuelFactory or $duel instanceof BotDuelFactory) {
                         $duel->update();
                     }
                 }

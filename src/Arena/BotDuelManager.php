@@ -27,7 +27,7 @@ class BotDuelManager
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         $player->getInventory()->clearAll();
         $player->setDueling(true);
-        $this->addMatch($worldName, new BotDuelFactory($worldName, $player, new FistBot(new Location(0, 4, 0, Server::getInstance()->getWorldManager()->getWorldByName($worldName), 0, 0), $player->getSkin()), $kit));
+        $this->addMatch($worldName, new BotDuelFactory($worldName, $player, $kit));
     }
 
     #[Pure] public function addMatch(string $name, BotDuelFactory $task): void
