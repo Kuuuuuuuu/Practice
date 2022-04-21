@@ -56,6 +56,8 @@ class NeptunePlayer extends Player
                     $this->attackspeed = 8;
                 } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                     $this->attackspeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
+                } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    $this->attackspeed = 10;
                 }
             }
         }
@@ -75,6 +77,9 @@ class NeptunePlayer extends Player
         } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
             $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
             $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
+        } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            $this->xzKB = 0.4;
+            $this->yKb = 0.4;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {

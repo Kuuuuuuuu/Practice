@@ -613,12 +613,14 @@ class FormUtils
         }
         if ($player->isInParty()) {
             $form->addButton('§dMembers', -1, '', 'members');
-            if (!$party->isLeader($player)) $form->addButton('§dLeave', -1, '', 'leave');
-            if ($party->isLeader($player)) {
-                $form->addButton('§dDuel', -1, '', 'duel');
-                $form->addButton('§dInvite', -1, '', 'invite');
-                $form->addButton('§dManage', -1, '', 'manage');
-                $form->addButton('§dDisband', -1, '', 'disband');
+            if ($party !== null) {
+                if (!$party->isLeader($player)) $form->addButton('§dLeave', -1, '', 'leave');
+                if ($party->isLeader($player)) {
+                    $form->addButton('§dDuel', -1, '', 'duel');
+                    $form->addButton('§dInvite', -1, '', 'invite');
+                    $form->addButton('§dManage', -1, '', 'manage');
+                    $form->addButton('§dDisband', -1, '', 'disband');
+                }
             }
         }
         $form->addButton('§dList', -1, '', 'list');
