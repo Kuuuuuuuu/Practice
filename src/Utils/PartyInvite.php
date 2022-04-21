@@ -31,11 +31,9 @@ class PartyInvite
         return $this->target;
     }
 
-    public function isParty($party): bool
+    public function isParty(PartyFactory $party): bool
     {
-        if ($party instanceof PartyFactory) {
-            $party = $party->getName();
-        }
+        $party = $party->getName();
         return $party === $this->getParty()->getName();
     }
 

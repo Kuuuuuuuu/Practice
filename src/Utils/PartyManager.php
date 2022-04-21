@@ -22,14 +22,12 @@ class PartyManager
         $player->sendMessage(Loader::getPrefixCore() . '§aYour party was created.');
     }
 
-    public static function getPartyFromPlayer(?Player $player)
+    public static function getPartyFromPlayer(Player $player)
     {
         $result = null;
-        if (isset($player) or !is_null($player)) {
-            foreach (Loader::getInstance()->PartyData as $party) {
-                if ($party->isMember($player) or $party->isLeader($player)) {
-                    $result = $party;
-                }
+        foreach (Loader::getInstance()->PartyData as $party) {
+            if ($party->isMember($player) or $party->isLeader($player)) {
+                $result = $party;
             }
         }
         return $result;
@@ -40,7 +38,7 @@ class PartyManager
         return self::getPartyIndexOf($party) !== -1;
     }
 
-    public static function getPartyIndexOf(PartyFactory $party): string|int|bool
+    public static function getPartyIndexOf(PartyFactory $party): bool|int|string
     {
         $index = array_search($party, Loader::getInstance()->PartyData);
         if (is_bool($index) and $index === false) {
@@ -49,7 +47,7 @@ class PartyManager
         return $index;
     }
 
-    public static function invitePlayer(PartyFactory $party, NeptunePlayer $sender, NeptunePlayer $target): void
+    public static function invitePlayer(PartyFactory $party, Player $sender, Player $target): void
     {
         $invite = new PartyInvite($party, $sender->getName(), $target->getName());
         Loader::getInstance()->PartyInvite[] = $invite;
@@ -61,8 +59,7 @@ class PartyManager
     {
         $result = null;
         foreach (Loader::getInstance()->PartyInvite as $invites) {
-            $name = $invites->getParty()->getName();
-            if ($name === $invite) {
+            if ($invites->getParty()->getName() === $invite) {
                 $result = $invites;
             }
         }
@@ -73,8 +70,7 @@ class PartyManager
     {
         $result = null;
         foreach (Loader::getInstance()->PartyData as $parties) {
-            $name = $parties->getName();
-            if ($name === $party) {
+            if ($parties->getName() === $party) {
                 $result = $parties;
             }
         }
@@ -84,7 +80,7 @@ class PartyManager
     public static function getInvitesFromParty($party): array
     {
         $result = [];
-        if (isset($party) or !is_null($party)) {
+        if (isset($party) and $party instanceof PartyInvite) {
             foreach (Loader::getInstance()->PartyInvite as $invite) {
                 if ($invite->isParty($party)) {
                     $result[] = $invite;
@@ -94,28 +90,24 @@ class PartyManager
         return $result;
     }
 
-    public static function hasInvite($target, ?PartyFactory $partyA): bool
+    public static function hasInvite($target, PartyFactory $partyA): bool
     {
         $result = false;
         foreach (self::getInvites($target) as $invites) {
             $partyB = $invites->getParty();
-            if ($partyA !== null) {
-                if ($partyA->getName() === $partyB->getName()) {
-                    $result = true;
-                }
+            if ($partyA->getName() === $partyB->getName()) {
+                $result = true;
             }
         }
         return $result;
     }
 
-    public static function getInvites(?Player $player): array
+    public static function getInvites(Player $player): array
     {
         $result = [];
-        if (isset($player) or !is_null($player)) {
-            foreach (Loader::getInstance()->PartyInvite as $invite) {
-                if ($invite->isTarget($player->getName())) {
-                    $result[] = $invite;
-                }
+        foreach (Loader::getInstance()->PartyInvite as $invite) {
+            if ($invite->isTarget($player)) {
+                $result[] = $invite;
             }
         }
         return $result;

@@ -30,9 +30,6 @@ class FormUtils
 {
 
     private array $players = [];
-    private array $targetParty = [];
-    private array $targetPlayer = [];
-    private array $targetInvite = [];
 
     public function Form1($player): void
     {
@@ -552,9 +549,22 @@ class FormUtils
             return true;
         });
         $form->setTitle('§dNeptune §cMenu');
-        $form->setContent('§dPlayers: §e' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBotArena()));
+        $form->setContent('§dPlayers: §e' . $this->getQueueBot());
         $form->addButton('§aFist §dBot', 0, 'textures/items/diamond.png');
         $player->sendForm($form);
+    }
+
+    private function getQueueBot(): int
+    {
+        $count = 0;
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            if ($player instanceof NeptunePlayer) {
+                if ($player->isDueling() and str_contains($player->getWorld()->getFolderName(), 'bot')) {
+                    $count += 1;
+                }
+            }
+        }
+        return $count;
     }
 
     public function partyForm(NeptunePlayer $player): void
@@ -639,15 +649,15 @@ class FormUtils
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
-                    unset($this->targetInvite[$player->getName()]);
+                    unset(Loader::getInstance()->TargetInvites[$player->getName()]);
                     break;
-                case 0:
-                    $this->targetInvite[$player->getName()] = $data;
+                default:
+                    Loader::getInstance()->TargetInvites[$player->getName()] = $data;
                     if ($player->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou are already in a party.');
-                        return;
+                    } else {
+                        $this->manageInviteForm($player);
                     }
-                    $this->manageInviteForm($player);
                     break;
             }
         });
@@ -669,20 +679,20 @@ class FormUtils
                     $this->invitesForm($player);
                     break;
                 case 'accept':
-                    $invite = PartyManager::getInvite($this->targetInvite[$player->getName()]);
+                    $invite = PartyManager::getInvite(Loader::getInstance()->TargetInvites[$player->getName()]);
                     $party = $invite->getParty();
                     if ($party->isFull()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party is full.');
-                        return;
+                    } else {
+                        $invite->accept();
                     }
-                    $invite->accept();
                     break;
                 case 'decline':
-                    $invite = PartyManager::getInvite($this->targetInvite[$player->getName()]);
+                    $invite = PartyManager::getInvite(Loader::getInstance()->TargetInvites[$player->getName()]);
                     $invite->decline();
                     break;
             }
-            unset($this->targetPlayer[$player->getName()]);
+            unset(Loader::getInstance()->TargetPlayer[$player->getName()]);
         });
         $form->setTitle('§dNeptune §cInvitation');
         $form->addButton('§aAccept', -1, '', 'accept');
@@ -699,9 +709,9 @@ class FormUtils
                 case 'exit':
                     $this->partyForm($player);
                     break;
-                case 0:
-                    $this->targetParty[$player->getName()] = $data;
-                    $p = $this->targetParty[$player->getName()];
+                default:
+                    Loader::getInstance()->TargetParty[$player->getName()] = $data;
+                    $p = Loader::getInstance()->TargetParty[$player->getName()];
                     $party = PartyManager::getParty($p);
                     if ($party === null) return;
                     if ($player->isInParty()) {
@@ -712,11 +722,12 @@ class FormUtils
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party is closed.');
                     } else if ($party->isFull()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThat party is full.');
+                    } else {
+                        $party->addMember($player);
                     }
-                    $party->addMember($player);
                     break;
             }
-            unset($this->targetParty[$player->getName()]);
+            unset(Loader::getInstance()->TargetParty[$player->getName()]);
         });
         $form->setTitle('§dNeptune §cParties');
         foreach (Loader::getInstance()->PartyData as $party) {
@@ -736,16 +747,16 @@ class FormUtils
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
-                    unset($this->targetPlayer[$player->getName()]);
+                    unset(Loader::getInstance()->TargetPlayer[$player->getName()]);
                     break;
-                case 0:
+                default:
                     $party = $player->getParty();
                     if (!$party->isLeader($player)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage party members.');
                     } else if ($player->getName() === $data) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage yourself.');
                     }
-                    $this->targetPlayer[$player->getName()] = $data;
+                    Loader::getInstance()->TargetPlayer[$player->getName()] = $data;
                     $this->managePartyMemberForm($player);
                     break;
             }
@@ -773,13 +784,13 @@ class FormUtils
                     break;
                 case 'kick':
                     $party = $player->getParty();
-                    $target = Server::getInstance()->getPlayerExact($this->targetPlayer[$player->getName()]);
+                    $target = Server::getInstance()->getPlayerExact(Loader::getInstance()->TargetPlayer[$player->getName()]);
                     if ($target instanceof Player) $party->kickMember($target);
                     break;
             }
-            unset($this->targetPlayer[$player->getName()]);
+            unset(Loader::getInstance()->TargetPlayer[$player->getName()]);
         });
-        $form->setTitle('§dNeptune §cManage ' . $this->targetPlayer[$player->getName()]);
+        $form->setTitle('§dNeptune §cManage ' . Loader::getInstance()->TargetPlayer[$player->getName()]);
         $form->addButton('§cKick', -1, '', 'kick');
         $form->addButton('§dBack', -1, '', 'exit');
         $player->sendForm($form);
@@ -793,9 +804,9 @@ class FormUtils
                 case 'exit':
                     $this->partyForm($player);
                     break;
-                case 0:
-                    $this->targetPlayer[$player->getName()] = $data;
-                    $target = Server::getInstance()->getPlayerExact($this->targetPlayer[$player->getName()]);
+                default:
+                    Loader::getInstance()->TargetPlayer[$player->getName()] = $data;
+                    $target = Server::getInstance()->getPlayerExact(Loader::getInstance()->TargetPlayer[$player->getName()]);
                     /* @var NeptunePlayer $target */
                     $party = $player->getParty();
                     if ($target === null) {
@@ -806,11 +817,12 @@ class FormUtils
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player has already been invited to your party.');
                     } else if ($target->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player is already in a party.');
+                    } else {
+                        PartyManager::invitePlayer($party, $player, $target);
                     }
-                    PartyManager::invitePlayer($party, $player, $target);
                     break;
             }
-            unset($this->targetPlayer[$player->getName()]);
+            unset(Loader::getInstance()->TargetPlayer[$player->getName()]);
         });
         $form->setTitle('§aOnline Players');
         foreach (Server::getInstance()->getOnlinePlayers() as $players) {

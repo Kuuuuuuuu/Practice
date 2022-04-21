@@ -82,7 +82,7 @@ class FistBot extends Human
     private function attackTargetPlayer(): void
     {
         if ($this->isLookingAt($this->getTargetPlayer()->getPosition()->asVector3())) {
-            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 2.5) {
+            if ($this->getLocation()->distance($this->getTargetPlayer()->getPosition()->asVector3()) <= 3.2) {
                 $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
                 $event = new EntityDamageByEntityEvent($this, $this->getTargetPlayer(), EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
                 $this->broadcastMotion();

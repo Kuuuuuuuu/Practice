@@ -51,12 +51,13 @@ class PartyFactory
 
     public function getMembers(): array
     {
+        var_dump($this->members);
         return $this->members;
     }
 
     public function setMembers(array $members): void
     {
-        $this->members[] = $members;
+        $this->members = $members;
     }
 
     public function getCapacity(): int
@@ -68,7 +69,7 @@ class PartyFactory
     {
         $online = [];
         foreach ($this->members as $member) {
-            $player = Server::getInstance()->getPlayerExact($member);
+            $player = Server::getInstance()->getPlayerExact($member->getName());
             if ($player !== null) {
                 $online[] = $player->getName();
             }
@@ -124,18 +125,18 @@ class PartyFactory
             $player->kill();
         }
         $this->sendMessage($player->getDisplayName() . ' has joined the party.');
-        $this->members[] = $player->getName();
+        $this->members[] = $player;
         if ($player instanceof NeptunePlayer) {
             $player->setParty($this);
             $player->setPartyRank(self::MEMBER);
+            $player->sendMessage(Loader::getPrefixCore() . '§aYou joined the party.');
         }
-        $player->sendMessage(Loader::getPrefixCore() . '§aYou joined the party.');
     }
 
     public function sendMessage(string $message): void
     {
         foreach ($this->members as $member) {
-            $member = Server::getInstance()->getPlayerExact($member);
+            $member = Server::getInstance()->getPlayerExact($member->getName());
             if ($member instanceof Player) {
                 $member->sendMessage(Loader::getPrefixCore() . $message);
             }
@@ -149,8 +150,8 @@ class PartyFactory
         if ($player instanceof NeptunePlayer) {
             $player->setParty(null);
             $player->setPartyRank(null);
+            $player->sendMessage(Loader::getPrefixCore() . '§aYou left the party.');
         }
-        $player->sendMessage(Loader::getPrefixCore() . '§aYou left the party.');
     }
 
     public function kickMember(Player $player): void
@@ -159,8 +160,8 @@ class PartyFactory
         if ($player instanceof NeptunePlayer) {
             $player->setParty(null);
             $player->setPartyRank(null);
+            $player->sendMessage(Loader::getPrefixCore() . '§cYou were kicked from the party.');
         }
-        $player->sendMessage(Loader::getPrefixCore() . '§cYou were kicked from the party.');
         $this->sendMessage($player->getDisplayName() . ' was kicked from the party.');
     }
 
@@ -168,7 +169,7 @@ class PartyFactory
     {
         $leader = Server::getInstance()->getPlayerExact($this->leader);
         if ($leader !== null) {
-            $leader->sendMessage(Loader::getPrefixCore() .'§aYou disbanded your party.');
+            $leader->sendMessage(Loader::getPrefixCore() . '§aYou disbanded your party.');
             unset($this->members[array_search($leader->getName(), $this->members)]);
             if ($leader instanceof NeptunePlayer) {
                 $leader->setParty(null);
@@ -177,7 +178,7 @@ class PartyFactory
         }
         $this->sendMessage($this->leader . ' disbanded the party.');
         foreach ($this->members as $member) {
-            $member = Server::getInstance()->getPlayerExact($member);
+            $member = Server::getInstance()->getPlayerExact($member->getName());
             if ($member instanceof NeptunePlayer) {
                 $member->setParty(null);
                 $member->setPartyRank(null);

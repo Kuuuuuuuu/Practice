@@ -67,6 +67,9 @@ class Loader extends PluginBase
     public array $DeathLeaderboard = [];
     public array $PartyData = [];
     public array $PartyInvite = [];
+    public array $TargetInvites = [];
+    public array $TargetParty = [];
+    public array $TargetPlayer = [];
     public array $BanCommand = [
         'hub',
         'kill'
