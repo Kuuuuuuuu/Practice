@@ -48,6 +48,10 @@ class NeptuneTask extends Task
                 if (Loader::getInstance()->RestartTime !== 0 and Loader::getInstance()->RestartTime % 5 === 0) {
                     Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§cServer will restart in §e' . Loader::getInstance()->RestartTime . '§c seconds');
                 } elseif (Loader::getInstance()->RestartTime <= 0) {
+                    foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                        $player->kick('§cServer restarted');
+                    }
+                } elseif (Loader::getInstance()->RestartTime <= -5) {
                     Loader::getInstance()->getServer()->shutdown();
                 }
             }
@@ -72,5 +76,10 @@ class NeptuneTask extends Task
     public function removeDuelTask(string $name): void
     {
         unset($this->DuelTask[$name]);
+    }
+
+    public function __destruct()
+    {
+        Loader::setCoreTask(null);
     }
 }
