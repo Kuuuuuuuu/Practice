@@ -31,6 +31,7 @@ class RaklibNeptune extends RakLibInterface
     public function blockAddress(string $address, int $timeout = 0): void
     {
         // Hacky method for proxy lol
+        $this->unblockAddress($address); // Hacky method
         Loader::getInstance()->getLogger()->info("Trying to Block address: $address");
     }
 }
