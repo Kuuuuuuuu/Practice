@@ -42,20 +42,18 @@ class BotDuelFactory
         }
         if ($this->player2 instanceof FistBot) {
             if (!$this->player2->isAlive() or $this->player2->isClosed()) {
-                $this->onEnd($this->player1);
+                if ($this->time < 900) {
+                    $this->onEnd($this->player1);
+                }
             }
         }
         switch ($this->time) {
             case 903:
-                foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof NeptunePlayer) {
-                        if ($this->player1->isOnline()) {
-                            $player->setImmobile();
-                            $player->setGamemode(GameMode::SURVIVAL());
-                            $player->sendTitle('§d3', '', 1, 3, 1);
-                            Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
-                        }
-                    }
+                if ($this->player1->isOnline()) {
+                    $this->player1->setImmobile();
+                    $this->player1->setGamemode(GameMode::SURVIVAL());
+                    $this->player1->sendTitle('§d3', '', 1, 3, 1);
+                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
