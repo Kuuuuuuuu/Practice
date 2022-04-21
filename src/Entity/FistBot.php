@@ -27,6 +27,7 @@ class FistBot extends Human
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
         $this->gravity = 0.08;
+        $this->isImmobile();
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
