@@ -27,11 +27,8 @@ class NeptunePlayer extends Player
     public array $points = [];
     public ?string $EditKit = null;
     private int $tick = 0;
-    private int $attackspeed = 10;
     private ?PartyFactory $party;
     private ?KitManager $duelKit = null;
-    private float $xzKB = 0.4;
-    private float $yKb = 0.4;
     private bool $isDueling = false;
     private bool $inQueue = false;
     private bool $SkillCooldown = false;
@@ -43,30 +40,25 @@ class NeptunePlayer extends Player
 
     public function attack(EntityDamageEvent $source): void
     {
+        $attackSpeed = 10;
         parent::attack($source);
         if ($source->isCancelled()) {
             return;
-        }
-        if ($this->attackspeed < 0) {
-            $this->attackspeed = 0;
         }
         if ($source instanceof EntityDamageByEntityEvent) {
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
                 try {
                     if ($this->isDueling()) {
-                        $this->attackspeed = 8;
+                        $attackSpeed = 8;
                     } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $this->attackspeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
-                    } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                        $this->attackspeed = 10;
+                        $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     }
-                } catch (Exception) {
-                    $this->attackspeed = 7;
+                } catch (Throwable) {
                 }
             }
         }
-        $this->attackTime = $this->attackspeed;
+        $this->attackTime = $attackSpeed;
     }
 
     public function isDueling(): bool
@@ -76,20 +68,17 @@ class NeptunePlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
+        $xzKB = 0.4;
+        $yKb = 0.4;
         try {
             if ($this->isDueling()) {
-                $this->yKb = 0.301;
-                $this->xzKB = 0.311;
+                $yKb = 0.301;
+                $xzKB = 0.311;
             } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
-                $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
-            } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                $this->xzKB = 0.4;
-                $this->yKb = 0.4;
+                $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
+                $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
             }
         } catch (Throwable) {
-            $this->xzKB = 0.4;
-            $this->yKb = 0.4;
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
@@ -101,11 +90,11 @@ class NeptunePlayer extends Player
             $motion->x /= 2;
             $motion->y /= 2;
             $motion->z /= 2;
-            $motion->x += $x * $f * $this->xzKB;
-            $motion->y += $this->yKb;
-            $motion->z += $z * $f * $this->xzKB;
-            if ($motion->y > $this->yKb) {
-                $motion->y = $this->yKb;
+            $motion->x += $x * $f * $xzKB;
+            $motion->y += $yKb;
+            $motion->z += $z * $f * $xzKB;
+            if ($motion->y > $yKb) {
+                $motion->y = $yKb;
             }
             $this->setMotion($motion);
         }
