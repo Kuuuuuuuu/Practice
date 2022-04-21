@@ -15,7 +15,6 @@ use Kohaku\Arena\BotDuelManager;
 use Kohaku\Arena\DuelManager;
 use Kohaku\Task\NeptuneTask;
 use Kohaku\Utils\ArenaUtils;
-use Kohaku\Utils\BotUtils;
 use Kohaku\Utils\ClickHandler;
 use Kohaku\Utils\CosmeticHandler;
 use Kohaku\Utils\DeleteBlocksHandler;
@@ -41,7 +40,6 @@ class Loader extends PluginBase
     private static ArenaFactory $arenafac;
     private static ArenaManager $arena;
     private static DeleteBlocksHandler $blockhandle;
-    private static BotUtils $bot;
     private static KnockbackManager $knockback;
     private static CosmeticHandler $cosmetics;
     private static ArenaUtils $arenautils;
@@ -102,7 +100,7 @@ class Loader extends PluginBase
         return self::$CoreTask;
     }
 
-    public static function setCoreTask(NeptuneTask $task)
+    public static function setCoreTask(?NeptuneTask $task)
     {
         self::$CoreTask = $task;
     }
@@ -147,11 +145,6 @@ class Loader extends PluginBase
         return self::$cps;
     }
 
-    public static function getBotUtils(): BotUtils
-    {
-        return self::$bot;
-    }
-
     public static function getKnockbackManager(): KnockbackManager
     {
         return self::$knockback;
@@ -192,7 +185,6 @@ class Loader extends PluginBase
         self::$arena = new ArenaManager();
         self::$YamlLoader = new YamlManager();
         self::$blockhandle = new DeleteBlocksHandler();
-        self::$bot = new BotUtils();
         self::$knockback = new KnockbackManager();
         self::$cosmetics = new CosmeticHandler();
         self::$arenautils = new ArenaUtils();
