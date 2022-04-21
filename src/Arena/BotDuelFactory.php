@@ -42,9 +42,7 @@ class BotDuelFactory
         }
         if ($this->player2 instanceof FistBot) {
             if (!$this->player2->isAlive() or $this->player2->isClosed()) {
-                if ($this->time < 900) {
-                    $this->onEnd($this->player1);
-                }
+                $this->onEnd($this->player1);
             }
         }
         switch ($this->time) {
@@ -61,7 +59,6 @@ class BotDuelFactory
                 });
                 $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
                     $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
-                    $this->player2->setImmobile();
                 }, function (): void {
                 });
                 break;

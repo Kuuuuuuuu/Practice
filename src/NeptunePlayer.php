@@ -50,7 +50,7 @@ class NeptunePlayer extends Player
             if ($damager instanceof Player) {
                 try {
                     if ($this->isDueling()) {
-                        $attackSpeed = 8;
+                        $attackSpeed = 7.5;
                     } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     }
@@ -72,8 +72,8 @@ class NeptunePlayer extends Player
         $yKb = 0.4;
         try {
             if ($this->isDueling()) {
-                $yKb = 0.301;
-                $xzKB = 0.311;
+                $yKb = 0.37;
+                $xzKB = 0.35;
             } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
                 $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];

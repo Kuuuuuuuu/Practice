@@ -27,15 +27,10 @@ class FistBot extends Human
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
         $this->gravity = 0.08;
-        $this->isImmobile();
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
     {
-        if ($this->getTargetPlayer() === null) {
-            $this->close();
-            return false;
-        }
         parent::entityBaseTick($tickDiff);
         if (!$this->isAlive() or $this->getTargetPlayer() === null or !$this->getTargetPlayer()->isAlive()) {
             if (!$this->closed) {
@@ -143,7 +138,9 @@ class FistBot extends Human
             $motion->x = $motion->x * 0.65;
             $motion->y = $motion->y * 1.25;
             $motion->z = $motion->z * 0.65;
+            // hacky method
             if ($this->isAlive() and !$this->isClosed()) {
+                $this->move(0, 0, 0);
                 $this->setMotion($motion);
             }
         }
