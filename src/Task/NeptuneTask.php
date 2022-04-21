@@ -47,11 +47,11 @@ class NeptuneTask extends Task
                 Loader::getInstance()->RestartTime--;
                 if (Loader::getInstance()->RestartTime !== 0 and Loader::getInstance()->RestartTime % 5 === 0) {
                     Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§cServer will restart in §e' . Loader::getInstance()->RestartTime . '§c seconds');
-                } elseif (Loader::getInstance()->RestartTime <= 0) {
+                } elseif (Loader::getInstance()->RestartTime <= 1) {
                     foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                         $player->kick('§cServer restarted');
                     }
-                } elseif (Loader::getInstance()->RestartTime <= -5) {
+                } elseif (Loader::getInstance()->RestartTime <= 0) {
                     Loader::getInstance()->getServer()->shutdown();
                 }
             }
