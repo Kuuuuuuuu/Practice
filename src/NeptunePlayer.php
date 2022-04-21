@@ -11,6 +11,7 @@ use Kohaku\Utils\PartyFactory;
 use Kohaku\Utils\PartyManager;
 use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use Throwable;
 
 class NeptunePlayer extends Player
 {
@@ -52,12 +53,16 @@ class NeptunePlayer extends Player
         if ($source instanceof EntityDamageByEntityEvent) {
             $damager = $source->getDamager();
             if ($damager instanceof Player) {
-                if ($this->isDueling()) {
-                    $this->attackspeed = 8;
-                } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                    $this->attackspeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
-                } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    $this->attackspeed = 10;
+                try {
+                    if ($this->isDueling()) {
+                        $this->attackspeed = 8;
+                    } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                        $this->attackspeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
+                    } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                        $this->attackspeed = 10;
+                    }
+                } catch (Exception) {
+                    $this->attackspeed = 7;
                 }
             }
         }
@@ -71,13 +76,18 @@ class NeptunePlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        if ($this->isDueling()) {
-            $this->yKb = 0.301;
-            $this->xzKB = 0.311;
-        } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-            $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
-            $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
-        } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+        try {
+            if ($this->isDueling()) {
+                $this->yKb = 0.301;
+                $this->xzKB = 0.311;
+            } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+                $this->xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
+                $this->yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
+            } elseif (Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                $this->xzKB = 0.4;
+                $this->yKb = 0.4;
+            }
+        } catch (Throwable) {
             $this->xzKB = 0.4;
             $this->yKb = 0.4;
         }
