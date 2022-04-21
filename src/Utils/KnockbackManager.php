@@ -21,7 +21,7 @@ class KnockbackManager
             $player->sendMessage(Loader::getPrefixCore() . Color::RED . 'World ' . $world . ' not found');
         } else {
             $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
-            $data->set($world, ['hkb' => $knockback1, 'ykb' => $knockback2]);
+            $data->set(mb_strtolower($world), ['hkb' => $knockback1, 'ykb' => $knockback2]);
             $data->save();
             $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Knockback set to ' . $knockback1 . ' for world ' . $world);
         }
@@ -36,7 +36,7 @@ class KnockbackManager
             $player->sendMessage(Loader::getPrefixCore() . Color::RED . 'World ' . $world . ' not found');
         } else {
             $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
-            $data->set($world, $speed);
+            $data->set(mb_strtolower($world), $speed);
             $data->save();
             $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Attackspeed set to ' . $speed . ' for world ' . $world);
         }
@@ -45,13 +45,13 @@ class KnockbackManager
     public function getKnockback(string $world): array
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
-        return $data->get($world) ?? ['hkb' => 0.4, 'ykb' => 0.4];
+        return $data->get(mb_strtolower($world)) ?? ['hkb' => 0.4, 'ykb' => 0.4];
     }
 
     public function getAttackspeed(string $world): int
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
-        return $data->get($world) ?? 7;
+        return $data->get(mb_strtolower($world)) ?? 7;
     }
 
     /**
@@ -60,7 +60,7 @@ class KnockbackManager
     public function removeAttackspeed(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
-        $data->remove($world);
+        $data->remove(mb_strtolower($world));
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Attackspeed removed for world ' . $world);
     }
@@ -71,7 +71,7 @@ class KnockbackManager
     public function removeKnockback(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
-        $data->remove($world);
+        $data->remove(mb_strtolower($world));
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Knockback removed for world ' . $world);
     }

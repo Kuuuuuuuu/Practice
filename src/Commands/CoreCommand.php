@@ -171,14 +171,14 @@ class CoreCommand extends Command
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core setatkspd <world> <speed>');
                         return false;
                     }
-                    Loader::getKnockbackManager()->setAttackspeed($sender, $args[1], (int)$args[2]);
+                    Loader::getKnockbackManager()->setAttackspeed($sender, mb_strtolower($args[1]), (int)$args[2]);
                     break;
                 case 'removeatkspd':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core removeatkspd <world>');
                         return false;
                     }
-                    Loader::getKnockbackManager()->removeAttackspeed($sender, $args[1]);
+                    Loader::getKnockbackManager()->removeAttackspeed($sender, mb_strtolower($args[1]));
                     break;
                 case 'addkb':
                     if (!isset($args[1])) {
@@ -193,14 +193,14 @@ class CoreCommand extends Command
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core addkb <world> <hkb> <ykb>');
                         return false;
                     }
-                    Loader::getKnockbackManager()->setKnockback($sender, $args[1], (float)$args[2], (float)$args[3]);
+                    Loader::getKnockbackManager()->setKnockback($sender, mb_strtolower($args[1]), (float)$args[2], (float)$args[3]);
                     break;
                 case 'removekb':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core removekb <world>');
                         return false;
                     }
-                    Loader::getKnockbackManager()->removeKnockback($sender, $args[1]);
+                    Loader::getKnockbackManager()->removeKnockback($sender, mb_strtolower($args[1]));
                     break;
                 case 'remove':
                     if (!isset($args[1])) {
