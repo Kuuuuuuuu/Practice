@@ -616,6 +616,7 @@ class NeptuneListener implements Listener
                     $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
                     break;
                 case EntityDamageEvent::CAUSE_PROJECTILE:
+                    /*
                     if ($event->getChild() instanceof Arrow) {
                         $owner = $event->getChild()->getOwningEntity();
                         if ($owner instanceof Player) {
@@ -625,7 +626,7 @@ class NeptuneListener implements Listener
                                 $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
                             }
                         }
-                    }
+                    } */
                     break;
             }
         }
