@@ -8,6 +8,5 @@ TODO:
 
 - Implement Fishing Rod
 - Implement Duel System
-- Add Replay System
 - And More
 
