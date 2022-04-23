@@ -16,8 +16,6 @@ use Throwable;
 class NeptunePlayer extends Player
 {
     public int $BoxingPoint = 0;
-    public string $cape = '';
-    public string $artifact = '';
     public string $PlayerOS = 'Unknown';
     public string $PlayerControl = 'Unknown';
     public string $PlayerDevice = 'Unknown';
@@ -25,7 +23,9 @@ class NeptunePlayer extends Player
     public string $lastDamagePlayer = 'Unknown';
     public int|float $CombatTime = 0;
     public array $points = [];
-    public ?string $EditKit = null;
+    private string $cape = '';
+    private string $artifact = '';
+    private ?string $EditKit = null;
     private int $tick = 0;
     private ?PartyFactory $party;
     private ?KitManager $duelKit = null;
@@ -484,5 +484,15 @@ class NeptunePlayer extends Player
     public function setPartyRank(?string $rank)
     {
         $this->partyrank = $rank;
+    }
+
+    public function getEditKit(): ?string
+    {
+        return $this->EditKit;
+    }
+
+    public function setEditKit(?string $kit)
+    {
+        $this->EditKit = $kit;
     }
 }

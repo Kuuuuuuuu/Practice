@@ -84,7 +84,7 @@ class NeptuneListener implements Listener
         $item = $event->getItem();
         $name = $player->getName();
         if ($player instanceof NeptunePlayer) {
-            if ($player->EditKit !== null) {
+            if ($player->getEditKit() !== null) {
                 if ($item->getId() === ItemIds::ENDER_PEARL or $item->getId() === ItemIds::GOLDEN_APPLE) {
                     $event->cancel();
                 }
@@ -413,7 +413,7 @@ class NeptuneListener implements Listener
                 $event->cancel();
             }
             foreach ($actions as $action) {
-                if ($player->getGamemode() === GameMode::CREATIVE() or $player->EditKit !== null) {
+                if ($player->getGamemode() === GameMode::CREATIVE() or $player->getEditKit() !== null) {
                     return;
                 } else {
                     $event->cancel();
@@ -433,7 +433,7 @@ class NeptuneListener implements Listener
         $args = explode(' ', $event->getMessage());
         $event->setFormat(Loader::getArenaUtils()->getChatFormat($player, $message));
         if ($player instanceof NeptunePlayer) {
-            if ($player->EditKit !== null) {
+            if ($player->getEditKit() !== null) {
                 $event->cancel();
                 if (mb_strtolower($args[0]) === 'confirm') {
                     $player->saveKit();
@@ -616,8 +616,7 @@ class NeptuneListener implements Listener
                     $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
                     break;
                 case EntityDamageEvent::CAUSE_PROJECTILE:
-                    /*
-                    if ($event->getChild() instanceof Arrow) {
+                    if ($event->getChild() !== null and $event->getChild() instanceof Arrow) {
                         $owner = $event->getChild()->getOwningEntity();
                         if ($owner instanceof Player) {
                             $name = $owner->getName();
@@ -626,7 +625,7 @@ class NeptuneListener implements Listener
                                 $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
                             }
                         }
-                    } */
+                    }
                     break;
             }
         }
@@ -676,8 +675,8 @@ class NeptuneListener implements Listener
         $player->getOffHandInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
         if ($player instanceof NeptunePlayer) {
-            if ($player->EditKit !== null) {
-                $player->EditKit = null;
+            if ($player->getEditKit() !== null) {
+                $player->setEditKit(null);
                 $player->setImmobile(false);
             }
             $player->setDueling(false);
@@ -689,7 +688,7 @@ class NeptuneListener implements Listener
         $player = $event->getPlayer();
         $msg = $event->getMessage();
         if ($player instanceof NeptunePlayer) {
-            if ($player->isCombat() or $player->EditKit !== null or $player->isDueling()) {
+            if ($player->isCombat() or $player->getEditKit() !== null or $player->isDueling()) {
                 $msg = substr($msg, 1);
                 $msg = explode(' ', $msg);
                 if (in_array($msg[0], Loader::getInstance()->BanCommand)) {

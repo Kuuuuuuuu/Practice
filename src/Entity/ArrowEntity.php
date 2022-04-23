@@ -22,13 +22,6 @@ class ArrowEntity extends Arrow
         if ($owner instanceof Player) {
             if ($owner->getWorld() === $this->getWorld() and $owner->isAlive()) {
                 parent::onHitEntity($entityHit, $hitResult);
-                if ($this->punchKnockback > 0) {
-                    $horizontalSpeed = sqrt($this->motion->x ** 2 + $this->motion->z ** 2);
-                    if ($horizontalSpeed > 0) {
-                        $multiplier = $this->punchKnockback * 0.6 / $horizontalSpeed;
-                        $entityHit->setMotion($entityHit->getMotion()->add($this->motion->x * $multiplier, 0.1, $this->motion->z * $multiplier));
-                    }
-                }
             } else {
                 $this->flagForDespawn();
             }

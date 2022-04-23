@@ -509,7 +509,7 @@ class FormUtils
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();
                         $player->setImmobile();
-                        $player->EditKit = 'build';
+                        $player->setEditKit('build');
                         $player->sendMessage(Loader::getPrefixCore() . '§aEdit kit enabled');
                         $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
                         $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
