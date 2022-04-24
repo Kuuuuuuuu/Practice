@@ -63,6 +63,11 @@ class NeptuneTask extends Task
         $this->DuelTask[$name] = $duel;
     }
 
+    public function removeDuelTask(string $name): void
+    {
+        unset($this->DuelTask[$name]);
+    }
+
     public function addDuelTask(string $name, DuelFactory $duel): void
     {
         $this->DuelTask[$name] = $duel;
