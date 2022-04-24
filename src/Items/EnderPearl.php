@@ -3,6 +3,7 @@
 namespace Kohaku\Items;
 
 use JetBrains\PhpStorm\Pure;
+use Kohaku\ConfigCore;
 use Kohaku\Entity\EnderPearlEntity;
 use Kohaku\Loader;
 use pocketmine\entity\Location;
@@ -21,7 +22,7 @@ class EnderPearl extends ItemEnderPearl
 
     #[Pure] public function getThrowForce(): float
     {
-        return Loader::getInstance()->EnderPearlForce;
+        return ConfigCore::PearlForce;
     }
 
     protected function createEntity(Location $location, Player $thrower): Throwable

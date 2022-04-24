@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kohaku\Utils;
 
-use Kohaku\Loader;
+use Kohaku\ConfigCore;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
@@ -22,7 +22,7 @@ class DeleteBlocksHandler
         if ($break and isset($this->buildBlocks[$pos])) {
             unset($this->buildBlocks[$pos]);
         } else {
-            $this->buildBlocks[$pos] = Loader::getInstance()->DeleteBlockTime;
+            $this->buildBlocks[$pos] = ConfigCore::DeleteBlockTime;
         }
     }
 

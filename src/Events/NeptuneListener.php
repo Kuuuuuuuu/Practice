@@ -10,6 +10,7 @@ namespace Kohaku\Events;
 
 use Exception;
 use JsonException;
+use Kohaku\ConfigCore;
 use Kohaku\Loader;
 use Kohaku\NeptunePlayer;
 use Kohaku\Utils\DiscordUtils\DiscordWebhook;
@@ -387,7 +388,7 @@ class NeptuneListener implements Listener
         if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
             if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData or $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
                 Loader::getClickHandler()->addClick($player);
-                if (Loader::getClickHandler()->getClicks($player) >= Loader::getInstance()->MaximumCPS) {
+                if (Loader::getClickHandler()->getClicks($player) >= ConfigCore::MaximumCPS) {
                     if ($player instanceof NeptunePlayer) {
                         $player->setLastDamagePlayer('Unknown');
                         $player->kill();

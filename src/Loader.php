@@ -29,9 +29,6 @@ use SQLite3;
 
 class Loader extends PluginBase
 {
-    private const PREFIX = '§dNeptune§f » §r';
-    private const SBPREFIX = '§f» §dNeptune §f«';
-
     private static self $plugin;
     private static YamlManager $YamlLoader;
     private static ClickHandler $cps;
@@ -53,10 +50,7 @@ class Loader extends PluginBase
     public SQLite3 $BanData;
     public Config $KitData;
     public int $RestartTime = 31;
-    public int $DeleteBlockTime = 8;
-    public int $MaximumCPS = 20;
     public bool $Restarted = false;
-    public float|int $EnderPearlForce = 3;
     public array $targetPlayer = [];
     public array $SumoArenas = [];
     public array $SumoSetup = [];
@@ -107,12 +101,12 @@ class Loader extends PluginBase
 
     public static function getScoreboardTitle(): string
     {
-        return self::SBPREFIX;
+        return ConfigCore::SBPREFIX;
     }
 
     public static function getPrefixCore(): string
     {
-        return self::PREFIX;
+        return ConfigCore::PREFIX;
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler
