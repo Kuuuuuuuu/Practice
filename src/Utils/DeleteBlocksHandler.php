@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
-use Kohaku\ConfigCore;
+use Kuu\ConfigCore;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;

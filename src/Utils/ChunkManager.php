@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
 use pocketmine\math\Vector3;
 use pocketmine\world\ChunkListener;

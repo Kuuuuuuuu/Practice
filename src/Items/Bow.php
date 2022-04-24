@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Items;
+namespace Kuu\Items;
 
-use Kohaku\Entity\ArrowEntity;
-use Kohaku\Loader;
+use Kuu\Entity\ArrowEntity;
+use Kuu\Loader;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Events;
+namespace Kuu\Events;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;

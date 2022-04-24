@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Kohaku\Entity;
+namespace Kuu\Entity;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Items\FishingRod;
-use Kohaku\NeptunePlayer;
+use Kuu\Items\FishingRod;
+use Kuu\NeptunePlayer;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;

@@ -1,7 +1,7 @@
 name: NeptuneCore
 api: 4.0.0
 version: 1.5
-src-namespace-prefix: Kohaku
-main: Kohaku\Loader
+src-namespace-prefix: Kuu
+main: Kuu\Loader
 load: POSTWORLD
 author: Kuu

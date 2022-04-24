@@ -20,10 +20,10 @@
 */
 
 
-namespace Kohaku\Events;
+namespace Kuu\Events;
 
 
-use Kohaku\Loader;
+use Kuu\Loader;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 
 class RaklibNeptune extends RakLibInterface

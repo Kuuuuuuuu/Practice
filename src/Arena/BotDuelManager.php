@@ -1,10 +1,10 @@
 <?php
 
-namespace Kohaku\Arena;
+namespace Kuu\Arena;
 
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Entity;
+namespace Kuu\Entity;
 
 use JsonException;
-use Kohaku\Loader;
+use Kuu\Loader;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;

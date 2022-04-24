@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
-use Kohaku\Loader;
+use Kuu\Loader;
 use pocketmine\player\Player;
 use pocketmine\Server;
 

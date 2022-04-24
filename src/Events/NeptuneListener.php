@@ -6,15 +6,15 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Events;
+namespace Kuu\Events;
 
 use Exception;
 use JsonException;
-use Kohaku\ConfigCore;
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
-use Kohaku\Utils\DiscordUtils\DiscordWebhook;
-use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\ConfigCore;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
+use Kuu\Utils\DiscordUtils\DiscordWebhook;
+use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;

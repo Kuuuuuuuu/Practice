@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils\Kits;
+namespace Kuu\Utils\Kits;
 
 abstract class KitManager
 {

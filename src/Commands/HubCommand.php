@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Commands;
+namespace Kuu\Commands;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;

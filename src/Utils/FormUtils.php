@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
 use DateTime;
 use Exception;
 use JsonException;
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
-use Kohaku\Utils\DiscordUtils\DiscordWebhook;
-use Kohaku\Utils\DiscordUtils\DiscordWebhookEmbed;
-use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kohaku\Utils\Forms\CustomForm;
-use Kohaku\Utils\Forms\SimpleForm;
-use Kohaku\Utils\Kits\KitRegistry;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
+use Kuu\Utils\DiscordUtils\DiscordWebhook;
+use Kuu\Utils\DiscordUtils\DiscordWebhookEmbed;
+use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\Utils\Forms\CustomForm;
+use Kuu\Utils\Forms\SimpleForm;
+use Kuu\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;

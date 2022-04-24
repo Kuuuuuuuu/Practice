@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Entity;
+namespace Kuu\Entity;
 
 use pocketmine\entity\object\FallingBlock;
 use pocketmine\nbt\tag\CompoundTag;

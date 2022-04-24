@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Task;
+namespace Kuu\Task;
 
-use Kohaku\Loader;
-use Kohaku\Utils\DiscordUtils\DiscordWebhook;
-use Kohaku\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\Loader;
+use Kuu\Utils\DiscordUtils\DiscordWebhook;
+use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\scheduler\AsyncTask;
 
 class AsyncWebhookTask extends AsyncTask

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku\Entity;
+namespace Kuu\Entity;
 
 use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\Human;

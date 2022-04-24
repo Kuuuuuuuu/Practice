@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Arena;
+namespace Kuu\Arena;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;

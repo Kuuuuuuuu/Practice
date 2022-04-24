@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Kohaku\Items;
+namespace Kuu\Items;
 
 
-use Kohaku\Entity\FishingHook;
+use Kuu\Entity\FishingHook;
 use pocketmine\entity\Location;
 use pocketmine\item\FishingRod as FishingRodItem;
 use pocketmine\item\ItemIdentifier;

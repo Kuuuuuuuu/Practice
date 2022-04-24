@@ -6,23 +6,23 @@
 
 declare(strict_types=1);
 
-namespace Kohaku;
+namespace Kuu;
 
 use JsonException;
-use Kohaku\Arena\ArenaFactory;
-use Kohaku\Arena\ArenaManager;
-use Kohaku\Arena\BotDuelManager;
-use Kohaku\Arena\DuelManager;
-use Kohaku\Task\NeptuneTask;
-use Kohaku\Utils\ArenaUtils;
-use Kohaku\Utils\ClickHandler;
-use Kohaku\Utils\CosmeticHandler;
-use Kohaku\Utils\DeleteBlocksHandler;
-use Kohaku\Utils\FormUtils;
-use Kohaku\Utils\KnockbackManager;
-use Kohaku\Utils\ScoreboardManager;
-use Kohaku\utils\ScoreboardsUtils;
-use Kohaku\Utils\YamlManager;
+use Kuu\Arena\ArenaFactory;
+use Kuu\Arena\ArenaManager;
+use Kuu\Arena\BotDuelManager;
+use Kuu\Arena\DuelManager;
+use Kuu\Task\NeptuneTask;
+use Kuu\Utils\ArenaUtils;
+use Kuu\Utils\ClickHandler;
+use Kuu\Utils\CosmeticHandler;
+use Kuu\Utils\DeleteBlocksHandler;
+use Kuu\Utils\FormUtils;
+use Kuu\Utils\KnockbackManager;
+use Kuu\Utils\ScoreboardManager;
+use Kuu\utils\ScoreboardsUtils;
+use Kuu\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use SQLite3;

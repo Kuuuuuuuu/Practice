@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Task;
+namespace Kuu\Task;
 
-use Kohaku\Arena\BotDuelFactory;
-use Kohaku\Arena\DuelFactory;
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Arena\BotDuelFactory;
+use Kuu\Arena\DuelFactory;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 

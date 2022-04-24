@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Commands;
+namespace Kuu\Commands;
 
-use Kohaku\Arena\SumoHandler;
-use Kohaku\Loader;
+use Kuu\Arena\SumoHandler;
+use Kuu\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

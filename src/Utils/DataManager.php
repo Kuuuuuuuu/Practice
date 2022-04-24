@@ -4,11 +4,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
-use Kohaku\Loader;
+use Kuu\Loader;
 
 class DataManager
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
 class Lang
 {

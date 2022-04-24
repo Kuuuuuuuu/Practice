@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils\DiscordUtils;
+namespace Kuu\Utils\DiscordUtils;
 
 use DateTime;
 use DateTimeZone;

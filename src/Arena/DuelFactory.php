@@ -1,11 +1,11 @@
 <?php
 
-namespace Kohaku\Arena;
+namespace Kuu\Arena;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
-use Kohaku\Task\NeptuneTask;
-use Kohaku\Utils\Kits\KitManager;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
+use Kuu\Task\NeptuneTask;
+use Kuu\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
 use pocketmine\world\Position;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
 use JsonException;
-use Kohaku\Arena\SumoHandler;
-use Kohaku\Loader;
+use Kuu\Arena\SumoHandler;
+use Kuu\Loader;
 use pocketmine\utils\Config;
 
 class YamlManager

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Commands;
+namespace Kuu\Commands;
 
-use Kohaku\Loader;
+use Kuu\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

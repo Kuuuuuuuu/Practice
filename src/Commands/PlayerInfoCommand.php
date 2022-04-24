@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Commands;
+namespace Kuu\Commands;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

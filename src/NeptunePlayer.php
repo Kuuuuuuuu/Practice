@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kohaku;
+namespace Kuu;
 
 use Exception;
 use JsonException;
-use Kohaku\Utils\Kits\KitManager;
-use Kohaku\Utils\PartyFactory;
-use Kohaku\Utils\PartyManager;
+use Kuu\Utils\Kits\KitManager;
+use Kuu\Utils\PartyFactory;
+use Kuu\Utils\PartyManager;
 use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use Throwable;

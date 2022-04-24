@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils\DiscordUtils;
+namespace Kuu\Utils\DiscordUtils;
 
-use Kohaku\Task\AsyncWebhookTask;
+use Kuu\Task\AsyncWebhookTask;
 use pocketmine\Server;
 
 class DiscordWebhook

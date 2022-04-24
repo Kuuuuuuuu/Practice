@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kohaku\Utils\Forms;
+namespace Kuu\Utils\Forms;
 
 
 use pocketmine\form\Form as IForm;

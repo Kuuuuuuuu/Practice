@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku;
+namespace Kuu;
 
 interface ConfigCore
 {

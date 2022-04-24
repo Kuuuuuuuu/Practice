@@ -1,9 +1,9 @@
 <?php
 
-namespace Kohaku\Utils;
+namespace Kuu\Utils;
 
-use Kohaku\Loader;
-use Kohaku\NeptunePlayer;
+use Kuu\Loader;
+use Kuu\NeptunePlayer;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
