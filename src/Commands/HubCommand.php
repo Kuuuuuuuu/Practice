@@ -26,7 +26,7 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof NeptunePlayer) {
-            if ($sender->EditKit !== null) {
+            if ($sender->getEditKit() !== null) {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou can't use this command while editing a kit!");
                 return;
             }
