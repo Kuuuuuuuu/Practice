@@ -22,7 +22,7 @@ class NeptunePlayer extends Player
     public string $ToolboxStatus = 'Normal';
     public string $lastDamagePlayer = 'Unknown';
     public int|float $CombatTime = 0;
-    public array $points = [];
+    //public array $points = [];
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
@@ -72,8 +72,8 @@ class NeptunePlayer extends Player
         $yKb = 0.4;
         try {
             if ($this->isDueling()) {
-                $yKb = 0.37;
-                $xzKB = 0.35;
+                $yKb = 0.32;
+                $xzKB = 0.34;
             } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
                 $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
@@ -300,7 +300,7 @@ class NeptunePlayer extends Player
         $this->getArmorInventory()->clearAll();
         Loader::getInstance()->getArenaUtils()->GiveItem($this);
         $this->LoadData();
-        $this->sendMessage(Loader::getPrefixCore() . '§eLoading Player Data');
+        $this->sendMessage(Loader::getPrefixCore() . '§eLoading Data...');
     }
 
     /**
@@ -355,7 +355,6 @@ class NeptunePlayer extends Player
                     foreach ([$player, $this] as $p) {
                         $p->setInQueue(false);
                     }
-                    return;
                 }
             }
         }
