@@ -206,6 +206,8 @@ class ArenaUtils
             'PlayerListContent' => '§c§lChoose Player',
             'InfoUIContent' => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             'InfoUIUnBanButton' => '§aUnban',
+            'EnderPearlCooldownStart' => '§dNeptune§f » §aEnderpearl cooldown started!',
+            'EnderPearlCooldownEnd' => '§dNeptune§f » §aEnderpearl cooldown ended!',
         )))->getAll();
         Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . 'Ban.db');
         Loader::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');

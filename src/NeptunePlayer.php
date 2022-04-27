@@ -37,6 +37,8 @@ class NeptunePlayer extends Player
     private ?string $partyrank = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
+    private int $enderpearlcooldown = 0;
+    private bool $isEnderpearlCooldown = false;
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -222,6 +224,13 @@ class NeptunePlayer extends Player
                 }
             }
         }
+        if ($this->isEnderPearlCooldown()) {
+            $this->enderpearlcooldown -= 1;
+            if ($this->EnderPearlCooldown <= 0) {
+                $this->setEnderPearlCooldown(false);
+                $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
+            }
+        }
         if ($this->tick % 60 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
@@ -261,6 +270,20 @@ class NeptunePlayer extends Player
     {
         $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl . ' §f| §d' . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
+    }
+
+    public function isEnderPearlCooldown(): bool
+    {
+        return $this->isEnderpearlCooldown;
+    }
+
+    public function setEnderPearlCooldown(bool $bool): void
+    {
+        $this->isEnderpearlCooldown = $bool;
+        if ($bool) {
+            $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownStart']);
+            $this->enderpearlcooldown = ConfigCore::EnderPearlCooldown;
+        }
     }
 
     private function updateScoreboard()
