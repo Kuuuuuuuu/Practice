@@ -28,6 +28,7 @@ use Kuu\Entity\KillLeaderboard;
 use Kuu\Events\AntiCheatListener;
 use Kuu\Events\NeptuneListener;
 use Kuu\Items\Bow;
+use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
 use Kuu\Items\FishingRod;
 use Kuu\Loader;
@@ -38,6 +39,7 @@ use Kuu\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
+use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -46,6 +48,7 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
+use pocketmine\item\PotionType;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
@@ -170,6 +173,10 @@ class ArenaUtils
 
     private function registerItems(): void
     {
+        foreach (PotionType::getAll() as $type) {
+            $typeId = PotionTypeIdMap::getInstance()->toId($type);
+            ItemFactory::getInstance()->register(new CustomSplashPotion(new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId), $type->getDisplayName() . ' Splash Potion', $type), true);
+        }
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
         ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), 'Bow'), true);
         ItemFactory::getInstance()->register(new FishingRod(new ItemIdentifier(ItemIds::FISHING_ROD, 0), 'Fishing Rod'), true);
