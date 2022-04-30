@@ -26,7 +26,7 @@ class ArenaManager
 
     public function onJoinBoxing(Player $player): void
     {
-        if (Loader::getArenaFactory()->getBoxingArena() == null) {
+        if (Loader::getArenaFactory()->getBoxingArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -36,17 +36,17 @@ class ArenaManager
         $player->setHealth(20);
         $player->getEffects()->clear();
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())?->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinFist(Player $player): void
     {
-        if (Loader::getArenaFactory()->getFistArena() == null) {
+        if (Loader::getArenaFactory()->getFistArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -55,17 +55,17 @@ class ArenaManager
         $player->getEffects()->clear();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getFistArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getFistArena())?->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinCombo(Player $player): void
     {
-        if (Loader::getArenaFactory()->getFistArena() == null) {
+        if (Loader::getArenaFactory()->getFistArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -76,17 +76,17 @@ class ArenaManager
         $player->setHealth(20);
         $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
         $player->getInventory()->addItem($item);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())?->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinKnockback(Player $player): void
     {
-        if (Loader::getArenaFactory()->getKnockbackArena() == null) {
+        if (Loader::getArenaFactory()->getKnockbackArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -111,17 +111,17 @@ class ArenaManager
         $player->getInventory()->setItem(12, $arrow);
         $player->getInventory()->addItem($bow);
         $player->getInventory()->addItem($leap);
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena())?->getSafeSpawn());
         $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinKitpvp(Player $player): void
     {
-        if (Loader::getArenaFactory()->getKitPVPArena() == null) {
+        if (Loader::getArenaFactory()->getKitPVPArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -130,17 +130,17 @@ class ArenaManager
         $player->setHealth(20);
         $player->getEffects()->clear();
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())?->getSafeSpawn());
         Loader::getInstance()->getArenaUtils()->randomSpawn($player);
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
 
     public function onJoinOITC(Player $player): void
     {
-        if (Loader::getArenaFactory()->getOITCArena() == null) {
+        if (Loader::getArenaFactory()->getOITCArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -149,10 +149,10 @@ class ArenaManager
         $player->getEffects()->clear();
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())?->getSafeSpawn());
         $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
@@ -162,7 +162,7 @@ class ArenaManager
 
     public function onJoinResistance(Player $player): void
     {
-        if (Loader::getArenaFactory()->getResistanceArena() == null) {
+        if (Loader::getArenaFactory()->getResistanceArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -171,9 +171,9 @@ class ArenaManager
         $player->setHealth(20);
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getResistanceArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getResistanceArena())?->getSafeSpawn());
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
@@ -181,7 +181,7 @@ class ArenaManager
 
     public function onJoinBuild(Player $player): void
     {
-        if (Loader::getArenaFactory()->getBuildArena() == null) {
+        if (Loader::getArenaFactory()->getBuildArena() === null) {
             $player->sendMessage(Loader::getPrefixCore() . '§cArena is not set!');
             return;
         }
@@ -209,10 +209,10 @@ class ArenaManager
         $player->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
         $player->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())->getSafeSpawn());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())?->getSafeSpawn());
         $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
         $pos = $player->getPosition();
-        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, intval($player->getPosition()->getX()) >> 4, intval($player->getPosition()->getZ()) >> 4, function () use ($player, $pos) {
+        Loader::getInstance()->getArenaUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
         $player->setGamemode(GameMode::SURVIVAL());

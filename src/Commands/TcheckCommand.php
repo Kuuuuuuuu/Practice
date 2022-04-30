@@ -61,8 +61,8 @@ class TcheckCommand extends Command
         $i = -1;
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
-            $form->addButton(TextFormat::BOLD . "$banPlayer", -1, '', $banPlayer);
-            $i = $i + 1;
+            $form->addButton(TextFormat::BOLD . $banPlayer, -1, '', $banPlayer);
+            ++$i;
         }
         $player->sendForm($form);
         return true;
@@ -75,8 +75,8 @@ class TcheckCommand extends Command
             if ($result === null) {
                 return true;
             }
-            if ($result == 0) {
-                $banplayer = Loader::getInstance()->targetPlayer[$player->getName() ?? null];
+            if ($result === 0) {
+                $banplayer = Loader::getInstance()->targetPlayer[$player->getName()];
                 $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {

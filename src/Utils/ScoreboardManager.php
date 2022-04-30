@@ -42,10 +42,8 @@ class ScoreboardManager
     {
         $queue = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof NeptunePlayer) {
-                if ($player->isInQueue()) {
-                    $queue += 1;
-                }
+            if (($player instanceof NeptunePlayer) && $player->isInQueue()) {
+                $queue++;
             }
         }
         return $queue ?? 0;
@@ -55,10 +53,8 @@ class ScoreboardManager
     {
         $duel = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof NeptunePlayer) {
-                if ($player->isDueling()) {
-                    $duel += 1;
-                }
+            if (($player instanceof NeptunePlayer) && $player->isDueling()) {
+                $duel++;
             }
         }
         return $duel ?? 0;
@@ -90,7 +86,7 @@ class ScoreboardManager
             if ($opponent !== null) {
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                 /** @var NeptunePlayer $oppopl */
-                $opponentboxingp = $oppopl->BoxingPoint;
+                $opponentboxingp = $oppopl?->BoxingPoint;
             } else {
                 $opponentboxingp = 0;
             }

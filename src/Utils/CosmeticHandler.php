@@ -7,10 +7,12 @@ namespace Kuu\Utils;
 use Exception;
 use GdImage;
 use InvalidArgumentException;
+use JsonException;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
+use RuntimeException;
 use function ord;
 use function round;
 use function strlen;
@@ -44,20 +46,27 @@ class CosmeticHandler
     ];
     private string $capeFolder;
 
+    /**
+     * @throws JsonException
+     */
     public function __construct()
     {
         $this->dataFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
-            mkdir($this->dataFolder);
-            mkdir($this->saveSkin);
+            if (!mkdir($concurrentDirectory = $this->dataFolder) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
+            if (!mkdir($concurrentDirectory = $this->saveSkin) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
         $this->resourcesFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
-        $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true)['geometry.humanoid']);
+        $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true, 512, JSON_THROW_ON_ERROR)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
         $this->skinBounds[self::BOUNDS_128_128] = $this->getSkinBounds($cubes, 2.0);
         $checkFileAvailable = [];
@@ -140,8 +149,8 @@ class CosmeticHandler
     {
         try {
             $path = $this->dataFolder;
-            if (!file_exists($path . 'skin')) {
-                mkdir($path . 'skin');
+            if (!file_exists($path . 'skin') && !mkdir($concurrentDirectory = $path . 'skin') && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
             $img = $this->skinDataToImage($skin);
             if ($img === null) {
@@ -223,21 +232,21 @@ class CosmeticHandler
         }
     }
 
-    public function setSkin(Player $player, string $stuffName)
+    public function setSkin(Player $player, string $stuffName): void
     {
         try {
             if ($player instanceof NeptunePlayer) {
                 $imagePath = $this->getSaveSkin($player->getName());
                 $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
-                $cape = $player->getCape() ?? null;
-                $capeData = ($cape !== '' and $cape !== null) ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
-                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin->getGeometryData() ?? $player->getSkin()->getGeometryData());
+                $cape = $player->getCape();
+                $capeData = ($cape !== '') ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
+                $skin = new Skin($skin?->getSkinId() ?? $player->getSkin()->getSkinId(), $skin?->getSkinData() ?? $player->getSkin()->getSkinData(), $capeData, $skin?->getGeometryName() ?? $player->getSkin()->getGeometryName(), $skin?->getGeometryData() ?? $player->getSkin()->getGeometryData());
                 $player->setSkin($skin);
                 $player->sendSkin();
             }
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
-            return null;
+            return;
         }
     }
 
@@ -250,9 +259,9 @@ class CosmeticHandler
     {
         try {
             $size = getimagesize($imagePath);
-            $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
+            $imagePathh = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
             $geometryPath = $this->artifactFolder . $stuffName . '.json';
-            return $this->loadSkin($imagePath, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
+            return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
             return null;
@@ -381,7 +390,7 @@ class CosmeticHandler
             }
             $transparentPixels = $pixels = 0;
             foreach ($bounds as $bound) {
-                if ($bound['max']['x'] > $maxX or $bound['max']['y'] > $maxY) {
+                if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
                     continue;
                 }
                 for ($y = $bound['min']['y']; $y <= $bound['max']['y']; $y++) {

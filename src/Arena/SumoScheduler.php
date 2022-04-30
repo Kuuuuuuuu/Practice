@@ -30,14 +30,10 @@ class SumoScheduler extends Task
     {
         if (!$this->plugin->setup) {
             $this->tick++;
-            if ($this->tick % 20 === 0) {
-                if ($this->plugin->phase !== SumoHandler::PHASE_RESTART) {
-                    foreach ($this->plugin->players as $player) {
-                        if ($this->plugin->inGame($player)) {
-                            if ($player->getWorld() !== $this->plugin->level) {
-                                $this->plugin->disconnectPlayer($player);
-                            }
-                        }
+            if (($this->tick % 20 === 0) && $this->plugin->phase !== SumoHandler::PHASE_RESTART) {
+                foreach ($this->plugin->players as $player) {
+                    if ($this->plugin->inGame($player) && $player->getWorld() !== $this->plugin->level) {
+                        $this->plugin->disconnectPlayer($player);
                     }
                 }
             }
@@ -102,7 +98,7 @@ class SumoScheduler extends Task
                     {
                         if ($this->tick % 5 === 0) {
                             foreach ($this->plugin->players as $player) {
-                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
                                 $player->getInventory()->clearAll();
                                 $player->getArmorInventory()->clearAll();
                                 $player->getEffects()->clear();
@@ -120,7 +116,7 @@ class SumoScheduler extends Task
         }
     }
 
-    public function reloadTimer()
+    public function reloadTimer(): void
     {
         $this->startTime = 4;
         $this->gameTime = 10 * 60;

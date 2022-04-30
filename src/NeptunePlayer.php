@@ -123,13 +123,13 @@ class NeptunePlayer extends Player
 
     public function setValidStuffs(string $stuff): void
     {
-        $key = in_array($stuff, $this->validstuffs);
+        $key = in_array($stuff, $this->validstuffs, true);
         if ($key === false) {
             $this->validstuffs[] = $stuff;
         }
     }
 
-    public function getAllArtifact()
+    public function getAllArtifact(): void
     {
         $this->setValidStuffs('Adidas');
         $this->setValidStuffs('AngelWing');
@@ -205,15 +205,15 @@ class NeptunePlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
-    public function update()
+    public function update(): void
     {
         $this->tick++;
         if ($this->tick % 20 === 0) {
             $this->updateTag();
             if ($this->isCombat()) {
-                $percent = floatval($this->CombatTime / 10);
+                $percent = (float)($this->CombatTime / 10);
                 $this->getXpManager()->setXpProgress($percent);
-                $this->CombatTime -= 1;
+                $this->CombatTime--;
                 if ($this->CombatTime <= 0) {
                     $this->setCombat(false);
                     $this->getXpManager()->setXpProgress(0.0);
@@ -225,7 +225,7 @@ class NeptunePlayer extends Player
             }
         }
         if ($this->isEnderPearlCooldown()) {
-            $this->enderpearlcooldown -= 1;
+            $this->enderpearlcooldown--;
             if ($this->EnderPearlCooldown <= 0) {
                 $this->setEnderPearlCooldown(false);
                 $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
@@ -239,9 +239,9 @@ class NeptunePlayer extends Player
         $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
     }
 
-    private function updateTag()
+    private function updateTag(): void
     {
-        if ($this->isCombat() or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
         } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
@@ -258,7 +258,7 @@ class NeptunePlayer extends Player
         $this->Combat = $bool;
     }
 
-    private function setPVPTag()
+    private function setPVPTag(): void
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = Loader::getClickHandler()->getClicks($this);
@@ -266,7 +266,7 @@ class NeptunePlayer extends Player
         $this->setScoreTag($tagpvp);
     }
 
-    private function setUnPVPTag()
+    private function setUnPVPTag(): void
     {
         $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl . ' §f| §d' . $this->ToolboxStatus;
         $this->setScoreTag($untagpvp);
@@ -286,21 +286,21 @@ class NeptunePlayer extends Player
         }
     }
 
-    private function updateScoreboard()
+    private function updateScoreboard(): void
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             Loader::getInstance()->getScoreboardManager()->sb($this);
-        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() and $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
             Loader::getInstance()->getScoreboardManager()->sb2($this);
         } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
             Loader::getInstance()->getScoreboardManager()->Boxing($this);
         }
     }
 
-    private function updateNametag()
+    private function updateNametag(): void
     {
         $name = $this->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]';
         } else {
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
@@ -316,7 +316,7 @@ class NeptunePlayer extends Player
     /**
      * @throws JsonException
      */
-    public function onJoin()
+    public function onJoin(): void
     {
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
@@ -329,10 +329,10 @@ class NeptunePlayer extends Player
     /**
      * @throws JsonException
      */
-    private function LoadData()
+    private function LoadData(): void
     {
-        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ? Loader::getInstance()->CapeData->get($this->getName()) : '';
-        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ? Loader::getInstance()->ArtifactData->get($this->getName()) : '';
+        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ?: '';
+        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ?: '';
         $this->setCosmetic();
     }
 
@@ -342,7 +342,7 @@ class NeptunePlayer extends Player
     public function setCosmetic(): void
     {
         if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/artifact/' . Loader::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
-            if ($this->getStuff() !== '' or $this->getStuff() !== null) {
+            if ($this->getStuff() !== '' || $this->getStuff() !== null) {
                 Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
             }
         } else {
@@ -370,14 +370,12 @@ class NeptunePlayer extends Player
     {
         $this->sendMessage(Loader::getPrefixCore() . 'Entering queue...');
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            if ($player instanceof NeptunePlayer and $player->getName() !== $this->getName()) {
-                if ($player->isInQueue() and $this->getDuelKit() === $player->getDuelKit()) {
-                    Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
-                    $this->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $player->getName());
-                    $player->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $this->getName());
-                    foreach ([$player, $this] as $p) {
-                        $p->setInQueue(false);
-                    }
+            if (($player instanceof self && $player->getName() !== $this->getName()) && $player->isInQueue() && $this->getDuelKit() === $player->getDuelKit()) {
+                Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
+                $this->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $player->getName());
+                $player->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $this->getName());
+                foreach ([$player, $this] as $p) {
+                    $p->setInQueue(false);
                 }
             }
         }
@@ -404,7 +402,7 @@ class NeptunePlayer extends Player
         $this->setInQueue(false);
     }
 
-    public function onQuit()
+    public function onQuit(): void
     {
         Loader::getClickHandler()->removePlayerClickData($this);
         $party = $this->getParty();
@@ -415,7 +413,7 @@ class NeptunePlayer extends Player
                 $party->removeMember($this);
             }
         }
-        if ($this->isDueling() or $this->isCombat()) {
+        if ($this->isDueling() || $this->isCombat()) {
             $this->kill();
         }
         $this->setGamemode(GameMode::SURVIVAL());
@@ -430,7 +428,7 @@ class NeptunePlayer extends Player
         return $result;
     }
 
-    public function setParty(?PartyFactory $party)
+    public function setParty(?PartyFactory $party): void
     {
         $this->party = $party;
     }
@@ -448,7 +446,7 @@ class NeptunePlayer extends Player
     /**
      * @throws JsonException
      */
-    public function saveKit()
+    public function saveKit(): void
     {
         $name = $this->getName();
         try {
@@ -492,18 +490,12 @@ class NeptunePlayer extends Player
         $this->Opponent = $name;
     }
 
-    public function __destruct()
-    {
-        parent::__destruct();
-        // TODO: Make this to remove player data when onQuit() is called
-    }
-
     public function getPartyRank(): ?string
     {
         return $this->partyrank;
     }
 
-    public function setPartyRank(?string $rank)
+    public function setPartyRank(?string $rank): void
     {
         $this->partyrank = $rank;
     }
@@ -513,7 +505,7 @@ class NeptunePlayer extends Player
         return $this->EditKit;
     }
 
-    public function setEditKit(?string $kit)
+    public function setEditKit(?string $kit): void
     {
         $this->EditKit = $kit;
     }

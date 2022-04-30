@@ -26,7 +26,7 @@ class PartyManager
     {
         $result = null;
         foreach (Loader::getInstance()->PartyData as $party) {
-            if ($party->isMember($player) or $party->isLeader($player)) {
+            if ($party->isMember($player) || $party->isLeader($player)) {
                 $result = $party;
             }
         }
@@ -41,7 +41,7 @@ class PartyManager
     public static function getPartyIndexOf(PartyFactory $party): bool|int|string
     {
         $index = array_search($party, Loader::getInstance()->PartyData);
-        if (is_bool($index) and $index === false) {
+        if (is_bool($index) && $index === false) {
             $index = -1;
         }
         return $index;
@@ -80,7 +80,7 @@ class PartyManager
     public static function getInvitesFromParty($party): array
     {
         $result = [];
-        if (isset($party) and $party instanceof PartyInvite) {
+        if (isset($party) && $party instanceof PartyInvite) {
             foreach (Loader::getInstance()->PartyInvite as $invite) {
                 if ($invite->isParty($party)) {
                     $result[] = $invite;

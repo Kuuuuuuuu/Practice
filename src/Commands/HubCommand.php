@@ -30,7 +30,7 @@ class HubCommand extends Command
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou can't use this command while editing a kit!");
                 return;
             }
-            $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+            $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
             $sender->sendMessage(Loader::getPrefixCore() . '§aTeleported to Hub!');
             $sender->setGamemode(GameMode::ADVENTURE());
             $sender->getInventory()->clearAll();

@@ -94,7 +94,7 @@ class Loader extends PluginBase
         return self::$CoreTask;
     }
 
-    public static function setCoreTask(?NeptuneTask $task)
+    public static function setCoreTask(?NeptuneTask $task): void
     {
         self::$CoreTask = $task;
     }
@@ -191,7 +191,7 @@ class Loader extends PluginBase
     {
         self::$YamlLoader = new YamlManager();
         self::$YamlLoader->loadArenas();
-        $this->getArenaUtils()->Enable();
+        self::getArenaUtils()->Enable();
     }
 
     public static function getArenaUtils(): ArenaUtils

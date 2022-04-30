@@ -18,8 +18,7 @@ class KitRegistry
 
     public static function getKits(): array
     {
-        $kits = self::_registryGetAll();
-        return $kits;
+        return self::_registryGetAll();
     }
 
     protected static function setup(): void

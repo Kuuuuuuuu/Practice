@@ -16,7 +16,7 @@ class NeptuneTask extends Task
     private array $DuelTask = [];
     private int $tick = 0;
 
-    public function __Construct()
+    public function __construct()
     {
         Loader::setCoreTask($this);
     }
@@ -38,14 +38,14 @@ class NeptuneTask extends Task
             Loader::getDeleteBlockHandler()->update();
             if (count($this->DuelTask) > 0) {
                 foreach ($this->DuelTask as $duel) {
-                    if ($duel instanceof DuelFactory or $duel instanceof BotDuelFactory) {
+                    if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
                         $duel->update();
                     }
                 }
             }
             if (Loader::getInstance()->Restarted) {
                 Loader::getInstance()->RestartTime--;
-                if (Loader::getInstance()->RestartTime !== 0 and Loader::getInstance()->RestartTime % 5 === 0) {
+                if (Loader::getInstance()->RestartTime !== 0 && Loader::getInstance()->RestartTime % 5 === 0) {
                     Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§cServer will restart in §e' . Loader::getInstance()->RestartTime . '§c seconds');
                 } elseif (Loader::getInstance()->RestartTime <= 1) {
                     foreach (Server::getInstance()->getOnlinePlayers() as $player) {

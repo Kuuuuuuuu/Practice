@@ -33,8 +33,8 @@ class PartyInvite
 
     public function isParty(PartyFactory $party): bool
     {
-        $party = $party->getName();
-        return $party === $this->getParty()->getName();
+        $partyn = $party->getName();
+        return $partyn === $this->getParty()?->getName();
     }
 
     public function getParty(): ?PartyFactory
@@ -44,14 +44,14 @@ class PartyInvite
 
     public function isSender(Player $player): bool
     {
-        $player = $player->getName();
-        return $player === $this->sender;
+        $playern = $player->getName();
+        return $playern === $this->sender;
     }
 
     public function isTarget(Player $player): bool
     {
-        $player = $player->getName();
-        return $player === $this->target;
+        $playern = $player->getName();
+        return $playern === $this->target;
     }
 
     public function isSenderOnline(): bool
@@ -70,14 +70,15 @@ class PartyInvite
     {
         $sender = Server::getInstance()->getPlayerExact($this->sender);
         $target = Server::getInstance()->getPlayerExact($this->target);
+        /** @var $target Player */
         if ($sender !== null) {
-            $sender->sendMessage(Loader::getPrefixCore() . '§a' . $target->getDisplayName() . ' accepted your invitation.');
-            $target->sendMessage(Loader::getPrefixCore() . '§aInvitation accepted.');
+            $sender->sendMessage(Loader::getPrefixCore() . '§a' . $target?->getDisplayName() . ' accepted your invitation.');
+            $target?->sendMessage(Loader::getPrefixCore() . '§aInvitation accepted.');
         }
         if ($this->doesPartyExist()) {
-            $this->party->addMember($target);
+            $this->party->addMember($target ?? null);
         } else {
-            $target->sendMessage(Loader::getPrefixCore() . '§cThat party no longer exists.');
+            $target?->sendMessage(Loader::getPrefixCore() . '§cThat party no longer exists.');
         }
         $this->clear();
     }
@@ -89,7 +90,7 @@ class PartyInvite
 
     public function clear(): void
     {
-        unset(Loader::getInstance()->PartyInvite[array_search($this, Loader::getInstance()->PartyInvite)]);
+        unset(Loader::getInstance()->PartyInvite[array_search($this, Loader::getInstance()->PartyInvite, true)]);
     }
 
     public function decline(): void
@@ -97,8 +98,8 @@ class PartyInvite
         $sender = Server::getInstance()->getPlayerExact($this->sender);
         $target = Server::getInstance()->getPlayerExact($this->target);
         if ($sender !== null) {
-            $sender->sendMessage(Loader::getPrefixCore() . '§c' . $target->getDisplayName() . ' declined your invitation.');
-            $target->sendMessage(Loader::getPrefixCore() . '§aInvitation declined.');
+            $sender->sendMessage(Loader::getPrefixCore() . '§c' . $target?->getDisplayName() . ' declined your invitation.');
+            $target?->sendMessage(Loader::getPrefixCore() . '§aInvitation declined.');
         }
         $this->clear();
     }

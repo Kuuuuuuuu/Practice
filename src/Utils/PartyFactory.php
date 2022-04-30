@@ -40,8 +40,8 @@ class PartyFactory
 
     public function setLeader(Player $player): void
     {
-        $player = $player->getName();
-        $this->leader = $player;
+        $playern = $player->getName();
+        $this->leader = $playern;
     }
 
     public function getName(): string
@@ -51,7 +51,6 @@ class PartyFactory
 
     public function getMembers(): array
     {
-        var_dump($this->members);
         return $this->members;
     }
 
@@ -104,14 +103,14 @@ class PartyFactory
 
     public function isLeader(Player $player): bool
     {
-        $player = $player->getName();
-        return $player === $this->leader;
+        $playern = $player->getName();
+        return $playern === $this->leader;
     }
 
     public function isMember(Player $player): bool
     {
-        $player = $player->getName();
-        return in_array($player, $this->members);
+        $playern = $player->getName();
+        return in_array($playern, $this->members, true);
     }
 
     public function setOpen(): void
@@ -136,7 +135,7 @@ class PartyFactory
     public function sendMessage(string $message): void
     {
         foreach ($this->members as $member) {
-            $member = Server::getInstance()->getPlayerExact($member->getName());
+            $member = Server::getInstance()->getPlayerExact((string)$member?->getName());
             if ($member instanceof Player) {
                 $member->sendMessage(Loader::getPrefixCore() . $message);
             }
@@ -145,7 +144,7 @@ class PartyFactory
 
     public function removeMember(Player $player): void
     {
-        unset($this->members[array_search($player->getName(), $this->members)]);
+        unset($this->members[array_search($player->getName(), $this->members, true)]);
         $this->sendMessage($player->getDisplayName() . ' has left the party.');
         if ($player instanceof NeptunePlayer) {
             $player->setParty(null);
@@ -156,7 +155,7 @@ class PartyFactory
 
     public function kickMember(Player $player): void
     {
-        unset($this->members[array_search($player->getName(), $this->members)]);
+        unset($this->members[array_search($player->getName(), $this->members, true)]);
         if ($player instanceof NeptunePlayer) {
             $player->setParty(null);
             $player->setPartyRank(null);
@@ -170,7 +169,7 @@ class PartyFactory
         $leader = Server::getInstance()->getPlayerExact($this->leader);
         if ($leader !== null) {
             $leader->sendMessage(Loader::getPrefixCore() . '§aYou disbanded your party.');
-            unset($this->members[array_search($leader->getName(), $this->members)]);
+            unset($this->members[array_search($leader->getName(), $this->members, true)]);
             if ($leader instanceof NeptunePlayer) {
                 $leader->setParty(null);
                 $leader->setPartyRank(null);
@@ -178,13 +177,13 @@ class PartyFactory
         }
         $this->sendMessage($this->leader . ' disbanded the party.');
         foreach ($this->members as $member) {
-            $member = Server::getInstance()->getPlayerExact($member->getName());
+            $member = Server::getInstance()->getPlayerExact((string)$member?->getName());
             if ($member instanceof NeptunePlayer) {
                 $member->setParty(null);
                 $member->setPartyRank(null);
             }
         }
-        unset(Loader::getInstance()->PartyData[array_search($this, Loader::getInstance()->PartyData)]);
+        unset(Loader::getInstance()->PartyData[array_search($this, Loader::getInstance()->PartyData, true)]);
         foreach (PartyManager::getInvitesFromParty($this) as $invites) {
             $invites->clear();
         }

@@ -23,11 +23,9 @@ class FallingWool extends FallingBlock
         if ($this->isClosed()) {
             return false;
         }
-        if (!$this->isFlaggedForDespawn()) {
-            if ($this->onGround) {
-                $this->flagForDespawn();
-                $this->close();
-            }
+        if (!$this->isFlaggedForDespawn() && $this->onGround) {
+            $this->flagForDespawn();
+            $this->close();
         }
         return true;
     }

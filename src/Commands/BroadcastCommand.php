@@ -24,10 +24,10 @@ class BroadcastCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof Player) {
-            if ($args == null) {
+            if ($args === null) {
                 $sender->sendMessage(Loader::getPrefixCore() . '§cPlease enter a message');
                 return;
             }

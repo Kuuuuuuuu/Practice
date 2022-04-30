@@ -17,17 +17,17 @@ class DataManager
     private int $killStreak = 0;
     private int|float $kdr = 0;
     private int $deaths = 0;
-    private mixed $data = null;
+    private array $data = [];
     private int $elo = 1000;
     private ?string $tag = null;
 
     public function __construct(string $player)
     {
-        $this->player = $player ?? null;
+        $this->player = $player;
         $path = $this->getPath();
         if (is_file($path)) {
             $data = yaml_parse_file($path);
-            $this->data = $data;
+            $this->data[] = $data;
             if (isset($data['kills'])) {
                 $this->kills = $data['kills'];
             } else {
@@ -102,9 +102,8 @@ class DataManager
     {
         if ($this->deaths > 0) {
             return $this->kills / $this->deaths;
-        } else {
-            return 1;
         }
+        return 1;
     }
 
     /**
@@ -144,25 +143,25 @@ class DataManager
     public function getRank(): string
     {
         $format = '§6Rookie';
-        if ($this->elo >= 1200 and $this->elo < 1400) {
+        if ($this->elo >= 1200 && $this->elo < 1400) {
             $format = '§fSilver';
-        } elseif ($this->elo >= 1400 and $this->elo < 1600) {
+        } elseif ($this->elo >= 1400 && $this->elo < 1600) {
             $format = '§eGold';
-        } elseif ($this->elo >= 1600 and $this->elo < 1800) {
+        } elseif ($this->elo >= 1600 && $this->elo < 1800) {
             $format = '§dPlatinum';
-        } elseif ($this->elo >= 1800 and $this->elo < 2000) {
+        } elseif ($this->elo >= 1800 && $this->elo < 2000) {
             $format = '§bDiamond';
-        } elseif ($this->elo >= 2000 and $this->elo < 2200) {
+        } elseif ($this->elo >= 2000 && $this->elo < 2200) {
             $format = '§6Master';
-        } elseif ($this->elo >= 2200 and $this->elo < 2400) {
+        } elseif ($this->elo >= 2200 && $this->elo < 2400) {
             $format = '§3Grandmaster';
-        } elseif ($this->elo >= 2400 and $this->elo < 2600) {
+        } elseif ($this->elo >= 2400 && $this->elo < 2600) {
             $format = '§4Challenger';
-        } elseif ($this->elo >= 2600 and $this->elo < 2800) {
+        } elseif ($this->elo >= 2600 && $this->elo < 2800) {
             $format = '§5Legend';
-        } elseif ($this->elo >= 2800 and $this->elo < 3000) {
+        } elseif ($this->elo >= 2800 && $this->elo < 3000) {
             $format = '§6Legendary';
-        } elseif ($this->elo >= 3000 and $this->elo < 3200) {
+        } elseif ($this->elo >= 3000 && $this->elo < 3200) {
             $format = '§7Godlike';
         } elseif ($this->elo >= 3200) {
             $format = '§cUnbeatable';
@@ -172,10 +171,7 @@ class DataManager
 
     public function getTag(): ?string
     {
-        if ($this->tag === null) {
-            return null;
-        }
-        return $this->tag;
+        return $this->tag ?? null;
     }
 
     public function setTag(string $tag): void

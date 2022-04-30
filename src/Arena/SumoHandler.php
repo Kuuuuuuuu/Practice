@@ -52,37 +52,40 @@ class SumoHandler implements Listener
         if (empty($this->data)) {
             return false;
         }
-        if ($this->data['level'] == null) {
+        if ($this->data['level'] === null) {
             return false;
         }
         if (!Server::getInstance()->getWorldManager()->isWorldGenerated($this->data['level'])) {
             return false;
-        } else {
-            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data['level']))
-                Server::getInstance()->getWorldManager()->loadWorld($this->data['level']);
-            $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data['level']);
         }
+        if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data['level'])) {
+            Server::getInstance()->getWorldManager()->loadWorld($this->data['level']);
+        }
+        $this->level = Server::getInstance()->getWorldManager()->getWorldByName($this->data['level']);
         if (!is_int($this->data['slots'])) {
             return false;
         }
         if (!is_array($this->data['spawns'])) {
             return false;
         }
-        if (count($this->data['spawns']) != $this->data['slots']) {
+        if (count($this->data['spawns']) !== $this->data['slots']) {
             return false;
         }
         $this->data['enabled'] = true;
         $this->setup = false;
-        if ($loadArena) $this->loadArena();
+        if ($loadArena) {
+            $this->loadArena();
+        }
         return true;
     }
 
-    public function loadArena(bool $restart = false)
+    public function loadArena(bool $restart = false): void
     {
         if (!$this->data['enabled']) {
             Loader::getInstance()->getLogger()->error('Can not load arena: Arena is not enabled!');
             return;
-        } elseif (!$restart) {
+        }
+        if (!$restart) {
             Server::getInstance()->getPluginManager()->registerEvents($this, Loader::getInstance());
             if (!Server::getInstance()->getWorldManager()->isWorldLoaded($this->data['level'])) {
                 Server::getInstance()->getWorldManager()->loadWorld($this->data['level']);
@@ -96,7 +99,7 @@ class SumoHandler implements Listener
         $this->players = [];
     }
 
-    private function createBasicData()
+    private function createBasicData(): void
     {
         $this->data = [
             'level' => null,
@@ -106,26 +109,26 @@ class SumoHandler implements Listener
         ];
     }
 
-    public function joinToArena(Player $player)
+    public function joinToArena(Player $player): void
     {
         if (!$this->data['enabled']) {
             $player->sendMessage(Loader::getPrefixCore() . '§eThe game is in configurating!');
             return;
-        } elseif (count($this->players) >= $this->data['slots']) {
+        }
+        if (count($this->players) >= $this->data['slots']) {
             $player->sendMessage(Loader::getPrefixCore() . '§eThe game is full!');
             return;
-        } elseif ($this->inGame($player)) {
+        }
+        if ($this->inGame($player)) {
             $player->sendMessage(Loader::getPrefixCore() . 'You are already in the queue/game!');
             return;
         }
         $selected = false;
         for ($lS = 1; $lS <= $this->data['slots']; $lS++) {
-            if (!$selected) {
-                if (!isset($this->players[$index = "spawn-$lS"])) {
-                    $player->teleport(Position::fromObject(new Vector3($this->data['spawns'][$index]['x'], $this->data['spawns'][$index]['y'], $this->data['spawns'][$index]['z']), $this->level));
-                    $this->players[$index] = $player;
-                    $selected = true;
-                }
+            if (!$selected && !isset($this->players[$index = "spawn-$lS"])) {
+                $player->teleport(Position::fromObject(new Vector3($this->data['spawns'][$index]['x'], $this->data['spawns'][$index]['y'], $this->data['spawns'][$index]['z']), $this->level));
+                $this->players[$index] = $player;
+                $selected = true;
             }
         }
         $player->getInventory()->clearAll();
@@ -147,12 +150,11 @@ class SumoHandler implements Listener
                 }
             }
             return $inGame;
-        } else {
-            return isset($this->players[$player->getName()]);
         }
+        return isset($this->players[$player->getName()]);
     }
 
-    public function startGame()
+    public function startGame(): void
     {
         $players = [];
         foreach ($this->players as $player) {
@@ -165,13 +167,13 @@ class SumoHandler implements Listener
     /**
      * @throws Exception
      */
-    public function startRestart()
+    public function startRestart(): void
     {
         $player = null;
         foreach ($this->players as $p) {
             $player = $p;
         }
-        if ($player instanceof Player and $player->isOnline()) {
+        if ($player instanceof Player && $player->isOnline()) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . "§r§ePlayer {$player->getName()} won the Sumo!");
             $player->sendMessage(Loader::getPrefixCore() . '§r§eYou got ' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->addElo() . ' Elos!');
         }
@@ -186,7 +188,7 @@ class SumoHandler implements Listener
     /**
      * @throws Exception
      */
-    public function onMove(PlayerMoveEvent $event)
+    public function onMove(PlayerMoveEvent $event): void
     {
         if ($this->phase === self::PHASE_LOBBY) {
             $player = $event->getPlayer();
@@ -211,7 +213,7 @@ class SumoHandler implements Listener
     /**
      * @throws Exception
      */
-    public function disconnectPlayer(Player $player)
+    public function disconnectPlayer(Player $player): void
     {
         if ($this->phase === self::PHASE_LOBBY) {
             $index = '';
@@ -234,13 +236,13 @@ class SumoHandler implements Listener
         $player->getCursorInventory()->clearAll();
         $player->setImmobile(false);
         Loader::getInstance()->getArenaUtils()->GiveItem($player);
-        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
+        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSpawnLocation());
     }
 
     /**
      * @throws Exception
      */
-    public function onLeft(PlayerQuitEvent $event)
+    public function onLeft(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
         if ($this->inGame($player)) {

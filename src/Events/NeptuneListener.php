@@ -68,40 +68,39 @@ use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
+use Throwable;
 
 class NeptuneListener implements Listener
 {
 
     protected bool $networkRegistered = false;
 
-    public function onCreation(PlayerCreationEvent $event)
+    public function onCreation(PlayerCreationEvent $event): void
     {
         $event->setPlayerClass(NeptunePlayer::class);
     }
 
-    public function onUse(PlayerItemUseEvent $event)
+    public function onUse(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
         $name = $player->getName();
         if ($player instanceof NeptunePlayer) {
             if ($player->getEditKit() !== null) {
-                if ($item->getId() === ItemIds::ENDER_PEARL or $item->getId() === ItemIds::GOLDEN_APPLE) {
+                if ($item->getId() === ItemIds::ENDER_PEARL || $item->getId() === ItemIds::GOLDEN_APPLE) {
                     $event->cancel();
                 }
             }
             if (!$player->isSkillCooldown()) {
                 if ($item->getCustomName() === '§r§6Reaper') {
                     $player->sendMessage(Loader::getInstance()->MessageData['StartSkillMessage']);
-                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
-                        if ($p->getName() !== $name) {
-                            if ($player->getPosition()->distance($p->getPosition()) <= 10) {
-                                $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
-                                $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
-                                $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
-                                $player->getArmorInventory()->setHelmet(VanillaItems::WITHER_SKELETON_SKULL()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
-                                $player->setSkillCooldown(true);
-                            }
+                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())?->getPlayers() as $p) {
+                        if (($p->getName() !== $name) && $player->getPosition()->distance($p->getPosition()) <= 10) {
+                            $player->getEffects()->add(new EffectInstance(VanillaEffects::INVISIBILITY(), 120, 1, false));
+                            $p->getEffects()->add(new EffectInstance(VanillaEffects::WEAKNESS(), 120, 1, false));
+                            $p->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 120, 1, false));
+                            $player->getArmorInventory()->setHelmet(VanillaItems::WITHER_SKELETON_SKULL()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
+                            $player->setSkillCooldown(true);
                         }
                     }
                 } elseif ($item->getCustomName() === '§r§6Ultimate Tank') {
@@ -124,7 +123,7 @@ class NeptuneListener implements Listener
                     $player->setSkillCooldown(true);
                 } elseif ($item->getCustomName() === '§r§6Teleport') {
                     $player->sendMessage(Loader::getInstance()->MessageData['StartSkillMessage']);
-                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())->getPlayers() as $p) {
+                    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())?->getPlayers() as $p) {
                         if ($p->getName() !== $name) {
                             $player->teleport($p->getPosition()->asVector3());
                             $player->setSkillCooldown(true);
@@ -161,7 +160,7 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onProjectile(ProjectileHitBlockEvent $event)
+    public function onProjectile(ProjectileHitBlockEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof Arrow) {
@@ -170,21 +169,19 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onBow(EntityShootBowEvent $event)
+    public function onBow(EntityShootBowEvent $event): void
     {
         $entity = $event->getEntity();
-        if ($entity instanceof NeptunePlayer) {
-            if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
-                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
-                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) and $entity->isAlive()) {
-                        $entity->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
-                    }
-                }), 100);
-            }
+        if (($entity instanceof NeptunePlayer) && $entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
+                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) && $entity->isAlive()) {
+                    $entity->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
+                }
+            }), 100);
         }
     }
 
-    public function onQuery(QueryRegenerateEvent $ev)
+    public function onQuery(QueryRegenerateEvent $ev): void
     {
         $ev->getQueryInfo()->setWorld('NeptuneLobby');
         $ev->getQueryInfo()->setPlugins([Loader::getInstance()]);
@@ -198,7 +195,7 @@ class NeptuneListener implements Listener
     /**
      * @throws JsonException
      */
-    public function onLogin(PlayerLoginEvent $event)
+    public function onLogin(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -227,7 +224,7 @@ class NeptuneListener implements Listener
             }
         } else {
             $player->getAllArtifact();
-            $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+            $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
             Loader::getInstance()->getArenaUtils()->DeviceCheck($player);
             Loader::getClickHandler()->initPlayerClickData($player);
             if ($player instanceof NeptunePlayer) {
@@ -238,10 +235,10 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onPlayerPreLogin(PlayerPreLoginEvent $event)
+    public function onPlayerPreLogin(PlayerPreLoginEvent $event): void
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-            if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() and strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
+            if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() && strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
                 $event->setKickReason(3, Loader::getInstance()->MessageData['AntiCheatName'] . '§cThis player is already online!');
             }
         }
@@ -250,7 +247,7 @@ class NeptuneListener implements Listener
     /**
      * @throws JsonException
      */
-    public function onJoin(PlayerJoinEvent $event)
+    public function onJoin(PlayerJoinEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -260,7 +257,7 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onExhaust(PlayerExhaustEvent $event)
+    public function onExhaust(PlayerExhaustEvent $event): void
     {
         $player = $event->getPlayer();
         if ($player->getHungerManager()->getFood() < 20) {
@@ -268,7 +265,7 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onClickBlock(PlayerInteractEvent $event)
+    public function onClickBlock(PlayerInteractEvent $event): void
     {
         $block = $event->getBlock();
         if ($block->getId() === ItemIds::ANVIL) {
@@ -279,14 +276,14 @@ class NeptuneListener implements Listener
     /**
      * @throws JsonException
      */
-    public function onChangeSkin(PlayerChangeSkinEvent $event)
+    public function onChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $case = 0;
         $player = $event->getPlayer();
         $name = $player->getName();
         $cosmetic = Loader::getCosmeticHandler();
         if ($player instanceof NeptunePlayer) {
-            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 or strlen($event->getNewSkin()->getSkinData()) <= 8192 or $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
                 copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
                 $cosmetic->resetSkin($player);
                 $case = 1;
@@ -303,22 +300,20 @@ class NeptuneListener implements Listener
                 } else {
                     $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), $capedata, $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
                 }
+            } elseif ($case === 1) {
+                $player->setSkin(new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), ''));
             } else {
-                if ($case === 1) {
-                    $player->setSkin(new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), ''));
-                } else {
-                    $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
-                }
+                $player->setSkin(new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), ''));
             }
         }
     }
 
-    public function onCraft(CraftItemEvent $event)
+    public function onCraft(CraftItemEvent $event): void
     {
         $event->cancel();
     }
 
-    public function onLevelLoadEvent(WorldLoadEvent $event)
+    public function onLevelLoadEvent(WorldLoadEvent $event): void
     {
         $world = $event->getWorld();
         $world->setTime(0);
@@ -330,7 +325,7 @@ class NeptuneListener implements Listener
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
-            if ($block->getId() === BlockLegacyIds::WOOL or $block->getId() === BlockLegacyIds::COBWEB) {
+            if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
                 $ev->setDropsVariadic(VanillaItems::AIR());
                 if ($block->getId() === BlockLegacyIds::WOOL) {
                     $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
@@ -338,17 +333,12 @@ class NeptuneListener implements Listener
                 }
                 return false;
             }
-        } else {
-            /* @var $player NeptunePlayer */
-            if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if (!$player->isDueling()) {
-                    $ev->cancel();
-                }
-            }
+        } else if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+            $ev->cancel();
         }
     }
 
-    public function onPlace(BlockPlaceEvent $ev)
+    public function onPlace(BlockPlaceEvent $ev): void
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
@@ -357,25 +347,21 @@ class NeptuneListener implements Listener
             return;
         }
         /* @var $player NeptunePlayer */
-        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-            if (!$player->isDueling()) {
-                $ev->cancel();
-            }
+        if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+            $ev->cancel();
         }
     }
 
     public function onDataPacketSend(DataPacketSendEvent $ev): void
     {
         foreach ($ev->getPackets() as $packet) {
-            if ($packet instanceof LevelSoundEventPacket) {
-                if ($packet->pid() === LevelSoundEventPacket::NETWORK_ID) {
-                    switch ($packet->sound) {
-                        case LevelSoundEvent::ATTACK:
-                        case LevelSoundEvent::ATTACK_NODAMAGE:
-                        case LevelSoundEvent::ATTACK_STRONG:
-                            $ev->cancel();
-                            break;
-                    }
+            if (($packet instanceof LevelSoundEventPacket) && $packet->pid() === LevelSoundEventPacket::NETWORK_ID) {
+                switch ($packet->sound) {
+                    case LevelSoundEvent::ATTACK:
+                    case LevelSoundEvent::ATTACK_NODAMAGE:
+                    case LevelSoundEvent::ATTACK_STRONG:
+                        $ev->cancel();
+                        break;
                 }
             }
         }
@@ -385,11 +371,11 @@ class NeptuneListener implements Listener
     {
         $player = $event->getOrigin()->getPlayer();
         $packet = $event->getPacket();
-        if ($packet instanceof InventoryTransactionPacket or $packet instanceof LevelSoundEventPacket) {
-            if ($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData or $packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
-                Loader::getClickHandler()->addClick($player);
-                if (Loader::getClickHandler()->getClicks($player) >= ConfigCore::MaximumCPS) {
-                    if ($player instanceof NeptunePlayer) {
+        if ($packet instanceof InventoryTransactionPacket || $packet instanceof LevelSoundEventPacket) {
+            if (($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData) || ($packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE)) {
+                if ($player instanceof Player) {
+                    Loader::getClickHandler()->addClick($player);
+                    if ((Loader::getClickHandler()->getClicks($player) >= ConfigCore::MaximumCPS) && $player instanceof NeptunePlayer) {
                         $player->setLastDamagePlayer('Unknown');
                         $player->kill();
                     }
@@ -404,29 +390,28 @@ class NeptuneListener implements Listener
     public function onItemMoved(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
-        $actions = $transaction->getActions();
         $player = $transaction->getSource();
         if ($player instanceof NeptunePlayer) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) or $player->isDueling()) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) || $player->isDueling()) {
                 return;
             }
             if ($transaction instanceof CraftingTransaction) {
                 $event->cancel();
             }
-            foreach ($actions as $action) {
-                if ($player->getGamemode() === GameMode::CREATIVE() or $player->getEditKit() !== null) {
-                    return;
-                } else {
-                    $event->cancel();
-                }
+            if ($player->getGamemode() === GameMode::CREATIVE()) {
+                return;
             }
+            if ($player->getEditKit() !== null) {
+                return;
+            }
+            $event->cancel();
         }
     }
 
     /**
      * @throws JsonException
      */
-    public function onChat(PlayerChatEvent $event)
+    public function onChat(PlayerChatEvent $event): void
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
@@ -459,24 +444,26 @@ class NeptuneListener implements Listener
                         if (!isset($args[1])) {
                             $player->sendMessage(Loader::getPrefixCore() . '§cUsage: §7setspawn <int: spawn>');
                             break;
-                        } elseif (!is_numeric($args[1])) {
+                        }
+                        if (!is_numeric($args[1])) {
                             $player->sendMessage(Loader::getPrefixCore() . '§cType number!');
                             break;
-                        } elseif ((int)$args[1] > $arena->data['slots']) {
+                        }
+                        if ((int)$args[1] > $arena->data['slots']) {
                             $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data['slots']} slots!");
                             break;
                         }
-                        $data = $arena->data['spawns']["spawn-$args[1]"];
-                        $data['x'] = $player->getPosition()->getX();
-                        $data['y'] = $player->getPosition()->getY();
-                        $data['z'] = $player->getPosition()->getZ();
+                        $arena->data['spawns']["spawn-$args[1]"]['x'] = $player->getPosition()->getX();
+                        $arena->data['spawns']["spawn-$args[1]"]['y'] = $player->getPosition()->getY();
+                        $arena->data['spawns']["spawn-$args[1]"]['z'] = $player->getPosition()->getZ();
                         $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . ' Y: ' . round($player->getPosition()->getY()) . ' Z: ' . round($player->getPosition()->getZ()));
                         break;
                     case 'enable':
                         if (!$arena->setup) {
                             $player->sendMessage(Loader::getPrefixCore() . '§6Arena is already enabled!');
                             break;
-                        } elseif (!$arena->enable()) {
+                        }
+                        if (!$arena->enable()) {
                             $player->sendMessage(Loader::getPrefixCore() . '§cCould not load arena, there are missing information!');
                             break;
                         }
@@ -492,7 +479,7 @@ class NeptuneListener implements Listener
                     default:
                         $player->sendMessage(Loader::getPrefixCore() . "§6You are in setup mode.\n" .
                             "§7- use §lhelp §r§7to display available commands\n" .
-                            '§7- or §ldone §r§7to leave setup mode');
+                            '§7- || §ldone §r§7to leave setup mode');
                         break;
                 }
             } else {
@@ -505,7 +492,7 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onQuit(PlayerQuitEvent $event)
+    public function onQuit(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -518,23 +505,23 @@ class NeptuneListener implements Listener
     /**
      * @throws Exception
      */
-    public function onInterrupt(EntityDamageByEntityEvent $event)
+    public function onInterrupt(EntityDamageByEntityEvent $event): void
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if ($player instanceof NeptunePlayer and $damager instanceof NeptunePlayer) {
+        if ($player instanceof NeptunePlayer && $damager instanceof NeptunePlayer) {
             if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
-            } else {
-                if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
-                    Loader::getFormUtils()->ProfileForm($damager, $player);
-                }
+            } else if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
+                Loader::getFormUtils()->ProfileForm($damager, $player);
             }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) or $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) || $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
-            } elseif ($player->getOpponent() === null and $damager->getOpponent() === null) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
+            } elseif ($player->getOpponent() === null && $damager->getOpponent() === null) {
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                    return;
+                }
                 $player->setOpponent($damager->getName());
                 $damager->setOpponent($player->getName());
                 foreach ([$player, $damager] as $p) {
@@ -543,19 +530,21 @@ class NeptuneListener implements Listener
                     $p->setCombat(true);
                     $p->CombatTime = 10;
                 }
-            } elseif ($player->getOpponent() !== null and $damager->getOpponent() !== null) {
-                if ($player->getOpponent() !== $damager->getName() and $damager->getOpponent() !== $player->getName()) {
+            } elseif ($player->getOpponent() !== null && $damager->getOpponent() !== null) {
+                if ($player->getOpponent() !== $damager->getName() && $damager->getOpponent() !== $player->getName()) {
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-                } elseif ($player->getOpponent() === $damager->getName() and $damager->getOpponent() === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) or $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) return;
+                } elseif ($player->getOpponent() === $damager->getName() && $damager->getOpponent() === $player->getName()) {
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                        return;
+                    }
                     foreach ([$player, $damager] as $p) {
                         /* @var NeptunePlayer $p */
                         $p->CombatTime = 10;
                     }
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                         if ($damager->BoxingPoint <= 100) {
-                            $damager->BoxingPoint += 1;
+                            $damager->BoxingPoint++;
                             foreach ([$damager, $player] as $p) {
                                 /* @var NeptunePlayer $p */
                                 $boxingp = $p->BoxingPoint;
@@ -563,7 +552,7 @@ class NeptuneListener implements Listener
                                 if ($opponent !== null) {
                                     $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                                     /** @var NeptunePlayer $oppopl */
-                                    $opponentboxingp = $oppopl->BoxingPoint;
+                                    $opponentboxingp = $oppopl?->BoxingPoint;
                                 } else {
                                     $opponentboxingp = 0;
                                 }
@@ -584,10 +573,10 @@ class NeptuneListener implements Listener
                         }
                     }
                 }
-            } elseif ($player->getOpponent() !== null and $damager->getOpponent() === null) {
+            } elseif ($player->getOpponent() !== null && $damager->getOpponent() === null) {
                 $event->cancel();
                 $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
-            } elseif ($player->getOpponent() === null and $damager->getOpponent() !== null) {
+            } elseif ($player->getOpponent() === null && $damager->getOpponent() !== null) {
                 $event->cancel();
                 $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
             }
@@ -598,7 +587,7 @@ class NeptuneListener implements Listener
      *
      * @throws Exception
      */
-    public function onDamage(EntityDamageEvent $event)
+    public function onDamage(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof NeptunePlayer) {
@@ -606,7 +595,7 @@ class NeptuneListener implements Listener
                 case EntityDamageEvent::CAUSE_VOID:
                     if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         $event->cancel();
-                        $entity->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                        $entity->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
                     }
                     break;
                 case EntityDamageEvent::CAUSE_FALL:
@@ -617,22 +606,26 @@ class NeptuneListener implements Listener
                     $entity->teleport(new Vector3($entity->getPosition()->getX(), $entity->getPosition()->getY() + 3, $entity->getPosition()->getZ()));
                     break;
                 case EntityDamageEvent::CAUSE_PROJECTILE:
-                    if ($event->getChild() !== null and $event->getChild() instanceof Arrow) {
-                        $owner = $event->getChild()->getOwningEntity();
-                        if ($owner instanceof Player) {
-                            $name = $owner->getName();
-                            if ($name === $entity->getName()) {
-                                $event->cancel();
-                                $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                    try {
+                        if ($event->getChild() instanceof Arrow) {
+                            $owner = $event->getChild()->getOwningEntity();
+                            if ($owner instanceof Player) {
+                                $name = $owner->getName();
+                                if ($name === $entity->getName()) {
+                                    $event->cancel();
+                                    $entity->sendMessage(Loader::getPrefixCore() . "§cYou can't attack yourself!");
+                                }
                             }
                         }
+                    } catch (Throwable) {
+                        $event->cancel();
                     }
                     break;
             }
         }
     }
 
-    public function onMove(PlayerMoveEvent $event)
+    public function onMove(PlayerMoveEvent $event): void
     {
         $player = $event->getPlayer();
         //$block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->asPosition()->getY() - 0.5, $player->getPosition()->asPosition()->getZ()));
@@ -651,18 +644,16 @@ class NeptuneListener implements Listener
         $player = $event->getPlayer();
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
-        if ($cause instanceof EntityDamageByEntityEvent) {
-            if ($player instanceof NeptunePlayer) {
-                $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
-                if ($damager instanceof NeptunePlayer) {
-                    $dname = $damager->getName() ?? 'Unknown';
-                    Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
-                    foreach ([$player, $damager] as $p) {
-                        $p->setLastDamagePlayer('Unknown');
-                        $p->sendMessage(Loader::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
-                    }
-                    $damager->setHealth(20);
+        if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof NeptunePlayer) {
+            $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
+            if ($damager instanceof NeptunePlayer) {
+                $dname = $damager->getName() ?? 'Unknown';
+                Loader::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
+                foreach ([$player, $damager] as $p) {
+                    $p->setLastDamagePlayer('Unknown');
+                    $p->sendMessage(Loader::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
                 }
+                $damager->setHealth(20);
             }
         }
     }
@@ -684,15 +675,15 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onCommandPreprocess(PlayerCommandPreprocessEvent $event)
+    public function onCommandPreprocess(PlayerCommandPreprocessEvent $event): void
     {
         $player = $event->getPlayer();
         $msg = $event->getMessage();
         if ($player instanceof NeptunePlayer) {
-            if ($player->isCombat() or $player->getEditKit() !== null or $player->isDueling()) {
+            if ($player->isCombat() || $player->getEditKit() !== null || $player->isDueling()) {
                 $msg = substr($msg, 1);
                 $msg = explode(' ', $msg);
-                if (in_array($msg[0], Loader::getInstance()->BanCommand)) {
+                if (in_array($msg[0], Loader::getInstance()->BanCommand, true)) {
                     $event->cancel();
                     $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
                 }
@@ -703,7 +694,7 @@ class NeptuneListener implements Listener
     public function onNetworkRegister(NetworkInterfaceRegisterEvent $event): void
     {
         $interface = $event->getInterface();
-        if ($interface instanceof RakLibInterface and !$interface instanceof RaklibNeptune) {
+        if ($interface instanceof RakLibInterface && !$interface instanceof RaklibNeptune) {
             $event->cancel();
             if (!$this->networkRegistered) {
                 $server = Server::getInstance();

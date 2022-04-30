@@ -58,7 +58,7 @@ class SumoCommand extends Command
                     }
                     $arena = Loader::getInstance()->SumoArenas[$args[1]];
                     foreach ($arena->players as $player) {
-                        $player->teleport(Loader::getInstance()->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation());
+                        $player->teleport(Loader::getInstance()->getServer()->getWorldManager()->getDefaultWorld()?->getSpawnLocation());
                     }
                     if (is_file($file = Loader::getInstance()->getDataFolder() . 'SumoArenas' . DIRECTORY_SEPARATOR . $args[1] . '.yml')) unlink($file);
                     unset(Loader::getInstance()->SumoArenas[$args[1]]);
@@ -83,7 +83,7 @@ class SumoCommand extends Command
                     }
                     $sender->sendMessage("§aYou joined the setup mode.\n" .
                         "§7- Use §lhelp §r§7to display available commands\n" .
-                        '§7- or §ldone §r§7to leave setup mode');
+                        '§7- || §ldone §r§7to leave setup mode');
                     Loader::getInstance()->SumoSetup[$sender->getName()] = Loader::getInstance()->SumoArenas[$args[1]];
                     break;
                 case 'arenas':

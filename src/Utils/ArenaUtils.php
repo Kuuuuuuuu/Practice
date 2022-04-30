@@ -60,6 +60,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
+use RuntimeException;
 use SQLite3;
 use Throwable;
 use ZipArchive;
@@ -132,9 +133,12 @@ class ArenaUtils
         return gmdate('i:s', $time);
     }
 
+    /**
+     * @throws Exception
+     */
     public function randomSpawn(Player $p): void
     {
-        $x = $z = mt_rand(0, 15);
+        $x = $z = random_int(0, 15);
         $y = $p->getWorld()->getHighestBlockAt($p->getPosition()->getFloorX(), $p->getPosition()->getFloorZ() + 1);
         $p->teleport(new Vector3($x, $y + 10, $z));
     }
@@ -184,9 +188,15 @@ class ArenaUtils
 
     private function registerConfigs(): void
     {
-        @mkdir(Loader::getInstance()->getDataFolder() . 'data/');
-        @mkdir(Loader::getInstance()->getDataFolder() . 'players/');
-        @mkdir(Loader::getInstance()->getDataFolder() . 'Kits/');
+        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'data/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
+        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'players/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
+        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'Kits/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
         Loader::getInstance()->saveResource('config.yml');
         Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
@@ -453,7 +463,7 @@ class ArenaUtils
             $availableArenas[$index] = $arena;
         }
         foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 or $arena->setup or count($arena->players) >= 2) {
+            if ($arena->phase !== 0 || $arena->setup || count($arena->players) >= 2) {
                 unset($availableArenas[$index]);
             }
         }
@@ -483,7 +493,7 @@ class ArenaUtils
     public function getChatFormat(Player $player, string $message): string
     {
         $name = $player->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null and Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]' . '§r§a > §r' . $message;
         } else {
             $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;

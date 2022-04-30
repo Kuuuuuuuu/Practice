@@ -17,7 +17,7 @@ class ArenaFactory
     public function getPlayers(mixed $arena): string
     {
         try {
-            return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers()) ?? 'Error';
+            return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)?->getPlayers());
         } catch (Throwable) {
             return 'Error';
         }

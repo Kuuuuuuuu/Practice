@@ -70,14 +70,14 @@ class FormUtils
         });
 
         $form->setTitle('§dNeptune §cMenu');
-        $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena() ?? null) ?? 0, 0, 'textures/items/diamond_sword.png');
-        $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena() ?? null) ?? 0, 0, 'textures/items/beef_cooked.png');
-        $form->addButton("§aCombo\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena() ?? null) ?? 0, 0, 'textures/items/apple_golden.png');
-        $form->addButton("§aKnockback\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena() ?? null) ?? 0, 0, 'textures/items/stick.png');
-        $form->addButton("§aResistance\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena() ?? null) ?? 0, 0, 'textures/ui/resistance_effect.png');
-        $form->addButton("§aKitPVP\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena() ?? null) ?? 0, 0, 'textures/ui/recipe_book_icon.png');
-        $form->addButton("§aOITC\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena() ?? null) ?? 0, 0, 'textures/items/bow_standby.png');
-        $form->addButton("§aBuild\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena() ?? null) ?? 0, 0, 'textures/items/diamond_pickaxe.png');
+        $form->addButton('§aBoxing\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
+        $form->addButton('§aFist\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
+        $form->addButton('§aCombo\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
+        $form->addButton('§aKnockback\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
+        $form->addButton('§aResistance\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
+        $form->addButton('§aKitPVP\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
+        $form->addButton('§aOITC\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
+        $form->addButton('§aBuild\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
     }
 
@@ -255,7 +255,7 @@ class FormUtils
             if ($p instanceof NeptunePlayer) {
                 try {
                     if ($p->getDuelKit()?->getName() === $kit) {
-                        $kitcount += 1;
+                        $kitcount++;
                     }
                 } catch (Exception) {
                     $kitcount = 0;
@@ -338,9 +338,10 @@ class FormUtils
             $result = $data;
             if ($result === null) {
                 return true;
-            } elseif (strlen($data[0]) >= 15) {
+            }
+            if (strlen($data[0]) >= 15) {
                 $player->sendMessage(Loader::getPrefixCore() . '§cYour nickname is too long!');
-            } elseif (Server::getInstance()->getPlayerByPrefix($data[0]) !== null or $data[0] === '' or mb_strtolower($data[0]) === 'iskohakuchan') {
+            } elseif (Server::getInstance()->getPlayerByPrefix($data[0]) !== null || $data[0] === '' || mb_strtolower($data[0]) === 'iskohakuchan') {
                 $player->sendMessage(Loader::getPrefixCore() . '§cYou cant use this nickname!');
             } else {
                 $player->setDisplayName($data[0]);
@@ -462,22 +463,20 @@ class FormUtils
     public function getArtifactForm(Player $player): bool
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
-            if ($event instanceof NeptunePlayer) {
-                if ($data !== null) {
-                    if ($data === 'None') {
-                        return;
+            if (($event instanceof NeptunePlayer) && $data !== null) {
+                if ($data === 'None') {
+                    return;
+                }
+                $cosmetic = Loader::getCosmeticHandler();
+                if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
+                    if (str_contains($data, 'SP-')) {
+                        $event->setStuff('');
+                        $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
+                    } else {
+                        $event->setStuff($cosmetic->cosmeticAvailable[$key]);
+                        $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
                     }
-                    $cosmetic = Loader::getCosmeticHandler();
-                    if (($key = array_search($data, $cosmetic->cosmeticAvailable)) !== false) {
-                        if (str_contains($data, 'SP-')) {
-                            $event->setStuff('');
-                            $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
-                        } else {
-                            $event->setStuff($cosmetic->cosmeticAvailable[$key]);
-                            $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
-                        }
-                        $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
-                    }
+                    $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
                 }
             }
         });
@@ -489,7 +488,9 @@ class FormUtils
             $player->sendForm($form);
         }
         foreach ($validstuffs as $stuff) {
-            if ($stuff === 'None') continue;
+            if ($stuff === 'None') {
+                continue;
+            }
             $form->addButton('§a' . $stuff, -1, '', $stuff);
         }
         $player->sendForm($form);
@@ -558,10 +559,8 @@ class FormUtils
     {
         $count = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof NeptunePlayer) {
-                if ($player->isDueling() and str_contains($player->getWorld()->getFolderName(), 'bot')) {
-                    $count += 1;
-                }
+            if (($player instanceof NeptunePlayer) && $player->isDueling() && str_contains($player->getWorld()->getFolderName(), 'bot')) {
+                $count++;
             }
         }
         return $count;
@@ -570,7 +569,9 @@ class FormUtils
     public function partyForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'create':
                     if ($player->isInParty()) {
@@ -592,7 +593,7 @@ class FormUtils
                     $this->partyMembersForm($player);
                     break;
                 case 'leave':
-                    $player->getParty()->removeMember($player);
+                    $player->getParty()?->removeMember($player);
                     break;
                 case 'invite':
                     $this->playerListForm($player);
@@ -601,7 +602,7 @@ class FormUtils
                     $this->partyManageForm($player);
                     break;
                 case 'disband':
-                    $player->getParty()->disband();
+                    $player->getParty()?->disband();
                     break;
             }
         });
@@ -614,7 +615,9 @@ class FormUtils
         if ($player->isInParty()) {
             $form->addButton('§dMembers', -1, '', 'members');
             if ($party !== null) {
-                if (!$party->isLeader($player)) $form->addButton('§dLeave', -1, '', 'leave');
+                if (!$party->isLeader($player)) {
+                    $form->addButton('§dLeave', -1, '', 'leave');
+                }
                 if ($party->isLeader($player)) {
                     $form->addButton('§dDuel', -1, '', 'duel');
                     $form->addButton('§dInvite', -1, '', 'invite');
@@ -630,8 +633,10 @@ class FormUtils
     public function createParty(NeptunePlayer $player): void
     {
         $form = new CustomForm(function (NeptunePlayer $player, array $data = null): void {
-            if ($data === null) return;
-            if ($data[0] === null or $data[0] === '' or strlen($data[0]) >= 15) {
+            if ($data === null) {
+                return;
+            }
+            if ($data[0] === null || $data[0] === '' || strlen($data[0]) >= 15) {
                 $player->sendMessage(Loader::getPrefixCore() . '§cInvalid party name.');
                 return;
             }
@@ -647,7 +652,9 @@ class FormUtils
     public function invitesForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
@@ -675,7 +682,9 @@ class FormUtils
     public function manageInviteForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->invitesForm($player);
@@ -706,7 +715,9 @@ class FormUtils
     public function partiesForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
@@ -715,7 +726,9 @@ class FormUtils
                     Loader::getInstance()->TargetParty[$player->getName()] = $data;
                     $p = Loader::getInstance()->TargetParty[$player->getName()];
                     $party = PartyManager::getParty($p);
-                    if ($party === null) return;
+                    if ($party === null) {
+                        return;
+                    }
                     if ($player->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou are already in a party.');
                     } else if (!PartyManager::doesPartyExist($party)) {
@@ -745,7 +758,9 @@ class FormUtils
     public function partyMembersForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
@@ -753,7 +768,7 @@ class FormUtils
                     break;
                 default:
                     $party = $player->getParty();
-                    if (!$party->isLeader($player)) {
+                    if (!$party?->isLeader($player)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage party members.');
                     } else if ($player->getName() === $data) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot manage yourself.');
@@ -770,7 +785,7 @@ class FormUtils
         foreach ($party->getMembers() as $members) {
             $players = Server::getInstance()->getPlayerExact($members->getName());
             /* @var NeptunePlayer $players */
-            $form->addButton($members->getName() . "\n" . $players->getPartyRank(), -1, '', $members->getName());
+            $form->addButton($members->getName() . "\n" . $players?->getPartyRank(), -1, '', $members->getName());
         }
         $form->addButton('§dBack', -1, '', 'exit');
         $player->sendForm($form);
@@ -779,7 +794,9 @@ class FormUtils
     public function managePartyMemberForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->partyMembersForm($player);
@@ -787,7 +804,9 @@ class FormUtils
                 case 'kick':
                     $party = $player->getParty();
                     $target = Server::getInstance()->getPlayerExact(Loader::getInstance()->TargetPlayer[$player->getName()]);
-                    if ($target instanceof Player) $party->kickMember($target);
+                    if ($target instanceof Player) {
+                        $party?->kickMember($target);
+                    }
                     break;
             }
             unset(Loader::getInstance()->TargetPlayer[$player->getName()]);
@@ -801,7 +820,9 @@ class FormUtils
     public function playerListForm(NeptunePlayer $player): void
     {
         $form = new SimpleForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             switch ($data) {
                 case 'exit':
                     $this->partyForm($player);
@@ -815,12 +836,12 @@ class FormUtils
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player is offline.');
                     } else if ($target->getName() === $player->getName()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cYou cannot invite yourself.');
-                    } else if (PartyManager::hasInvite($target, $party)) {
+                    } else if (PartyManager::hasInvite($target, $party ?? null)) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player has already been invited to your party.');
                     } else if ($target->isInParty()) {
                         $player->sendMessage(Loader::getPrefixCore() . '§cThis player is already in a party.');
                     } else {
-                        PartyManager::invitePlayer($party, $player, $target);
+                        PartyManager::invitePlayer($party ?? null, $player, $target);
                     }
                     break;
             }
@@ -837,27 +858,33 @@ class FormUtils
     public function partyManageForm(NeptunePlayer $player): void
     {
         $form = new CustomForm(function (NeptunePlayer $player, $data = null): void {
-            if ($data === null) return;
+            if ($data === null) {
+                return;
+            }
             if ($data === 0) {
                 return;
             }
             switch ($data[0]) {
                 case 0:
                     $party = $player->getParty();
-                    if (!$party->isClosed()) return;
-                    $party->setOpen();
+                    if (!$party?->isClosed()) {
+                        return;
+                    }
+                    $party?->setOpen();
                     $player->sendMessage(Loader::getPrefixCore() . '§aYour party is now open, players can join.');
                     break;
                 case 1:
                     $party = $player->getParty();
-                    if ($party->isClosed()) return;
-                    $party->setClosed();
+                    if ($party?->isClosed()) {
+                        return;
+                    }
+                    $party?->setClosed();
                     $player->sendMessage(Loader::getPrefixCore() . '§aparty is now closed, players can only join via invitation.');
                     break;
             }
         });
         $form->setTitle('§dNeptune §cManage Party');
-        if ($player->getParty()->isClosed()) {
+        if ($player->getParty()?->isClosed()) {
             $form->addToggle('§cClosed', true);
         } else {
             $form->addToggle('§aOpen', false);
@@ -867,7 +894,7 @@ class FormUtils
 
     public function ProfileForm(NeptunePlayer $player, ?NeptunePlayer $player2): void
     {
-        $form = new CustomForm(function (Player $player, $data) {
+        $form = new CustomForm(static function (Player $player, $data) {
         });
 
         if ($player2 !== null) {

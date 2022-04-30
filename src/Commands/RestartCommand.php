@@ -18,12 +18,12 @@ class RestartCommand extends Command
         parent::__construct('Restart', 'Restart Server Command', null, ['restart']);
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 Loader::getInstance()->Restarted = true;
-                if ($args != null) {
+                if ($args !== null) {
                     Loader::getInstance()->RestartTime = (int)implode($args);
                 }
                 $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');

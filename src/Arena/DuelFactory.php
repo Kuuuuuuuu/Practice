@@ -112,7 +112,7 @@ class DuelFactory
     {
         if (!$this->ended) {
             foreach ($this->getPlayers() as $online) {
-                if (is_null($playerLeft) or $online->getName() !== $playerLeft->getName()) {
+                if (is_null($playerLeft) || $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof NeptunePlayer) {
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
@@ -127,7 +127,7 @@ class DuelFactory
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
                         $online->setHealth(20);
-                        $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                        $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
                     }
                 }
             }

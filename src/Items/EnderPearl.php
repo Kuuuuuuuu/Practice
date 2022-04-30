@@ -5,7 +5,6 @@ namespace Kuu\Items;
 use JetBrains\PhpStorm\Pure;
 use Kuu\ConfigCore;
 use Kuu\Entity\EnderPearlEntity;
-use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
@@ -27,23 +26,21 @@ class EnderPearl extends ItemEnderPearl
 
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
-        if ($player instanceof NeptunePlayer) {
-            if (!$player->isEnderPearlCooldown()) {
-                $location = $player->getLocation();
-                $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
-                $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
-                $projectileEv = new ProjectileLaunchEvent($projectile);
-                $projectileEv->call();
-                if ($projectileEv->isCancelled()) {
-                    $projectile->flagForDespawn();
-                    return ItemUseResult::FAIL();
-                }
-                $projectile->spawnToAll();
-                $location->getWorld()->addSound($location, new ThrowSound());
-                $this->pop();
-                $player->setEnderPearlCooldown(true);
-                return ItemUseResult::SUCCESS();
+        if (($player instanceof NeptunePlayer) && !$player->isEnderPearlCooldown()) {
+            $location = $player->getLocation();
+            $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
+            $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
+            $projectileEv = new ProjectileLaunchEvent($projectile);
+            $projectileEv->call();
+            if ($projectileEv->isCancelled()) {
+                $projectile->flagForDespawn();
+                return ItemUseResult::FAIL();
             }
+            $projectile->spawnToAll();
+            $location->getWorld()->addSound($location, new ThrowSound());
+            $this->pop();
+            $player->setEnderPearlCooldown(true);
+            return ItemUseResult::SUCCESS();
         }
         return ItemUseResult::FAIL();
     }

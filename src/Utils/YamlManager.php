@@ -8,6 +8,7 @@ use JsonException;
 use Kuu\Arena\SumoHandler;
 use Kuu\Loader;
 use pocketmine\utils\Config;
+use RuntimeException;
 
 class YamlManager
 {
@@ -16,11 +17,11 @@ class YamlManager
 
     public function __construct()
     {
-        if (!is_dir(Loader::getInstance()->getDataFolder())) {
-            @mkdir(Loader::getInstance()->getDataFolder());
+        if (!is_dir(Loader::getInstance()->getDataFolder()) && !mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder()) && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
-        if (!is_dir(Loader::getInstance()->getDataFolder() . 'SumoArenas')) {
-            @mkdir(Loader::getInstance()->getDataFolder() . 'SumoArenas');
+        if (!is_dir(Loader::getInstance()->getDataFolder() . 'SumoArenas') && !mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'SumoArenas') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
     }
 

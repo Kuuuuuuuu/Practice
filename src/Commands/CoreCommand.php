@@ -62,7 +62,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setFistArena($sender, $args[2]);
                             }
                             break;
@@ -71,7 +71,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setBoxingArena($sender, $args[2]);
                             }
                             break;
@@ -80,7 +80,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setComboArena($sender, $args[2]);
                             }
                             break;
@@ -89,7 +89,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setKnockbackArena($sender, $args[2]);
                             }
                             break;
@@ -98,7 +98,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setKitPVPArena($sender, $args[2]);
                             }
                             break;
@@ -107,7 +107,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setResistanceArena($sender, $args[2]);
                             }
                             break;
@@ -116,7 +116,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setOITCArena($sender, $args[2]);
                             }
                             break;
@@ -125,7 +125,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setSumoD($sender, $args[2]);
                             }
                             break;
@@ -134,7 +134,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setBuildArena($sender, $args[2]);
                             }
                             break;
@@ -143,7 +143,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setBotArena($sender, $args[2]);
                             }
                             break;
@@ -152,7 +152,7 @@ class CoreCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
                                 Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])->getSafeSpawn());
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 Loader::getArenaFactory()->setSkywarsArena($sender, $args[2]);
                             }
                             break;
@@ -259,7 +259,7 @@ class CoreCommand extends Command
                 case 'removeleader':
                     foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
                         foreach ($world->getEntities() as $entity) {
-                            if ($entity instanceof KillLeaderboard or $entity instanceof DeathLeaderboard) {
+                            if ($entity instanceof KillLeaderboard || $entity instanceof DeathLeaderboard) {
                                 $entity->close();
                             }
                         }

@@ -28,7 +28,7 @@ class BotDuelFactory
             throw new WorldException('World does not exist');
         }
         if (Loader::getCoreTask() instanceof NeptuneTask) {
-            Loader::getCoreTask()->addBotDuelTask($name, $this);
+            Loader::getCoreTask()?->addBotDuelTask($name, $this);
         }
         $this->level = $world;
         $this->player1 = $player1;
@@ -37,11 +37,11 @@ class BotDuelFactory
 
     public function update(): void
     {
-        if (!$this->player1->isOnline() or !$this->player1->isDueling()) {
+        if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
             $this->onEnd();
         }
         if ($this->player2 instanceof FistBot) {
-            if (!$this->player2->isAlive() or $this->player2->isClosed()) {
+            if (!$this->player2->isAlive() || $this->player2->isClosed()) {
                 $this->onEnd($this->player1);
             }
         }
@@ -55,11 +55,11 @@ class BotDuelFactory
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
-                }, function (): void {
+                }, static function (): void {
                 });
                 $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
                     $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
-                }, function (): void {
+                }, static function (): void {
                 });
                 break;
             case 902:
@@ -106,7 +106,7 @@ class BotDuelFactory
                 $winnerMessage = '§aWinner: §fFistBot';
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
-            if ($this->player2->isAlive() or !$this->player2->isClosed()) {
+            if ($this->player2->isAlive() || !$this->player2->isClosed()) {
                 $this->player2->close();
             }
             if ($this->player1->isOnline()) {
@@ -115,7 +115,7 @@ class BotDuelFactory
                 $this->player1->sendMessage('§f-----------------------');
                 $this->player1->setDueling(false);
                 $this->player1->setCurrentKit(null);
-                $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn(), 0, 0);
+                $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
                 Loader::getArenaUtils()->GiveItem($this->player1);
                 Loader::getScoreboardManager()->sb($this->player1);
                 $this->player1->setHealth(20);

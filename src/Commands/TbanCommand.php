@@ -26,16 +26,16 @@ class TbanCommand extends Command
         parent::__construct(
             'tban',
             'Tempban a player',
-            '/tban <player> or /tban',
+            '/tban <player> || /tban',
             ['tempban', 'tb']
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if ($args == null) {
+                if ($args === null) {
                     $this->openPlayerListUI($sender);
                 } else {
                     Loader::getInstance()->targetPlayer[$sender->getName()] = $args[0];
@@ -77,7 +77,7 @@ class TbanCommand extends Command
                 return true;
             }
             if (isset(Loader::getInstance()->targetPlayer[$player->getName()])) {
-                if (Loader::getInstance()->targetPlayer[$player->getName()] == $player->getName()) {
+                if (Loader::getInstance()->targetPlayer[$player->getName()] === $player->getName()) {
                     $player->sendMessage(Loader::getInstance()->MessageData['BanMyself']);
                     return true;
                 }

@@ -21,9 +21,9 @@ class AntiCheatListener implements Listener
         $to = $event->getTo();
         if ($player instanceof NeptunePlayer) {
             /*
-            if (!$player->isCreative() and !$player->isOnGround() and !$player->isSpectator() and !$player->getAllowFlight()) {
+            if (!$player->isCreative() && !$player->isOnGround() && !$player->isSpectator() && !$player->getAllowFlight()) {
                 $dY = (int)(round($to->getY() - $from->getY(), 3) * 1000);
-                if ($player->getInAirTicks() > 20 and $dY >= 0) {
+                if ($player->getInAirTicks() > 20 && $dY >= 0) {
                     $maxY = $player->getWorld()->getHighestBlockAt(floor($to->getX()), floor($to->getZ()));
                     if ($to->getY() - 5 > $maxY) {
                         if (!isset($player->points[$name])) {
@@ -40,7 +40,7 @@ class AntiCheatListener implements Listener
                 }
             }
             if ($player->isImmobile()) {
-                if ($from->getX() != $to->getX() or $from->getY() != $to->getY() or $from->getZ() != $to->getZ()) {
+                if ($from->getX() != $to->getX() || $from->getY() != $to->getY() || $from->getZ() != $to->getZ()) {
                     $player->teleport($from->asVector3());
                 }
             }*/
@@ -53,9 +53,8 @@ class AntiCheatListener implements Listener
     {
         if ($player->getNetworkSession()->getPing() < 20) {
             return 15;
-        } else {
-            return 17;
         }
+        return 17;
     }
 
     public function onDamage(EntityDamageByEntityEvent $event)
@@ -64,7 +63,7 @@ class AntiCheatListener implements Listener
         $damager = $event->getDamager();
         $cause = $event->getCause();
         if ($cause !== EntityDamageEvent::CAUSE_PROJECTILE) {
-            if ($entity instanceof Player and $damager instanceof Player) {
+            if ($entity instanceof Player && $damager instanceof Player) {
                 if ($entity->getPosition()->distance($damager->getPosition()) > $this->CalculateReach($damager)) {
                     $event->cancel();
                 }
