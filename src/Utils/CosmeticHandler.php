@@ -54,12 +54,8 @@ class CosmeticHandler
         $this->dataFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
-            if (!mkdir($concurrentDirectory = $this->dataFolder) && !is_dir($concurrentDirectory)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
-            if (!mkdir($concurrentDirectory = $this->saveSkin) && !is_dir($concurrentDirectory)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+            @mkdir($this->dataFolder);
+            @mkdir($this->saveSkin);
         }
         $this->resourcesFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
@@ -77,8 +73,8 @@ class CosmeticHandler
             }
         }
         foreach ($checkFileAvailable as $value) {
-            if (!in_array($value . '.png', $allFiles)) {
-                unset($checkFileAvailable[array_search($value, $checkFileAvailable)]);
+            if (!in_array($value . '.png', $allFiles, true)) {
+                unset($checkFileAvailable[array_search($value, $checkFileAvailable, true)]);
             }
         }
         $this->cosmeticAvailable = $checkFileAvailable;
@@ -145,7 +141,7 @@ class CosmeticHandler
         return $list;
     }
 
-    public function saveSkin(string $skin, string $name)
+    public function saveSkin(string $skin, string $name): void
     {
         try {
             $path = $this->dataFolder;
@@ -159,7 +155,6 @@ class CosmeticHandler
             imagepng($img, $path . 'skin/' . $name . '.png');
         } catch (Exception $e) {
             ArenaUtils::getLogger((string)$e);
-            return null;
         }
     }
 
@@ -303,14 +298,12 @@ class CosmeticHandler
                 }
                 $newwidth = $w;
                 $newheight = $h;
+            } else if ($w / $h > $r) {
+                $newwidth = $h * $r;
+                $newheight = $h;
             } else {
-                if ($w / $h > $r) {
-                    $newwidth = $h * $r;
-                    $newheight = $h;
-                } else {
-                    $newheight = $w / $r;
-                    $newwidth = $w;
-                }
+                $newheight = $w / $r;
+                $newwidth = $w;
             }
             $src = imagecreatefrompng($file);
             $dst = imagecreatetruecolor($w, $h);

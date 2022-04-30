@@ -60,7 +60,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
-use RuntimeException;
 use SQLite3;
 use Throwable;
 use ZipArchive;
@@ -188,15 +187,9 @@ class ArenaUtils
 
     private function registerConfigs(): void
     {
-        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'data/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
-        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'players/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
-        if (!mkdir($concurrentDirectory = Loader::getInstance()->getDataFolder() . 'Kits/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
+        @mkdir(Loader::getInstance()->getDataFolder() . 'data/');
+        @mkdir(Loader::getInstance()->getDataFolder() . 'players/');
+        @mkdir(Loader::getInstance()->getDataFolder() . 'Kits/');
         Loader::getInstance()->saveResource('config.yml');
         Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
