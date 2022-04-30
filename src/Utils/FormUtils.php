@@ -70,14 +70,14 @@ class FormUtils
         });
 
         $form->setTitle('§dNeptune §cMenu');
-        $form->addButton('§aBoxing\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
-        $form->addButton('§aFist\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
-        $form->addButton('§aCombo\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
-        $form->addButton('§aKnockback\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
-        $form->addButton('§aResistance\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
-        $form->addButton('§aKitPVP\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
-        $form->addButton('§aOITC\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
-        $form->addButton('§aBuild\n§dPlayers: §f' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
+        $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
+        $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
+        $form->addButton("§aCombo\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
+        $form->addButton("§aKnockback\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
+        $form->addButton("§aResistance\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
+        $form->addButton("§aKitPVP\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
+        $form->addButton("§aOITC\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
+        $form->addButton("§aBuild\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
     }
 
