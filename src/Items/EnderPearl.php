@@ -41,6 +41,7 @@ class EnderPearl extends ItemEnderPearl
                 $projectile->spawnToAll();
                 $location->getWorld()->addSound($location, new ThrowSound());
                 $this->pop();
+                $player->setEnderPearlCooldown(true);
                 return ItemUseResult::SUCCESS();
             }
         }

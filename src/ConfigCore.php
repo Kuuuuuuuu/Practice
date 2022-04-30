@@ -11,5 +11,6 @@ interface ConfigCore
     public const DeleteBlockTime = 8;
     public const MaximumCPS = 20;
     public const EnderPearlCooldown = 10;
+    public const SplashForce = 0.25;
 
 }

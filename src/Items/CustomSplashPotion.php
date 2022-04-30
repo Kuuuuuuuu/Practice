@@ -2,6 +2,7 @@
 
 namespace Kuu\Items;
 
+use Kuu\ConfigCore;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\SplashPotion as SplashPotionEntity;
 use pocketmine\entity\projectile\Throwable;
@@ -33,7 +34,7 @@ class CustomSplashPotion extends ProjectileItem
 
     public function getThrowForce(): float
     {
-        return 0;
+        return ConfigCore::SplashForce;
     }
 
     protected function createEntity(Location $location, Player $thrower): Throwable
