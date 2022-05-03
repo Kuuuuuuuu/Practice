@@ -61,7 +61,7 @@ class AntiCheatListener implements Listener
 
     private function CalculateReach(Player $damager): float
     {
-        $projected = $damager->isOnGround() ? 4 : 6.2;
+        $projected = $damager->isOnGround() ? 4.2 : 6.2;
         return ($damager->getNetworkSession()->getPing() * 0.002) + $projected;
     }
 }
