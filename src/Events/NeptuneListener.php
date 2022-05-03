@@ -373,9 +373,9 @@ class NeptuneListener implements Listener
         $packet = $event->getPacket();
         if ($packet instanceof InventoryTransactionPacket || $packet instanceof LevelSoundEventPacket) {
             if (($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData) || ($packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE)) {
-                if ($player instanceof Player) {
+                if ($player instanceof NeptunePlayer) {
                     Loader::getClickHandler()->addClick($player);
-                    if ((Loader::getClickHandler()->getClicks($player) >= ConfigCore::MaximumCPS) && $player instanceof NeptunePlayer) {
+                    if (Loader::getClickHandler()->getClicks($player) >= ConfigCore::MaximumCPS) {
                         $player->setLastDamagePlayer('Unknown');
                         $player->kill();
                     }
@@ -392,7 +392,7 @@ class NeptuneListener implements Listener
         $transaction = $event->getTransaction();
         $player = $transaction->getSource();
         if ($player instanceof NeptunePlayer) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSkywarsArena()) || $player->isDueling()) {
+            if ($player->isDueling()) {
                 return;
             }
             if ($transaction instanceof CraftingTransaction) {
@@ -513,13 +513,11 @@ class NeptuneListener implements Listener
             if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
-            } else if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
+            } elseif ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
                 Loader::getFormUtils()->ProfileForm($damager, $player);
-            }
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBotArena()) || $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $event->cancel();
             } elseif ($player->getOpponent() === null && $damager->getOpponent() === null) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
                     return;
                 }
                 $player->setOpponent($damager->getName());
@@ -535,7 +533,7 @@ class NeptuneListener implements Listener
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 } elseif ($player->getOpponent() === $damager->getName() && $damager->getOpponent() === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
                         return;
                     }
                     foreach ([$player, $damager] as $p) {

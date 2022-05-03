@@ -40,7 +40,7 @@ class PartyManager
 
     public static function getPartyIndexOf(PartyFactory $party): bool|int|string
     {
-        $index = array_search($party, Loader::getInstance()->PartyData);
+        $index = array_search($party, Loader::getInstance()->PartyData, true);
         if (is_bool($index) && $index === false) {
             $index = -1;
         }

@@ -29,12 +29,6 @@ class ArenaFactory
         return $data->get('Resistance');
     }
 
-    public function getSkywarsArena(): string
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Skywars');
-    }
-
     public function getFistArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -63,12 +57,6 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Boxing');
-    }
-
-    public function getBotArena(): string
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Bot');
     }
 
     public function getComboArena(): string

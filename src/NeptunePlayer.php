@@ -22,7 +22,7 @@ class NeptunePlayer extends Player
     public string $ToolboxStatus = 'Normal';
     public string $lastDamagePlayer = 'Unknown';
     public int|float $CombatTime = 0;
-    //public array $points = [];
+    public array $points = [];
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
@@ -370,7 +370,7 @@ class NeptunePlayer extends Player
     {
         $this->sendMessage(Loader::getPrefixCore() . 'Entering queue...');
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            if (($player instanceof self && $player->getName() !== $this->getName()) && $player->isInQueue() && $this->getDuelKit() === $player->getDuelKit()) {
+            if (($player instanceof self && $player->getName() !== $this->getName()) && ($this->isInQueue() && $player->isInQueue()) && $this->getDuelKit() === $player->getDuelKit()) {
                 Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
                 $this->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $player->getName());
                 $player->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $this->getName());

@@ -67,11 +67,11 @@ class DuelFactory
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
-                }, function (): void {
+                }, static function (): void {
                 });
                 $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
                     $this->player2->teleport(new Position(15, 4, 10, $this->level));
-                }, function (): void {
+                }, static function (): void {
                 });
                 break;
             case 902:

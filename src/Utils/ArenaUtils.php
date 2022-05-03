@@ -107,9 +107,15 @@ class ArenaUtils
         $username = $player->getName();
         $data = $player->getPlayerInfo()->getExtraData();
         if ($player instanceof NeptunePlayer) {
-            if ($data['CurrentInputMode'] !== null) $player->PlayerControl = Loader::getInstance()->ControlList[$data['CurrentInputMode']];
-            if ($data['DeviceOS'] !== null) $player->PlayerOS = Loader::getInstance()->OSList[$data['DeviceOS']];
-            if ($data['DeviceModel'] !== null) $player->PlayerDevice = $data['DeviceModel'];
+            if ($data['CurrentInputMode'] !== null) {
+                $player->PlayerControl = Loader::getInstance()->ControlList[$data['CurrentInputMode']];
+            }
+            if ($data['DeviceOS'] !== null) {
+                $player->PlayerOS = Loader::getInstance()->OSList[$data['DeviceOS']];
+            }
+            if ($data['DeviceModel'] !== null) {
+                $player->PlayerDevice = $data['DeviceModel'];
+            }
             $deviceOS = (int)$data['DeviceOS'];
             $deviceModel = (string)$data['DeviceModel'];
             if ($deviceOS !== 1) {
@@ -293,16 +299,14 @@ class ArenaUtils
 
     public function SkillCooldown(Player $player): void
     {
-        if ($player instanceof NeptunePlayer) {
-            if ($player->isSkillCooldown()) {
-                Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
-                    if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                        $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
-                    }
-                    $player->sendMessage(Loader::getInstance()->MessageData['SkillCleared']);
-                    $player->setSkillCooldown(false);
-                }), 250);
-            }
+        if (($player instanceof NeptunePlayer) && $player->isSkillCooldown()) {
+            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
+                if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
+                    $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
+                }
+                $player->sendMessage(Loader::getInstance()->MessageData['SkillCleared']);
+                $player->setSkillCooldown(false);
+            }), 250);
         }
     }
 
@@ -471,10 +475,8 @@ class ArenaUtils
             if ($top === -1) {
                 $top = $players;
                 $availableArenas[] = $index;
-            } else {
-                if ($top === $players) {
-                    $availableArenas[] = $index;
-                }
+            } elseif ($top === $players) {
+                $availableArenas[] = $index;
             }
         }
         if (empty($availableArenas)) {

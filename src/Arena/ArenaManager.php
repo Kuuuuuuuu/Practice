@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Kuu\Arena;
 
+use Exception;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use pocketmine\block\VanillaBlocks;
@@ -119,6 +120,9 @@ class ArenaManager
         });
     }
 
+    /**
+     * @throws Exception
+     */
     public function onJoinKitpvp(Player $player): void
     {
         if (Loader::getArenaFactory()->getKitPVPArena() === null) {
