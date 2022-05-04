@@ -1,5 +1,7 @@
 # NeptuneCore
 
+Status: stop updating for now
+
 Practice Core for Neptune Servers
 
 API: 4.0
