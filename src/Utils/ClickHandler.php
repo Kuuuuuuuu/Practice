@@ -20,11 +20,11 @@ class ClickHandler
     {
         if (!isset($this->clicksData[mb_strtolower($p->getName())])) {
             $this->initPlayerClickData($p);
-        } else {
-            array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
-            if (count($this->clicksData[mb_strtolower($p->getName())]) >= 50) {
-                array_pop($this->clicksData[mb_strtolower($p->getName())]);
-            }
+            return;
+        }
+        array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
+        if (count($this->clicksData[mb_strtolower($p->getName())]) >= 50) {
+            array_pop($this->clicksData[mb_strtolower($p->getName())]);
         }
     }
 

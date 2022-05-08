@@ -25,9 +25,10 @@ class NeptuneTask extends Task
     {
         $this->tick++;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof NeptunePlayer) {
-                $player->update();
+            if (!$player instanceof NeptunePlayer) {
+                return;
             }
+            $player->update();
         }
         $this->updateServer();
     }
@@ -38,9 +39,10 @@ class NeptuneTask extends Task
             Loader::getDeleteBlockHandler()->update();
             if (count($this->DuelTask) > 0) {
                 foreach ($this->DuelTask as $duel) {
-                    if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
-                        $duel->update();
+                    if (!$duel instanceof DuelFactory && !$duel instanceof BotDuelFactory) {
+                        return;
                     }
+                    $duel->update();
                 }
             }
             if (Loader::getInstance()->Restarted) {

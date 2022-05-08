@@ -117,6 +117,9 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @throws Exception
+     */
     private function assasins(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);
@@ -132,6 +135,9 @@ class FormUtils
         $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 1));
     }
 
+    /**
+     * @throws Exception
+     */
     private function tank(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);
@@ -148,6 +154,9 @@ class FormUtils
         $player->setHealth(30);
     }
 
+    /**
+     * @throws Exception
+     */
     private function boxing(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);
@@ -159,6 +168,9 @@ class FormUtils
         $player->getArmorInventory()->setLeggings(VanillaItems::CHAINMAIL_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
     }
 
+    /**
+     * @throws Exception
+     */
     private function bower(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);
@@ -176,6 +188,9 @@ class FormUtils
         $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 9999999, 3));
     }
 
+    /**
+     * @throws Exception
+     */
     private function reaper(Player $player): void
     {
         Loader::getArenaManager()->onJoinKitpvp($player);

@@ -232,6 +232,7 @@ class NeptunePlayer extends Player
             }
         }
         if ($this->tick % 60 === 0) {
+            Loader::getArenaUtils()->DeviceCheck($this);
             $this->updateScoreboard();
             $this->updateNametag();
         }

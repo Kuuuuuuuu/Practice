@@ -19,12 +19,12 @@ class KnockbackManager
     {
         if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $world)) {
             $player->sendMessage(Loader::getPrefixCore() . Color::RED . 'World ' . $world . ' not found');
-        } else {
-            $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
-            $data->set(mb_strtolower($world), ['hkb' => $knockback1, 'ykb' => $knockback2]);
-            $data->save();
-            $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Knockback set to ' . $knockback1 . ' for world ' . $world);
+            return;
         }
+        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
+        $data->set(mb_strtolower($world), ['hkb' => $knockback1, 'ykb' => $knockback2]);
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Knockback set to ' . $knockback1 . ' for world ' . $world);
     }
 
     /**
@@ -34,12 +34,12 @@ class KnockbackManager
     {
         if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $world)) {
             $player->sendMessage(Loader::getPrefixCore() . Color::RED . 'World ' . $world . ' not found');
-        } else {
-            $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
-            $data->set(mb_strtolower($world), $speed);
-            $data->save();
-            $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Attackspeed set to ' . $speed . ' for world ' . $world);
+            return;
         }
+        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
+        $data->set(mb_strtolower($world), $speed);
+        $data->save();
+        $player->sendMessage(Loader::getPrefixCore() . Color::GREEN . 'Attackspeed set to ' . $speed . ' for world ' . $world);
     }
 
     public function getKnockback(string $world): array
