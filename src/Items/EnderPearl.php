@@ -5,6 +5,7 @@ namespace Kuu\Items;
 use JetBrains\PhpStorm\Pure;
 use Kuu\ConfigCore;
 use Kuu\Entity\EnderPearlEntity;
+use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
@@ -14,6 +15,7 @@ use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemUseResult;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use pocketmine\world\sound\ThrowSound;
 
 class EnderPearl extends ItemEnderPearl
@@ -39,7 +41,9 @@ class EnderPearl extends ItemEnderPearl
             $projectile->spawnToAll();
             $location->getWorld()->addSound($location, new ThrowSound());
             $this->pop();
-            $player->setEnderPearlCooldown(true);
+            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+                $player->setEnderPearlCooldown(true);
+            }
             return ItemUseResult::SUCCESS();
         }
         return ItemUseResult::FAIL();
