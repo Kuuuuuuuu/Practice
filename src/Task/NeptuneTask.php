@@ -53,7 +53,6 @@ class NeptuneTask extends Task
                     foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                         $player->kick('§cServer restarted');
                     }
-                } elseif (Loader::getInstance()->RestartTime <= 0) {
                     Loader::getInstance()->getServer()->shutdown();
                 }
             }
