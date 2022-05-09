@@ -28,7 +28,8 @@ class EnderPearl extends ItemEnderPearl
 
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
-        if (($player instanceof NeptunePlayer) && !$player->isEnderPearlCooldown()) {
+        //TODO: Implement this
+        if (($player instanceof NeptunePlayer) && ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) && !$player->isEnderPearlCooldown())) {
             $location = $player->getLocation();
             $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
             $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
