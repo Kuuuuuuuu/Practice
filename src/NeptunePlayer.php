@@ -223,12 +223,12 @@ class NeptunePlayer extends Player
                     $this->setUnPVPTag();
                 }
             }
-        }
-        if ($this->isEnderPearlCooldown()) {
-            $this->enderpearlcooldown--;
-            if ($this->enderpearlcooldown <= 0) {
-                $this->setEnderPearlCooldown(false);
-                $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
+            if ($this->isEnderPearlCooldown()) {
+                $this->enderpearlcooldown--;
+                if ($this->enderpearlcooldown <= 0) {
+                    $this->setEnderPearlCooldown(false);
+                    $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
+                }
             }
         }
         if ($this->tick % 60 === 0) {
