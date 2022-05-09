@@ -226,7 +226,7 @@ class NeptunePlayer extends Player
         }
         if ($this->isEnderPearlCooldown()) {
             $this->enderpearlcooldown--;
-            if ($this->enderPearlCooldown <= 0) {
+            if ($this->enderpearlcooldown <= 0) {
                 $this->setEnderPearlCooldown(false);
                 $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
             }
