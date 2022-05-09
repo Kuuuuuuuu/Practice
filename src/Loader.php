@@ -62,32 +62,6 @@ class Loader extends PluginBase
     public array $TargetInvites = [];
     public array $TargetParty = [];
     public array $TargetPlayer = [];
-    public array $BanCommand = [
-        'hub',
-        'kill'
-    ];
-    public array $ControlList = [
-        'Unknown',
-        'Keyboard',
-        'Touch',
-        'Controller'
-    ];
-    public array $OSList = [
-        'Unknown',
-        'Android',
-        'iOS',
-        'macOS',
-        'FireOS',
-        'GearVR',
-        'HoloLens',
-        'Win10',
-        'Win32',
-        'EducalVersion',
-        'Dedicated',
-        'PS4',
-        'Switch',
-        'Xbox'
-    ];
 
     public static function getCoreTask(): ?NeptuneTask
     {

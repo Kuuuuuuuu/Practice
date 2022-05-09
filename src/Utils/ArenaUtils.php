@@ -18,6 +18,7 @@ use Kuu\Commands\SumoCommand;
 use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
+use Kuu\ConfigCore;
 use Kuu\Entity\ArrowEntity;
 use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
@@ -108,10 +109,10 @@ class ArenaUtils
         $data = $player->getPlayerInfo()->getExtraData();
         if ($player instanceof NeptunePlayer) {
             if ($data['CurrentInputMode'] !== null) {
-                $player->PlayerControl = Loader::getInstance()->ControlList[$data['CurrentInputMode']];
+                $player->PlayerControl = ConfigCore::ControlList[$data['CurrentInputMode']];
             }
             if ($data['DeviceOS'] !== null) {
-                $player->PlayerOS = Loader::getInstance()->OSList[$data['DeviceOS']];
+                $player->PlayerOS = ConfigCore::OSList[$data['DeviceOS']];
             }
             if ($data['DeviceModel'] !== null) {
                 $player->PlayerDevice = $data['DeviceModel'];

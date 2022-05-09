@@ -73,7 +73,7 @@ use Throwable;
 class NeptuneListener implements Listener
 {
 
-    protected bool $networkRegistered = false;
+    private bool $networkRegistered = false;
 
     public function onCreation(PlayerCreationEvent $event): void
     {
@@ -268,7 +268,8 @@ class NeptuneListener implements Listener
     public function onClickBlock(PlayerInteractEvent $event): void
     {
         $block = $event->getBlock();
-        if ($block->getId() === ItemIds::ANVIL) {
+        $player = $event->getPlayer();
+        if ($block->getId() === ItemIds::ANVIL && $player->getGamemode() !== Gamemode::CREATIVE()) {
             $event->cancel();
         }
     }
@@ -681,7 +682,7 @@ class NeptuneListener implements Listener
             if ($player->isCombat() || $player->getEditKit() !== null || $player->isDueling()) {
                 $msg = substr($msg, 1);
                 $msg = explode(' ', $msg);
-                if (in_array($msg[0], Loader::getInstance()->BanCommand, true)) {
+                if (in_array($msg[0], ConfigCore::BanCommand, true)) {
                     $event->cancel();
                     $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
                 }
