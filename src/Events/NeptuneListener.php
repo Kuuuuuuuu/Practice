@@ -174,7 +174,7 @@ class NeptuneListener implements Listener
         if (($entity instanceof NeptunePlayer) && $entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
             Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
                 if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) && $entity->isAlive()) {
-                    $entity->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
+                    $entity->getInventory()->setItem(8, VanillaItems::ARROW());
                 }
             }), 100);
         }

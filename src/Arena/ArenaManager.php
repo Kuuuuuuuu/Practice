@@ -160,7 +160,7 @@ class ArenaManager
             $player->teleport($pos);
         });
         $player->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-        $player->getOffHandInventory()->setItem(0, VanillaItems::ARROW());
+        $player->getInventory()->setItem(8, VanillaItems::ARROW());
         $player->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 200)));
     }
 
