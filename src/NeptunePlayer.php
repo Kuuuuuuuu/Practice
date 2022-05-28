@@ -240,7 +240,9 @@ class NeptunePlayer extends Player
     {
         if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
-        } elseif (!$this->isCombat()) {
+            return;
+        }
+        if (!$this->isCombat()) {
             $this->setUnPVPTag();
         }
     }
@@ -270,7 +272,7 @@ class NeptunePlayer extends Player
 
     private function setUnPVPTag(): void
     {
-        $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl . ' §f| §d' . $this->ToolboxStatus;
+        $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl;
         $this->setScoreTag($untagpvp);
     }
 
