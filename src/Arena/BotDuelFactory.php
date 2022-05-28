@@ -57,10 +57,6 @@ class BotDuelFactory
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
                 }, static function (): void {
                 });
-                $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                    $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
-                }, static function (): void {
-                });
                 break;
             case 902:
                 if ($this->player1->isOnline()) {
@@ -79,9 +75,11 @@ class BotDuelFactory
                 if ($this->player1->isOnline()) {
                     $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
                     Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
-                }
-                foreach ($this->getPlayers() as $p) {
-                    $p->setImmobile(false);
+                    $this->player1->setImmobile(false);
+                    $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
+                        $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
+                    }, static function (): void {
+                    });
                 }
                 break;
             case 0:
@@ -96,13 +94,10 @@ class BotDuelFactory
         if (!$this->ended) {
             $loserMessage = '';
             $winnerMessage = '';
-            if ($this->player1->isOnline()) {
-                $this->player1->sendMessage('§f-----------------------');
-            }
             if ($playerLeft instanceof NeptunePlayer) {
                 $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
                 $loserMessage = '§cLoser: §fFistBot';
-            } else if ($playerLeft === null) {
+            } elseif ($playerLeft === null) {
                 $winnerMessage = '§aWinner: §fFistBot';
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
@@ -110,23 +105,19 @@ class BotDuelFactory
                 $this->player2->close();
             }
             if ($this->player1->isOnline()) {
+                $this->player1->sendMessage('§f-----------------------');
                 $this->player1->sendMessage($winnerMessage);
                 $this->player1->sendMessage($loserMessage);
                 $this->player1->sendMessage('§f-----------------------');
                 $this->player1->setDueling(false);
                 $this->player1->setCurrentKit(null);
                 $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
-                Loader::getArenaUtils()->GiveItem($this->player1);
+                Loader::getArenaUtils()->GiveLobbyItem($this->player1);
                 Loader::getScoreboardManager()->sb($this->player1);
                 $this->player1->setHealth(20);
             }
         }
         $this->ended = true;
         Loader::getBotDuelManager()->stopMatch($this->level->getFolderName());
-    }
-
-    public function getPlayers(): array
-    {
-        return [$this->player1, $this->player2];
     }
 }

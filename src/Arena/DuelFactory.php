@@ -122,7 +122,7 @@ class DuelFactory
                         $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
-                        Loader::getArenaUtils()->GiveItem($online);
+                        Loader::getArenaUtils()->GiveLobbyItem($online);
                         Loader::getScoreboardManager()->sb($online);
                         $online->setDueling(false);
                         $online->setCurrentKit(null);

@@ -7,8 +7,6 @@ namespace Kuu;
 use Exception;
 use JsonException;
 use Kuu\Utils\Kits\KitManager;
-use Kuu\Utils\PartyFactory;
-use Kuu\Utils\PartyManager;
 use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use Throwable;
@@ -21,20 +19,17 @@ class NeptunePlayer extends Player
     public string $PlayerDevice = 'Unknown';
     public string $ToolboxStatus = 'Normal';
     public string $lastDamagePlayer = 'Unknown';
-    public int|float $CombatTime = 0;
-    public array $points = [];
+    private int $CombatTime = 0;
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
     private int $tick = 0;
-    private ?PartyFactory $party;
     private ?KitManager $duelKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
     private bool $SkillCooldown = false;
     private bool $Combat = false;
     private ?string $Opponent = null;
-    private ?string $partyrank = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
     private int $enderpearlcooldown = 0;
@@ -220,6 +215,7 @@ class NeptunePlayer extends Player
                     $this->sendMessage(Loader::getInstance()->MessageData['StopCombat']);
                     $this->BoxingPoint = 0;
                     $this->setOpponent(null);
+                    $this->setSkillCooldown(false);
                     $this->setUnPVPTag();
                 }
             }
@@ -256,7 +252,12 @@ class NeptunePlayer extends Player
 
     public function setCombat(bool $bool): void
     {
+        if (!$bool && $this->CombatTime > 0) {
+            $this->CombatTime = 1;
+            return;
+        }
         $this->Combat = $bool;
+        $this->CombatTime = 10;
     }
 
     private function setPVPTag(): void
@@ -322,7 +323,7 @@ class NeptunePlayer extends Player
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
-        Loader::getInstance()->getArenaUtils()->GiveItem($this);
+        Loader::getInstance()->getArenaUtils()->GiveLobbyItem($this);
         $this->LoadData();
         $this->sendMessage(Loader::getPrefixCore() . '§eLoading Data...');
     }
@@ -367,6 +368,9 @@ class NeptunePlayer extends Player
         return $this->artifact;
     }
 
+    /**
+     * @throws Exception
+     */
     public function checkQueue(): void
     {
         $this->sendMessage(Loader::getPrefixCore() . 'Entering queue...');
@@ -397,6 +401,9 @@ class NeptunePlayer extends Player
         return $this->duelKit ?? null;
     }
 
+    /**
+     * @throws Exception
+     */
     public function queueBotDuel(): void
     {
         Loader::getInstance()->getBotDuelManager()->createMatch($this);
@@ -406,37 +413,10 @@ class NeptunePlayer extends Player
     public function onQuit(): void
     {
         Loader::getClickHandler()->removePlayerClickData($this);
-        $party = $this->getParty();
-        if (!is_null($party)) {
-            if ($party->isLeader($this)) {
-                $party->disband();
-            } else {
-                $party->removeMember($this);
-            }
-        }
         if ($this->isDueling() || $this->isCombat()) {
             $this->kill();
         }
         $this->setGamemode(GameMode::SURVIVAL());
-    }
-
-    public function getParty(): ?PartyFactory
-    {
-        $result = null;
-        if ($this->isInParty()) {
-            $result = $this->party;
-        }
-        return $result;
-    }
-
-    public function setParty(?PartyFactory $party): void
-    {
-        $this->party = $party;
-    }
-
-    public function isInParty(): bool
-    {
-        return PartyManager::getPartyFromPlayer($this) !== null;
     }
 
     public function setCurrentKit(?KitManager $kit): void
@@ -489,16 +469,6 @@ class NeptunePlayer extends Player
     public function setOpponent(?string $name): void
     {
         $this->Opponent = $name;
-    }
-
-    public function getPartyRank(): ?string
-    {
-        return $this->partyrank;
-    }
-
-    public function setPartyRank(?string $rank): void
-    {
-        $this->partyrank = $rank;
     }
 
     public function getEditKit(): ?string

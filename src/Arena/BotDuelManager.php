@@ -2,6 +2,7 @@
 
 namespace Kuu\Arena;
 
+use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
@@ -16,9 +17,12 @@ class BotDuelManager
 
     private array $matches = [];
 
+    /**
+     * @throws Exception
+     */
     public function createMatch(NeptunePlayer $player): void
     {
-        $worldName = 'Bot-' . $player->getName();
+        $worldName = 'Bot-' . $player->getName() . ' - ' . Loader::getArenaUtils()->generateUUID();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(Flat::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);

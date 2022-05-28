@@ -60,7 +60,9 @@ class SumoCommand extends Command
                     foreach ($arena->players as $player) {
                         $player->teleport(Loader::getInstance()->getServer()->getWorldManager()->getDefaultWorld()?->getSpawnLocation());
                     }
-                    if (is_file($file = Loader::getInstance()->getDataFolder() . 'SumoArenas' . DIRECTORY_SEPARATOR . $args[1] . '.yml')) unlink($file);
+                    if (is_file($file = Loader::getInstance()->getDataFolder() . 'SumoArenas' . DIRECTORY_SEPARATOR . $args[1] . '.yml')) {
+                        unlink($file);
+                    }
                     unset(Loader::getInstance()->SumoArenas[$args[1]]);
                     $sender->sendMessage(Loader::getPrefixCore() . '§aArena removed!');
                     break;

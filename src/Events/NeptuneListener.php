@@ -26,6 +26,7 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
+use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -149,11 +150,9 @@ class NeptuneListener implements Listener
                 $player->sendMessage(Loader::getPrefixCore() . 'Left the queue');
                 $player->setCurrentKit(null);
                 $player->setInQueue(false);
-                Loader::getArenaUtils()->GiveItem($player);
+                Loader::getArenaUtils()->GiveLobbyItem($player);
             } elseif ($item->getCustomName() === '§r§dDuel') {
                 Loader::getFormUtils()->duelForm($player);
-            } elseif ($item->getCustomName() === '§r§dParty') {
-                Loader::getFormUtils()->partyForm($player);
             } elseif ($item->getCustomName() === '§r§dProfile') {
                 Loader::getFormUtils()->ProfileForm($player, null);
             }
@@ -274,6 +273,16 @@ class NeptuneListener implements Listener
         }
     }
 
+    public function onEntityTeleport(EntityTeleportEvent $event): void
+    {
+        $entity = $event->getEntity();
+        $from = $event->getFrom();
+        $to = $event->getTo();
+        if ($entity instanceof NeptunePlayer && $from->getWorld() !== $to->getWorld()) {
+            $entity->setCombat(false);
+        }
+    }
+
     /**
      * @throws JsonException
      */
@@ -334,7 +343,7 @@ class NeptuneListener implements Listener
                 }
                 return false;
             }
-        } else if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
             $ev->cancel();
         }
     }
@@ -527,7 +536,6 @@ class NeptuneListener implements Listener
                     /* @var NeptunePlayer $p */
                     $p->sendMessage(Loader::getInstance()->MessageData['StartCombat']);
                     $p->setCombat(true);
-                    $p->CombatTime = 10;
                 }
             } elseif ($player->getOpponent() !== null && $damager->getOpponent() !== null) {
                 if ($player->getOpponent() !== $damager->getName() && $damager->getOpponent() !== $player->getName()) {
@@ -539,7 +547,7 @@ class NeptuneListener implements Listener
                     }
                     foreach ([$player, $damager] as $p) {
                         /* @var NeptunePlayer $p */
-                        $p->CombatTime = 10;
+                        $p->setCombat(true);
                     }
                     if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
                         if ($damager->BoxingPoint <= 100) {
@@ -664,7 +672,7 @@ class NeptuneListener implements Listener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
-        Loader::getInstance()->getArenaUtils()->GiveItem($player);
+        Loader::getInstance()->getArenaUtils()->GiveLobbyItem($player);
         if ($player instanceof NeptunePlayer) {
             if ($player->getEditKit() !== null) {
                 $player->setEditKit(null);

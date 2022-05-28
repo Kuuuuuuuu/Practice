@@ -46,7 +46,7 @@ class DataManager
             if (isset($data['kdr'])) {
                 $this->kdr = $data['kdr'];
             } else {
-                $this->kdr = 0;
+                $this->kdr = 1;
             }
             if (isset($data['elo'])) {
                 $this->elo = $data['elo'];

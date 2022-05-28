@@ -63,7 +63,7 @@ class ChunkManager implements ChunkListener, ChunkLoader
 
     public function onChunkPopulated(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
-        $this->world->unregisterChunkLoader($this, intval($this->getX()), intval($this->getZ()));
+        $this->world->unregisterChunkLoader($this, (int)$this->getX(), (int)$this->getZ());
         $this->world->unregisterChunkListener($this, $this->chunkX, $this->chunkZ);
         ($this->callable)();
     }

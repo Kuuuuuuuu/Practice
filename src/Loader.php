@@ -57,11 +57,6 @@ class Loader extends PluginBase
     public array $SumoData = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
-    public array $PartyData = [];
-    public array $PartyInvite = [];
-    public array $TargetInvites = [];
-    public array $TargetParty = [];
-    public array $TargetPlayer = [];
 
     public static function getCoreTask(): ?NeptuneTask
     {

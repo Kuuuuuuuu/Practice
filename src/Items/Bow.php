@@ -70,7 +70,7 @@ class Bow extends ItemBow
             if ($baseForce < 0.1 || $diff < 5 || $player->isSpectator()) {
                 $ev->cancel();
             }
-        } else if ($baseForce < 0.1 || $diff < 2 || $player->isSpectator()) {
+        } elseif ($baseForce < 0.1 || $diff < 2 || $player->isSpectator()) {
             $ev->cancel();
         }
         $ev->call();

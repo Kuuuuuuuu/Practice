@@ -235,7 +235,7 @@ class SumoHandler implements Listener
         $player->getArmorInventory()->clearAll();
         $player->getCursorInventory()->clearAll();
         $player->setImmobile(false);
-        Loader::getInstance()->getArenaUtils()->GiveItem($player);
+        Loader::getInstance()->getArenaUtils()->GiveLobbyItem($player);
         $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSpawnLocation());
     }
 

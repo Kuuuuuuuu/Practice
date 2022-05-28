@@ -298,7 +298,7 @@ class CosmeticHandler
                 }
                 $newwidth = $w;
                 $newheight = $h;
-            } else if ($w / $h > $r) {
+            } elseif ($w / $h > $r) {
                 $newwidth = $h * $r;
                 $newheight = $h;
             } else {

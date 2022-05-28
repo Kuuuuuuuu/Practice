@@ -26,7 +26,6 @@ use Kuu\Entity\FallingWool;
 use Kuu\Entity\FishingHook;
 use Kuu\Entity\FistBot;
 use Kuu\Entity\KillLeaderboard;
-use Kuu\Events\AntiCheatListener;
 use Kuu\Events\NeptuneListener;
 use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
@@ -247,7 +246,6 @@ class ArenaUtils
     private function registerEvents(): void
     {
         Server::getInstance()->getPluginManager()->registerEvents(new NeptuneListener(), Loader::getInstance());
-        Server::getInstance()->getPluginManager()->registerEvents(new AntiCheatListener(), Loader::getInstance());
     }
 
     private function registerTasks(): void
@@ -361,10 +359,8 @@ class ArenaUtils
             }
         }
         foreach ([$dplayer, $player] as $p) {
-            $p->CombatTime = 0.5;
-            $p->setOpponent(null);
-            $p->setSkillCooldown(false);
             if ($p instanceof NeptunePlayer) {
+                $p->setCombat(false);
                 $p->setLastDamagePlayer('Unknown');
             }
         }
@@ -372,7 +368,7 @@ class ArenaUtils
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
         $this->addDeath($player);
-        $this->GiveItem($player);
+        $this->GiveLobbyItem($player);
         $this->addKill($dplayer);
         $this->handleStreak($dplayer, $player);
     }
@@ -392,7 +388,7 @@ class ArenaUtils
         return new DataManager($name);
     }
 
-    public function GiveItem(Player $player): void
+    public function GiveLobbyItem(Player $player): void
     {
         $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName('§r§dPlay');

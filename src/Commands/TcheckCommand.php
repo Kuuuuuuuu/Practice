@@ -58,11 +58,9 @@ class TcheckCommand extends Command
         $form->setTitle(Loader::getInstance()->MessageData['BanListTitle']);
         $form->setContent(Loader::getInstance()->MessageData['BanListContent']);
         $banInfo = Loader::getInstance()->BanData->query('SELECT * FROM banPlayers;');
-        $i = -1;
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
             $form->addButton(TextFormat::BOLD . $banPlayer, -1, '', $banPlayer);
-            ++$i;
         }
         $player->sendForm($form);
         return true;

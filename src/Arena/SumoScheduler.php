@@ -102,7 +102,7 @@ class SumoScheduler extends Task
                                 $player->getInventory()->clearAll();
                                 $player->getArmorInventory()->clearAll();
                                 $player->getEffects()->clear();
-                                Loader::getArenaUtils()->GiveItem($player);
+                                Loader::getArenaUtils()->GiveLobbyItem($player);
                                 Loader::getArenaUtils()->addKill($player);
                                 $player->setGamemode(GameMode::ADVENTURE());
                             }
