@@ -268,8 +268,10 @@ class NeptuneListener implements Listener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if ($block->getId() === ItemIds::ANVIL && $player->getGamemode() !== Gamemode::CREATIVE()) {
-            $event->cancel();
+        if ($player->getGamemode() !== Gamemode::CREATIVE()) {
+            if ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT) {
+                $event->cancel();
+            }
         }
     }
 
