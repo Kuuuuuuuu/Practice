@@ -14,7 +14,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
-class FistBot extends Human
+class NeptuneBot extends Human
 {
 
     private string $target;
@@ -26,7 +26,7 @@ class FistBot extends Human
         $this->target = $target;
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
-        $this->gravity = 0.08;
+        $this->gravity = 0.077;
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool
@@ -110,7 +110,7 @@ class FistBot extends Human
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        $xzKB = 0.299;
+        $xzKB = 0.309;
         $yKb = 0.301;
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
@@ -131,7 +131,6 @@ class FistBot extends Human
             $motion->x *= 0.65;
             $motion->y *= 1.25;
             $motion->z *= 0.65;
-            // hacky method
             if ($this->isAlive() && !$this->isClosed()) {
                 $this->move(0, 0, 0);
                 $this->setMotion($motion);
@@ -141,6 +140,6 @@ class FistBot extends Human
 
     public function getName(): string
     {
-        return 'FistBot';
+        return 'NeptuneBot';
     }
 }

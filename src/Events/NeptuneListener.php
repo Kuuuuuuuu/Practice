@@ -69,6 +69,7 @@ use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
+use pocketmine\world\World;
 use Throwable;
 
 class NeptuneListener implements Listener
@@ -184,6 +185,7 @@ class NeptuneListener implements Listener
     {
         $ev->getQueryInfo()->setWorld('NeptuneLobby');
         $ev->getQueryInfo()->setPlugins([Loader::getInstance()]);
+        $ev->getQueryInfo()->setMaxPlayerCount($ev->getQueryInfo()->getPlayerCount() + 1);
     }
 
     public function onDropItem(PlayerDropItemEvent $event): void
@@ -328,7 +330,7 @@ class NeptuneListener implements Listener
     public function onLevelLoadEvent(WorldLoadEvent $event): void
     {
         $world = $event->getWorld();
-        $world->setTime(0);
+        $world->setTime(World::TIME_DAY);
         $world->stopTime();
     }
 

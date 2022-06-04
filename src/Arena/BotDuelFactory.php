@@ -2,7 +2,7 @@
 
 namespace Kuu\Arena;
 
-use Kuu\Entity\FistBot;
+use Kuu\Entity\NeptuneBot;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use Kuu\Task\NeptuneTask;
@@ -17,7 +17,7 @@ class BotDuelFactory
 {
     private int $time = 903;
     private NeptunePlayer $player1;
-    private ?FistBot $player2;
+    private ?NeptuneBot $player2;
     private World $level;
     private bool $ended = false;
 
@@ -28,7 +28,7 @@ class BotDuelFactory
             throw new WorldException('World does not exist');
         }
         if (Loader::getCoreTask() instanceof NeptuneTask) {
-            Loader::getCoreTask()?->addBotDuelTask($name, $this);
+            Loader::getCoreTask()?->addDuelTask($name, $this);
         }
         $this->level = $world;
         $this->player1 = $player1;
@@ -40,7 +40,7 @@ class BotDuelFactory
         if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
             $this->onEnd();
         }
-        if ($this->player2 instanceof FistBot) {
+        if ($this->player2 instanceof NeptuneBot) {
             if (!$this->player2->isAlive() || $this->player2->isClosed()) {
                 $this->onEnd($this->player1);
             }
@@ -77,7 +77,7 @@ class BotDuelFactory
                     Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
                     $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                        $this->player2 = new FistBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
+                        $this->player2 = new NeptuneBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
                     }, static function (): void {
                     });
                 }

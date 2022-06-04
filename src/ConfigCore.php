@@ -4,7 +4,6 @@ namespace Kuu;
 
 interface ConfigCore
 {
-
     public const PREFIX = '§dNeptune§f » §r';
     public const SBPREFIX = '§f» §dNeptune §f«';
     public const PearlForce = 2.5;

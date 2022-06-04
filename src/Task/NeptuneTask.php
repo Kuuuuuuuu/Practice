@@ -57,17 +57,12 @@ class NeptuneTask extends Task
         }
     }
 
-    public function addBotDuelTask(string $name, BotDuelFactory $duel): void
-    {
-        $this->DuelTask[$name] = $duel;
-    }
-
     public function removeDuelTask(string $name): void
     {
         unset($this->DuelTask[$name]);
     }
 
-    public function addDuelTask(string $name, DuelFactory $duel): void
+    public function addDuelTask(string $name, DuelFactory|BotDuelFactory $duel): void
     {
         $this->DuelTask[$name] = $duel;
     }

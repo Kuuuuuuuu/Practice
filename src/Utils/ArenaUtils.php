@@ -24,8 +24,8 @@ use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\Entity\FallingWool;
 use Kuu\Entity\FishingHook;
-use Kuu\Entity\FistBot;
 use Kuu\Entity\KillLeaderboard;
+use Kuu\Entity\NeptuneBot;
 use Kuu\Events\NeptuneListener;
 use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
@@ -266,8 +266,8 @@ class ArenaUtils
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
-        EntityFactory::getInstance()->register(FistBot::class, function (World $world, CompoundTag $nbt): FistBot {
-            return new FistBot(EntityDataHelper::parseLocation($nbt, $world), FistBot
+        EntityFactory::getInstance()->register(NeptuneBot::class, function (World $world, CompoundTag $nbt): NeptuneBot {
+            return new NeptuneBot(EntityDataHelper::parseLocation($nbt, $world), NeptuneBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
@@ -398,8 +398,6 @@ class ArenaUtils
         $item3->setCustomName('§r§dBot');
         $item4 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName('§r§dDuel');
-        $item5 = VanillaItems::BOOK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item5->setCustomName('§r§dParty');
         $item6 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item6->setCustomName('§r§dProfile');
         $player->getOffHandInventory()->clearAll();
@@ -408,7 +406,6 @@ class ArenaUtils
         $player->getEffects()->clear();
         $player->getInventory()->setItem(0, $item);
         $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->setItem(7, $item5);
         $player->getInventory()->setItem(1, $item4);
         $player->getInventory()->setItem(2, $item3);
         $player->getInventory()->setItem(4, $item6);
@@ -501,8 +498,11 @@ class ArenaUtils
         foreach (Loader::getDuelManager()->getMatches() as $activeMatch => $matchTask) {
             Loader::getDuelManager()->stopMatch($activeMatch);
         }
+        foreach (Loader::getBotDuelManager()->getMatches() as $activeMatch => $matchTask) {
+            Loader::getBotDuelManager()->stopMatch($activeMatch);
+        }
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            if (str_contains(mb_strtolower($world->getFolderName()), 'duel')) {
+            if (str_contains(mb_strtolower($world->getFolderName()), 'duel') || str_contains(mb_strtolower($world->getFolderName()), 'bot')) {
                 $name = $world->getFolderName();
                 Server::getInstance()->getWorldManager()->unloadWorld($world);
                 $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
@@ -562,7 +562,7 @@ class ArenaUtils
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof FistBot) {
+                if ($entity instanceof NeptuneBot) {
                     $entity->close();
                 }
             }
