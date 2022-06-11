@@ -23,7 +23,7 @@ class HubCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof NeptunePlayer) {
             if ($sender->getEditKit() !== null) {

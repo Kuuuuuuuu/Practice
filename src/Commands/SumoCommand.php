@@ -19,7 +19,7 @@ class SumoCommand extends Command
         parent::__construct('sumo', 'NeptuneCore Sumo commands', null, ['sumo']);
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if (!isset($args[0])) {
             $sender->sendMessage(Loader::getPrefixCore() . '§cUsage: §7/sumo help');

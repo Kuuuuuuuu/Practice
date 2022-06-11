@@ -21,7 +21,7 @@ class TpsCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): bool
     {
         $server = Server::getInstance();
         $sender->sendMessage(Loader::getPrefixCore() . '§eServer Performance');

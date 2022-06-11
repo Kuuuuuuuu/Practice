@@ -22,7 +22,8 @@ class OnceRestartTask extends Task
         $this->time--;
         if ($this->time % 5 === 0) {
             Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
-        } elseif ($this->time <= 1) {
+        }
+        if ($this->time <= 1) {
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 $player->kick('§cServer restarted');
             }

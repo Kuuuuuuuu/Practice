@@ -32,7 +32,7 @@ class CoreCommand extends Command
     /**
      * @throws JsonException
      */
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): bool
     {
         if (!isset($args[0])) {
             $sender->sendMessage(Color::BOLD . Color::WHITE . '>> ' . Color::RESET . Color::RED . 'use /core help');

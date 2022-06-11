@@ -22,11 +22,17 @@ class RestartCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof Player) {
+            if (Loader::getInstance()->Restarted) {
+                $sender->sendMessage(Loader::getPrefixCore() . '§cServer is already restarting!');
+                return;
+            }
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if ($args !== null) {
-                    Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)implode($args)), 20);
+                if (count($args) > 0) {
+                    if (is_numeric($args[0])) {
+                        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask($args[0]), 20);
+                    }
                 } else {
-                    Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask(30), 20);
+                    $sender->sendMessage(Loader::getPrefixCore() . '§cUsage: /restart [time]');
                 }
                 $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');
             } else {
