@@ -29,12 +29,12 @@ class RestartCommand extends Command
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 if (count($args) > 0) {
                     if (is_numeric($args[0])) {
-                        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask($args[0]), 20);
+                        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)$args[0]), 20);
+                        $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');
                     }
                 } else {
                     $sender->sendMessage(Loader::getPrefixCore() . '§cUsage: /restart [time]');
                 }
-                $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');
             } else {
                 $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
