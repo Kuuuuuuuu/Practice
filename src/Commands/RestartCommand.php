@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Commands;
 
 use Kuu\Loader;
+use Kuu\Task\OnceRestartTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -22,9 +23,10 @@ class RestartCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                Loader::getInstance()->Restarted = true;
                 if ($args !== null) {
-                    Loader::getInstance()->RestartTime = (int)implode($args);
+                    Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)implode($args)), 20);
+                } else {
+                    Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask(30), 20);
                 }
                 $sender->sendMessage(Loader::getPrefixCore() . '§aServer restarting...');
             } else {

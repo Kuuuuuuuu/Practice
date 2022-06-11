@@ -49,7 +49,6 @@ class Loader extends PluginBase
     public Config $ArtifactData;
     public SQLite3 $BanData;
     public Config $KitData;
-    public int $RestartTime = 31;
     public bool $Restarted = false;
     public array $targetPlayer = [];
     public array $SumoArenas = [];

@@ -49,7 +49,7 @@ class NeptunePlayer extends Player
                     if ($this->isDueling()) {
                         $attackSpeed = 7.5;
                     } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
+                        $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
                     }
                 } catch (Throwable) {
                 }
@@ -72,8 +72,8 @@ class NeptunePlayer extends Player
                 $yKb = 0.32;
                 $xzKB = 0.34;
             } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
-                $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
+                $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
+                $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
             }
         } catch (Throwable) {
         }
