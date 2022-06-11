@@ -88,6 +88,6 @@ class SimpleForm extends Form
             $content['image']['data'] = $imagePath;
         }
         $this->data['buttons'][] = $content;
-        $this->labelMap[] = $label ?? (string)count($this->labelMap);
+        $this->labelMap[] = $label ?? count($this->labelMap);
     }
 }
