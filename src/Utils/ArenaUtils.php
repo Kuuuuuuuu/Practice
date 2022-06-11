@@ -305,7 +305,7 @@ class ArenaUtils
                 }
                 $player->sendMessage(Loader::getInstance()->MessageData['SkillCleared']);
                 $player->setSkillCooldown(false);
-            }), 250);
+            }), ConfigCore::SkillCooldownDelay);
         }
     }
 
@@ -330,8 +330,8 @@ class ArenaUtils
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
                     try {
-                        foreach (Loader::getInstance()->KitData->get($player->getName()) as $slot => $item) {
-                            $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
+                        foreach (Loader::getInstance()->KitData->get($dplayer->getName()) as $slot => $item) {
+                            $dplayer->getInventory()->setItem($slot, Item::jsonDeserialize($item));
                         }
                     } catch (Throwable) {
                         $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
