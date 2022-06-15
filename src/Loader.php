@@ -137,7 +137,7 @@ class Loader extends PluginBase
         return self::$plugin;
     }
 
-    public function onLoad(): void
+    protected function onLoad(): void
     {
         self::$plugin = $this;
         self::$cps = new ClickHandler();
@@ -155,7 +155,7 @@ class Loader extends PluginBase
         self::$botduelmanager = new BotDuelManager();
     }
 
-    public function onEnable(): void
+    protected function onEnable(): void
     {
         self::$YamlLoader = new YamlManager();
         self::$YamlLoader->loadArenas();
@@ -170,7 +170,7 @@ class Loader extends PluginBase
     /**
      * @throws JsonException
      */
-    public function onDisable(): void
+    protected function onDisable(): void
     {
         self::$YamlLoader->saveArenas();
         self::getArenaUtils()->Disable();
