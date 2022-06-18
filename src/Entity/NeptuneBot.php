@@ -108,7 +108,8 @@ class NeptuneBot extends Human
                         $this->jump();
                     }
                 }
-            } elseif ($this->getHealth() < 5) {
+            }
+            if ($this->getHealth() < 5) {
                 $this->pot();
             }
         }
