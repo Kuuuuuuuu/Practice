@@ -42,7 +42,7 @@ class EnderPearl extends ItemEnderPearl
             $projectile->spawnToAll();
             $location->getWorld()->addSound($location, new ThrowSound());
             $this->pop();
-            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $player->isDueling()) {
                 $player->setEnderPearlCooldown(true);
             }
             return ItemUseResult::SUCCESS();

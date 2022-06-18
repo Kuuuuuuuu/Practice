@@ -31,6 +31,7 @@ class NeptuneBot extends Human
     private int $enderpearl = 16;
     private int $pearltime = 0;
     private int $pots = 33;
+    public int $pearlcooldown = 0;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?string $mode = '')
     {
@@ -81,7 +82,7 @@ class NeptuneBot extends Human
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
-            if ($this->enderpearl !== 0) {
+            if ($this->enderpearl !== 0 && $this->pearlcooldown === 0) {
                 if (($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 10) && $this->getHealth() > 7) {
                     $this->pearltime++;
                     if ($this->pearltime >= 7) {
@@ -90,8 +91,8 @@ class NeptuneBot extends Human
                     }
                 }
                 if ($this->getHealth() < 5) {
-                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(0, 10);
-                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(0, 10);
+                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(10, 30);
+                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(10, 30);
                     $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
                     $this->getWorld()->addSound($origin, new EndermanTeleportSound());
                     $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
@@ -140,6 +141,7 @@ class NeptuneBot extends Human
             $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
             $this->getWorld()->addSound($origin, new EndermanTeleportSound());
             $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 10), 0, random_int(0, 10)));
+            $this->pearlcooldown = 10;
         }
     }
 

@@ -42,6 +42,9 @@ class BotDuelFactory
 
     public function update(): void
     {
+        if ($this->player2->pearlcooldown !== 0) {
+            $this->player2->pearlcooldown--;
+        }
         if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
             $this->onEnd();
         }
