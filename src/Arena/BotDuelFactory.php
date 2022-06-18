@@ -101,9 +101,6 @@ class BotDuelFactory
                 $winnerMessage = '§aWinner: §fFistBot';
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
-            if ($this->player2->isAlive() || !$this->player2->isClosed()) {
-                $this->player2->close();
-            }
             if ($this->player1->isOnline()) {
                 $this->player1->sendMessage('§f-----------------------');
                 $this->player1->sendMessage($winnerMessage);

@@ -88,7 +88,7 @@ class NeptuneBot extends Human
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;
         }
-        return 4 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
+        return 5.2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
     public function attack(EntityDamageEvent $source): void
