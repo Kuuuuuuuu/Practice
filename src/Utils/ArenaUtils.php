@@ -37,6 +37,7 @@ use Kuu\Task\NeptuneTask;
 use Kuu\Utils\DiscordUtils\DiscordWebhook;
 use Kuu\Utils\DiscordUtils\DiscordWebhookEmbed;
 use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\Utils\Generator\SumoGenerator;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\data\bedrock\PotionTypeIdMap;
@@ -59,6 +60,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
 use Throwable;
@@ -158,6 +160,7 @@ class ArenaUtils
         $this->registerEvents();
         $this->registerTasks();
         $this->registerEntity();
+        $this->registerGenerator();
         $this->loadallworlds();
         foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
             if ($interface instanceof RakLibInterface) {
@@ -567,5 +570,10 @@ class ArenaUtils
                 }
             }
         }
+    }
+
+    private function registerGenerator(): void
+    {
+        GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
     }
 }

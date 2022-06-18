@@ -6,6 +6,7 @@ use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
+use Kuu\Utils\Generator\SumoGenerator;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
@@ -23,9 +24,13 @@ class DuelManager
      */
     public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
     {
-        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName(). ' - ' . Loader::getArenaUtils()->generateUUID();
+        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . Loader::getArenaUtils()->generateUUID();
         $world = new WorldCreationOptions();
-        $world->setGeneratorClass(Flat::class);
+        if ($kit->getName() !== 'Sumo') {
+            $world->setGeneratorClass(Flat::class);
+        } else {
+            $world->setGeneratorClass(SumoGenerator::class);
+        }
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         foreach ([$player1, $player2] as $player) {
             $player->getInventory()->clearAll();

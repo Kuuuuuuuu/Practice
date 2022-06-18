@@ -65,14 +65,15 @@ class DuelFactory
                         Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                     }
                 }
-                $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(15, 4, 40, $this->level));
-                }, static function (): void {
-                });
-                $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                    $this->player2->teleport(new Position(15, 4, 10, $this->level));
-                }, static function (): void {
-                });
+                $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null);
+                $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null);
+                if ($this->kit->getName() !== 'Sumo') {
+                    $this->player1->teleport(new Position(15, 4, 40, $this->level), 180);
+                    $this->player2->teleport(new Position(15, 4, 10, $this->level), 180);
+                } else {
+                    $this->player1->teleport(new Position(6, 4, 10, $this->level), 180);
+                    $this->player2->teleport(new Position(6, 4, -20, $this->level), 180);
+                }
                 break;
             case 902:
                 foreach ($this->getPlayers() as $player) {

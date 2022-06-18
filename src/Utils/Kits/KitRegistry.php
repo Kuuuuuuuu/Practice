@@ -28,6 +28,7 @@ class KitRegistry
         self::register(new Fist('Fist'));
         self::register(new NoDebuff('NoDebuff'));
         self::register(new SG('SG'));
+        self::register(new Sumo('Sumo'));
     }
 
     public static function register(KitManager $kit): void

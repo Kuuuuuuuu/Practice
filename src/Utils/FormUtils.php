@@ -236,7 +236,11 @@ class FormUtils
                         $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 5:
-                        Loader::getArenaUtils()->JoinRandomArenaSumo($player);
+                        $player->setCurrentKit(KitRegistry::fromString('Sumo'));
+                        $player->setInQueue(true);
+                        $player->getInventory()->clearAll();
+                        $player->checkQueue();
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                 }
             }
@@ -247,7 +251,7 @@ class FormUtils
         $form->addButton("§aClassic\n§dQueue§f: " . $this->getQueue('Classic'), 0, 'textures/items/paper.png');
         $form->addButton("§aSG\n§dQueue§f: " . $this->getQueue('SG'), 0, 'textures/items/paper.png');
         $form->addButton("§aBuildUHC\n§dQueue§f: " . $this->getQueue('BuildUHC'), 0, 'textures/items/paper.png');
-        $form->addButton("§aSumo\n§dQueue§f: " . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getSumoDArena()), 0, 'textures/items/paper.png');
+        $form->addButton("§aSumo\n§dQueue§f: " . $this->getQueue('Sumo'), 0, 'textures/items/paper.png');
         $player->sendForm($form);
     }
 
