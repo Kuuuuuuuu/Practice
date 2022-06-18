@@ -82,29 +82,31 @@ class NeptuneBot extends Human
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
-            if ($this->enderpearl !== 0 && $this->pearlcooldown === 0) {
-                if (($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 10) && $this->getHealth() > 7) {
-                    $this->pearltime++;
-                    if ($this->pearltime >= 7) {
-                        $this->pearltime = 0;
-                        $this->pearl();
+            if ($this->enderpearl !== 0) {
+                if ($this->pearlcooldown === 0) {
+                    if (($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 10) && $this->getHealth() > 7) {
+                        $this->pearltime++;
+                        if ($this->pearltime >= 7) {
+                            $this->pearltime = 0;
+                            $this->pearl();
+                        }
                     }
-                }
-                if ($this->getHealth() < 5) {
-                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(10, 30);
-                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(10, 30);
-                    $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
-                    $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-                    $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
-                    $this->pot();
-                }
-                if ($this->getTargetPlayer()->getHealth() < 3) {
-                    $this->pearltime++;
-                    if ($this->pearltime >= 7) {
-                        $this->pearltime = 0;
-                        $this->pearl();
+                    if ($this->getHealth() < 5) {
+                        $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(15, 30);
+                        $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(15, 30);
+                        $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
+                        $this->getWorld()->addSound($origin, new EndermanTeleportSound());
+                        $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
+                        $this->pot();
                     }
-                    $this->jump();
+                    if ($this->getTargetPlayer()->getHealth() < 3) {
+                        $this->pearltime++;
+                        if ($this->pearltime >= 7) {
+                            $this->pearltime = 0;
+                            $this->pearl();
+                        }
+                        $this->jump();
+                    }
                 }
             } elseif ($this->getHealth() < 5) {
                 $this->pot();
@@ -140,7 +142,7 @@ class NeptuneBot extends Human
             $this->enderpearl--;
             $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
             $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 10), 0, random_int(0, 10)));
+            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 10), 0, random_int(6, 15)));
             $this->pearlcooldown = 10;
         }
     }
