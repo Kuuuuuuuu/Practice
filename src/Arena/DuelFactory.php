@@ -34,7 +34,7 @@ class DuelFactory
         if (Loader::getCoreTask() instanceof NeptuneTask) {
             Loader::getCoreTask()?->addDuelTask($name, $this);
         }
-        if ($this->kit->getName() === 'Sumo') {
+        if ($kit->getName() === 'Sumo') {
             $this->z = 0;
             $this->z2 = 9;
         }
