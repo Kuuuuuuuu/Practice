@@ -71,8 +71,8 @@ class DuelFactory
                     $this->player1->teleport(new Position(15, 4, 40, $this->level), 180);
                     $this->player2->teleport(new Position(15, 4, 10, $this->level), 180);
                 } else {
-                    $this->player1->teleport(new Position(6, 4, 10, $this->level), 180);
-                    $this->player2->teleport(new Position(6, 4, -20, $this->level), 180);
+                    $this->player1->teleport(new Position(6, 4, 40, $this->level), 180);
+                    $this->player2->teleport(new Position(6, 4, -10, $this->level), 180);
                 }
                 break;
             case 902:
