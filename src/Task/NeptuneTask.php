@@ -13,8 +13,8 @@ use pocketmine\Server;
 
 class NeptuneTask extends Task
 {
-    private array $DuelTask = [];
-    private int $tick = 0;
+    private static array $DuelTask = [];
+    private static int $tick = 0;
 
     public function __construct()
     {
@@ -23,21 +23,15 @@ class NeptuneTask extends Task
 
     public function onRun(): void
     {
-        $this->tick++;
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if (!$player instanceof NeptunePlayer) {
-                return;
-            }
-            $player->update();
-        }
-        $this->updateServer();
-    }
-
-    private function updateServer(): void
-    {
-        if ($this->tick % 20 === 0) {
+        self::$tick++;
+        if (self::$tick % 20 === 0) {
             Loader::getDeleteBlockHandler()->update();
-            foreach ($this->DuelTask as $duel) {
+            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                if ($player instanceof NeptunePlayer) {
+                    $player->update();
+                }
+            }
+            foreach (self::$DuelTask as $duel) {
                 if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
                     $duel->update();
                 }
@@ -47,11 +41,11 @@ class NeptuneTask extends Task
 
     public function removeDuelTask(string $name): void
     {
-        unset($this->DuelTask[$name]);
+        unset(self::$DuelTask[$name]);
     }
 
     public function addDuelTask(string $name, DuelFactory|BotDuelFactory $duel): void
     {
-        $this->DuelTask[$name] = $duel;
+        self::$DuelTask[$name] = $duel;
     }
 }

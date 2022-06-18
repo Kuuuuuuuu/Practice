@@ -23,7 +23,7 @@ class NeptunePlayer extends Player
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
-    private int $tick = 0;
+    private int $sec = 0;
     private ?KitManager $duelKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
@@ -202,38 +202,34 @@ class NeptunePlayer extends Player
 
     public function update(): void
     {
-        $this->tick++;
-        if ($this->tick % 20 === 0) {
-            $this->updateTag();
-            if ($this->isCombat()) {
-                $percent = (float)($this->CombatTime / 10);
-                $this->getXpManager()->setXpProgress($percent);
-                $this->CombatTime--;
-                if ($this->CombatTime <= 0) {
-                    $this->setCombat(false);
-                    $this->getXpManager()->setXpProgress(0.0);
-                    $this->sendMessage(Loader::getInstance()->MessageData['StopCombat']);
-                    $this->BoxingPoint = 0;
-                    $this->setOpponent(null);
-                    $this->setSkillCooldown(false);
-                    $this->setUnPVPTag();
-                }
-            }
-            if ($this->isEnderPearlCooldown()) {
-                $this->enderpearlcooldown--;
-                if ($this->enderpearlcooldown <= 0) {
-                    $this->setEnderPearlCooldown(false);
-                    $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
-                }
+        $this->sec++;
+        $this->updateTag();
+        if ($this->isCombat()) {
+            $percent = (float)($this->CombatTime / 10);
+            $this->getXpManager()->setXpProgress($percent);
+            $this->CombatTime--;
+            if ($this->CombatTime <= 0) {
+                $this->setCombat(false);
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(Loader::getInstance()->MessageData['StopCombat']);
+                $this->BoxingPoint = 0;
+                $this->setOpponent(null);
+                $this->setSkillCooldown(false);
+                $this->setUnPVPTag();
             }
         }
-        if ($this->tick % 60 === 0) {
+        if ($this->isEnderPearlCooldown()) {
+            $this->enderpearlcooldown--;
+            if ($this->enderpearlcooldown <= 0) {
+                $this->setEnderPearlCooldown(false);
+                $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
+            }
+        }
+        if ($this->sec % 3 === 0) {
             Loader::getArenaUtils()->DeviceCheck($this);
             $this->updateScoreboard();
             $this->updateNametag();
         }
-        // TODO: Change this to ClickHandler
-        $this->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($this));
     }
 
     private function updateTag(): void
