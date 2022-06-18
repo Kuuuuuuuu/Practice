@@ -522,7 +522,13 @@ class FormUtils
                 switch ($data) {
                     case 0:
                         /* @var $player NeptunePlayer */
-                        $player->queueBotDuel();
+                        $player->setCurrentKit(KitRegistry::fromString('Fist'));
+                        $player->queueBotDuel('Fist');
+                        break;
+                    case 1:
+                        /* @var $player NeptunePlayer */
+                        $player->setCurrentKit(KitRegistry::fromString('NoDebuff'));
+                        $player->queueBotDuel('NoDebuff');
                         break;
                 }
             }
@@ -530,6 +536,7 @@ class FormUtils
         $form->setTitle('§dNeptune §cMenu');
         $form->setContent('§dPlayers: §e' . $this->getQueueBot());
         $form->addButton('§aFist §dBot', 0, 'textures/items/diamond.png');
+        $form->addButton('§aNoDebuff §dBot', 1, 'textures/items/diamond.png');
         $player->sendForm($form);
     }
 

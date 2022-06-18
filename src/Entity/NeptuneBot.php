@@ -2,33 +2,63 @@
 
 namespace Kuu\Entity;
 
+use Exception;
 use pocketmine\entity\animation\ArmSwingAnimation;
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\particle\EndermanTeleportParticle;
+use pocketmine\world\sound\EndermanTeleportSound;
 
 class NeptuneBot extends Human
 {
 
     private string $target;
+    private string $mode;
     private float $speed = 0.85;
+    private int $enderpearl = 16;
+    private int $pearltime = 0;
+    private int $pots = 33;
 
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?string $mode = '')
     {
         parent::__construct($location, $skin, $nbt);
         $this->target = $target;
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
         $this->gravity = 0.077;
+        $this->mode = $mode;
+        if ($mode === 'NoDebuff') {
+            $this->giveItems();
+        }
     }
 
+    private function giveItems(): void
+    {
+        $sword = VanillaItems::DIAMOND_SWORD();
+        $this->getInventory()->setItem(0, $sword);
+        $this->getArmorInventory()->setHelmet(VanillaItems::DIAMOND_HELMET());
+        $this->getArmorInventory()->setChestplate(VanillaItems::DIAMOND_CHESTPLATE());
+        $this->getArmorInventory()->setLeggings(VanillaItems::DIAMOND_LEGGINGS());
+        $this->getArmorInventory()->setBoots(VanillaItems::DIAMOND_BOOTS());
+        $this->getInventory()->setHeldItemIndex(0);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function entityBaseTick(int $tickDiff = 1): bool
     {
         parent::entityBaseTick($tickDiff);
@@ -38,6 +68,7 @@ class NeptuneBot extends Human
             }
             return false;
         }
+        $this->getInventory()->setHeldItemIndex(0);
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
         $x = $position->x - $this->getLocation()->getX();
         $z = $position->z - $this->getLocation()->getZ();
@@ -48,6 +79,35 @@ class NeptuneBot extends Human
         } else {
             $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
+        }
+        if ($this->mode === 'NoDebuff') {
+            if ($this->enderpearl !== 0) {
+                if (($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 10) && $this->getHealth() > 7) {
+                    $this->pearltime++;
+                    if ($this->pearltime >= 7) {
+                        $this->pearltime = 0;
+                        $this->pearl();
+                    }
+                }
+                if ($this->getHealth() < 5) {
+                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(0, 10);
+                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(0, 10);
+                    $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
+                    $this->getWorld()->addSound($origin, new EndermanTeleportSound());
+                    $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
+                    $this->pot();
+                }
+                if ($this->getTargetPlayer()->getHealth() < 3) {
+                    $this->pearltime++;
+                    if ($this->pearltime >= 7) {
+                        $this->pearltime = 0;
+                        $this->pearl();
+                    }
+                    $this->jump();
+                }
+            } elseif ($this->getHealth() < 5) {
+                $this->pot();
+            }
         }
         $this->location->yaw = rad2deg(atan2(-$x, $z));
         $this->location->pitch = rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
@@ -68,6 +128,43 @@ class NeptuneBot extends Human
     private function getSpeed(): float
     {
         return $this->speed;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function pearl(): void
+    {
+        if ($this->enderpearl > 0) {
+            $this->enderpearl--;
+            $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
+            $this->getWorld()->addSound($origin, new EndermanTeleportSound());
+            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 10), 0, random_int(0, 10)));
+        }
+    }
+
+    private function pot(): void
+    {
+        if ($this->getLocation()->getYaw() < 0) {
+            $this->getLocation()->yaw = abs($this->getLocation()->getYaw());
+        } elseif ($this->getLocation()->getYaw() === 0) {
+            $this->getLocation()->yaw = -180;
+        } else {
+            $this->getLocation()->yaw = -$this->getLocation()->getYaw();
+        }
+        $this->getLocation()->pitch = 85;
+        $this->getInventory()->setHeldItemIndex(2);
+        $player = $this->getTargetPlayer();
+        $soundPacket = new LevelSoundEventPacket();
+        $soundPacket->sound = LevelSoundEvent::GLASS;
+        $soundPacket->position = $this->getPosition()->asVector3();
+        $player?->getNetworkSession()->sendDataPacket($soundPacket);
+        $effect = new EffectInstance(VanillaEffects::INSTANT_HEALTH(), 0, 1);
+        $this->getEffects()->add($effect);
+        if ($this->getPosition()->distance($player?->getPosition()->asVector3()) <= 2) {
+            $player?->getEffects()->add($effect);
+        }
+        $this->pots--;
     }
 
     private function attackTargetPlayer(): void
@@ -96,9 +193,7 @@ class NeptuneBot extends Human
         parent::attack($source);
         if ($source->isCancelled()) {
             $source->cancel();
-            return;
-        }
-        if ($source instanceof EntityDamageByEntityEvent) {
+        } elseif ($source instanceof EntityDamageByEntityEvent) {
             $killer = $source->getDamager();
             if ($killer instanceof Player) {
                 $deltaX = $this->getPosition()->getX() - $killer->getPosition()->getX();

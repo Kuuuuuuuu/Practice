@@ -6,6 +6,7 @@ use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
+use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
@@ -20,7 +21,7 @@ class BotDuelManager
     /**
      * @throws Exception
      */
-    public function createMatch(NeptunePlayer $player): void
+    public function createMatch(NeptunePlayer $player, KitManager $kit, string $mode): void
     {
         $worldName = 'Bot-' . $player->getName() . ' - ' . Loader::getArenaUtils()->generateUUID();
         $world = new WorldCreationOptions();
@@ -28,7 +29,7 @@ class BotDuelManager
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         $player->getInventory()->clearAll();
         $player->setDueling(true);
-        $this->addMatch($worldName, new BotDuelFactory($worldName, $player));
+        $this->addMatch($worldName, new BotDuelFactory($worldName, $player, $kit, $mode));
     }
 
     #[Pure] public function addMatch(string $name, BotDuelFactory $task): void

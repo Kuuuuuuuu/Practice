@@ -6,6 +6,7 @@ use Kuu\Entity\NeptuneBot;
 use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use Kuu\Task\NeptuneTask;
+use Kuu\Utils\Kits\KitManager;
 use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
@@ -19,9 +20,11 @@ class BotDuelFactory
     private NeptunePlayer $player1;
     private ?NeptuneBot $player2;
     private World $level;
+    private KitManager $kit;
     private bool $ended = false;
+    private string $mode;
 
-    public function __construct(string $name, NeptunePlayer $player1)
+    public function __construct(string $name, NeptunePlayer $player1, KitManager $kit, string $mode)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
@@ -33,6 +36,8 @@ class BotDuelFactory
         $this->level = $world;
         $this->player1 = $player1;
         $this->player2 = null;
+        $this->kit = $kit;
+        $this->mode = $mode;
     }
 
     public function update(): void
@@ -51,6 +56,8 @@ class BotDuelFactory
                     $this->player1->setImmobile();
                     $this->player1->setGamemode(GameMode::SURVIVAL());
                     $this->player1->sendTitle('§d3', '', 1, 3, 1);
+                    $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
+                    $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
                     Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
@@ -77,7 +84,7 @@ class BotDuelFactory
                     Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
                     $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                        $this->player2 = new NeptuneBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName());
+                        $this->player2 = new NeptuneBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
                     }, static function (): void {
                     });
                 }
