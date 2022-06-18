@@ -240,9 +240,7 @@ class NeptunePlayer extends Player
     {
         if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
-            return;
-        }
-        if (!$this->isCombat()) {
+        } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
         }
     }
@@ -346,7 +344,7 @@ class NeptunePlayer extends Player
     public function setCosmetic(): void
     {
         if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/artifact/' . Loader::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
-            if ($this->getStuff() !== '' || $this->getStuff() !== null) {
+            if ($this->getStuff() !== '' && $this->getStuff() !== null) {
                 Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
             }
         } else {
@@ -433,13 +431,11 @@ class NeptunePlayer extends Player
     {
         $name = $this->getName();
         try {
-            // TODO: implement
             foreach ($this->getInventory()->getContents() as $slot => $item) {
                 $this->savekitcache[$slot] = $item->jsonSerialize();
             }
             Loader::getInstance()->KitData->set($name, $this->savekitcache);
-        } catch (Exception $exception) {
-            Loader::getInstance()->getLogger()->error($exception->getMessage());
+        } catch (Exception) {
             $this->kill();
             $this->setImmobile(false);
             $this->sendMessage(Loader::getPrefixCore() . '§cAn error occurred while saving your kit.');

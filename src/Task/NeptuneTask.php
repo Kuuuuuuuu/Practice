@@ -38,10 +38,9 @@ class NeptuneTask extends Task
         if ($this->tick % 20 === 0) {
             Loader::getDeleteBlockHandler()->update();
             foreach ($this->DuelTask as $duel) {
-                if (!$duel instanceof DuelFactory && !$duel instanceof BotDuelFactory) {
-                    return;
+                if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
+                    $duel->update();
                 }
-                $duel->update();
             }
         }
     }
@@ -54,10 +53,5 @@ class NeptuneTask extends Task
     public function addDuelTask(string $name, DuelFactory|BotDuelFactory $duel): void
     {
         $this->DuelTask[$name] = $duel;
-    }
-
-    public function __destruct()
-    {
-        Loader::setCoreTask(null);
     }
 }

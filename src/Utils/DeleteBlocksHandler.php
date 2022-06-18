@@ -22,9 +22,9 @@ class DeleteBlocksHandler
         $pos = $block->getPosition()->getX() . ':' . $block->getPosition()->getY() . ':' . $block->getPosition()->getZ() . ':' . $block->getPosition()->getWorld()->getFolderName();
         if ($break && isset($this->buildBlocks[$pos])) {
             unset($this->buildBlocks[$pos]);
-            return;
+        } else {
+            $this->buildBlocks[$pos] = ConfigCore::DeleteBlockTime;
         }
-        $this->buildBlocks[$pos] = ConfigCore::DeleteBlockTime;
     }
 
     public function update(): void

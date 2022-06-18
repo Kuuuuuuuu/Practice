@@ -34,41 +34,37 @@ class FormUtils
     public function Form1($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        Loader::getArenaManager()->onJoinBoxing($player);
+                        break;
+                    case 1:
+                        Loader::getArenaManager()->onJoinFist($player);
+                        break;
+                    case 2:
+                        Loader::getArenaManager()->onJoinCombo($player);
+                        break;
+                    case 3:
+                        Loader::getArenaManager()->onJoinKnockback($player);
+                        break;
+                    case 4:
+                        Loader::getArenaManager()->onJoinResistance($player);
+                        break;
+                    case 5:
+                        $this->formkit($player);
+                        break;
+                    case 6:
+                        Loader::getArenaManager()->onJoinOITC($player);
+                        break;
+                    case 7:
+                        Loader::getArenaManager()->onJoinBuild($player);
+                        break;
+                    default:
+                        print 'Error';
+                }
             }
-            switch ($result) {
-                case 0:
-                    Loader::getArenaManager()->onJoinBoxing($player);
-                    break;
-                case 1:
-                    Loader::getArenaManager()->onJoinFist($player);
-                    break;
-                case 2:
-                    Loader::getArenaManager()->onJoinCombo($player);
-                    break;
-                case 3:
-                    Loader::getArenaManager()->onJoinKnockback($player);
-                    break;
-                case 4:
-                    Loader::getArenaManager()->onJoinResistance($player);
-                    break;
-                case 5:
-                    $this->formkit($player);
-                    break;
-                case 6:
-                    Loader::getArenaManager()->onJoinOITC($player);
-                    break;
-                case 7:
-                    Loader::getArenaManager()->onJoinBuild($player);
-                    break;
-                default:
-                    print 'Error';
-            }
-            return true;
         });
-
         $form->setTitle('§dNeptune §cMenu');
         $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
         $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
@@ -84,28 +80,25 @@ class FormUtils
     private function formkit(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $this->assasins($player);
+                        break;
+                    case 1:
+                        $this->tank($player);
+                        break;
+                    case 2:
+                        $this->boxing($player);
+                        break;
+                    case 3:
+                        $this->bower($player);
+                        break;
+                    case 4;
+                        $this->reaper($player);
+                        break;
+                }
             }
-            switch ($result) {
-                case 0:
-                    $this->assasins($player);
-                    break;
-                case 1:
-                    $this->tank($player);
-                    break;
-                case 2:
-                    $this->boxing($player);
-                    break;
-                case 3:
-                    $this->bower($player);
-                    break;
-                case 4;
-                    $this->reaper($player);
-                    break;
-            }
-            return true;
         });
         $form->setTitle('§dNeptune §eKitPVP');
         $form->setContent('§eNow Playing: §a' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
@@ -205,12 +198,8 @@ class FormUtils
     public function duelForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            if ($player instanceof NeptunePlayer) {
-                switch ($result) {
+            if (($data !== null) && $player instanceof NeptunePlayer) {
+                switch ($data) {
                     case 0:
                         $player->setCurrentKit(KitRegistry::fromString('Fist'));
                         $player->setInQueue(true);
@@ -251,7 +240,6 @@ class FormUtils
                         break;
                 }
             }
-            return true;
         });
         $form->setTitle('§dNeptune §cDuel');
         $form->addButton("§aFist\n§dQueue§f: " . $this->getQueue('Fist'), 0, 'textures/items/paper.png');
@@ -283,29 +271,26 @@ class FormUtils
     public function settingsForm($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            switch ($result) {
-                case 0:
-                    $this->NickForm($player);
-                    break;
-                case 1:
-                    $this->reportForm($player);
-                    break;
-                case 2:
-                    $this->openCapesUI($player);
-                    break;
-                case 3:
-                    $this->getArtifactForm($player);
-                    break;
-                case 4:
-                    $this->editkitform($player);
-                    break;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $this->NickForm($player);
+                        break;
+                    case 1:
+                        $this->reportForm($player);
+                        break;
+                    case 2:
+                        $this->openCapesUI($player);
+                        break;
+                    case 3:
+                        $this->getArtifactForm($player);
+                        break;
+                    case 4:
+                        $this->editkitform($player);
+                        break;
 
+                }
             }
-            return true;
         });
         $form->setTitle('§dNeptune §cMenu');
         $form->addButton('§aChange §dName', 0, 'textures/ui/dressing_room_skins.png');
@@ -319,25 +304,22 @@ class FormUtils
     public function NickForm($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $this->CustomNickForm($player);
+                        break;
+                    case 1:
+                        $player->setDisplayName($player->getName());
+                        if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                            $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                        } else {
+                            $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
+                        }
+                        $player->sendMessage(Loader::getPrefixCore() . '§eYour nickname has been resetted!');
+                        break;
+                }
             }
-            switch ($result) {
-                case 0:
-                    $this->CustomNickForm($player);
-                    break;
-                case 1:
-                    $player->setDisplayName($player->getName());
-                    if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
-                    } else {
-                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
-                    }
-                    $player->sendMessage(Loader::getPrefixCore() . '§eYour nickname has been resetted!');
-                    break;
-            }
-            return true;
         });
         $name = '§eNow Your Name is: §a' . $player->getDisplayName();
         $form->setTitle('§dNeptune §cNick');
@@ -350,24 +332,21 @@ class FormUtils
     public function CustomNickForm($player): void
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            if (strlen($data[0]) >= 15) {
-                $player->sendMessage(Loader::getPrefixCore() . '§cYour nickname is too long!');
-            } elseif (Server::getInstance()->getPlayerByPrefix($data[0]) === null || $data[0] === '' || mb_strtolower($data[0]) === 'iskohakuchan') {
-                $player->sendMessage(Loader::getPrefixCore() . '§cYou cant use this nickname!');
-            } else {
-                $player->setDisplayName($data[0]);
-                if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                    $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+            if ($data !== null) {
+                if (strlen($data[0]) >= 15) {
+                    $player->sendMessage(Loader::getPrefixCore() . '§cYour nickname is too long!');
+                } elseif (Server::getInstance()->getPlayerByPrefix($data[0]) !== null && mb_strtolower($data[0]) !== 'iskohakuchan') {
+                    $player->sendMessage(Loader::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
-                    $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
+                    $player->setDisplayName($data[0]);
+                    if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                    } else {
+                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
+                    }
+                    $player->sendMessage(Loader::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
                 }
-                $player->sendMessage(Loader::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
             }
-            return true;
         });
         $form->setTitle('§dNeptune §cNick');
         $form->addInput('§eEnter New Name Here!');
@@ -413,27 +392,24 @@ class FormUtils
     public function openCapesUI($player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
-            $result = $data;
-            if (is_null($result)) {
-                return true;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $oldSkin = $player->getSkin();
+                        $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), '', $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                        $player->setSkin($setCape);
+                        $player->sendSkin();
+                        if (Loader::getInstance()->CapeData->get($player->getName()) !== null) {
+                            Loader::getInstance()->CapeData->remove($player->getName());
+                            Loader::getInstance()->CapeData->save();
+                        }
+                        $player->sendMessage(Loader::getPrefixCore() . '§aCape Removed!');
+                        break;
+                    case 1:
+                        $this->openCapeListUI($player);
+                        break;
+                }
             }
-            switch ($result) {
-                case 0:
-                    $oldSkin = $player->getSkin();
-                    $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), '', $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
-                    $player->setSkin($setCape);
-                    $player->sendSkin();
-                    if (Loader::getInstance()->CapeData->get($player->getName()) !== null) {
-                        Loader::getInstance()->CapeData->remove($player->getName());
-                        Loader::getInstance()->CapeData->save();
-                    }
-                    $player->sendMessage(Loader::getPrefixCore() . '§aCape Removed!');
-                    break;
-                case 1:
-                    $this->openCapeListUI($player);
-                    break;
-            }
-            return true;
         });
         $form->setTitle('§dNeptune §cCapes');
         $form->addButton('§aRemove your Cape');
@@ -447,26 +423,22 @@ class FormUtils
     public function openCapeListUI($player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
-            $result = $data;
-            if (is_null($result)) {
-                return true;
+            if ($data !== null) {
+                if (!file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
+                    $player->sendMessage(Loader::getPrefixCore() . '§cCape not found!');
+                } else {
+                    $oldSkin = $player->getSkin();
+                    $capeData = Loader::getCosmeticHandler()->createCape($data);
+                    $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                    $player->setSkin($setCape);
+                    $player->sendSkin();
+                    $msg = Loader::getPrefixCore() . '§aCape set to {name}!';
+                    $msg = str_replace('{name}', $data, $msg);
+                    $player->sendMessage($msg);
+                    Loader::getInstance()->CapeData->set($player->getName(), $data);
+                    Loader::getInstance()->CapeData->save();
+                }
             }
-            $cape = $data;
-            if (!file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
-                $player->sendMessage(Loader::getPrefixCore() . '§cCape not found!');
-            } else {
-                $oldSkin = $player->getSkin();
-                $capeData = Loader::getCosmeticHandler()->createCape($cape);
-                $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
-                $player->setSkin($setCape);
-                $player->sendSkin();
-                $msg = Loader::getPrefixCore() . '§aCape set to {name}!';
-                $msg = str_replace('{name}', $cape, $msg);
-                $player->sendMessage($msg);
-                Loader::getInstance()->CapeData->set($player->getName(), $cape);
-                Loader::getInstance()->CapeData->save();
-            }
-            return true;
         });
         $form->setTitle('§dNeptune §cCapes');
         foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
@@ -475,7 +447,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function getArtifactForm(Player $player): bool
+    public function getArtifactForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
             if (($event instanceof NeptunePlayer) && $data !== null) {
@@ -509,18 +481,13 @@ class FormUtils
             $form->addButton('§a' . $stuff, -1, '', $stuff);
         }
         $player->sendForm($form);
-        return true;
     }
 
     public function editkitform($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            if ($player instanceof NeptunePlayer) {
-                switch ($result) {
+            if (($data !== null) && $player instanceof NeptunePlayer) {
+                switch ($data) {
                     case 0:
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();
@@ -541,7 +508,6 @@ class FormUtils
                         break;
                 }
             }
-            return true;
         });
         $form->setTitle('§l§cEdit Kit');
         $form->setContent('§7Select a kit to edit');
@@ -552,17 +518,14 @@ class FormUtils
     public function botForm($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            $result = $data;
-            if ($result === null) {
-                return true;
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        /* @var $player NeptunePlayer */
+                        $player->queueBotDuel();
+                        break;
+                }
             }
-            switch ($result) {
-                case 0:
-                    /* @var $player NeptunePlayer */
-                    $player->queueBotDuel();
-                    break;
-            }
-            return true;
         });
         $form->setTitle('§dNeptune §cMenu');
         $form->setContent('§dPlayers: §e' . $this->getQueueBot());

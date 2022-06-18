@@ -174,5 +174,6 @@ class Loader extends PluginBase
     {
         self::$YamlLoader->saveArenas();
         self::getArenaUtils()->Disable();
+        self::setCoreTask(null);
     }
 }

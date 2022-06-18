@@ -169,10 +169,9 @@ class ArenaUtils
     public static function getLogger(string $err): void
     {
         $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
+        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('Webhook'));
         $msg = new DiscordWebhookUtils();
         $e->setTitle('Error');
-        $e->setFooter('Made By KohakuChan');
         $e->setTimestamp(new Datetime());
         $e->setColor(0x00ff00);
         $e->setDescription('Error: ' . $err);
@@ -208,6 +207,7 @@ class ArenaUtils
             'StartSkillMessage' => '§dNeptune§f » §r§aYou Started Skill!',
             'NoPlayer' => '§dNeptune§f » §r§cPlayer not found!',
             'SkillCleared' => '§dNeptune§f » §r§aSkill Cleared!',
+            'CantUseeditkit' => "§dNeptune§f » §r§cYou can't use this command in editkit mode!",
             'CantUseWantCombat' => "§dNeptune§f » §r§cYou can't use this command in combat!",
             'BroadcastBanMessage' => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
             'KickBanMessage' => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",

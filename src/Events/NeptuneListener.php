@@ -33,7 +33,6 @@ use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
@@ -46,6 +45,7 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\event\server\CommandEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\server\NetworkInterfaceRegisterEvent;
@@ -165,7 +165,6 @@ class NeptuneListener implements Listener
         $entity = $event->getEntity();
         if ($entity instanceof Arrow) {
             $entity->flagForDespawn();
-            $entity->close();
         }
     }
 
@@ -177,7 +176,7 @@ class NeptuneListener implements Listener
                 if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) && $entity->isAlive()) {
                     $entity->getInventory()->setItem(8, VanillaItems::ARROW());
                 }
-            }), 100);
+            }), ConfigCore::OITCBowDelay);
         }
     }
 
@@ -690,18 +689,17 @@ class NeptuneListener implements Listener
         }
     }
 
-    public function onCommandPreprocess(PlayerCommandPreprocessEvent $event): void
+    public function onCommandEvent(CommandEvent $event): void
     {
-        $player = $event->getPlayer();
-        $msg = $event->getMessage();
-        if ($player instanceof NeptunePlayer) {
-            if ($player->isCombat() || $player->getEditKit() !== null || $player->isDueling()) {
-                $msg = substr($msg, 1);
-                $msg = explode(' ', $msg);
-                if (in_array($msg[0], ConfigCore::BanCommand, true)) {
-                    $event->cancel();
-                    $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
-                }
+        $player = Server::getInstance()->getPlayerByPrefix($event->getSender()->getName());
+        $cmd = $event->getCommand();
+        if (($player instanceof NeptunePlayer) && isset(ConfigCore::BanCommand[$cmd])) {
+            if ($player->isCombat() || $player->isDueling()) {
+                $event->cancel();
+                $player->sendMessage(Loader::getInstance()->MessageData['CantUseWantCombat']);
+            } elseif ($player->getEditKit() !== null) {
+                $event->cancel();
+                $player->sendMessage(Loader::getInstance()->MessageData['CantUseeditkit']);
             }
         }
     }

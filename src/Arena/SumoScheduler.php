@@ -16,7 +16,7 @@ class SumoScheduler extends Task
     private int $tick = 0;
     private SumoHandler $plugin;
     private int $startTime = 4;
-    private int|float $gameTime = 5 * 30;
+    private int $gameTime = 5 * 30;
 
     public function __construct(SumoHandler $plugin)
     {
@@ -119,6 +119,6 @@ class SumoScheduler extends Task
     public function reloadTimer(): void
     {
         $this->startTime = 4;
-        $this->gameTime = 10 * 60;
+        $this->gameTime = 5 * 30;
     }
 }

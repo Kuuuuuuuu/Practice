@@ -285,20 +285,12 @@ class CosmeticHandler
         }
     }
 
-    private function resizeImage($file, $w, $h, $crop = false): GdImage|bool|null
+    private function resizeImage($file, $w, $h): GdImage|bool|null
     {
         try {
             [$width, $height] = getimagesize($file);
             $r = $width / $height;
-            if ($crop) {
-                if ($width > $height) {
-                    $width = ceil($width - ($width * abs($r - $w / $h)));
-                } else {
-                    $height = ceil($height - ($height * abs($r - $w / $h)));
-                }
-                $newwidth = $w;
-                $newheight = $h;
-            } elseif ($w / $h > $r) {
+            if ($w / $h > $r) {
                 $newwidth = $h * $r;
                 $newheight = $h;
             } else {
