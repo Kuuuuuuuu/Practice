@@ -54,6 +54,7 @@ use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\inventory\transaction\CraftingTransaction;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
@@ -156,6 +157,10 @@ class NeptuneListener implements Listener
                 Loader::getFormUtils()->duelForm($player);
             } elseif ($item->getCustomName() === '§r§dProfile') {
                 Loader::getFormUtils()->ProfileForm($player, null);
+            } elseif ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getId() === ItemIds::ENDER_PEARL) {
+                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+                    $player->setEnderPearlCooldown(true);
+                }
             }
         }
     }

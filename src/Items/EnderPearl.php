@@ -5,7 +5,6 @@ namespace Kuu\Items;
 use JetBrains\PhpStorm\Pure;
 use Kuu\ConfigCore;
 use Kuu\Entity\EnderPearlEntity;
-use Kuu\Loader;
 use Kuu\NeptunePlayer;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
@@ -15,7 +14,6 @@ use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemUseResult;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
-use pocketmine\Server;
 use pocketmine\world\sound\ThrowSound;
 
 class EnderPearl extends ItemEnderPearl
@@ -29,7 +27,7 @@ class EnderPearl extends ItemEnderPearl
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
         //TODO: Implement this
-        if ($player instanceof NeptunePlayer) {
+        if (($player instanceof NeptunePlayer) && !$player->isEnderPearlCooldown()) {
             $location = $player->getLocation();
             $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
             $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
@@ -42,9 +40,6 @@ class EnderPearl extends ItemEnderPearl
             $projectile->spawnToAll();
             $location->getWorld()->addSound($location, new ThrowSound());
             $this->pop();
-            if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $player->isDueling()) {
-                $player->setEnderPearlCooldown(true);
-            }
             return ItemUseResult::SUCCESS();
         }
         return ItemUseResult::FAIL();
