@@ -97,7 +97,6 @@ class NeptuneBot extends Human
                         $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
                         $this->getWorld()->addSound($origin, new EndermanTeleportSound());
                         $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
-                        $this->pot();
                     }
                     if ($this->getTargetPlayer()->getHealth() < 3) {
                         $this->pearltime++;
