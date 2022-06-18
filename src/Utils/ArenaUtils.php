@@ -6,8 +6,6 @@ namespace Kuu\Utils;
 
 use DateTime;
 use Exception;
-use JsonException;
-use Kuu\Arena\SumoHandler;
 use Kuu\Commands\BroadcastCommand;
 use Kuu\Commands\CoreCommand;
 use Kuu\Commands\HubCommand;
@@ -240,7 +238,6 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register('tps', new TpsCommand());
         Server::getInstance()->getCommandMap()->register('core', new CoreCommand());
         Server::getInstance()->getCommandMap()->register('Restart', new RestartCommand());
-        Server::getInstance()->getCommandMap()->register('sumo', new SumoCommand());
         Server::getInstance()->getCommandMap()->register('broadcast', new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register('pinfo', new PlayerInfoCommand());
         Server::getInstance()->getCommandMap()->register('settag', new SetTagCommand());
@@ -440,48 +437,6 @@ class ArenaUtils
         }
     }
 
-    public function JoinRandomArenaSumo(Player $player): void
-    {
-        $arena = $this->getRandomSumoArenas();
-        if (!is_null($arena)) {
-            $arena->joinToArena($player);
-            return;
-        }
-        $player->sendMessage(Loader::getPrefixCore() . '§e All the arenas are full!');
-    }
-
-    public function getRandomSumoArenas(): ?SumoHandler
-    {
-        $availableArenas = [];
-        foreach (Loader::getInstance()->SumoArenas as $index => $arena) {
-            $availableArenas[$index] = $arena;
-        }
-        foreach ($availableArenas as $index => $arena) {
-            if ($arena->phase !== 0 || $arena->setup || count($arena->players) >= 2) {
-                unset($availableArenas[$index]);
-            }
-        }
-        $arenasByPlayers = [];
-        foreach ($availableArenas as $index => $arena) {
-            $arenasByPlayers[$index] = count($arena->players);
-        }
-        arsort($arenasByPlayers);
-        $top = -1;
-        $availableArenas = [];
-        foreach ($arenasByPlayers as $index => $players) {
-            if ($top === -1) {
-                $top = $players;
-                $availableArenas[] = $index;
-            } elseif ($top === $players) {
-                $availableArenas[] = $index;
-            }
-        }
-        if (empty($availableArenas)) {
-            return null;
-        }
-        return Loader::getInstance()->SumoArenas[$availableArenas[array_rand($availableArenas)]];
-    }
-
     public function getChatFormat(Player $player, string $message): string
     {
         $name = $player->getName();
@@ -493,9 +448,6 @@ class ArenaUtils
         return $nametag;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function Disable(): void
     {
         foreach (Loader::getDuelManager()->getMatches() as $activeMatch => $matchTask) {

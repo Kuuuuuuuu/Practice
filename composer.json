@@ -5,7 +5,8 @@
     "ext-sqlite3": "*",
     "ext-mbstring": "*",
     "ext-yaml": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "ext-zip": "*"
   }
   ,
   "require-dev": {

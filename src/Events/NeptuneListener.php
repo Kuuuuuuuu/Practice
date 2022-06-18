@@ -432,7 +432,6 @@ class NeptuneListener implements Listener
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
-        $name = $player->getName();
         $args = explode(' ', $event->getMessage());
         $event->setFormat(Loader::getArenaUtils()->getChatFormat($player, $message));
         if ($player instanceof NeptunePlayer) {
@@ -443,61 +442,6 @@ class NeptuneListener implements Listener
                 } else {
                     $player->sendMessage(Loader::getPrefixCore() . '§aType §l§cConfirm §r§a to confirm');
                     $player->sendMessage(Loader::getPrefixCore() . '§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน');
-                }
-            } elseif (isset(Loader::getInstance()->SumoSetup[$name])) {
-                $event->cancel();
-                $arena = Loader::getInstance()->SumoSetup[$name];
-                if (Loader::getArenaFactory()->getSumoDArena() !== null) {
-                    $arena->data['level'] = Loader::getArenaFactory()->getSumoDArena();
-                }
-                switch ($args[0]) {
-                    case 'help':
-                        $player->sendMessage(Loader::getPrefixCore() . "§aSumo setup\n" .
-                            "§7help : Displays list of available setup commands\n" .
-                            "§7setspawn : Set arena spawns\n" .
-                            '§7enable : Enable the arena');
-                        break;
-                    case 'setspawn':
-                        if (!isset($args[1])) {
-                            $player->sendMessage(Loader::getPrefixCore() . '§cUsage: §7setspawn <int: spawn>');
-                            break;
-                        }
-                        if (!is_numeric($args[1])) {
-                            $player->sendMessage(Loader::getPrefixCore() . '§cType number!');
-                            break;
-                        }
-                        if ((int)$args[1] > $arena->data['slots']) {
-                            $player->sendMessage(Loader::getPrefixCore() . "§cThere are only {$arena->data['slots']} slots!");
-                            break;
-                        }
-                        $arena->data['spawns']["spawn-$args[1]"]['x'] = $player->getPosition()->getX();
-                        $arena->data['spawns']["spawn-$args[1]"]['y'] = $player->getPosition()->getY();
-                        $arena->data['spawns']["spawn-$args[1]"]['z'] = $player->getPosition()->getZ();
-                        $player->sendMessage(Loader::getPrefixCore() . "Spawn $args[1] set to X: " . round($player->getPosition()->getX()) . ' Y: ' . round($player->getPosition()->getY()) . ' Z: ' . round($player->getPosition()->getZ()));
-                        break;
-                    case 'enable':
-                        if (!$arena->setup) {
-                            $player->sendMessage(Loader::getPrefixCore() . '§6Arena is already enabled!');
-                            break;
-                        }
-                        if (!$arena->enable()) {
-                            $player->sendMessage(Loader::getPrefixCore() . '§cCould not load arena, there are missing information!');
-                            break;
-                        }
-                        $player->sendMessage(Loader::getPrefixCore() . '§aArena enabled!');
-                        break;
-                    case 'done':
-                        $player->sendMessage(Loader::getPrefixCore() . '§aYou are successfully leaved setup mode!');
-                        unset(Loader::getInstance()->SumoSetup[$name]);
-                        if (isset(Loader::getInstance()->SumoData[$name])) {
-                            unset(Loader::getInstance()->SumoData[$name]);
-                        }
-                        break;
-                    default:
-                        $player->sendMessage(Loader::getPrefixCore() . "§6You are in setup mode.\n" .
-                            "§7- use §lhelp §r§7to display available commands\n" .
-                            '§7- || §ldone §r§7to leave setup mode');
-                        break;
                 }
             } else {
                 $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
@@ -537,7 +481,7 @@ class NeptuneListener implements Listener
                 $event->cancel();
             }
             if ($player->getOpponent() === null && $damager->getOpponent() === null) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
                     return;
                 }
                 $player->setOpponent($damager->getName());
@@ -553,7 +497,7 @@ class NeptuneListener implements Listener
                     $event->cancel();
                     $damager->sendMessage(Loader::getPrefixCore() . "§cDon't Interrupt!");
                 } elseif ($player->getOpponent() === $damager->getName() && $damager->getOpponent() === $player->getName()) {
-                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getSumoDArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
+                    if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld() || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena())) {
                         return;
                     }
                     foreach ([$player, $damager] as $p) {

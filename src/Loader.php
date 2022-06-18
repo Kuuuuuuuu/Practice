@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Kuu;
 
-use JsonException;
 use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
 use Kuu\Arena\BotDuelManager;
@@ -22,7 +21,6 @@ use Kuu\Utils\FormUtils;
 use Kuu\Utils\KnockbackManager;
 use Kuu\Utils\ScoreboardManager;
 use Kuu\utils\ScoreboardsUtils;
-use Kuu\Utils\YamlManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use SQLite3;
@@ -30,7 +28,6 @@ use SQLite3;
 class Loader extends PluginBase
 {
     private static self $plugin;
-    private static YamlManager $YamlLoader;
     private static ClickHandler $cps;
     private static ScoreboardsUtils $score;
     private static FormUtils $form;
@@ -51,9 +48,6 @@ class Loader extends PluginBase
     public Config $KitData;
     public bool $Restarted = false;
     public array $targetPlayer = [];
-    public array $SumoArenas = [];
-    public array $SumoSetup = [];
-    public array $SumoData = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
 
@@ -145,7 +139,6 @@ class Loader extends PluginBase
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
-        self::$YamlLoader = new YamlManager();
         self::$blockhandle = new DeleteBlocksHandler();
         self::$knockback = new KnockbackManager();
         self::$cosmetics = new CosmeticHandler();
@@ -157,8 +150,6 @@ class Loader extends PluginBase
 
     protected function onEnable(): void
     {
-        self::$YamlLoader = new YamlManager();
-        self::$YamlLoader->loadArenas();
         self::getArenaUtils()->Enable();
     }
 
@@ -167,12 +158,8 @@ class Loader extends PluginBase
         return self::$arenautils;
     }
 
-    /**
-     * @throws JsonException
-     */
     protected function onDisable(): void
     {
-        self::$YamlLoader->saveArenas();
         self::getArenaUtils()->Disable();
         self::setCoreTask(null);
     }

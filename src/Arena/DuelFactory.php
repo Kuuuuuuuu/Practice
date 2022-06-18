@@ -22,6 +22,8 @@ class DuelFactory
     private ?NeptunePlayer $loser = null;
     private KitManager $kit;
     private bool $ended = false;
+    private int $z = 40;
+    private int $z2 = 20;
 
     public function __construct(string $name, NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit)
     {
@@ -31,6 +33,10 @@ class DuelFactory
         }
         if (Loader::getCoreTask() instanceof NeptuneTask) {
             Loader::getCoreTask()?->addDuelTask($name, $this);
+        }
+        if ($this->kit->getName() === 'Sumo') {
+            $this->z = 0;
+            $this->z2 = 9;
         }
         $this->level = $world;
         $this->kit = $kit;
@@ -65,15 +71,14 @@ class DuelFactory
                         Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
                     }
                 }
-                $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null);
-                $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null);
-                if ($this->kit->getName() !== 'Sumo') {
-                    $this->player1->teleport(new Position(15, 4, 40, $this->level), 180);
-                    $this->player2->teleport(new Position(15, 4, 10, $this->level), 180);
-                } else {
-                    $this->player1->teleport(new Position(6, 4, 40, $this->level), 180);
-                    $this->player2->teleport(new Position(6, 4, -10, $this->level), 180);
-                }
+                $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {
+                    $this->player1->teleport(new Position(6, 4, $this->z, $this->level), 180);
+                }, static function (): void {
+                });
+                $this->level->orderChunkPopulation(6 >> 4, $this->z2 >> 4, null)->onCompletion(function (): void {
+                    $this->player2->teleport(new Position(6, 4, $this->z2, $this->level), 180);
+                }, static function (): void {
+                });
                 break;
             case 902:
                 foreach ($this->getPlayers() as $player) {

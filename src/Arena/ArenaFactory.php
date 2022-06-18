@@ -35,12 +35,6 @@ class ArenaFactory
         return $data->get('Fist');
     }
 
-    public function getSumoDArena(): string
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('SumoD');
-    }
-
     public function getOITCArena(): string
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -153,18 +147,6 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setSkywarsArena(Player $player, string $world): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('Skywars', $world);
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
-    }
-
-    /**
-     * @throws JsonException
-     */
-
     public function setBotArena(Player $player, string $world): void
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -192,17 +174,6 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Resistance', $world);
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function setSumoD(Player $player, string $world): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('SumoD', $world);
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
     }
@@ -304,28 +275,6 @@ class ArenaFactory
     {
         $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Knockback');
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function removeSkywars(Player $player): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('Skywars');
-        $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function removeSumoD(Player $player): void
-    {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('SumoD');
         $data->save();
         $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
     }

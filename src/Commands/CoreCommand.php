@@ -44,17 +44,17 @@ class CoreCommand extends Command
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - removeleader');
-                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                     break;
                 case 'make':
                 case 'create':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                     }
                     if (!isset($args[2])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                     }
                     switch ($args[1]) {
                         case 'fist':
@@ -120,15 +120,6 @@ class CoreCommand extends Command
                                 Loader::getArenaFactory()->setOITCArena($sender, $args[2]);
                             }
                             break;
-                        case 'SumoD':
-                            if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                            } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
-                                Loader::getArenaFactory()->setSumoD($sender, $args[2]);
-                            }
-                            break;
                         case 'Build':
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
@@ -149,7 +140,7 @@ class CoreCommand extends Command
                             break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                             break;
                     }
                     break;
@@ -196,7 +187,7 @@ class CoreCommand extends Command
                 case 'remove':
                     if (!isset($args[1])) {
                         $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                         return false;
                     }
                     switch ($args[1]) {
@@ -221,9 +212,6 @@ class CoreCommand extends Command
                         case 'OITC':
                             Loader::getArenaFactory()->removeOITC($sender);
                             break;
-                        case 'SumoD':
-                            Loader::getArenaFactory()->removeSumoD($sender);
-                            break;
                         case 'Build':
                             Loader::getArenaFactory()->removeBuild($sender);
                             break;
@@ -232,7 +220,7 @@ class CoreCommand extends Command
                             break;
                         default:
                             $sender->sendMessage(Loader::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, SumoD, Bot, Skywars');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
                             break;
                     }
                     break;
