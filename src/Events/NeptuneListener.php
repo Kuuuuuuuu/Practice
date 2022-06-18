@@ -158,7 +158,7 @@ class NeptuneListener implements Listener
             } elseif ($item->getCustomName() === '§r§dProfile') {
                 Loader::getFormUtils()->ProfileForm($player, null);
             } elseif ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getId() === ItemIds::ENDER_PEARL) {
-                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena()) && !$player->isEnderPearlCooldown()) {
                     $player->setEnderPearlCooldown(true);
                 }
             }
