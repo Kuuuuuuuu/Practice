@@ -13,7 +13,7 @@ class ScoreboardManager
     public function sb(Player $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $data = PracticeCore::getInstance()->getArenaUtils()->getData($player->getName());
+        $data = PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName());
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();

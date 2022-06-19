@@ -37,7 +37,7 @@ class HubCommand extends Command
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
             PracticeCore::getInstance()->getScoreboardManager()->sb($sender);
-            PracticeCore::getInstance()->getArenaUtils()->GiveLobbyItem($sender);
+            PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($sender);
             $sender->setLastDamagePlayer('Unknown');
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);

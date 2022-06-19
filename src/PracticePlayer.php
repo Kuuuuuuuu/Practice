@@ -226,7 +226,7 @@ class PracticePlayer extends Player
             }
         }
         if ($this->sec % 3 === 0) {
-            PracticeCore::getArenaUtils()->DeviceCheck($this);
+            PracticeCore::getPracticeUtils()->DeviceCheck($this);
             $this->updateScoreboard();
             $this->updateNametag();
         }
@@ -298,10 +298,10 @@ class PracticePlayer extends Player
     private function updateNametag(): void
     {
         $name = $this->getName();
-        if (PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
-            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]';
+        if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
+            $nametag = PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f]';
         } else {
-            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
+            $nametag = PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
     }
@@ -319,7 +319,7 @@ class PracticePlayer extends Player
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
-        PracticeCore::getInstance()->getArenaUtils()->GiveLobbyItem($this);
+        PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($this);
         $this->LoadData();
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }

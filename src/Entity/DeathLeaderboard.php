@@ -39,7 +39,7 @@ class DeathLeaderboard extends Human
     public function onUpdate(int $currentTick): bool
     {
         $subtitle = '';
-        $tops = PracticeCore::getInstance()->DeathLeaderboard;
+        $tops = PracticeCore::getCaches()->DeathLeaderboard;
         if (count($tops) > 0) {
             arsort($tops);
             $i = 1;

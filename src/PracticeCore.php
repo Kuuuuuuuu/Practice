@@ -13,7 +13,7 @@ use Kuu\Arena\ArenaManager;
 use Kuu\Arena\BotDuelManager;
 use Kuu\Arena\DuelManager;
 use Kuu\Task\PracticeTask;
-use Kuu\Utils\ArenaUtils;
+use Kuu\Utils\PracticeUtils;
 use Kuu\Utils\ClickHandler;
 use Kuu\Utils\CosmeticHandler;
 use Kuu\Utils\DeleteBlocksHandler;
@@ -36,20 +36,17 @@ class PracticeCore extends PluginBase
     private static DeleteBlocksHandler $blockhandle;
     private static KnockbackManager $knockback;
     private static CosmeticHandler $cosmetics;
-    private static ArenaUtils $arenautils;
+    private static PracticeUtils $PracticeUtils;
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
     private static ?PracticeTask $CoreTask;
     private static BotDuelManager $botduelmanager;
+    private static PracticeCaches $caches;
     public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
     public SQLite3 $BanData;
     public Config $KitData;
-    public bool $Restarted = false;
-    public array $targetPlayer = [];
-    public array $KillLeaderboard = [];
-    public array $DeathLeaderboard = [];
 
     public static function getCoreTask(): ?PracticeTask
     {
@@ -126,6 +123,11 @@ class PracticeCore extends PluginBase
         return self::$botduelmanager;
     }
 
+    public static function getCaches(): PracticeCaches
+    {
+        return self::$caches;
+    }
+
     public static function getInstance(): PracticeCore
     {
         return self::$plugin;
@@ -142,25 +144,26 @@ class PracticeCore extends PluginBase
         self::$blockhandle = new DeleteBlocksHandler();
         self::$knockback = new KnockbackManager();
         self::$cosmetics = new CosmeticHandler();
-        self::$arenautils = new ArenaUtils();
+        self::$PracticeUtils = new PracticeUtils();
         self::$scoremanager = new ScoreboardManager();
         self::$duelmanager = new DuelManager();
         self::$botduelmanager = new BotDuelManager();
+        self::$caches = new PracticeCaches();
     }
 
     protected function onEnable(): void
     {
-        self::getArenaUtils()->Enable();
+        self::getPracticeUtils()->Enable();
     }
 
-    public static function getArenaUtils(): ArenaUtils
+    public static function getPracticeUtils(): PracticeUtils
     {
-        return self::$arenautils;
+        return self::$PracticeUtils;
     }
 
     protected function onDisable(): void
     {
-        self::getArenaUtils()->Disable();
+        self::getPracticeUtils()->Disable();
         self::setCoreTask(null);
     }
 }

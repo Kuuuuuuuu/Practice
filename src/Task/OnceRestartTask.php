@@ -14,7 +14,7 @@ class OnceRestartTask extends Task
     public function __construct(int $time)
     {
         $this->time = $time;
-        PracticeCore::getInstance()->Restarted = true;
+        PracticeCore::getCaches()->Restarted = true;
     }
 
     public function onRun(): void

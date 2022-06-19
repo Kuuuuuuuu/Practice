@@ -39,7 +39,7 @@ class TbanCommand extends Command
                 if ($args === null) {
                     $this->openPlayerListUI($sender);
                 } else {
-                    PracticeCore::getInstance()->targetPlayer[$sender->getName()] = $args[0];
+                    PracticeCore::getCaches()->targetPlayer[$sender->getName()] = $args[0];
                     $this->openTbanUI($sender);
                 }
             } else {
@@ -57,7 +57,7 @@ class TbanCommand extends Command
             if ($target === null) {
                 return true;
             }
-            PracticeCore::getInstance()->targetPlayer[$player->getName()] = $target;
+            PracticeCore::getCaches()->targetPlayer[$player->getName()] = $target;
             $this->openTbanUI($player);
             return true;
         });
@@ -77,8 +77,8 @@ class TbanCommand extends Command
             if ($result === null) {
                 return true;
             }
-            if (isset(PracticeCore::getInstance()->targetPlayer[$player->getName()])) {
-                if (PracticeCore::getInstance()->targetPlayer[$player->getName()] === $player->getName()) {
+            if (isset(PracticeCore::getCaches()->targetPlayer[$player->getName()])) {
+                if (PracticeCore::getCaches()->targetPlayer[$player->getName()] === $player->getName()) {
                     $player->sendMessage(PracticeCore::getInstance()->MessageData['BanMyself']);
                     return true;
                 }
@@ -92,27 +92,27 @@ class TbanCommand extends Command
                 }
                 $banTime = $now + $day + $hour + $min;
                 $banInfo = PracticeCore::getInstance()->BanData->prepare('INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);');
-                $banInfo->bindValue(':player', PracticeCore::getInstance()->targetPlayer[$player->getName()]);
+                $banInfo->bindValue(':player', PracticeCore::getCaches()->targetPlayer[$player->getName()]);
                 $banInfo->bindValue(':banTime', $banTime);
                 $banInfo->bindValue(':reason', $data[4]);
                 $banInfo->bindValue(':staff', $player->getName());
                 $banInfo->execute();
-                $target = Server::getInstance()->getPlayerExact(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
+                $target = Server::getInstance()->getPlayerExact(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
                 if ($target instanceof Player) {
                     $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['KickBanMessage']));
                 }
                 $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
                 $msg = new DiscordWebhookUtils();
                 $msg2 = str_replace(['@here', '@everyone'], '', $data[4]);
-                $msg->setContent('>>> ' . $player->getName() . ' has banned ' . PracticeCore::getInstance()->targetPlayer[$player->getName()] . ' for ' . $data[1] . ' days, ' . $data[2] . ' hours, ' . $data[3] . ' minutes. Reason: ' . $msg2);
+                $msg->setContent('>>> ' . $player->getName() . ' has banned ' . PracticeCore::getCaches()->targetPlayer[$player->getName()] . ' for ' . $data[1] . ' days, ' . $data[2] . ' hours, ' . $data[3] . ' minutes. Reason: ' . $msg2);
                 $web->send($msg);
-                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getInstance()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['BroadcastBanMessage']));
-                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
+                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['BroadcastBanMessage']));
+                unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
 
             }
             return true;
         });
-        $list[] = PracticeCore::getInstance()->targetPlayer[$player->getName()];
+        $list[] = PracticeCore::getCaches()->targetPlayer[$player->getName()];
         $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
         $form->addDropdown("\nTarget", $list);
         $form->addSlider('Day/s', 0, 30, 1);

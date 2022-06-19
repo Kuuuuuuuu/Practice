@@ -3,7 +3,7 @@
 namespace Kuu\Arena;
 
 use Exception;
-use JetBrains\PhpStorm\Pure;
+use Kuu\PracticeCaches;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Utils\Kits\KitManager;
@@ -16,14 +16,12 @@ class BotDuelManager
 {
     use SingletonTrait;
 
-    private array $matches = [];
-
     /**
      * @throws Exception
      */
     public function createMatch(PracticePlayer $player, KitManager $kit, string $mode): void
     {
-        $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getArenaUtils()->generateUUID();
+        $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getPracticeUtils()->generateUUID();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(Flat::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
@@ -32,14 +30,9 @@ class BotDuelManager
         $this->addMatch($worldName, new BotDuelFactory($worldName, $player, $kit, $mode));
     }
 
-    #[Pure] public function addMatch(string $name, BotDuelFactory $task): void
+    public function addMatch(string $name, BotDuelFactory $task): void
     {
-        $this->getMatches()[$name] = $task;
-    }
-
-    public function getMatches(): array
-    {
-        return $this->matches;
+        PracticeCore::getCaches()->DuelMatch[$name] = $task;
     }
 
     public function stopMatch(string $name): void
@@ -47,15 +40,15 @@ class BotDuelManager
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        PracticeCore::getArenaUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
         PracticeCore::getCoreTask()?->removeDuelTask($name);
         if ($this->isMatch($name)) {
-            unset($this->matches[$name]);
+            unset(PracticeCore::getCaches()->DuelMatch[$name]);
         }
     }
 
-    #[Pure] public function isMatch($name): bool
+    public function isMatch($name): bool
     {
-        return isset($this->getMatches()[$name]);
+        return isset(PracticeCore::getCaches()->DuelMatch[$name]);
     }
 }

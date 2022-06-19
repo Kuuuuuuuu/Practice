@@ -138,7 +138,7 @@ class PracticeListener extends AbstractListener
                     $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
                     $player->setSkillCooldown(true);
                 }
-                PracticeCore::getInstance()->getArenaUtils()->SkillCooldown($player);
+                PracticeCore::getInstance()->getPracticeUtils()->SkillCooldown($player);
             }
             if ($item->getCustomName() === '§r§dPlay') {
                 PracticeCore::getFormUtils()->Form1($player);
@@ -150,7 +150,7 @@ class PracticeListener extends AbstractListener
                 $player->sendMessage(PracticeCore::getPrefixCore() . 'Left the queue');
                 $player->setCurrentKit(null);
                 $player->setInQueue(false);
-                PracticeCore::getArenaUtils()->GiveLobbyItem($player);
+                PracticeCore::getPracticeUtils()->GiveLobbyItem($player);
             } elseif ($item->getCustomName() === '§r§dDuel') {
                 PracticeCore::getFormUtils()->duelForm($player);
             } elseif ($item->getCustomName() === '§r§dProfile') {
@@ -228,7 +228,7 @@ class PracticeListener extends AbstractListener
         } else {
             $player->getAllArtifact();
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
-            PracticeCore::getInstance()->getArenaUtils()->DeviceCheck($player);
+            PracticeCore::getInstance()->getPracticeUtils()->DeviceCheck($player);
             PracticeCore::getClickHandler()->initPlayerClickData($player);
             if ($player instanceof PracticePlayer) {
                 $cosmetic = PracticeCore::getCosmeticHandler();
@@ -432,7 +432,7 @@ class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $message = $event->getMessage();
         $args = explode(' ', $event->getMessage());
-        $event->setFormat(PracticeCore::getArenaUtils()->getChatFormat($player, $message));
+        $event->setFormat(PracticeCore::getPracticeUtils()->getChatFormat($player, $message));
         if ($player instanceof PracticePlayer) {
             if ($player->getEditKit() !== null) {
                 $event->cancel();
@@ -612,7 +612,7 @@ class PracticeListener extends AbstractListener
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($damager instanceof PracticePlayer) {
                 $dname = $damager->getName() ?? 'Unknown';
-                PracticeCore::getInstance()->getArenaUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
+                PracticeCore::getInstance()->getPracticeUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 foreach ([$player, $damager] as $p) {
                     $p->setLastDamagePlayer('Unknown');
                     $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
@@ -629,7 +629,7 @@ class PracticeListener extends AbstractListener
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getOffHandInventory()->clearAll();
-        PracticeCore::getInstance()->getArenaUtils()->GiveLobbyItem($player);
+        PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($player);
         if ($player instanceof PracticePlayer) {
             if ($player->getEditKit() !== null) {
                 $player->setEditKit(null);

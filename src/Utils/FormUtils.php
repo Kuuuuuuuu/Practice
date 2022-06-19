@@ -316,10 +316,10 @@ class FormUtils
                         break;
                     case 1:
                         $player->setDisplayName($player->getName());
-                        if (PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                            $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                        if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
+                            $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f]');
                         } else {
-                            $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
+                            $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
                         }
                         $player->sendMessage(PracticeCore::getPrefixCore() . '§eYour nickname has been resetted!');
                         break;
@@ -344,10 +344,10 @@ class FormUtils
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
                     $player->setDisplayName($data[0]);
-                    if (PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                    if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
+                        $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f]');
                     } else {
-                        $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
+                        $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
                     }
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
                 }
@@ -562,10 +562,10 @@ class FormUtils
         });
 
         if ($player2 !== null) {
-            $data = PracticeCore::getArenaUtils()->getData($player2->getName());
+            $data = PracticeCore::getPracticeUtils()->getData($player2->getName());
             $name = $player2->getName();
         } else {
-            $data = PracticeCore::getArenaUtils()->getData($player->getName());
+            $data = PracticeCore::getPracticeUtils()->getData($player->getName());
             $name = $player->getName();
         }
         $form->setTitle("$name's §cProfile");

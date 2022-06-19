@@ -38,7 +38,7 @@ class KillLeaderboard extends Human
     public function onUpdate(int $currentTick): bool
     {
         $subtitle = '';
-        $tops = PracticeCore::getInstance()->KillLeaderboard;
+        $tops = PracticeCore::getCaches()->KillLeaderboard;
         if (count($tops) > 0) {
             arsort($tops);
             $i = 1;

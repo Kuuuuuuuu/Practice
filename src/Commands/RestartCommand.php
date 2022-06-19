@@ -22,7 +22,7 @@ class RestartCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
         if ($sender instanceof Player) {
-            if (PracticeCore::getInstance()->Restarted) {
+            if (PracticeCore::getCaches()->Restarted) {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cServer is already restarting!');
                 return;
             }

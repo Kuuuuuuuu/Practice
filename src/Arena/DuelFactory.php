@@ -68,7 +68,7 @@ class DuelFactory
                         $player->getInventory()->setContents($this->kit->getInventoryItems());
                         $player->setImmobile();
                         $player->sendTitle('§d3', '', 1, 3, 1);
-                        PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                 }
                 $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {
@@ -86,19 +86,19 @@ class DuelFactory
                         $player->setCurrentKit(null);
                     }
                     $player->sendTitle('§d2', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
                 break;
             case 901:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle('§d1', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
                 break;
             case 900:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle('§dFight!', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.anvil_use', $player);
+                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
                     $player->setImmobile(false);
                 }
                 break;
@@ -128,7 +128,7 @@ class DuelFactory
                         $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
-                        PracticeCore::getArenaUtils()->GiveLobbyItem($online);
+                        PracticeCore::getPracticeUtils()->GiveLobbyItem($online);
                         PracticeCore::getScoreboardManager()->sb($online);
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
