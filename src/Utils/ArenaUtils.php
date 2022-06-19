@@ -12,7 +12,6 @@ use Kuu\Commands\HubCommand;
 use Kuu\Commands\PlayerInfoCommand;
 use Kuu\Commands\RestartCommand;
 use Kuu\Commands\SetTagCommand;
-use Kuu\Commands\SumoCommand;
 use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
@@ -150,8 +149,7 @@ class ArenaUtils
 
     public function Enable(): void
     {
-        PracticeCore::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . 'Neptune' . TextFormat::WHITE . "]\n\n");
-        Server::getInstance()->getNetwork()->setName(PracticeConfig::Server_Name . '§fNetwork');
+        Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
         $this->registerItems();
         $this->registerConfigs();
         $this->registerCommands();
@@ -165,19 +163,6 @@ class ArenaUtils
                 $interface->setPacketLimit(9999999999);
             }
         }
-    }
-
-    public static function getLogger(string $err): void
-    {
-        $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-        $msg = new DiscordWebhookUtils();
-        $e->setTitle('Error');
-        $e->setTimestamp(new Datetime());
-        $e->setColor(0x00ff00);
-        $e->setDescription('Error: ' . $err);
-        $msg->addEmbed($e);
-        $web->send($msg);
     }
 
     private function registerItems(): void
@@ -491,6 +476,19 @@ class ArenaUtils
         }
         rmdir($dirPath);
         return true;
+    }
+
+    public static function getLogger(string $err): void
+    {
+        $e = new DiscordWebhookEmbed();
+        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
+        $msg = new DiscordWebhookUtils();
+        $e->setTitle('Error');
+        $e->setTimestamp(new Datetime());
+        $e->setColor(0x00ff00);
+        $e->setDescription('Error: ' . $err);
+        $msg->addEmbed($e);
+        $web->send($msg);
     }
 
     public function loadMap(string $folderName, bool $justSave = false): ?World
