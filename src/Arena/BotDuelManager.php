@@ -3,19 +3,15 @@
 namespace Kuu\Arena;
 
 use Exception;
-use Kuu\PracticeCaches;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
-use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
 
 class BotDuelManager
 {
-    use SingletonTrait;
-
     /**
      * @throws Exception
      */
@@ -42,13 +38,8 @@ class BotDuelManager
         }
         PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
         PracticeCore::getCoreTask()?->removeDuelTask($name);
-        if ($this->isMatch($name)) {
+        if (isset(PracticeCore::getCaches()->DuelMatch[$name])) {
             unset(PracticeCore::getCaches()->DuelMatch[$name]);
         }
-    }
-
-    public function isMatch($name): bool
-    {
-        return isset(PracticeCore::getCaches()->DuelMatch[$name]);
     }
 }

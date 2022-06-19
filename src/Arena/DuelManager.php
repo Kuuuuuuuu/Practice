@@ -8,14 +8,11 @@ use Kuu\PracticePlayer;
 use Kuu\Utils\Generator\SumoGenerator;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
-use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
 
 class DuelManager
 {
-    use SingletonTrait;
-
     /**
      * @throws Exception
      */
@@ -48,13 +45,8 @@ class DuelManager
         }
         PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
         PracticeCore::getCoreTask()?->removeDuelTask($name);
-        if ($this->isMatch($name)) {
+        if (isset(PracticeCore::getCaches()->DuelMatch[$name])) {
             unset(PracticeCore::getCaches()->DuelMatch[$name]);
         }
-    }
-
-    public function isMatch($name): bool
-    {
-        return isset(PracticeCore::getCaches()->DuelMatch[$name]);
     }
 }
