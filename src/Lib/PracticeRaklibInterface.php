@@ -20,7 +20,7 @@
 */
 
 
-namespace Kuu\Events;
+namespace Kuu\Misc;
 
 
 use Kuu\PracticeCore;
