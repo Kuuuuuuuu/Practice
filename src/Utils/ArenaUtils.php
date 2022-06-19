@@ -7,7 +7,7 @@ namespace Kuu\Utils;
 use DateTime;
 use Exception;
 use Kuu\Commands\BroadcastCommand;
-use Kuu\Commands\CoreCommand;
+use Kuu\Commands\PracticeCommand;
 use Kuu\Commands\HubCommand;
 use Kuu\Commands\PlayerInfoCommand;
 use Kuu\Commands\RestartCommand;
@@ -16,25 +16,25 @@ use Kuu\Commands\SumoCommand;
 use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
-use Kuu\ConfigCore;
+use Kuu\PracticeConfig;
 use Kuu\Entity\ArrowEntity;
 use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\Entity\FallingWool;
 use Kuu\Entity\FishingHook;
 use Kuu\Entity\KillLeaderboard;
-use Kuu\Entity\NeptuneBot;
-use Kuu\Events\NeptuneListener;
+use Kuu\Entity\PracticeBot;
+use Kuu\Events\PracticeListener;
 use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
 use Kuu\Items\FishingRod;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
-use Kuu\Task\NeptuneTask;
-use Kuu\Utils\DiscordUtils\DiscordWebhook;
-use Kuu\Utils\DiscordUtils\DiscordWebhookEmbed;
-use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
+use Kuu\Task\PracticeTask;
+use Kuu\Utils\Discord\DiscordWebhook;
+use Kuu\Utils\Discord\DiscordWebhookEmbed;
+use Kuu\Utils\Discord\DiscordWebhookUtils;
 use Kuu\Utils\Generator\SumoGenerator;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
@@ -106,12 +106,12 @@ class ArenaUtils
     {
         $username = $player->getName();
         $data = $player->getPlayerInfo()->getExtraData();
-        if ($player instanceof NeptunePlayer) {
+        if ($player instanceof PracticePlayer) {
             if ($data['CurrentInputMode'] !== null) {
-                $player->PlayerControl = ConfigCore::ControlList[$data['CurrentInputMode']];
+                $player->PlayerControl = PracticeConfig::ControlList[$data['CurrentInputMode']];
             }
             if ($data['DeviceOS'] !== null) {
-                $player->PlayerOS = ConfigCore::OSList[$data['DeviceOS']];
+                $player->PlayerOS = PracticeConfig::OSList[$data['DeviceOS']];
             }
             if ($data['DeviceModel'] !== null) {
                 $player->PlayerDevice = $data['DeviceModel'];
@@ -127,7 +127,7 @@ class ArenaUtils
             }
             $check = strtoupper($name[0]);
             if ($check !== $name[0]) {
-                Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§e' . $username . ' §cMight be Using §aToolbox. Please Avoid that Player!');
+                Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§e' . $username . ' §cMight be Using §aToolbox. Please Avoid that Player!');
                 $player->ToolboxStatus = 'Toolbox';
             }
         }
@@ -150,8 +150,8 @@ class ArenaUtils
 
     public function Enable(): void
     {
-        Loader::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . 'Neptune' . TextFormat::WHITE . "]\n\n");
-        Server::getInstance()->getNetwork()->setName('§dNeptune §fNetwork');
+        PracticeCore::getInstance()->getLogger()->info("\n\n\n              [" . TextFormat::BOLD . TextFormat::LIGHT_PURPLE . 'Neptune' . TextFormat::WHITE . "]\n\n");
+        Server::getInstance()->getNetwork()->setName(PracticeConfig::Server_Name . '§fNetwork');
         $this->registerItems();
         $this->registerConfigs();
         $this->registerCommands();
@@ -170,7 +170,7 @@ class ArenaUtils
     public static function getLogger(string $err): void
     {
         $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('Webhook'));
+        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
         $msg = new DiscordWebhookUtils();
         $e->setTitle('Error');
         $e->setTimestamp(new Datetime());
@@ -193,14 +193,14 @@ class ArenaUtils
 
     private function registerConfigs(): void
     {
-        @mkdir(Loader::getInstance()->getDataFolder() . 'data/');
-        @mkdir(Loader::getInstance()->getDataFolder() . 'players/');
-        @mkdir(Loader::getInstance()->getDataFolder() . 'Kits/');
-        Loader::getInstance()->saveResource('config.yml');
-        Loader::getInstance()->KitData = new Config(Loader::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
-        Loader::getInstance()->ArtifactData = new Config(Loader::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
-        Loader::getInstance()->CapeData = new Config(Loader::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
-        Loader::getInstance()->MessageData = (new Config(Loader::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, array(
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
+        PracticeCore::getInstance()->saveResource('config.yml');
+        PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
+        PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
+        PracticeCore::getInstance()->CapeData = new Config(PracticeCore::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
+        PracticeCore::getInstance()->MessageData = (new Config(PracticeCore::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, array(
             'StartCombat' => '§dNeptune§f » §r§aYou Started combat!',
             'AntiCheatName' => '§fLunar §f» ',
             'CooldownMessage' => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
@@ -217,17 +217,17 @@ class ArenaUtils
             'NoBanPlayers' => '§dNeptune§f » §aNo ban players',
             'UnBanPlayer' => '§dNeptune§f » §b{player} §ahas been unban',
             'AutoUnBanPlayer' => '§dNeptune§f »» §a{player} Has Auto Unban Already!',
-            'BanListTitle' => '§dNeptune §eBanSystem',
+            'BanListTitle' => PracticeConfig::Server_Name . '§eBanSystem',
             'BanListContent' => '§c§lChoose player',
-            'PlayerListTitle' => '§dNeptune §eBanSystem',
+            'PlayerListTitle' => PracticeConfig::Server_Name . '§eBanSystem',
             'PlayerListContent' => '§c§lChoose Player',
             'InfoUIContent' => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
             'InfoUIUnBanButton' => '§aUnban',
             'EnderPearlCooldownStart' => '§dNeptune§f » §aEnderpearl cooldown started!',
             'EnderPearlCooldownEnd' => '§dNeptune§f » §aEnderpearl cooldown ended!',
         )))->getAll();
-        Loader::getInstance()->BanData = new SQLite3(Loader::getInstance()->getDataFolder() . 'Ban.db');
-        Loader::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
+        PracticeCore::getInstance()->BanData = new SQLite3(PracticeCore::getInstance()->getDataFolder() . 'Ban.db');
+        PracticeCore::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
 
     private function registerCommands(): void
@@ -236,7 +236,7 @@ class ArenaUtils
         Server::getInstance()->getCommandMap()->register('tban', new TbanCommand());
         Server::getInstance()->getCommandMap()->register('tcheck', new TcheckCommand());
         Server::getInstance()->getCommandMap()->register('tps', new TpsCommand());
-        Server::getInstance()->getCommandMap()->register('core', new CoreCommand());
+        Server::getInstance()->getCommandMap()->register('core', new PracticeCommand());
         Server::getInstance()->getCommandMap()->register('Restart', new RestartCommand());
         Server::getInstance()->getCommandMap()->register('broadcast', new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register('pinfo', new PlayerInfoCommand());
@@ -245,12 +245,12 @@ class ArenaUtils
 
     private function registerEvents(): void
     {
-        Server::getInstance()->getPluginManager()->registerEvents(new NeptuneListener(), Loader::getInstance());
+        new PracticeListener();
     }
 
     private function registerTasks(): void
     {
-        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new NeptuneTask(), 1);
+        PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new PracticeTask(), 1);
     }
 
     private function registerEntity(): void
@@ -266,8 +266,8 @@ class ArenaUtils
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
-        EntityFactory::getInstance()->register(NeptuneBot::class, function (World $world, CompoundTag $nbt): NeptuneBot {
-            return new NeptuneBot(EntityDataHelper::parseLocation($nbt, $world), NeptuneBot
+        EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {
+            return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), PracticeBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
@@ -279,6 +279,11 @@ class ArenaUtils
         EntityFactory::getInstance()->register(FishingHook::class, function (World $world, CompoundTag $nbt): FishingHook {
             return new FishingHook(EntityDataHelper::parseLocation($nbt, $world), null, null);
         }, ['HHook', 'horizon:hook'], EntityLegacyIds::FISHING_HOOK);
+    }
+
+    private function registerGenerator(): void
+    {
+        GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
     }
 
     public function loadallworlds(): void
@@ -298,25 +303,25 @@ class ArenaUtils
 
     public function SkillCooldown(Player $player): void
     {
-        if (($player instanceof NeptunePlayer) && $player->isSkillCooldown()) {
-            Loader::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
+        if (($player instanceof PracticePlayer) && $player->isSkillCooldown()) {
+            PracticeCore::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
                 if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
                     $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
                 }
-                $player->sendMessage(Loader::getInstance()->MessageData['SkillCleared']);
+                $player->sendMessage(PracticeCore::getInstance()->MessageData['SkillCleared']);
                 $player->setSkillCooldown(false);
-            }), ConfigCore::SkillCooldownDelay);
+            }), PracticeConfig::SkillCooldownDelay);
         }
     }
 
     /**
      * @throws Exception
      */
-    public function DeathReset(Player $player, NeptunePlayer $dplayer, $arena = null): void
+    public function DeathReset(Player $player, PracticePlayer $dplayer, $arena = null): void
     {
         if ($dplayer->isAlive()) {
-            if ($arena === Loader::getArenaFactory()->getOITCArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+            if ($arena === PracticeCore::getArenaFactory()->getOITCArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
@@ -324,13 +329,13 @@ class ArenaUtils
                     $dplayer->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                     $dplayer->getInventory()->setItem(8, VanillaItems::ARROW());
                 }
-            } elseif ($arena === Loader::getArenaFactory()->getBuildArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+            } elseif ($arena === PracticeCore::getArenaFactory()->getBuildArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
                     $dplayer->getInventory()->clearAll();
                     $dplayer->getArmorInventory()->clearAll();
                     $dplayer->setHealth(20);
                     try {
-                        foreach (Loader::getInstance()->KitData->get($dplayer->getName()) as $slot => $item) {
+                        foreach (PracticeCore::getInstance()->KitData->get($dplayer->getName()) as $slot => $item) {
                             $dplayer->getInventory()->setItem($slot, Item::jsonDeserialize($item));
                         }
                     } catch (Throwable) {
@@ -346,12 +351,12 @@ class ArenaUtils
                 $dplayer->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 $dplayer->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
                 $dplayer->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-            } elseif ($arena === Loader::getArenaFactory()->getBoxingArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
+            } elseif ($arena === PracticeCore::getArenaFactory()->getBoxingArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
                     $dplayer->setHealth(20);
                 }
-            } elseif ($arena === Loader::getArenaFactory()->getComboArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getComboArena())) {
+            } elseif ($arena === PracticeCore::getArenaFactory()->getComboArena()) {
+                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())) {
                     $dplayer->getInventory()->clearAll();
                     $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
                     $dplayer->getInventory()->addItem($item);
@@ -359,7 +364,7 @@ class ArenaUtils
             }
         }
         foreach ([$dplayer, $player] as $p) {
-            if ($p instanceof NeptunePlayer) {
+            if ($p instanceof PracticePlayer) {
                 $p->setCombat(false);
                 $p->setLastDamagePlayer('Unknown');
             }
@@ -375,10 +380,10 @@ class ArenaUtils
 
     public function addDeath(Player $player): void
     {
-        if (!isset(Loader::getInstance()->DeathLeaderboard[$player->getName()])) {
-            Loader::getInstance()->DeathLeaderboard[$player->getName()] = 1;
+        if (!isset(PracticeCore::getInstance()->DeathLeaderboard[$player->getName()])) {
+            PracticeCore::getInstance()->DeathLeaderboard[$player->getName()] = 1;
         } else {
-            Loader::getInstance()->DeathLeaderboard[$player->getName()]++;
+            PracticeCore::getInstance()->DeathLeaderboard[$player->getName()]++;
         }
         $this->getData($player->getName())->addDeath();
     }
@@ -414,10 +419,10 @@ class ArenaUtils
     public function addKill(Player $player): void
     {
         $data = $this->getData($player->getName());
-        if (!isset(Loader::getInstance()->KillLeaderboard[$player->getName()])) {
-            Loader::getInstance()->KillLeaderboard[$player->getName()] = 1;
+        if (!isset(PracticeCore::getInstance()->KillLeaderboard[$player->getName()])) {
+            PracticeCore::getInstance()->KillLeaderboard[$player->getName()] = 1;
         } else {
-            Loader::getInstance()->KillLeaderboard[$player->getName()]++;
+            PracticeCore::getInstance()->KillLeaderboard[$player->getName()]++;
         }
         $data->addKill();
     }
@@ -429,32 +434,32 @@ class ArenaUtils
         $oldStreak = $loser->getStreak();
         $newStreak = $killer->getStreak();
         if ($oldStreak > 10) {
-            $death->sendMessage(Loader::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
-            $player->sendMessage(Loader::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreak!');
+            $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
+            $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreak!');
         }
         if (is_int($newStreak / 10)) {
-            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreak!');
+            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreak!');
         }
     }
 
     public function getChatFormat(Player $player, string $message): string
     {
         $name = $player->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]' . '§r§a > §r' . $message;
+        if (PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]' . '§r§a > §r' . $message;
         } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
+            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
         }
         return $nametag;
     }
 
     public function Disable(): void
     {
-        foreach (Loader::getDuelManager()->getMatches() as $activeMatch => $matchTask) {
-            Loader::getDuelManager()->stopMatch($activeMatch);
+        foreach (PracticeCore::getDuelManager()->getMatches() as $activeMatch => $matchTask) {
+            PracticeCore::getDuelManager()->stopMatch($activeMatch);
         }
-        foreach (Loader::getBotDuelManager()->getMatches() as $activeMatch => $matchTask) {
-            Loader::getBotDuelManager()->stopMatch($activeMatch);
+        foreach (PracticeCore::getBotDuelManager()->getMatches() as $activeMatch => $matchTask) {
+            PracticeCore::getBotDuelManager()->stopMatch($activeMatch);
         }
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             if (str_contains(mb_strtolower($world->getFolderName()), 'duel') || str_contains(mb_strtolower($world->getFolderName()), 'bot')) {
@@ -463,7 +468,7 @@ class ArenaUtils
                 $this->deleteDir(Server::getInstance()->getDataPath() . "worlds/$name");
             }
         }
-        Loader::getInstance()->getLogger()->info(TextFormat::RED . 'Disable Yeet');
+        PracticeCore::getInstance()->getLogger()->info(TextFormat::RED . 'Disable Yeet');
         $this->loadMap('BUild');
         $this->killbot();
     }
@@ -497,7 +502,7 @@ class ArenaUtils
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
             $this->deleteDir(Server::getInstance()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $folderName);
         }
-        $zipPath = Loader::getInstance()->getDataFolder() . 'Maps' . DIRECTORY_SEPARATOR . $folderName . '.zip';
+        $zipPath = PracticeCore::getInstance()->getDataFolder() . 'Maps' . DIRECTORY_SEPARATOR . $folderName . '.zip';
         if (!file_exists($zipPath)) {
             Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found, try save level in setup mode.");
             return null;
@@ -517,15 +522,10 @@ class ArenaUtils
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof NeptuneBot) {
+                if ($entity instanceof PracticeBot) {
                     $entity->close();
                 }
             }
         }
-    }
-
-    private function registerGenerator(): void
-    {
-        GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
     }
 }

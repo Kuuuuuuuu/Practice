@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Arena;
 
 use JsonException;
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
@@ -25,49 +25,49 @@ class ArenaFactory
 
     public function getResistanceArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Resistance');
     }
 
     public function getFistArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Fist');
     }
 
     public function getOITCArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('OITC');
     }
 
     public function getBuildArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Build');
     }
 
     public function getBoxingArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Boxing');
     }
 
     public function getComboArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Combo');
     }
 
     public function getKnockbackArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Knockback');
     }
 
     public function getKitPVPArena(): string
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('KitPVP');
     }
 
@@ -77,10 +77,10 @@ class ArenaFactory
 
     public function setFistArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Fist', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     public function getRandomSpawnOitc(): array
@@ -137,10 +137,10 @@ class ArenaFactory
 
     public function setOITCArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('OITC', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -149,10 +149,10 @@ class ArenaFactory
 
     public function setBotArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Bot', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -161,10 +161,10 @@ class ArenaFactory
 
     public function setBuildArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Build', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -172,10 +172,10 @@ class ArenaFactory
      */
     public function setResistanceArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Resistance', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -184,10 +184,10 @@ class ArenaFactory
 
     public function setKitPVPArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('KitPVP', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -196,10 +196,10 @@ class ArenaFactory
 
     public function setBoxingArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Boxing', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -207,10 +207,10 @@ class ArenaFactory
      */
     public function setComboArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Combo', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -218,10 +218,10 @@ class ArenaFactory
      */
     public function setKnockbackArena(Player $player, string $world): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Knockback', $world);
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . '§aThe Arena was saved');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
@@ -229,10 +229,10 @@ class ArenaFactory
      */
     public function removeOITC(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('OITC');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -240,10 +240,10 @@ class ArenaFactory
      */
     public function removeBuild(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Build');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -251,10 +251,10 @@ class ArenaFactory
      */
     public function removeFist(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Fist');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -262,10 +262,10 @@ class ArenaFactory
      */
     public function removeBot(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Bot');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -273,10 +273,10 @@ class ArenaFactory
      */
     public function removeKnockback(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Knockback');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -284,10 +284,10 @@ class ArenaFactory
      */
     public function removeBoxing(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Boxing');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -295,10 +295,10 @@ class ArenaFactory
      */
     public function removeResistance(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Resistance');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -306,10 +306,10 @@ class ArenaFactory
      */
     public function removeCombo(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Combo');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 
     /**
@@ -317,9 +317,9 @@ class ArenaFactory
      */
     public function removeKitPVP(Player $player): void
     {
-        $data = new Config(Loader::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('KitPVP');
         $data->save();
-        $player->sendMessage(Loader::getPrefixCore() . 'Removed arena');
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }
 }

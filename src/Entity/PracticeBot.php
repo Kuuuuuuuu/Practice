@@ -22,7 +22,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\EndermanTeleportParticle;
 use pocketmine\world\sound\EndermanTeleportSound;
 
-class NeptuneBot extends Human
+class PracticeBot extends Human
 {
 
     public int $pearlcooldown = 0;
@@ -232,6 +232,6 @@ class NeptuneBot extends Human
 
     public function getName(): string
     {
-        return 'NeptuneBot';
+        return 'PracticeBot';
     }
 }

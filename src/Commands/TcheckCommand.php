@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kuu\Commands;
 
-use Kuu\Loader;
-use Kuu\Utils\DiscordUtils\DiscordWebhook;
-use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kuu\Utils\Forms\SimpleForm;
+use Kuu\PracticeCore;
+use Kuu\Utils\Discord\DiscordWebhook;
+use Kuu\Utils\Discord\DiscordWebhookUtils;
+use Kuu\Lib\FormAPI\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -32,10 +32,10 @@ class TcheckCommand extends Command
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 $this->openTcheckUI($sender);
             } else {
-                $sender->sendMessage(Loader::getPrefixCore() . '§cYou cannot execute this command.');
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou cannot execute this command.');
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 
@@ -45,19 +45,19 @@ class TcheckCommand extends Command
             if ($data === null) {
                 return true;
             }
-            Loader::getInstance()->targetPlayer[$player->getName()] = $data;
+            PracticeCore::getInstance()->targetPlayer[$player->getName()] = $data;
             $this->openInfoUI($player);
             return true;
         });
-        $banInfo = Loader::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (empty($array)) {
-            $player->sendMessage(Loader::getInstance()->MessageData['NoBanPlayers']);
+            $player->sendMessage(PracticeCore::getInstance()->MessageData['NoBanPlayers']);
             return true;
         }
-        $form->setTitle(Loader::getInstance()->MessageData['BanListTitle']);
-        $form->setContent(Loader::getInstance()->MessageData['BanListContent']);
-        $banInfo = Loader::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        $form->setTitle(PracticeCore::getInstance()->MessageData['BanListTitle']);
+        $form->setContent(PracticeCore::getInstance()->MessageData['BanListContent']);
+        $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
             $form->addButton(TextFormat::BOLD . $banPlayer, -1, '', $banPlayer);
@@ -74,23 +74,23 @@ class TcheckCommand extends Command
                 return true;
             }
             if ($result === 0) {
-                $banplayer = Loader::getInstance()->targetPlayer[$player->getName()];
-                $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                $banplayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
+                $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
-                    Loader::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
-                    $player->sendMessage(str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['UnBanPlayer']));
-                    $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
+                    PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                    $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getInstance()->MessageData['UnBanPlayer']));
+                    $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
                     $msg = new DiscordWebhookUtils();
-                    $msg->setContent('>>> ' . str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['UnBanPlayer']));
+                    $msg->setContent('>>> ' . str_replace(['{player}'], [$banplayer], PracticeCore::getInstance()->MessageData['UnBanPlayer']));
                     $web->send($msg);
                 }
-                unset(Loader::getInstance()->targetPlayer[$player->getName()]);
+                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
             }
             return true;
         });
-        $banPlayer = Loader::getInstance()->targetPlayer[$player->getName()];
-        $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
+        $banPlayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
+        $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (!empty($array)) {
             $banTime = $array['banTime'];
@@ -98,14 +98,14 @@ class TcheckCommand extends Command
             $staff = $array['staff'];
             $now = time();
             if ($banTime < $now) {
-                $banplayer = Loader::getInstance()->targetPlayer[$player->getName()];
-                $banInfo = Loader::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                $banplayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
+                $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
-                    Loader::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
-                    $player->sendMessage(str_replace(['{player}'], [$banplayer], Loader::getInstance()->MessageData['AutoUnBanPlayer']));
+                    PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                    $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getInstance()->MessageData['AutoUnBanPlayer']));
                 }
-                unset(Loader::getInstance()->targetPlayer[$player->getName()]);
+                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
                 return true;
             }
             $remainingTime = $banTime - $now;
@@ -118,8 +118,8 @@ class TcheckCommand extends Command
             $second = ceil($remainingSec);
         }
         $form->setTitle(TextFormat::BOLD . $banPlayer);
-        $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], Loader::getInstance()->MessageData['InfoUIContent']));
-        $form->addButton(Loader::getInstance()->MessageData['InfoUIUnBanButton']);
+        $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], PracticeCore::getInstance()->MessageData['InfoUIContent']));
+        $form->addButton(PracticeCore::getInstance()->MessageData['InfoUIUnBanButton']);
         $player->sendForm($form);
         return true;
     }

@@ -11,7 +11,7 @@ use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use Throwable;
 
-class NeptunePlayer extends Player
+class PracticePlayer extends Player
 {
     public int $BoxingPoint = 0;
     public string $PlayerOS = 'Unknown';
@@ -48,8 +48,8 @@ class NeptunePlayer extends Player
                 try {
                     if ($this->isDueling()) {
                         $attackSpeed = 7.5;
-                    } elseif (Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = Loader::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
+                    } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
+                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
                     }
                 } catch (Throwable) {
                 }
@@ -71,9 +71,9 @@ class NeptunePlayer extends Player
             if ($this->isDueling()) {
                 $yKb = 0.32;
                 $xzKB = 0.34;
-            } elseif (Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $xzKB = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
-                $yKb = Loader::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
+            } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
+                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
+                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
             }
         } catch (Throwable) {
         }
@@ -102,8 +102,8 @@ class NeptunePlayer extends Player
      */
     public function setStuff(string $stuff): void
     {
-        Loader::getInstance()->ArtifactData->set($this->getName(), $stuff);
-        Loader::getInstance()->ArtifactData->save();
+        PracticeCore::getInstance()->ArtifactData->set($this->getName(), $stuff);
+        PracticeCore::getInstance()->ArtifactData->save();
     }
 
     public function getCape(): string
@@ -211,7 +211,7 @@ class NeptunePlayer extends Player
             if ($this->CombatTime <= 0) {
                 $this->setCombat(false);
                 $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(Loader::getInstance()->MessageData['StopCombat']);
+                $this->sendMessage(PracticeCore::getInstance()->MessageData['StopCombat']);
                 $this->BoxingPoint = 0;
                 $this->setOpponent(null);
                 $this->setSkillCooldown(false);
@@ -222,11 +222,11 @@ class NeptunePlayer extends Player
             $this->enderpearlcooldown--;
             if ($this->enderpearlcooldown <= 0) {
                 $this->setEnderPearlCooldown(false);
-                $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownEnd']);
+                $this->sendMessage(PracticeCore::getInstance()->MessageData['EnderPearlCooldownEnd']);
             }
         }
         if ($this->sec % 3 === 0) {
-            Loader::getArenaUtils()->DeviceCheck($this);
+            PracticeCore::getArenaUtils()->DeviceCheck($this);
             $this->updateScoreboard();
             $this->updateNametag();
         }
@@ -234,7 +234,7 @@ class NeptunePlayer extends Player
 
     private function updateTag(): void
     {
-        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBuildArena())) {
+        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
         } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
@@ -259,7 +259,7 @@ class NeptunePlayer extends Player
     private function setPVPTag(): void
     {
         $ping = $this->getNetworkSession()->getPing();
-        $nowcps = Loader::getClickHandler()->getClicks($this);
+        $nowcps = PracticeCore::getClickHandler()->getClicks($this);
         $tagpvp = '§d' . $ping . '§fms §f| §d' . $nowcps . ' §fCPS';
         $this->setScoreTag($tagpvp);
     }
@@ -279,29 +279,29 @@ class NeptunePlayer extends Player
     {
         $this->isEnderpearlCooldown = $bool;
         if ($bool) {
-            $this->sendMessage(Loader::getInstance()->MessageData['EnderPearlCooldownStart']);
-            $this->enderpearlcooldown = ConfigCore::EnderPearlCooldown;
+            $this->sendMessage(PracticeCore::getInstance()->MessageData['EnderPearlCooldownStart']);
+            $this->enderpearlcooldown = PracticeConfig::EnderPearlCooldown;
         }
     }
 
     private function updateScoreboard(): void
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            Loader::getInstance()->getScoreboardManager()->sb($this);
-        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
-            Loader::getInstance()->getScoreboardManager()->sb2($this);
-        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getBoxingArena())) {
-            Loader::getInstance()->getScoreboardManager()->Boxing($this);
+            PracticeCore::getInstance()->getScoreboardManager()->sb($this);
+        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
+        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
         }
     }
 
     private function updateNametag(): void
     {
         $name = $this->getName();
-        if (Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && Loader::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]';
+        if (PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() !== '') {
+            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($name)->getTag() . '§f]';
         } else {
-            $nametag = Loader::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
+            $nametag = PracticeCore::getInstance()->getArenaUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
     }
@@ -319,9 +319,9 @@ class NeptunePlayer extends Player
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
-        Loader::getInstance()->getArenaUtils()->GiveLobbyItem($this);
+        PracticeCore::getInstance()->getArenaUtils()->GiveLobbyItem($this);
         $this->LoadData();
-        $this->sendMessage(Loader::getPrefixCore() . '§eLoading Data...');
+        $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }
 
     /**
@@ -329,8 +329,8 @@ class NeptunePlayer extends Player
      */
     private function LoadData(): void
     {
-        $this->cape = Loader::getInstance()->CapeData->get($this->getName()) ?: '';
-        $this->artifact = Loader::getInstance()->ArtifactData->get($this->getName()) ?: '';
+        $this->cape = PracticeCore::getInstance()->CapeData->get($this->getName()) ?: '';
+        $this->artifact = PracticeCore::getInstance()->ArtifactData->get($this->getName()) ?: '';
         $this->setCosmetic();
     }
 
@@ -339,23 +339,23 @@ class NeptunePlayer extends Player
      */
     public function setCosmetic(): void
     {
-        if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/artifact/' . Loader::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
+        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/artifact/' . PracticeCore::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
             if ($this->getStuff() !== '' && $this->getStuff() !== null) {
-                Loader::getCosmeticHandler()->setSkin($this, $this->getStuff());
+                PracticeCore::getCosmeticHandler()->setSkin($this, $this->getStuff());
             }
         } else {
-            Loader::getInstance()->ArtifactData->remove($this->getName());
-            Loader::getInstance()->ArtifactData->save();
+            PracticeCore::getInstance()->ArtifactData->remove($this->getName());
+            PracticeCore::getInstance()->ArtifactData->save();
         }
-        if (file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . Loader::getInstance()->CapeData->get($this->getName()) . '.png')) {
+        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . PracticeCore::getInstance()->CapeData->get($this->getName()) . '.png')) {
             $oldSkin = $this->getSkin();
-            $capeData = Loader::getCosmeticHandler()->createCape(Loader::getInstance()->CapeData->get($this->getName()));
+            $capeData = PracticeCore::getCosmeticHandler()->createCape(PracticeCore::getInstance()->CapeData->get($this->getName()));
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
             $this->setSkin($setCape);
             $this->sendSkin();
         } else {
-            Loader::getInstance()->CapeData->remove($this->getName());
-            Loader::getInstance()->CapeData->save();
+            PracticeCore::getInstance()->CapeData->remove($this->getName());
+            PracticeCore::getInstance()->CapeData->save();
         }
     }
 
@@ -369,12 +369,12 @@ class NeptunePlayer extends Player
      */
     public function checkQueue(): void
     {
-        $this->sendMessage(Loader::getPrefixCore() . 'Entering queue...');
+        $this->sendMessage(PracticeCore::getPrefixCore() . 'Entering queue...');
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
             if (($player instanceof self && $player->getName() !== $this->getName()) && ($this->isInQueue() && $player->isInQueue()) && $this->getDuelKit() === $player->getDuelKit()) {
-                Loader::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
-                $this->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $player->getName());
-                $player->sendMessage(Loader::getPrefixCore() . 'Found a match against §c' . $this->getName());
+                PracticeCore::getInstance()->getDuelManager()->createMatch($this, $player, $this->getDuelKit());
+                $this->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $player->getName());
+                $player->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $this->getName());
                 foreach ([$player, $this] as $p) {
                     $p->setInQueue(false);
                 }
@@ -402,13 +402,13 @@ class NeptunePlayer extends Player
      */
     public function queueBotDuel(string $mode): void
     {
-        Loader::getInstance()->getBotDuelManager()->createMatch($this, $this->getDuelKit(), $mode);
+        PracticeCore::getInstance()->getBotDuelManager()->createMatch($this, $this->getDuelKit(), $mode);
         $this->setInQueue(false);
     }
 
     public function onQuit(): void
     {
-        Loader::getClickHandler()->removePlayerClickData($this);
+        PracticeCore::getClickHandler()->removePlayerClickData($this);
         if ($this->isDueling() || $this->isCombat()) {
             $this->kill();
         }
@@ -430,17 +430,17 @@ class NeptunePlayer extends Player
             foreach ($this->getInventory()->getContents() as $slot => $item) {
                 $this->savekitcache[$slot] = $item->jsonSerialize();
             }
-            Loader::getInstance()->KitData->set($name, $this->savekitcache);
+            PracticeCore::getInstance()->KitData->set($name, $this->savekitcache);
         } catch (Exception) {
             $this->kill();
             $this->setImmobile(false);
-            $this->sendMessage(Loader::getPrefixCore() . '§cAn error occurred while saving your kit.');
+            $this->sendMessage(PracticeCore::getPrefixCore() . '§cAn error occurred while saving your kit.');
             $this->EditKit = null;
             return;
         }
-        Loader::getInstance()->KitData->save();
+        PracticeCore::getInstance()->KitData->save();
         $this->EditKit = null;
-        $this->sendMessage(Loader::getPrefixCore() . '§aYou have successfully saved your kit!');
+        $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou have successfully saved your kit!');
         $this->kill();
         $this->setImmobile(false);
     }

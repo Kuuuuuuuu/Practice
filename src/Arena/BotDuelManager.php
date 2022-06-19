@@ -4,8 +4,8 @@ namespace Kuu\Arena;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
@@ -21,9 +21,9 @@ class BotDuelManager
     /**
      * @throws Exception
      */
-    public function createMatch(NeptunePlayer $player, KitManager $kit, string $mode): void
+    public function createMatch(PracticePlayer $player, KitManager $kit, string $mode): void
     {
-        $worldName = 'Bot-' . $player->getName() . ' - ' . Loader::getArenaUtils()->generateUUID();
+        $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getArenaUtils()->generateUUID();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(Flat::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
@@ -47,8 +47,8 @@ class BotDuelManager
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
-        Loader::getCoreTask()?->removeDuelTask($name);
+        PracticeCore::getArenaUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        PracticeCore::getCoreTask()?->removeDuelTask($name);
         if ($this->isMatch($name)) {
             unset($this->matches[$name]);
         }

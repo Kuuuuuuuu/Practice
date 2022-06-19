@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kuu\Utils;
 
-use Kuu\ConfigCore;
+use Kuu\PracticeConfig;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
@@ -23,7 +23,7 @@ class DeleteBlocksHandler
         if ($break && isset($this->buildBlocks[$pos])) {
             unset($this->buildBlocks[$pos]);
         } else {
-            $this->buildBlocks[$pos] = ConfigCore::DeleteBlockTime;
+            $this->buildBlocks[$pos] = PracticeConfig::DeleteBlockTime;
         }
     }
 

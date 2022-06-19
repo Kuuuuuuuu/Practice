@@ -4,8 +4,8 @@ namespace Kuu\Arena;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use Kuu\Utils\Generator\SumoGenerator;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
@@ -22,9 +22,9 @@ class DuelManager
     /**
      * @throws Exception
      */
-    public function createMatch(NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit): void
+    public function createMatch(PracticePlayer $player1, PracticePlayer $player2, KitManager $kit): void
     {
-        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . Loader::getArenaUtils()->generateUUID();
+        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . PracticeCore::getArenaUtils()->generateUUID();
         $world = new WorldCreationOptions();
         if ($kit->getName() !== 'Sumo') {
             $world->setGeneratorClass(Flat::class);
@@ -54,8 +54,8 @@ class DuelManager
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
             Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
         }
-        Loader::getArenaUtils()->deleteDir(Loader::getInstance()->getServer()->getDataPath() . "worlds/$name");
-        Loader::getCoreTask()?->removeDuelTask($name);
+        PracticeCore::getArenaUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
+        PracticeCore::getCoreTask()?->removeDuelTask($name);
         if ($this->isMatch($name)) {
             unset($this->matches[$name]);
         }

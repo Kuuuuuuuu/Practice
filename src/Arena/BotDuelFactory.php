@@ -2,10 +2,10 @@
 
 namespace Kuu\Arena;
 
-use Kuu\Entity\NeptuneBot;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
-use Kuu\Task\NeptuneTask;
+use Kuu\Entity\PracticeBot;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
+use Kuu\Task\PracticeTask;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
@@ -17,21 +17,21 @@ use pocketmine\world\WorldException;
 class BotDuelFactory
 {
     private int $time = 903;
-    private NeptunePlayer $player1;
-    private ?NeptuneBot $player2;
+    private PracticePlayer $player1;
+    private ?PracticeBot $player2;
     private World $level;
     private KitManager $kit;
     private bool $ended = false;
     private string $mode;
 
-    public function __construct(string $name, NeptunePlayer $player1, KitManager $kit, string $mode)
+    public function __construct(string $name, PracticePlayer $player1, KitManager $kit, string $mode)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
             throw new WorldException('World does not exist');
         }
-        if (Loader::getCoreTask() instanceof NeptuneTask) {
-            Loader::getCoreTask()?->addDuelTask($name, $this);
+        if (PracticeCore::getCoreTask() instanceof PracticeTask) {
+            PracticeCore::getCoreTask()?->addDuelTask($name, $this);
         }
         $this->level = $world;
         $this->player1 = $player1;
@@ -45,7 +45,7 @@ class BotDuelFactory
         if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
             $this->onEnd();
         }
-        if ($this->player2 instanceof NeptuneBot) {
+        if ($this->player2 instanceof PracticeBot) {
             if ($this->player2?->pearlcooldown !== 0) {
                 $this->player2->pearlcooldown--;
             }
@@ -61,7 +61,7 @@ class BotDuelFactory
                     $this->player1->sendTitle('§d3', '', 1, 3, 1);
                     $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
                     $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
-                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
                     $this->player1->teleport(new Position(15, 4, 40, $this->level));
@@ -72,22 +72,22 @@ class BotDuelFactory
                 if ($this->player1->isOnline()) {
                     $this->player1->setCurrentKit(null);
                     $this->player1->sendTitle('§d2', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
                 }
                 break;
             case 901:
                 if ($this->player1->isOnline()) {
                     $this->player1->sendTitle('§d1', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $this->player1);
                 }
                 break;
             case 900:
                 if ($this->player1->isOnline()) {
                     $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
                     $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                        $this->player2 = new NeptuneBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
+                        $this->player2 = new PracticeBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
                     }, static function (): void {
                     });
                 }
@@ -104,7 +104,7 @@ class BotDuelFactory
         if (!$this->ended) {
             $loserMessage = '';
             $winnerMessage = '';
-            if ($playerLeft instanceof NeptunePlayer) {
+            if ($playerLeft instanceof PracticePlayer) {
                 $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
                 $loserMessage = '§cLoser: §fFistBot';
             } elseif ($playerLeft === null) {
@@ -119,12 +119,12 @@ class BotDuelFactory
                 $this->player1->setDueling(false);
                 $this->player1->setCurrentKit(null);
                 $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
-                Loader::getArenaUtils()->GiveLobbyItem($this->player1);
-                Loader::getScoreboardManager()->sb($this->player1);
+                PracticeCore::getArenaUtils()->GiveLobbyItem($this->player1);
+                PracticeCore::getScoreboardManager()->sb($this->player1);
                 $this->player1->setHealth(20);
             }
         }
         $this->ended = true;
-        Loader::getBotDuelManager()->stopMatch($this->level->getFolderName());
+        PracticeCore::getBotDuelManager()->stopMatch($this->level->getFolderName());
     }
 }

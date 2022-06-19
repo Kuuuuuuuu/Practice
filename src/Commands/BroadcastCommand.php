@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kuu\Commands;
 
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -28,19 +28,19 @@ class BroadcastCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($args === null) {
-                $sender->sendMessage(Loader::getPrefixCore() . '§cPlease enter a message');
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlease enter a message');
                 return;
             }
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                     $message = implode(' ', $args);
-                    $player->sendMessage(Loader::getPrefixCore() . $message);
+                    $player->sendMessage(PracticeCore::getPrefixCore() . $message);
                 }
             } else {
-                $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
+                $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 }

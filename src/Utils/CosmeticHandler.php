@@ -8,8 +8,8 @@ use Exception;
 use GdImage;
 use InvalidArgumentException;
 use JsonException;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
 use RuntimeException;
@@ -51,13 +51,13 @@ class CosmeticHandler
      */
     public function __construct()
     {
-        $this->dataFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
+        $this->dataFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
             @mkdir($this->dataFolder);
             @mkdir($this->saveSkin);
         }
-        $this->resourcesFolder = Loader::getInstance()->getDataFolder() . 'cosmetic/';
+        $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
         $this->stevePng = $this->resourcesFolder . 'steve.png';
@@ -230,7 +230,7 @@ class CosmeticHandler
     public function setSkin(Player $player, string $stuffName): void
     {
         try {
-            if ($player instanceof NeptunePlayer) {
+            if ($player instanceof PracticePlayer) {
                 $imagePath = $this->getSaveSkin($player->getName());
                 $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $player->getSkin()->getSkinId());
                 $cape = $player->getCape();
@@ -313,7 +313,7 @@ class CosmeticHandler
     public function createCape($capeName): ?string
     {
         try {
-            $path = Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . "$capeName.png";
+            $path = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . "$capeName.png";
             $img = @imagecreatefrompng($path);
             $bytes = '';
             $l = (int)@getimagesize($path)[1];

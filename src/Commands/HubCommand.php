@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kuu\Commands;
 
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use pocketmine\Command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;
@@ -25,25 +25,25 @@ class HubCommand extends Command
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args)
     {
-        if ($sender instanceof NeptunePlayer) {
+        if ($sender instanceof PracticePlayer) {
             if ($sender->getEditKit() !== null) {
-                $sender->sendMessage(Loader::getPrefixCore() . "§cYou can't use this command while editing a kit!");
+                $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command while editing a kit!");
                 return;
             }
             $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
-            $sender->sendMessage(Loader::getPrefixCore() . '§aTeleported to Hub!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
             $sender->setGamemode(GameMode::ADVENTURE());
             $sender->getInventory()->clearAll();
             $sender->getArmorInventory()->clearAll();
             $sender->getEffects()->clear();
-            Loader::getInstance()->getScoreboardManager()->sb($sender);
-            Loader::getInstance()->getArenaUtils()->GiveLobbyItem($sender);
+            PracticeCore::getInstance()->getScoreboardManager()->sb($sender);
+            PracticeCore::getInstance()->getArenaUtils()->GiveLobbyItem($sender);
             $sender->setLastDamagePlayer('Unknown');
             if ($sender->isImmobile()) {
                 $sender->setImmobile(false);
             }
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
         }
     }
 }

@@ -6,28 +6,28 @@ namespace Kuu\Task;
 
 use Kuu\Arena\BotDuelFactory;
 use Kuu\Arena\DuelFactory;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
-class NeptuneTask extends Task
+class PracticeTask extends Task
 {
     private static array $DuelTask = [];
     private static int $tick = 0;
 
     public function __construct()
     {
-        Loader::setCoreTask($this);
+        PracticeCore::setCoreTask($this);
     }
 
     public function onRun(): void
     {
         self::$tick++;
         if (self::$tick % 20 === 0) {
-            Loader::getDeleteBlockHandler()->update();
+            PracticeCore::getDeleteBlockHandler()->update();
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                if ($player instanceof NeptunePlayer) {
+                if ($player instanceof PracticePlayer) {
                     $player->update();
                 }
             }

@@ -5,7 +5,7 @@ namespace Kuu\Entity;
 
 use JetBrains\PhpStorm\Pure;
 use Kuu\Items\FishingRod;
-use Kuu\NeptunePlayer;
+use Kuu\PracticePlayer;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;
@@ -29,7 +29,7 @@ class FishingHook extends Projectile
         $this->motion->x = -sin(deg2rad($location->yaw)) * cos(deg2rad($location->pitch));
         $this->motion->y = -sin(deg2rad($location->pitch));
         $this->motion->z = cos(deg2rad($location->yaw)) * cos(deg2rad($location->pitch));
-        if ($shootingEntity instanceof NeptunePlayer) {
+        if ($shootingEntity instanceof PracticePlayer) {
             $this->handleHookCasting($this->motion->x, $this->motion->y, $this->motion->z, 1.5, 1.0);
         }
     }

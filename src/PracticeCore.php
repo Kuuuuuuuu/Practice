@@ -12,7 +12,7 @@ use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
 use Kuu\Arena\BotDuelManager;
 use Kuu\Arena\DuelManager;
-use Kuu\Task\NeptuneTask;
+use Kuu\Task\PracticeTask;
 use Kuu\Utils\ArenaUtils;
 use Kuu\Utils\ClickHandler;
 use Kuu\Utils\CosmeticHandler;
@@ -25,7 +25,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use SQLite3;
 
-class Loader extends PluginBase
+class PracticeCore extends PluginBase
 {
     private static self $plugin;
     private static ClickHandler $cps;
@@ -39,7 +39,7 @@ class Loader extends PluginBase
     private static ArenaUtils $arenautils;
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
-    private static ?NeptuneTask $CoreTask;
+    private static ?PracticeTask $CoreTask;
     private static BotDuelManager $botduelmanager;
     public Config|array $MessageData;
     public Config $CapeData;
@@ -51,24 +51,24 @@ class Loader extends PluginBase
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
 
-    public static function getCoreTask(): ?NeptuneTask
+    public static function getCoreTask(): ?PracticeTask
     {
         return self::$CoreTask;
     }
 
-    public static function setCoreTask(?NeptuneTask $task): void
+    public static function setCoreTask(?PracticeTask $task): void
     {
         self::$CoreTask = $task;
     }
 
     public static function getScoreboardTitle(): string
     {
-        return ConfigCore::SBPREFIX;
+        return PracticeConfig::SBPREFIX;
     }
 
     public static function getPrefixCore(): string
     {
-        return ConfigCore::PREFIX;
+        return PracticeConfig::PREFIX;
     }
 
     public static function getDeleteBlockHandler(): DeleteBlocksHandler
@@ -126,7 +126,7 @@ class Loader extends PluginBase
         return self::$botduelmanager;
     }
 
-    public static function getInstance(): Loader
+    public static function getInstance(): PracticeCore
     {
         return self::$plugin;
     }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kuu\Task;
 
 use JsonException;
-use Kuu\Loader;
-use Kuu\Utils\DiscordUtils\DiscordWebhook;
-use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
+use Kuu\PracticeCore;
+use Kuu\Utils\Discord\DiscordWebhook;
+use Kuu\Utils\Discord\DiscordWebhookUtils;
 use pocketmine\scheduler\AsyncTask;
 
 class AsyncWebhookTask extends AsyncTask
@@ -42,7 +42,7 @@ class AsyncWebhookTask extends AsyncTask
     {
         $response = $this->getResult();
         if (!in_array($response[1], [200, 204], true)) {
-            Loader::getInstance()->getLogger()->error('Discord Webhook Error: ' . $response[0]);
+            PracticeCore::getInstance()->getLogger()->error('Discord Webhook Error: ' . $response[0]);
         }
     }
 }

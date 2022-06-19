@@ -8,7 +8,7 @@ namespace Kuu\Utils;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
-use Kuu\Loader;
+use Kuu\PracticeCore;
 
 class DataManager
 {
@@ -63,7 +63,7 @@ class DataManager
 
     #[Pure] private function getPath(): string
     {
-        return Loader::getInstance()->getDataFolder() . 'players/' . strtolower($this->player) . '.yml';
+        return PracticeCore::getInstance()->getDataFolder() . 'players/' . strtolower($this->player) . '.yml';
     }
 
     public function getName(): string

@@ -2,9 +2,10 @@
 
 namespace Kuu;
 
-interface ConfigCore
+interface PracticeConfig
 {
     public const PREFIX = '§dNeptune§f » §r';
+    public const Server_Name = '§dNeptune§f ';
     public const SBPREFIX = '§f» §dNeptune §f«';
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
@@ -13,6 +14,7 @@ interface ConfigCore
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
     public const SkillCooldownDelay = 250;
+    public const IPV6 = false;
     public const BanCommand = [
         'hub',
         'kill'

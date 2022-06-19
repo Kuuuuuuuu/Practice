@@ -2,9 +2,9 @@
 
 namespace Kuu\Arena;
 
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
-use Kuu\Task\NeptuneTask;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
+use Kuu\Task\PracticeTask;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
@@ -15,24 +15,24 @@ use pocketmine\world\WorldException;
 class DuelFactory
 {
     private int $time = 903;
-    private NeptunePlayer $player1;
-    private NeptunePlayer $player2;
+    private PracticePlayer $player1;
+    private PracticePlayer $player2;
     private World $level;
-    private ?NeptunePlayer $winner = null;
-    private ?NeptunePlayer $loser = null;
+    private ?PracticePlayer $winner = null;
+    private ?PracticePlayer $loser = null;
     private KitManager $kit;
     private bool $ended = false;
     private int $z = 40;
     private int $z2 = 20;
 
-    public function __construct(string $name, NeptunePlayer $player1, NeptunePlayer $player2, KitManager $kit)
+    public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
             throw new WorldException('World does not exist');
         }
-        if (Loader::getCoreTask() instanceof NeptuneTask) {
-            Loader::getCoreTask()?->addDuelTask($name, $this);
+        if (PracticeCore::getCoreTask() instanceof PracticeTask) {
+            PracticeCore::getCoreTask()?->addDuelTask($name, $this);
         }
         if ($kit->getName() === 'Sumo') {
             $this->z = 0;
@@ -62,13 +62,13 @@ class DuelFactory
         switch ($this->time) {
             case 903:
                 foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof NeptunePlayer) {
+                    if ($player instanceof PracticePlayer) {
                         $player->setGamemode(GameMode::SURVIVAL());
                         $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                         $player->getInventory()->setContents($this->kit->getInventoryItems());
                         $player->setImmobile();
                         $player->sendTitle('§d3', '', 1, 3, 1);
-                        Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                        PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
                     }
                 }
                 $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {
@@ -82,23 +82,23 @@ class DuelFactory
                 break;
             case 902:
                 foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof NeptunePlayer) {
+                    if ($player instanceof PracticePlayer) {
                         $player->setCurrentKit(null);
                     }
                     $player->sendTitle('§d2', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
                 }
                 break;
             case 901:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle('§d1', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.click', $player);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.click', $player);
                 }
                 break;
             case 900:
                 foreach ($this->getPlayers() as $player) {
                     $player->sendTitle('§dFight!', '', 1, 3, 1);
-                    Loader::getInstance()->getArenaUtils()->playSound('random.anvil_use', $player);
+                    PracticeCore::getInstance()->getArenaUtils()->playSound('random.anvil_use', $player);
                     $player->setImmobile(false);
                 }
                 break;
@@ -114,12 +114,12 @@ class DuelFactory
         return [$this->player1, $this->player2];
     }
 
-    public function onEnd(?NeptunePlayer $playerLeft = null): void
+    public function onEnd(?PracticePlayer $playerLeft = null): void
     {
         if (!$this->ended) {
             foreach ($this->getPlayers() as $online) {
                 if (is_null($playerLeft) || $online->getName() !== $playerLeft->getName()) {
-                    if ($online instanceof NeptunePlayer) {
+                    if ($online instanceof PracticePlayer) {
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
                         $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
@@ -128,8 +128,8 @@ class DuelFactory
                         $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
-                        Loader::getArenaUtils()->GiveLobbyItem($online);
-                        Loader::getScoreboardManager()->sb($online);
+                        PracticeCore::getArenaUtils()->GiveLobbyItem($online);
+                        PracticeCore::getScoreboardManager()->sb($online);
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
                         $online->setHealth(20);
@@ -139,6 +139,6 @@ class DuelFactory
             }
             $this->ended = true;
         }
-        Loader::getDuelManager()->stopMatch($this->level->getFolderName());
+        PracticeCore::getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }

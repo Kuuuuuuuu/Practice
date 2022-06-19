@@ -23,15 +23,15 @@
 namespace Kuu\Events;
 
 
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 
-class RaklibNeptune extends RakLibInterface
+class PracticeRaklibInterface extends RakLibInterface
 {
     public function blockAddress(string $address, int $timeout = 0): void
     {
         // Hacky method for proxy lol
         $this->unblockAddress($address); // Hacky method
-        Loader::getInstance()->getLogger()->info("Trying to Block address: $address");
+        PracticeCore::getInstance()->getLogger()->info("Trying to Block address: $address");
     }
 }

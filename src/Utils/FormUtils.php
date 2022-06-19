@@ -7,13 +7,14 @@ namespace Kuu\Utils;
 use DateTime;
 use Exception;
 use JsonException;
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
-use Kuu\Utils\DiscordUtils\DiscordWebhook;
-use Kuu\Utils\DiscordUtils\DiscordWebhookEmbed;
-use Kuu\Utils\DiscordUtils\DiscordWebhookUtils;
-use Kuu\Utils\Forms\CustomForm;
-use Kuu\Utils\Forms\SimpleForm;
+use Kuu\PracticeConfig;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
+use Kuu\Utils\Discord\DiscordWebhook;
+use Kuu\Utils\Discord\DiscordWebhookEmbed;
+use Kuu\Utils\Discord\DiscordWebhookUtils;
+use Kuu\Lib\FormAPI\CustomForm;
+use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\EffectInstance;
@@ -37,43 +38,43 @@ class FormUtils
             if ($data !== null) {
                 switch ($data) {
                     case 0:
-                        Loader::getArenaManager()->onJoinBoxing($player);
+                        PracticeCore::getArenaManager()->onJoinBoxing($player);
                         break;
                     case 1:
-                        Loader::getArenaManager()->onJoinFist($player);
+                        PracticeCore::getArenaManager()->onJoinFist($player);
                         break;
                     case 2:
-                        Loader::getArenaManager()->onJoinCombo($player);
+                        PracticeCore::getArenaManager()->onJoinCombo($player);
                         break;
                     case 3:
-                        Loader::getArenaManager()->onJoinKnockback($player);
+                        PracticeCore::getArenaManager()->onJoinKnockback($player);
                         break;
                     case 4:
-                        Loader::getArenaManager()->onJoinResistance($player);
+                        PracticeCore::getArenaManager()->onJoinResistance($player);
                         break;
                     case 5:
                         $this->formkit($player);
                         break;
                     case 6:
-                        Loader::getArenaManager()->onJoinOITC($player);
+                        PracticeCore::getArenaManager()->onJoinOITC($player);
                         break;
                     case 7:
-                        Loader::getArenaManager()->onJoinBuild($player);
+                        PracticeCore::getArenaManager()->onJoinBuild($player);
                         break;
                     default:
                         print 'Error';
                 }
             }
         });
-        $form->setTitle('§dNeptune §cMenu');
-        $form->addButton("§aBoxing\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
-        $form->addButton("§aFist\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
-        $form->addButton("§aCombo\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
-        $form->addButton("§aKnockback\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
-        $form->addButton("§aResistance\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
-        $form->addButton("§aKitPVP\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
-        $form->addButton("§aOITC\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
-        $form->addButton("§aBuild\n§dPlayers: §f" . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
+        $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
+        $form->addButton("§aBoxing\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
+        $form->addButton("§aFist\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
+        $form->addButton("§aCombo\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
+        $form->addButton("§aKnockback\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
+        $form->addButton("§aResistance\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
+        $form->addButton("§aKitPVP\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
+        $form->addButton("§aOITC\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
+        $form->addButton("§aBuild\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
     }
 
@@ -100,8 +101,8 @@ class FormUtils
                 }
             }
         });
-        $form->setTitle('§dNeptune §eKitPVP');
-        $form->setContent('§eNow Playing: §a' . Loader::getArenaFactory()->getPlayers(Loader::getArenaFactory()->getKitPVPArena()));
+        $form->setTitle(PracticeConfig::Server_Name . '§eKitPVP');
+        $form->setContent('§eNow Playing: §a' . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKitPVPArena()));
         $form->addButton('§aAssasins');
         $form->addButton('§aTank');
         $form->addButton('§aBoxing');
@@ -115,7 +116,7 @@ class FormUtils
      */
     private function assasins(Player $player): void
     {
-        Loader::getArenaManager()->onJoinKitpvp($player);
+        PracticeCore::getArenaManager()->onJoinKitpvp($player);
         $item = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $item2 = VanillaItems::SPIDER_EYE()->setCustomName('§r§6Teleport');
         $player->getInventory()->setItem(8, $item2);
@@ -133,7 +134,7 @@ class FormUtils
      */
     private function tank(Player $player): void
     {
-        Loader::getArenaManager()->onJoinKitpvp($player);
+        PracticeCore::getArenaManager()->onJoinKitpvp($player);
         $item = VanillaItems::DIAMOND_AXE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $player->getInventory()->setItem(0, $item);
         $item2 = VanillaItems::REDSTONE_DUST()->setCustomName('§r§6Ultimate Tank');
@@ -152,7 +153,7 @@ class FormUtils
      */
     private function boxing(Player $player): void
     {
-        Loader::getArenaManager()->onJoinKitpvp($player);
+        PracticeCore::getArenaManager()->onJoinKitpvp($player);
         $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 9999999, 2, false));
         $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 1, false));
         $item2 = VanillaItems::DIAMOND()->setCustomName('§r§6Ultimate Boxing');
@@ -166,7 +167,7 @@ class FormUtils
      */
     private function bower(Player $player): void
     {
-        Loader::getArenaManager()->onJoinKitpvp($player);
+        PracticeCore::getArenaManager()->onJoinKitpvp($player);
         $item = VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::INFINITY(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 4))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
         $player->getInventory()->setItem(0, $item);
         $item2 = VanillaItems::EMERALD()->setCustomName('§r§6Ultimate Bower');
@@ -186,7 +187,7 @@ class FormUtils
      */
     private function reaper(Player $player): void
     {
-        Loader::getArenaManager()->onJoinKitpvp($player);
+        PracticeCore::getArenaManager()->onJoinKitpvp($player);
         $item = VanillaItems::DIAMOND_HOE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 4));
         $item2 = VanillaItems::WITHER_SKELETON_SKULL()->setCustomName('§r§6Reaper');
         $player->getInventory()->setItem(8, $item2);
@@ -198,7 +199,7 @@ class FormUtils
     public function duelForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            if (($data !== null) && $player instanceof NeptunePlayer) {
+            if (($data !== null) && $player instanceof PracticePlayer) {
                 switch ($data) {
                     case 0:
                         $player->setCurrentKit(KitRegistry::fromString('Fist'));
@@ -245,7 +246,7 @@ class FormUtils
                 }
             }
         });
-        $form->setTitle('§dNeptune §cDuel');
+        $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
         $form->addButton("§aFist\n§dQueue§f: " . $this->getQueue('Fist'), 0, 'textures/items/paper.png');
         $form->addButton("§aNoDebuff\n§dQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
         $form->addButton("§aClassic\n§dQueue§f: " . $this->getQueue('Classic'), 0, 'textures/items/paper.png');
@@ -259,7 +260,7 @@ class FormUtils
     {
         $kitcount = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-            if ($p instanceof NeptunePlayer) {
+            if ($p instanceof PracticePlayer) {
                 try {
                     if ($p->getDuelKit()?->getName() === $kit) {
                         $kitcount++;
@@ -296,7 +297,7 @@ class FormUtils
                 }
             }
         });
-        $form->setTitle('§dNeptune §cMenu');
+        $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addButton('§aChange §dName', 0, 'textures/ui/dressing_room_skins.png');
         $form->addButton('§aReport §dPlayers', 0, 'textures/blocks/barrier.png');
         $form->addButton('§aChange §dCapes', 0, 'textures/items/snowball.png');
@@ -315,18 +316,18 @@ class FormUtils
                         break;
                     case 1:
                         $player->setDisplayName($player->getName());
-                        if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                            $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                        if (PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                            $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
                         } else {
-                            $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
+                            $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
                         }
-                        $player->sendMessage(Loader::getPrefixCore() . '§eYour nickname has been resetted!');
+                        $player->sendMessage(PracticeCore::getPrefixCore() . '§eYour nickname has been resetted!');
                         break;
                 }
             }
         });
         $name = '§eNow Your Name is: §a' . $player->getDisplayName();
-        $form->setTitle('§dNeptune §cNick');
+        $form->setTitle(PracticeConfig::Server_Name . '§cNick');
         $form->setContent($name);
         $form->addButton("§aChange Name\n§r§8Tap to continue", 0, 'textures/ui/confirm');
         $form->addButton("§cReset Name\n§r§8Tap to reset", 0, 'textures/ui/trash');
@@ -338,21 +339,21 @@ class FormUtils
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
                 if (strlen($data[0]) >= 15) {
-                    $player->sendMessage(Loader::getPrefixCore() . '§cYour nickname is too long!');
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cYour nickname is too long!');
                 } elseif (Server::getInstance()->getPlayerByPrefix($data[0]) !== null && mb_strtolower($data[0]) !== 'iskohakuchan') {
-                    $player->sendMessage(Loader::getPrefixCore() . '§cYou cant use this nickname!');
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
                     $player->setDisplayName($data[0]);
-                    if (Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . Loader::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
+                    if (PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() !== null) {
+                        $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getTag() . '§f]');
                     } else {
-                        $player->setNameTag(Loader::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
+                        $player->setNameTag(PracticeCore::getInstance()->getArenaUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
                     }
-                    $player->sendMessage(Loader::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
                 }
             }
         });
-        $form->setTitle('§dNeptune §cNick');
+        $form->setTitle(PracticeConfig::Server_Name . '§cNick');
         $form->addInput('§eEnter New Name Here!');
         $player->sendForm($form);
     }
@@ -360,13 +361,13 @@ class FormUtils
     public function reportForm($player): void
     {
         $list = [];
-        foreach (Loader::getInstance()->getServer()->getOnlinePlayers() as $p) {
+        foreach (PracticeCore::getInstance()->getServer()->getOnlinePlayers() as $p) {
             $list[] = $p->getName();
         }
         $this->players[$player->getName()] = $list;
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
-                $web = new DiscordWebhook(Loader::getInstance()->getConfig()->get('api'));
+                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
                 $msg = new DiscordWebhookUtils();
                 $e = new DiscordWebhookEmbed();
                 $index = $data[1];
@@ -377,16 +378,16 @@ class FormUtils
                 $e->setDescription("{$player->getName()} Report {$this->players[$player->getName()][$index]}  | Reason: $data[2]");
                 $msg->addEmbed($e);
                 $web->send($msg);
-                $player->sendMessage(Loader::getPrefixCore() . '§aReport Sent!');
+                $player->sendMessage(PracticeCore::getPrefixCore() . '§aReport Sent!');
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                        $p->sendMessage(Loader::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$index]} §e| Reason: §a$data[2]");
+                        $p->sendMessage(PracticeCore::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$index]} §e| Reason: §a$data[2]");
                     }
                 }
             }
             return true;
         });
-        $form->setTitle('§dNeptune §cReport');
+        $form->setTitle(PracticeConfig::Server_Name . '§cReport');
         $form->addLabel('§aReport');
         $form->addDropdown('§eSelect a player', $this->players[$player->getName()]);
         $form->addInput('§dReason', 'Type a reason');
@@ -403,11 +404,11 @@ class FormUtils
                         $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), '', $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                         $player->setSkin($setCape);
                         $player->sendSkin();
-                        if (Loader::getInstance()->CapeData->get($player->getName()) !== null) {
-                            Loader::getInstance()->CapeData->remove($player->getName());
-                            Loader::getInstance()->CapeData->save();
+                        if (PracticeCore::getInstance()->CapeData->get($player->getName()) !== null) {
+                            PracticeCore::getInstance()->CapeData->remove($player->getName());
+                            PracticeCore::getInstance()->CapeData->save();
                         }
-                        $player->sendMessage(Loader::getPrefixCore() . '§aCape Removed!');
+                        $player->sendMessage(PracticeCore::getPrefixCore() . '§aCape Removed!');
                         break;
                     case 1:
                         $this->openCapeListUI($player);
@@ -415,7 +416,7 @@ class FormUtils
                 }
             }
         });
-        $form->setTitle('§dNeptune §cCapes');
+        $form->setTitle(PracticeConfig::Server_Name . '§cCapes');
         $form->addButton('§aRemove your Cape');
         $form->addButton('§aChoose a Cape');
         $player->sendForm($form);
@@ -428,24 +429,24 @@ class FormUtils
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             if ($data !== null) {
-                if (!file_exists(Loader::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
-                    $player->sendMessage(Loader::getPrefixCore() . '§cCape not found!');
+                if (!file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCape not found!');
                 } else {
                     $oldSkin = $player->getSkin();
-                    $capeData = Loader::getCosmeticHandler()->createCape($data);
+                    $capeData = PracticeCore::getCosmeticHandler()->createCape($data);
                     $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                     $player->setSkin($setCape);
                     $player->sendSkin();
-                    $msg = Loader::getPrefixCore() . '§aCape set to {name}!';
+                    $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
                     $msg = str_replace('{name}', $data, $msg);
                     $player->sendMessage($msg);
-                    Loader::getInstance()->CapeData->set($player->getName(), $data);
-                    Loader::getInstance()->CapeData->save();
+                    PracticeCore::getInstance()->CapeData->set($player->getName(), $data);
+                    PracticeCore::getInstance()->CapeData->save();
                 }
             }
         });
-        $form->setTitle('§dNeptune §cCapes');
-        foreach (Loader::getCosmeticHandler()->getCapes() as $capes) {
+        $form->setTitle(PracticeConfig::Server_Name . '§cCapes');
+        foreach (PracticeCore::getCosmeticHandler()->getCapes() as $capes) {
             $form->addButton("§a$capes", -1, '', $capes);
         }
         $player->sendForm($form);
@@ -454,11 +455,11 @@ class FormUtils
     public function getArtifactForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
-            if (($event instanceof NeptunePlayer) && $data !== null) {
+            if (($event instanceof PracticePlayer) && $data !== null) {
                 if ($data === 'None') {
                     return;
                 }
-                $cosmetic = Loader::getCosmeticHandler();
+                $cosmetic = PracticeCore::getCosmeticHandler();
                 if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
                     if (str_contains($data, 'SP-')) {
                         $event->setStuff('');
@@ -467,12 +468,12 @@ class FormUtils
                         $event->setStuff($cosmetic->cosmeticAvailable[$key]);
                         $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
                     }
-                    $event->sendMessage(Loader::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
+                    $event->sendMessage(PracticeCore::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
                 }
             }
         });
-        $form->setTitle('§dNeptune §cArtifact');
-        /* @var NeptunePlayer $player */
+        $form->setTitle(PracticeConfig::Server_Name . '§cArtifact');
+        /* @var PracticePlayer $player */
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
             $form->addButton('None', -1, '', 'None');
@@ -490,15 +491,15 @@ class FormUtils
     public function editkitform($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
-            if (($data !== null) && $player instanceof NeptunePlayer) {
+            if (($data !== null) && $player instanceof PracticePlayer) {
                 switch ($data) {
                     case 0:
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();
                         $player->setImmobile();
                         $player->setEditKit('build');
-                        $player->sendMessage(Loader::getPrefixCore() . '§aEdit kit enabled');
-                        $player->sendMessage(Loader::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
+                        $player->sendMessage(PracticeCore::getPrefixCore() . '§aEdit kit enabled');
+                        $player->sendMessage(PracticeCore::getPrefixCore() . "§aType §l§cConfirm §r§a to confirm\n§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน");
                         $player->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
                         $player->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
@@ -525,19 +526,19 @@ class FormUtils
             if ($data !== null) {
                 switch ($data) {
                     case 0:
-                        /* @var $player NeptunePlayer */
+                        /* @var $player PracticePlayer */
                         $player->setCurrentKit(KitRegistry::fromString('Fist'));
                         $player->queueBotDuel('Fist');
                         break;
                     case 1:
-                        /* @var $player NeptunePlayer */
+                        /* @var $player PracticePlayer */
                         $player->setCurrentKit(KitRegistry::fromString('NoDebuff'));
                         $player->queueBotDuel('NoDebuff');
                         break;
                 }
             }
         });
-        $form->setTitle('§dNeptune §cMenu');
+        $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->setContent('§dPlayers: §e' . $this->getQueueBot());
         $form->addButton('§aFist §dBot', 0, 'textures/items/diamond.png');
         $form->addButton('§aNoDebuff §dBot', 1, 'textures/items/diamond.png');
@@ -548,23 +549,23 @@ class FormUtils
     {
         $count = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if (($player instanceof NeptunePlayer) && $player->isDueling() && str_contains($player->getWorld()->getFolderName(), 'bot')) {
+            if (($player instanceof PracticePlayer) && $player->isDueling() && str_contains($player->getWorld()->getFolderName(), 'bot')) {
                 $count++;
             }
         }
         return $count;
     }
 
-    public function ProfileForm(NeptunePlayer $player, ?NeptunePlayer $player2): void
+    public function ProfileForm(PracticePlayer $player, ?PracticePlayer $player2): void
     {
         $form = new CustomForm(static function (Player $player, $data) {
         });
 
         if ($player2 !== null) {
-            $data = Loader::getArenaUtils()->getData($player2->getName());
+            $data = PracticeCore::getArenaUtils()->getData($player2->getName());
             $name = $player2->getName();
         } else {
-            $data = Loader::getArenaUtils()->getData($player->getName());
+            $data = PracticeCore::getArenaUtils()->getData($player->getName());
             $name = $player->getName();
         }
         $form->setTitle("$name's §cProfile");

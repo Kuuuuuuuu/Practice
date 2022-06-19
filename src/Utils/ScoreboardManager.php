@@ -2,8 +2,8 @@
 
 namespace Kuu\Utils;
 
-use Kuu\Loader;
-use Kuu\NeptunePlayer;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -13,7 +13,7 @@ class ScoreboardManager
     public function sb(Player $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $data = Loader::getInstance()->getArenaUtils()->getData($player->getName());
+        $data = PracticeCore::getInstance()->getArenaUtils()->getData($player->getName());
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();
@@ -32,9 +32,9 @@ class ScoreboardManager
             9 => "§dIn-Duel §a$duel",
             10 => '§7---------------'
         ];
-        Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
+        PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
-            Loader::getScoreboardUtils()->setLine($player, $line, $content);
+            PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 
@@ -42,7 +42,7 @@ class ScoreboardManager
     {
         $queue = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if (($player instanceof NeptunePlayer) && $player->isInQueue()) {
+            if (($player instanceof PracticePlayer) && $player->isInQueue()) {
                 $queue++;
             }
         }
@@ -53,7 +53,7 @@ class ScoreboardManager
     {
         $duel = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if (($player instanceof NeptunePlayer) && $player->isDueling()) {
+            if (($player instanceof PracticePlayer) && $player->isDueling()) {
                 $duel++;
             }
         }
@@ -72,20 +72,20 @@ class ScoreboardManager
             4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
             5 => '§7---------------'
         ];
-        Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
+        PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
-            Loader::getScoreboardUtils()->setLine($player, $line, $content);
+            PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
         }
     }
 
     public function Boxing(Player $player): void
     {
-        if ($player instanceof NeptunePlayer) {
+        if ($player instanceof PracticePlayer) {
             $boxingp = $player->BoxingPoint;
             $opponent = $player->getOpponent();
             if ($opponent !== null) {
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
-                /** @var NeptunePlayer $oppopl */
+                /** @var PracticePlayer $oppopl */
                 $opponentboxingp = $oppopl?->BoxingPoint;
             } else {
                 $opponentboxingp = 0;
@@ -96,9 +96,9 @@ class ScoreboardManager
                 3 => "§dOpponent§f: §c$opponentboxingp",
                 4 => '§7---------------'
             ];
-            Loader::getScoreboardUtils()->new($player, 'ObjectiveName', Loader::getScoreboardTitle());
+            PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
             foreach ($lines as $line => $content) {
-                Loader::getScoreboardUtils()->setLine($player, $line, $content);
+                PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
             }
         }
     }

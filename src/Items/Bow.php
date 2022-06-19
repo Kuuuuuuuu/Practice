@@ -3,7 +3,7 @@
 namespace Kuu\Items;
 
 use Kuu\Entity\ArrowEntity;
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
@@ -40,7 +40,7 @@ class Bow extends ItemBow
         $location = $player->getLocation();
         $diff = $player->getItemUseDuration();
         $p = $diff / 20;
-        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
             $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
         } else {
             $baseForce = 2.5;
@@ -66,7 +66,7 @@ class Bow extends ItemBow
             $entity->setOnFire(intdiv($entity->getFireTicks(), 20) + 100);
         }
         $ev = new EntityShootBowEvent($player, $this, $entity, $baseForce * 3);
-        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(Loader::getArenaFactory()->getOITCArena())) {
+        if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
             if ($baseForce < 0.1 || $diff < 5 || $player->isSpectator()) {
                 $ev->cancel();
             }

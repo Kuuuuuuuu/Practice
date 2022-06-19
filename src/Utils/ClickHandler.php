@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kuu\Utils;
 
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use function array_filter;
 use function array_unshift;
@@ -22,7 +22,7 @@ class ClickHandler
         if (!isset($this->clicksData[mb_strtolower($p->getName())])) {
             $this->initPlayerClickData($p);
         } else {
-            $p->sendTip('§dCPS: §f' . Loader::getClickHandler()->getClicks($p));
+            $p->sendTip('§dCPS: §f' . PracticeCore::getClickHandler()->getClicks($p));
             array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
             if (count($this->clicksData[mb_strtolower($p->getName())]) >= 50) {
                 array_pop($this->clicksData[mb_strtolower($p->getName())]);

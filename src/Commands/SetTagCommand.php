@@ -2,7 +2,7 @@
 
 namespace Kuu\Commands;
 
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -19,23 +19,23 @@ class SetTagCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): bool
     {
         if (!$sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-            $sender->sendMessage(Loader::getPrefixCore() . "§cYou don't have permission to use this command.");
+            $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
             return false;
         }
         if (!isset($args[0])) {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cUsage: /setTag <player> <tag>');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /setTag <player> <tag>');
             return false;
         }
         if (!isset($args[1])) {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cUsage: /setTag <player> <tag>');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /setTag <player> <tag>');
             return false;
         }
         $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
         if ($playerinfo !== null) {
-            Loader::getInstance()->getArenaUtils()->getData($playerinfo->getName())->setTag($args[1]);
-            $sender->sendMessage(Loader::getPrefixCore() . '§aTag set to §e' . $args[1]);
+            PracticeCore::getInstance()->getArenaUtils()->getData($playerinfo->getName())->setTag($args[1]);
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTag set to §e' . $args[1]);
         } else {
-            $sender->sendMessage(Loader::getPrefixCore() . '§cPlayer not found.');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlayer not found.');
         }
         return true;
     }

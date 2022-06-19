@@ -2,7 +2,7 @@
 
 namespace Kuu\Task;
 
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
@@ -14,20 +14,20 @@ class OnceRestartTask extends Task
     public function __construct(int $time)
     {
         $this->time = $time;
-        Loader::getInstance()->Restarted = true;
+        PracticeCore::getInstance()->Restarted = true;
     }
 
     public function onRun(): void
     {
         $this->time--;
         if ($this->time % 5 === 0) {
-            Server::getInstance()->broadcastMessage(Loader::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
+            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
         }
         if ($this->time <= 1) {
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 $player->kick('§cServer restarted');
             }
-            Loader::getInstance()->getServer()->shutdown();
+            PracticeCore::getInstance()->getServer()->shutdown();
         }
     }
 }

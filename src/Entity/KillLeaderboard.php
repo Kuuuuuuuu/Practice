@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Entity;
 
 use JsonException;
-use Kuu\Loader;
+use Kuu\PracticeCore;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
@@ -38,7 +38,7 @@ class KillLeaderboard extends Human
     public function onUpdate(int $currentTick): bool
     {
         $subtitle = '';
-        $tops = Loader::getInstance()->KillLeaderboard;
+        $tops = PracticeCore::getInstance()->KillLeaderboard;
         if (count($tops) > 0) {
             arsort($tops);
             $i = 1;
