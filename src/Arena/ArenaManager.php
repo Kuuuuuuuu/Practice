@@ -37,11 +37,8 @@ class ArenaManager
             $player->getEffects()->clear();
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())?->getSafeSpawn());
-            $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }
 
@@ -56,11 +53,8 @@ class ArenaManager
             $player->setHealth(20);
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getFistArena())?->getSafeSpawn());
-            $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }
 
@@ -74,14 +68,10 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->setHealth(20);
-            $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
-            $player->getInventory()->addItem($item);
+            $player->getInventory()->addItem(VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())?->getSafeSpawn());
-            $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }
 
@@ -112,11 +102,8 @@ class ArenaManager
             $player->getInventory()->addItem($bow);
             $player->getInventory()->addItem($leap);
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())?->getSafeSpawn());
-            $player->teleport(new Vector3($player->getPosition()->asPosition()->x, $player->getPosition()->asPosition()->y + 3, $player->getPosition()->asPosition()->z));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }
 
@@ -135,10 +122,7 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKitPVPArena())?->getSafeSpawn());
             PracticeCore::getInstance()->getPracticeUtils()->randomSpawn($player);
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }
 
@@ -154,10 +138,7 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())?->getSafeSpawn());
             $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
             $player->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
             $player->getInventory()->setItem(8, VanillaItems::ARROW());
             $player->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 200)));
@@ -175,10 +156,7 @@ class ArenaManager
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getResistanceArena())?->getSafeSpawn());
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
         }
     }
@@ -214,10 +192,7 @@ class ArenaManager
             $player->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())?->getSafeSpawn());
             $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
-            $pos = $player->getPosition();
-            PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-                $player->teleport($pos);
-            });
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
             $player->setGamemode(GameMode::SURVIVAL());
         }
     }

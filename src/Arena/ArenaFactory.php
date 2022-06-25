@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Arena;
 
 use JsonException;
+use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -85,50 +86,14 @@ class ArenaFactory
 
     public function getRandomSpawnOitc(): array
     {
-        // random array
-        $spawns = [
-            [
-                'x' => 246,
-                'y' => 67,
-                'z' => 180
-            ],
-            [
-                'x' => 187,
-                'y' => 65,
-                'z' => 180
-            ],
-            [
-                'x' => 260,
-                'y' => 65,
-                'z' => 271
-            ]
-        ];
-        $random = array_rand($spawns);
-        return $spawns[$random];
+        $random = array_rand(PracticeConfig::OITCSpawns);
+        return PracticeConfig::OITCSpawns[$random];
     }
 
     public function getRandomSpawnBuild(): array
     {
-        // random array
-        $spawns = [
-            [
-                'x' => 263,
-                'y' => 80,
-                'z' => 269
-            ],
-            [
-                'x' => 238,
-                'y' => 81,
-                'z' => 249
-            ],
-            [
-                'x' => 219,
-                'y' => 79,
-                'z' => 287
-            ]
-        ];
-        $random = array_rand($spawns);
-        return $spawns[$random];
+        $random = array_rand(PracticeConfig::BuildFFASpawns);
+        return PracticeConfig::BuildFFASpawns[$random];
     }
 
     /**

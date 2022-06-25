@@ -16,6 +16,40 @@ interface PracticeConfig
     public const OITCBowDelay = 100;
     public const SkillCooldownDelay = 250;
     public const IPV6 = false;
+    public const BuildFFASpawns = [
+        [
+            'x' => 263,
+            'y' => 80,
+            'z' => 269
+        ],
+        [
+            'x' => 238,
+            'y' => 81,
+            'z' => 249
+        ],
+        [
+            'x' => 219,
+            'y' => 79,
+            'z' => 287
+        ]
+    ];
+    public const OITCSpawns = [
+        [
+            'x' => 246,
+            'y' => 67,
+            'z' => 180
+        ],
+        [
+            'x' => 187,
+            'y' => 65,
+            'z' => 180
+        ],
+        [
+            'x' => 260,
+            'y' => 65,
+            'z' => 271
+        ]
+    ];
     public const BanCommand = [
         'hub',
         'kill'

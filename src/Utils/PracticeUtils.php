@@ -78,13 +78,21 @@ class PracticeUtils
         $player->getNetworkSession()->sendDataPacket($pk, true);
     }
 
+    public function ChunkLoader(Player $player): void
+    {
+        $pos = $player->getPosition();
+        PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
+            $player->teleport($pos);
+        });
+    }
+
     public static function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
     {
         if ($world->isChunkPopulated($x, $z)) {
             ($callable)();
-            return;
+        } else {
+            $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z);
         }
-        $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z);
     }
 
     /**
