@@ -16,6 +16,7 @@ use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\ArrowEntity;
+use Kuu\Entity\BaseLeaderboard;
 use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\Entity\FallingWool;
@@ -263,19 +264,23 @@ class PracticeUtils
             return new DeathLeaderboard(EntityDataHelper::parseLocation($nbt, $world), DeathLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['DeathLeaderboard']);
+        EntityFactory::getInstance()->register(BaseLeaderboard::class, function (World $world, CompoundTag $nbt): BaseLeaderboard {
+            return new BaseLeaderboard(EntityDataHelper::parseLocation($nbt, $world), BaseLeaderboard
+                ::parseSkinNBT($nbt), $nbt);
+        }, ['BaseLeaderboard']);
         EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {
             return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), PracticeBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
-        }, ['HThrownEnderpearl', 'horizon:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+        }, ['NThrownEnderpearl', 'neptune:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
         EntityFactory::getInstance()->register(ArrowEntity::class, function (World $world, CompoundTag $nbt): ArrowEntity {
             return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, true, $nbt);
-        }, ['HArrow', 'horizon:arrow'], EntityLegacyIds::ARROW);
+        }, ['NArrow', 'neptune:arrow'], EntityLegacyIds::ARROW);
         EntityFactory::getInstance()->register(FishingHook::class, function (World $world, CompoundTag $nbt): FishingHook {
             return new FishingHook(EntityDataHelper::parseLocation($nbt, $world), null, null);
-        }, ['HHook', 'horizon:hook'], EntityLegacyIds::FISHING_HOOK);
+        }, ['NHook', 'neptune:hook'], EntityLegacyIds::FISHING_HOOK);
     }
 
     private function registerGenerators(): void

@@ -23,20 +23,20 @@ class EnderPearlEntity extends Throwable
         if ($owner !== null) {
             if ($owner->getWorld() !== $this->getWorld()) {
                 $this->flagForDespawn();
-                return;
+            } else {
+                $this->getWorld()->addParticle($origin = $owner->getPosition(), new EndermanTeleportParticle());
+                $this->getWorld()->addSound($origin, new EndermanTeleportSound());
+                if ($owner instanceof Player) {
+                    $vector = $event->getRayTraceResult()->getHitVector();
+                    (function () use ($vector): void {
+                        $this->setPosition($vector);
+                    })->call($owner);
+                    $location = $owner->getLocation();
+                    $owner->getNetworkSession()->syncMovement($location, $location->yaw, $location->pitch);
+                    $this->setOwningEntity(null);
+                }
+                $owner->attack(new EntityDamageEvent($owner, EntityDamageEvent::CAUSE_FALL, 5));
             }
-            $this->getWorld()->addParticle($origin = $owner->getPosition(), new EndermanTeleportParticle());
-            $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-            if ($owner instanceof Player) {
-                $vector = $event->getRayTraceResult()->getHitVector();
-                (function () use ($vector): void {
-                    $this->setPosition($vector);
-                })->call($owner);
-                $location = $owner->getLocation();
-                $owner->getNetworkSession()->syncMovement($location, $location->yaw, $location->pitch);
-                $this->setOwningEntity(null);
-            }
-            $owner->attack(new EntityDamageEvent($owner, EntityDamageEvent::CAUSE_FALL, 5));
         }
     }
 }

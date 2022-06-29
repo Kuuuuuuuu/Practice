@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Utils;
 
 use Kuu\PracticeConfig;
+use Kuu\PracticeCore;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
@@ -14,22 +15,19 @@ use pocketmine\world\World;
 
 class DeleteBlocksHandler
 {
-
-    private array $buildBlocks = [];
-
     public function setBlockBuild(Block $block, bool $break = false): void
     {
         $pos = $block->getPosition()->getX() . ':' . $block->getPosition()->getY() . ':' . $block->getPosition()->getZ() . ':' . $block->getPosition()->getWorld()->getFolderName();
-        if ($break && isset($this->buildBlocks[$pos])) {
-            unset($this->buildBlocks[$pos]);
+        if ($break && isset(PracticeCore::getCaches()->buildBlocks[$pos])) {
+            unset(PracticeCore::getCaches()->buildBlocks[$pos]);
         } else {
-            $this->buildBlocks[$pos] = PracticeConfig::DeleteBlockTime;
+            PracticeCore::getCaches()->buildBlocks[$pos] = PracticeConfig::DeleteBlockTime;
         }
     }
 
     public function update(): void
     {
-        foreach ($this->buildBlocks as $pos => $sec) {
+        foreach (PracticeCore::getCaches()->buildBlocks as $pos => $sec) {
             $block = explode(':', $pos);
             $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
             if ($level instanceof World) {
@@ -41,9 +39,9 @@ class DeleteBlocksHandler
                 if ($sec <= 0) {
                     $level->addSound($blockvec, new BlockPunchSound($block));
                     $level->setBlock($blockvec, VanillaBlocks::AIR());
-                    unset($this->buildBlocks[$pos]);
+                    unset(PracticeCore::getCaches()->buildBlocks[$pos]);
                 } else {
-                    $this->buildBlocks[$pos]--;
+                    PracticeCore::getCaches()->buildBlocks[$pos]--;
                 }
             }
         }
