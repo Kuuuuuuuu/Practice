@@ -20,14 +20,12 @@ use Kuu\Entity\BaseLeaderboard;
 use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\Entity\FallingWool;
-use Kuu\Entity\FishingHook;
 use Kuu\Entity\KillLeaderboard;
 use Kuu\Entity\PracticeBot;
 use Kuu\Events\PracticeListener;
 use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
-use Kuu\Items\FishingRod;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
@@ -186,7 +184,6 @@ class PracticeUtils
         }
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
         ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), 'Bow'), true);
-        ItemFactory::getInstance()->register(new FishingRod(new ItemIdentifier(ItemIds::FISHING_ROD, 0), 'Fishing Rod'), true);
     }
 
     private function registerConfigs(): void
@@ -278,9 +275,6 @@ class PracticeUtils
         EntityFactory::getInstance()->register(ArrowEntity::class, function (World $world, CompoundTag $nbt): ArrowEntity {
             return new ArrowEntity(EntityDataHelper::parseLocation($nbt, $world), null, true, $nbt);
         }, ['NArrow', 'neptune:arrow'], EntityLegacyIds::ARROW);
-        EntityFactory::getInstance()->register(FishingHook::class, function (World $world, CompoundTag $nbt): FishingHook {
-            return new FishingHook(EntityDataHelper::parseLocation($nbt, $world), null, null);
-        }, ['NHook', 'neptune:hook'], EntityLegacyIds::FISHING_HOOK);
     }
 
     private function registerGenerators(): void
