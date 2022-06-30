@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection CurlSslServerSpoofingInspection */
 
 declare(strict_types=1);
 
@@ -31,9 +31,9 @@ class AsyncWebhookTask extends AsyncTask
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->message, JSON_THROW_ON_ERROR));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
         $this->setResult([curl_exec($ch), curl_getinfo($ch, CURLINFO_RESPONSE_CODE)]);
         curl_close($ch);
     }
