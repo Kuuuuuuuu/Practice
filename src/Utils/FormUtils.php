@@ -367,7 +367,7 @@ class FormUtils
         $this->players[$player->getName()] = $list;
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
-                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
+                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
                 $msg = new DiscordWebhookUtils();
                 $e = new DiscordWebhookEmbed();
                 $index = $data[1];

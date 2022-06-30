@@ -430,7 +430,7 @@ class PracticeListener extends AbstractListener
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน');
                 }
             } else {
-                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
+                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
                 $msg = new DiscordWebhookUtils();
                 $msg2 = str_replace(['@here', '@everyone'], '', $message);
                 $msg->setContent('>>> ' . $player->getNetworkSession()->getPing() . 'ms | ' . $player->PlayerOS . ' ' . $player->getDisplayName() . ' > ' . $msg2);

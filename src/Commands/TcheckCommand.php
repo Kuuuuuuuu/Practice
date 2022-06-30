@@ -80,7 +80,7 @@ class TcheckCommand extends Command
                 if (!empty($array)) {
                     PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getInstance()->MessageData['UnBanPlayer']));
-                    $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
+                    $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
                     $msg = new DiscordWebhookUtils();
                     $msg->setContent('>>> ' . str_replace(['{player}'], [$banplayer], PracticeCore::getInstance()->MessageData['UnBanPlayer']));
                     $web->send($msg);

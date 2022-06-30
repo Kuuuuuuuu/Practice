@@ -101,7 +101,7 @@ class TbanCommand extends Command
                 if ($target instanceof Player) {
                     $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['KickBanMessage']));
                 }
-                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('api'));
+                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
                 $msg = new DiscordWebhookUtils();
                 $msg2 = str_replace(['@here', '@everyone'], '', $data[4]);
                 $msg->setContent('>>> ' . $player->getName() . ' has banned ' . PracticeCore::getCaches()->targetPlayer[$player->getName()] . ' for ' . $data[1] . ' days, ' . $data[2] . ' hours, ' . $data[3] . ' minutes. Reason: ' . $msg2);
