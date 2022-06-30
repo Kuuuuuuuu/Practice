@@ -402,7 +402,7 @@ class PracticePlayer extends Player
      */
     public function queueBotDuel(string $mode): void
     {
-        PracticeCore::getInstance()->getBotDuelManager()->createMatch($this, $this->getDuelKit(), $mode);
+        PracticeCore::getInstance()->getDuelManager()->createBotMatch($this, $this->getDuelKit(), $mode);
         $this->setInQueue(false);
     }
 

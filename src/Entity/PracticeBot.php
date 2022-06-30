@@ -30,7 +30,6 @@ class PracticeBot extends Human
     private string $mode;
     private float $speed = 0.85;
     private int $enderpearl = 16;
-    private int $pearltime = 0;
     private int $pots = 33;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?string $mode = '')
@@ -82,23 +81,19 @@ class PracticeBot extends Human
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
-            if ($this->enderpearl !== 0) {
-                if ($this->pearlcooldown === 0) {
-                    if (($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 20) && $this->getHealth() > 7) {
-                        $this->pearl();
-                    }
-                    if ($this->getHealth() < 5) {
-                        $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(15, 30);
-                        $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(15, 30);
-                        $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
-                        $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-                        $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
-                        $this->pot();
-                    }
-                    if ($this->getTargetPlayer()->getHealth() < 3) {
-                        $this->pearl();
-                        $this->jump();
-                    }
+            if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
+                if ($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 20) {
+                    $this->pearl();
+                } elseif ($this->getHealth() < 5) {
+                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(15, 30);
+                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(15, 30);
+                    $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
+                    $this->getWorld()->addSound($origin, new EndermanTeleportSound());
+                    $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
+                    $this->pot();
+                } elseif ($this->getTargetPlayer()->getHealth() < 3) {
+                    $this->pearl();
+                    $this->jump();
                 }
             }
             if ($this->getHealth() < 5) {
@@ -108,7 +103,7 @@ class PracticeBot extends Human
         $this->location->yaw = rad2deg(atan2(-$x, $z));
         $this->location->pitch = rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         $health = round($this->getHealth());
-        $this->setNameTag(TextFormat::BOLD . '§dFistBot ' . "\n" . TextFormat::RED . $health);
+        $this->setNameTag('§bPracticeBot ' . "\n" . TextFormat::RED . $health);
         $this->attackTargetPlayer();
         if (!$this->isSprinting()) {
             $this->setSprinting();

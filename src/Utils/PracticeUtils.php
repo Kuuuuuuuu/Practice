@@ -61,7 +61,6 @@ use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
 use Throwable;
-use ZipArchive;
 
 class PracticeUtils
 {
@@ -77,6 +76,19 @@ class PracticeUtils
         $pk->y = $location->y;
         $pk->z = $location->z;
         $player->getNetworkSession()->sendDataPacket($pk, true);
+    }
+
+    public static function getLogger(string $err): void
+    {
+        $e = new DiscordWebhookEmbed();
+        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
+        $msg = new DiscordWebhookUtils();
+        $e->setTitle('Server Logger');
+        $e->setTimestamp(new Datetime());
+        $e->setColor(0x00ff00);
+        $e->setDescription($err);
+        $msg->addEmbed($e);
+        $web->send($msg);
     }
 
     public function ChunkLoader(Player $player): void
@@ -445,6 +457,7 @@ class PracticeUtils
         foreach (PracticeCore::getCaches()->DuelMatch as $activeMatch) {
             PracticeCore::getDuelManager()->stopMatch($activeMatch);
         }
+        PracticeCore::getDeleteBlockHandler()->RemoveAllBlock();
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             if (str_contains(mb_strtolower($world->getFolderName()), 'duel') || str_contains(mb_strtolower($world->getFolderName()), 'bot')) {
                 $name = $world->getFolderName();
@@ -459,7 +472,6 @@ class PracticeUtils
                 }
             }
         }
-        $this->loadMap('BUild');
     }
 
     public function deleteDir($dirPath): void
@@ -479,43 +491,5 @@ class PracticeUtils
             }
         }
         rmdir($dirPath);
-    }
-
-    public function loadMap(string $folderName, bool $justSave = false): ?World
-    {
-        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($folderName)) {
-            return null;
-        }
-        if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
-            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $folderName);
-        }
-        $zipPath = PracticeCore::getInstance()->getDataFolder() . 'Maps' . DIRECTORY_SEPARATOR . $folderName . '.zip';
-        if (!file_exists($zipPath)) {
-            Server::getInstance()->getLogger()->error("Could not reload map ($folderName). File wasn't found, try save level in setup mode.");
-            return null;
-        }
-        $zipArchive = new ZipArchive();
-        $zipArchive->open($zipPath);
-        $zipArchive->extractTo(Server::getInstance()->getDataPath() . 'worlds');
-        $zipArchive->close();
-        if ($justSave) {
-            return null;
-        }
-        Server::getInstance()->getWorldManager()->loadWorld($folderName, true);
-        return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
-    }
-
-    public static function getLogger(string $err): void
-    {
-        $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-        $msg = new DiscordWebhookUtils();
-        $e->setTitle('Server Logger');
-        $e->setTimestamp(new Datetime());
-        $e->setColor(0x00ff00);
-        $e->setDescription($err);
-        $msg->addEmbed($e);
-        $web->send($msg);
     }
 }

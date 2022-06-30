@@ -14,7 +14,7 @@ use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-class BotDuelFactory
+class BotDuelFactory extends DuelFactoryBase
 {
     private int $time = 903;
     private PracticePlayer $player1;
@@ -125,6 +125,6 @@ class BotDuelFactory
             }
         }
         $this->ended = true;
-        PracticeCore::getBotDuelManager()->stopMatch($this->level->getFolderName());
+        PracticeCore::getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }

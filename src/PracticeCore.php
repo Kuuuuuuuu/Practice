@@ -10,7 +10,6 @@ namespace Kuu;
 
 use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
-use Kuu\Arena\BotDuelManager;
 use Kuu\Arena\DuelManager;
 use Kuu\Task\PracticeTask;
 use Kuu\Utils\PracticeUtils;
@@ -40,7 +39,6 @@ class PracticeCore extends PluginBase
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
     private static ?PracticeTask $CoreTask;
-    private static BotDuelManager $botduelmanager;
     private static PracticeCaches $caches;
     public Config|array $MessageData;
     public Config $CapeData;
@@ -118,10 +116,6 @@ class PracticeCore extends PluginBase
         return self::$duelmanager;
     }
 
-    public static function getBotDuelManager(): BotDuelManager
-    {
-        return self::$botduelmanager;
-    }
 
     public static function getCaches(): PracticeCaches
     {
@@ -147,7 +141,6 @@ class PracticeCore extends PluginBase
         self::$PracticeUtils = new PracticeUtils();
         self::$scoremanager = new ScoreboardManager();
         self::$duelmanager = new DuelManager();
-        self::$botduelmanager = new BotDuelManager();
         self::$caches = new PracticeCaches();
     }
 

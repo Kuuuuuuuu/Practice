@@ -5,16 +5,10 @@ namespace Kuu\Entity;
 use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\math\RayTraceResult;
-use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\player\Player;
 
 class ArrowEntity extends Arrow
 {
-
-    public static function getNetworkTypeId(): string
-    {
-        return EntityIds::ARROW;
-    }
 
     protected function onHitEntity(Entity $entityHit, RayTraceResult $hitResult): void
     {

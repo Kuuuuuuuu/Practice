@@ -25,6 +25,24 @@ class DeleteBlocksHandler
         }
     }
 
+    public function RemoveAllBlock(): void
+    {
+        foreach (PracticeCore::getCaches()->buildBlocks as $pos => $sec) {
+            $block = explode(':', $pos);
+            $level = Server::getInstance()->getWorldManager()->getWorldByName($block[3]);
+            if ($level instanceof World) {
+                $x = (int)$block[0];
+                $y = (int)$block[1];
+                $z = (int)$block[2];
+                $block = $level->getBlockAt($x, $y, $z);
+                $blockvec = new Vector3($x, $y, $z);
+                $level->addSound($blockvec, new BlockPunchSound($block));
+                $level->setBlock($blockvec, VanillaBlocks::AIR());
+                unset(PracticeCore::getCaches()->buildBlocks[$pos]);
+            }
+        }
+    }
+
     public function update(): void
     {
         foreach (PracticeCore::getCaches()->buildBlocks as $pos => $sec) {

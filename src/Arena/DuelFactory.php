@@ -12,7 +12,7 @@ use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-class DuelFactory
+class DuelFactory extends DuelFactoryBase
 {
     private int $time = 903;
     private PracticePlayer $player1;
