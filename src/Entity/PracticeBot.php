@@ -38,7 +38,7 @@ class PracticeBot extends Human
         $this->target = $target;
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
-        $this->gravity = 0.077;
+        $this->gravity = 0.08;
         $this->mode = $mode;
         if ($mode === 'NoDebuff') {
             $this->giveItems();
