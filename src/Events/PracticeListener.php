@@ -458,7 +458,7 @@ class PracticeListener extends AbstractListener
         $damager = $event->getDamager();
         if ($damager instanceof PracticePlayer) {
             if ($player instanceof PracticeBot) {
-                $player->knockBack(0.333, 0.32, 2);
+                $player->knockBack(0.54, 0.53, 2.3);
             } elseif ($player instanceof PracticePlayer) {
                 if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     $damager->setLastDamagePlayer($player->getName());

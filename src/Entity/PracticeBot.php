@@ -195,36 +195,6 @@ class PracticeBot extends Human
         }
     }
 
-    public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
-    {
-        $xzKB = 0.309;
-        $yKb = 0.301;
-        $f = sqrt($x * $x + $z * $z);
-        if ($f <= 0) {
-            return;
-        }
-        if (mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
-            $f = 1 / $f;
-            $motion = clone $this->motion;
-            $motion->x /= 2;
-            $motion->y /= 2;
-            $motion->z /= 2;
-            $motion->x += $x * $f * $xzKB;
-            $motion->y += $yKb;
-            $motion->z += $z * $f * $xzKB;
-            if ($motion->y > $yKb) {
-                $motion->y = $yKb;
-            }
-            $motion->x *= 0.65;
-            $motion->y *= 1.25;
-            $motion->z *= 0.65;
-            if ($this->isAlive() && !$this->isClosed()) {
-                $this->move(0, 0, 0);
-                $this->setMotion($motion);
-            }
-        }
-    }
-
     public function getName(): string
     {
         return 'PracticeBot';
