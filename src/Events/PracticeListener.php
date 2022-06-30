@@ -154,10 +154,10 @@ class PracticeListener extends AbstractListener
                 PracticeCore::getFormUtils()->duelForm($player);
             } elseif ($item->getCustomName() === '§r§dProfile') {
                 PracticeCore::getFormUtils()->ProfileForm($player, null);
-            } elseif ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getId() === ItemIds::ENDER_PEARL) {
-                if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena()) && !$player->isEnderPearlCooldown()) {
-                    $player->setEnderPearlCooldown(true);
-                }
+                /*} elseif ($player->getInventory()->getItem($player->getInventory()->getHeldItemIndex())->getId() === ItemIds::ENDER_PEARL) {
+                    if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena()) && !$player->isEnderPearlCooldown()) {
+                        $player->setEnderPearlCooldown(true);
+                    }*/
             }
         }
     }
