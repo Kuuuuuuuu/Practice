@@ -1,4 +1,4 @@
-<?php /** @noinspection NotOptimalIfConditionsInspection */
+<?php
 /** @noinspection PhpIllegalStringOffsetInspection */
 /** @noinspection PhpInconsistentReturnPointsInspection */
 /** @noinspection PhpParamsInspection */

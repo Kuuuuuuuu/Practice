@@ -21,7 +21,6 @@ class DataManager
     private int $elo = 1000;
     private ?string $tag = null;
 
-    /** @noinspection UnusedConstructorDependenciesInspection */
     public function __construct(string $player)
     {
         $this->player = $player;

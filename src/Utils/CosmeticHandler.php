@@ -54,12 +54,8 @@ class CosmeticHandler
         $this->dataFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
-            if (!mkdir($concurrentDirectory = $this->dataFolder) && !is_dir($concurrentDirectory)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
-            if (!mkdir($concurrentDirectory = $this->saveSkin) && !is_dir($concurrentDirectory)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+            mkdir($this->dataFolder);
+            mkdir($this->saveSkin);
         }
         $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';

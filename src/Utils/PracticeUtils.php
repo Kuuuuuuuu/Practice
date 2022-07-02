@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUsageOfSilenceOperatorInspection */
 
 declare(strict_types=1);
 
@@ -178,15 +178,9 @@ class PracticeUtils
 
     private function registerConfigs(): void
     {
-        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'data/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
-        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'players/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
-        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'Kits/') && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-        }
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
+        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
         PracticeCore::getInstance()->saveResource('config.yml');
         PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);

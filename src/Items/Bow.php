@@ -1,4 +1,4 @@
-<?php /** @noinspection NotOptimalIfConditionsInspection */
+<?php
 
 namespace Kuu\Items;
 
