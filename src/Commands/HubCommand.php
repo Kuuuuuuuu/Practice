@@ -23,24 +23,24 @@ class HubCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof PracticePlayer) {
             if ($sender->getEditKit() !== null) {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command while editing a kit!");
-                return;
-            }
-            $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
-            $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
-            $sender->setGamemode(GameMode::ADVENTURE());
-            $sender->getInventory()->clearAll();
-            $sender->getArmorInventory()->clearAll();
-            $sender->getEffects()->clear();
-            PracticeCore::getInstance()->getScoreboardManager()->sb($sender);
-            PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($sender);
-            $sender->setLastDamagePlayer('Unknown');
-            if ($sender->isImmobile()) {
-                $sender->setImmobile(false);
+            } else {
+                $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
+                $sender->setGamemode(GameMode::ADVENTURE());
+                $sender->getInventory()->clearAll();
+                $sender->getArmorInventory()->clearAll();
+                $sender->getEffects()->clear();
+                PracticeCore::getInstance()->getScoreboardManager()->sb($sender);
+                PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($sender);
+                $sender->setLastDamagePlayer('Unknown');
+                if ($sender->isImmobile()) {
+                    $sender->setImmobile(false);
+                }
             }
         } else {
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');

@@ -7,12 +7,12 @@ declare(strict_types=1);
 
 namespace Kuu\Commands;
 
+use Kuu\Lib\FormAPI\CustomForm;
+use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\Utils\Discord\DiscordWebhook;
 use Kuu\Utils\Discord\DiscordWebhookUtils;
-use Kuu\Lib\FormAPI\CustomForm;
-use Kuu\Lib\FormAPI\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -32,7 +32,7 @@ class TbanCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {

@@ -7,6 +7,7 @@ namespace Kuu\Utils;
 use DateTime;
 use Exception;
 use Kuu\Commands\BroadcastCommand;
+use Kuu\Commands\HologramCommand;
 use Kuu\Commands\HubCommand;
 use Kuu\Commands\PlayerInfoCommand;
 use Kuu\Commands\PracticeCommand;
@@ -47,7 +48,6 @@ use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
 use pocketmine\item\VanillaItems;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
@@ -222,10 +222,11 @@ class PracticeUtils
         Server::getInstance()->getCommandMap()->register('tcheck', new TcheckCommand());
         Server::getInstance()->getCommandMap()->register('tps', new TpsCommand());
         Server::getInstance()->getCommandMap()->register('core', new PracticeCommand());
-        Server::getInstance()->getCommandMap()->register('Restart', new RestartCommand());
+        Server::getInstance()->getCommandMap()->register('restart', new RestartCommand());
         Server::getInstance()->getCommandMap()->register('broadcast', new BroadcastCommand());
         Server::getInstance()->getCommandMap()->register('pinfo', new PlayerInfoCommand());
         Server::getInstance()->getCommandMap()->register('settag', new SetTagCommand());
+        Server::getInstance()->getCommandMap()->register('hologram', new HologramCommand());
     }
 
     private function registerEvents(): void

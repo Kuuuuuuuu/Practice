@@ -24,14 +24,12 @@ class BroadcastCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof Player) {
             if ($args === null) {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlease enter a message');
-                return;
-            }
-            if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+            } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                     $message = implode(' ', $args);
                     $player->sendMessage(PracticeCore::getPrefixCore() . $message);

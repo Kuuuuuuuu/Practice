@@ -16,10 +16,10 @@ class RestartCommand extends Command
 
     public function __construct()
     {
-        parent::__construct('Restart', 'Restart Server Command', null, ['restart']);
+        parent::__construct('restart', 'Restart Server Command', null, ['restart']);
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, ?array $args)
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof Player) {
             if (PracticeCore::getCaches()->Restarted) {
@@ -27,7 +27,7 @@ class RestartCommand extends Command
                 return;
             }
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if (count($args) > 0) {
+                if (isset($args[0])) {
                     if (is_numeric($args[0])) {
                         PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)$args[0]), 20);
                         $sender->sendMessage(PracticeCore::getPrefixCore() . '§aServer restarting...');

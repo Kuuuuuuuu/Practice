@@ -124,68 +124,73 @@ class PracticePlayer extends Player
 
     public function getAllArtifact(): void
     {
-        $this->setValidStuffs('Adidas');
-        $this->setValidStuffs('AngelWing');
-        $this->setValidStuffs('AngelWingV2');
-        $this->setValidStuffs('Antler');
-        $this->setValidStuffs('Axe');
-        $this->setValidStuffs('BackCap');
-        $this->setValidStuffs('Backpack');
-        $this->setValidStuffs('BackStabKnife');
-        $this->setValidStuffs('Bald Headband');
-        $this->setValidStuffs('Banana');
-        $this->setValidStuffs('BlackAngleSet');
-        $this->setValidStuffs('BlazeRod');
-        $this->setValidStuffs('BlueWing');
-        $this->setValidStuffs('Boxing');
-        $this->setValidStuffs('Bubble');
-        $this->setValidStuffs('Creeper');
-        $this->setValidStuffs('Crown');
-        $this->setValidStuffs('CrownV2');
-        $this->setValidStuffs('DevilHaloWing');
-        $this->setValidStuffs('DevilWing');
-        $this->setValidStuffs('Dollar');
-        $this->setValidStuffs('DragonWing');
-        $this->setValidStuffs('EnderTail');
-        $this->setValidStuffs('EnderWing');
-        $this->setValidStuffs('Fox');
-        $this->setValidStuffs('Glasses');
-        $this->setValidStuffs('Goat');
-        $this->setValidStuffs('Gudoudame');
-        $this->setValidStuffs('Halo');
-        $this->setValidStuffs('HeadphoneNote');
-        $this->setValidStuffs('Headphones');
-        $this->setValidStuffs('Kaqune');
-        $this->setValidStuffs('Katana');
-        $this->setValidStuffs('Koala');
-        $this->setValidStuffs('LightSaber');
-        $this->setValidStuffs('LouisVuitton');
-        $this->setValidStuffs('MiniAngelWing');
-        $this->setValidStuffs('MiniAngelWingV2');
-        $this->setValidStuffs('MLG RUSH 1st');
-        $this->setValidStuffs('Moustache');
-        $this->setValidStuffs('Neckite');
-        $this->setValidStuffs('Nike');
-        $this->setValidStuffs('PhantomWing');
-        $this->setValidStuffs('Questionmark');
-        $this->setValidStuffs('Rabbit Costume');
-        $this->setValidStuffs('Rabbit');
-        $this->setValidStuffs('RedWing');
-        $this->setValidStuffs('Rich Bandanna');
-        $this->setValidStuffs('Santa');
-        $this->setValidStuffs('Sickle');
-        $this->setValidStuffs('SP-BananaMan');
-        $this->setValidStuffs('Susanno');
-        $this->setValidStuffs('SusanooBlue');
-        $this->setValidStuffs('SusanooPurple');
-        $this->setValidStuffs('SWAT Shield');
-        $this->setValidStuffs('ThunderCloud');
-        $this->setValidStuffs('UFO');
-        $this->setValidStuffs('Viking');
-        $this->setValidStuffs('Wave Bandanna');
-        $this->setValidStuffs('White Heart');
-        $this->setValidStuffs('Witchhat');
-        $this->setValidStuffs('Wither Head');
+        $artifact = [
+            'Adidas',
+            'AngelWing',
+            'AngelWingV2',
+            'Antler',
+            'Axe',
+            'BackCap',
+            'Backpack',
+            'BackStabKnife',
+            'Bald Headband',
+            'Banana',
+            'BlackAngleSet',
+            'BlazeRod',
+            'BlueWing',
+            'Boxing',
+            'Bubble',
+            'Creeper',
+            'Crown',
+            'CrownV2',
+            'DevilHaloWing',
+            'DevilWing',
+            'Dollar',
+            'DragonWing',
+            'EnderTail',
+            'EnderWing',
+            'Fox',
+            'Glasses',
+            'Goat',
+            'Gudoudame',
+            'Halo',
+            'HeadphoneNote',
+            'Headphones',
+            'Kaqune',
+            'Katana',
+            'Koala',
+            'LightSaber',
+            'LouisVuitton',
+            'MiniAngelWing',
+            'MiniAngelWingV2',
+            'MLG RUSH 1st',
+            'Moustache',
+            'Neckite',
+            'Nike',
+            'PhantomWing',
+            'Questionmark',
+            'Rabbit Costume',
+            'Rabbit',
+            'RedWing',
+            'Rich Bandanna',
+            'Santa',
+            'Sickle',
+            'SP-BananaMan',
+            'Susanno',
+            'SusanooBlue',
+            'SusanooPurple',
+            'SWAT Shield',
+            'ThunderCloud',
+            'UFO',
+            'Viking',
+            'Wave Bandanna',
+            'White Heart',
+            'Witchhat',
+            'Wither Head'
+        ];
+        foreach ($artifact as $arti) {
+            $this->setValidStuffs($arti);
+        }
     }
 
     public function getLastDamagePlayer(): string

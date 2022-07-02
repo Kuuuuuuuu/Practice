@@ -31,7 +31,7 @@ class PracticeCommand extends Command
     /**
      * @throws JsonException
      */
-    public function execute(CommandSender $sender, string $commandLabel, ?array $args): bool
+    public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if (!isset($args[0])) {
             $sender->sendMessage(Color::BOLD . Color::WHITE . '>> ' . Color::RESET . Color::RED . 'use /core help');
@@ -42,7 +42,7 @@ class PracticeCommand extends Command
                     $sender->sendMessage(Color::BOLD . Color::GREEN . PracticeCore::getPrefixCore());
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
-                    $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - removeleader');
+                    $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd');
                     $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                     break;
                 case 'make':
@@ -128,75 +128,69 @@ class PracticeCommand extends Command
                 case 'setatkspd':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core setatkspd <world> <speed> ');
-                        return false;
-                    }
-                    if (!isset($args[2])) {
+                    } elseif (!isset($args[2])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core setatkspd <world> <speed>');
-                        return false;
+                    } else {
+                        PracticeCore::getKnockbackManager()->setAttackspeed($sender, mb_strtolower($args[1]), (int)$args[2]);
                     }
-                    PracticeCore::getKnockbackManager()->setAttackspeed($sender, mb_strtolower($args[1]), (int)$args[2]);
                     break;
                 case 'removeatkspd':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core removeatkspd <world>');
-                        return false;
+                    } else {
+                        PracticeCore::getKnockbackManager()->removeAttackspeed($sender, mb_strtolower($args[1]));
                     }
-                    PracticeCore::getKnockbackManager()->removeAttackspeed($sender, mb_strtolower($args[1]));
                     break;
                 case 'addkb':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core addkb <world> <hkb> <ykb>');
-                        return false;
-                    }
-                    if (!isset($args[2])) {
+                    } elseif (!isset($args[2])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core addkb <world> <hkb> <ykb>');
-                        return false;
-                    }
-                    if (!isset($args[3])) {
+                    } elseif (!isset($args[3])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core addkb <world> <hkb> <ykb>');
-                        return false;
+                    } else {
+                        PracticeCore::getKnockbackManager()->setKnockback($sender, mb_strtolower($args[1]), (float)$args[2], (float)$args[3]);
                     }
-                    PracticeCore::getKnockbackManager()->setKnockback($sender, mb_strtolower($args[1]), (float)$args[2], (float)$args[3]);
                     break;
                 case 'removekb':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core removekb <world>');
-                        return false;
+                    } else {
+                        PracticeCore::getKnockbackManager()->removeKnockback($sender, mb_strtolower($args[1]));
                     }
-                    PracticeCore::getKnockbackManager()->removeKnockback($sender, mb_strtolower($args[1]));
                     break;
                 case 'remove':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
                         $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
-                        return false;
-                    }
-                    switch ($args[1]) {
-                        case 'fist':
-                            PracticeCore::getArenaFactory()->removeFist($sender);
-                            break;
-                        case 'Boxing':
-                            PracticeCore::getArenaFactory()->removeBoxing($sender);
-                            break;
-                        case 'Combo':
-                            PracticeCore::getArenaFactory()->removeCombo($sender);
-                            break;
-                        case 'Knockback':
-                            PracticeCore::getArenaFactory()->removeKnockback($sender);
-                            break;
-                        case 'Resistance':
-                            PracticeCore::getArenaFactory()->removeResistance($sender);
-                            break;
-                        case 'OITC':
-                            PracticeCore::getArenaFactory()->removeOITC($sender);
-                            break;
-                        case 'Build':
-                            PracticeCore::getArenaFactory()->removeBuild($sender);
-                            break;
-                        default:
-                            $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
-                            break;
+                    } else {
+                        switch ($args[1]) {
+                            case 'fist':
+                                PracticeCore::getArenaFactory()->removeFist($sender);
+                                break;
+                            case 'Boxing':
+                                PracticeCore::getArenaFactory()->removeBoxing($sender);
+                                break;
+                            case 'Combo':
+                                PracticeCore::getArenaFactory()->removeCombo($sender);
+                                break;
+                            case 'Knockback':
+                                PracticeCore::getArenaFactory()->removeKnockback($sender);
+                                break;
+                            case 'Resistance':
+                                PracticeCore::getArenaFactory()->removeResistance($sender);
+                                break;
+                            case 'OITC':
+                                PracticeCore::getArenaFactory()->removeOITC($sender);
+                                break;
+                            case 'Build':
+                                PracticeCore::getArenaFactory()->removeBuild($sender);
+                                break;
+                            default:
+                                $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
+                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                                break;
+                        }
                     }
                     break;
                 case 'setkillleader':
@@ -221,9 +215,9 @@ class PracticeCommand extends Command
                     $sender->sendMessage(PracticeCore::getPrefixCore() . '§e/core help');
                     break;
             }
+
         } else {
             $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
         }
-        return true;
     }
 }
