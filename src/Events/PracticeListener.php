@@ -276,7 +276,7 @@ class PracticeListener extends AbstractListener
                         PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
                     }
                 }
-            } elseif ($player->isDueling() && $block->getId() === VanillaBlocks::GRASS()) {
+            } elseif ($player->isDueling() && $block->getId() === ItemIds::GRASS) {
                 $ev->cancel();
             } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
                 $ev->cancel();
