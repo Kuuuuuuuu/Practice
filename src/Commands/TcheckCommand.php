@@ -119,7 +119,7 @@ class TcheckCommand extends Command
             $second = ceil($remainingSec);
         }
         $form->setTitle(TextFormat::BOLD . $banPlayer);
-        $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], '§bInformation: nDay: §a{day} n§bHour: §a{hour} n§bMinute: §a{minute} n§bSecond: §a{second} n§bReason: §a{reason}'));
+        $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}"));
         $form->addButton('§aUnban');
         $player->sendForm($form);
         return true;
