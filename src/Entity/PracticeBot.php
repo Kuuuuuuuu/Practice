@@ -77,8 +77,8 @@ class PracticeBot extends Human
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         } else {
-            $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
-            $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
+            $this->motion->x = $this->getSpeed() * 0.3 * ($x / (abs($x) + abs($z)));
+            $this->motion->z = $this->getSpeed() * 0.3 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
             if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
