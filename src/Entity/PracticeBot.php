@@ -123,7 +123,7 @@ class PracticeBot extends Human
             $this->enderpearl--;
             $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
             $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 5), 0, random_int(0, 5)));
+            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3());
             $this->pearlcooldown = 10;
         }
     }
