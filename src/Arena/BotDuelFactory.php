@@ -93,15 +93,13 @@ class BotDuelFactory extends DuelFactoryBase
         $this->time--;
     }
 
-    public function onEnd($playerLeft = null): void
+    public function onEnd(?PracticePlayer $playerLeft = null): void
     {
         if (!$this->ended) {
-            $loserMessage = '';
-            $winnerMessage = '';
             if ($playerLeft instanceof PracticePlayer) {
                 $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
                 $loserMessage = '§cLoser: §fPracticeBot';
-            } elseif ($playerLeft === null) {
+            } else {
                 $winnerMessage = '§aWinner: §fPracticeBot';
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
