@@ -279,9 +279,9 @@ class PracticePlayer extends Player
     {
         $name = $this->getName();
         if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
-            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] ' . $this->getDisplayName();
+            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] §b' . $this->getDisplayName();
         } else {
-            $nametag = $this->getDisplayName();
+            $nametag = '§b' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
     }

@@ -404,7 +404,7 @@ class PracticeUtils
     {
         $name = $player->getName();
         if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
-            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] ' . $player->getDisplayName() . '§r§a > §r' . $message;
+            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
         } else {
             $nametag = '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
         }
