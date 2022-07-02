@@ -60,7 +60,7 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->player1->sendTitle('§d3', '', 1, 3, 1);
                     $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
                     $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
-                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 0, 0));
+                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 190, 0));
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                 }
                 break;
