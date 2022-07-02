@@ -140,35 +140,6 @@ class DataManager
         $this->save();
     }
 
-    public function getRank(): string
-    {
-        $format = '§6Rookie';
-        if ($this->elo >= 1200 && $this->elo < 1400) {
-            $format = '§fSilver';
-        } elseif ($this->elo >= 1400 && $this->elo < 1600) {
-            $format = '§eGold';
-        } elseif ($this->elo >= 1600 && $this->elo < 1800) {
-            $format = '§dPlatinum';
-        } elseif ($this->elo >= 1800 && $this->elo < 2000) {
-            $format = '§bDiamond';
-        } elseif ($this->elo >= 2000 && $this->elo < 2200) {
-            $format = '§6Master';
-        } elseif ($this->elo >= 2200 && $this->elo < 2400) {
-            $format = '§3Grandmaster';
-        } elseif ($this->elo >= 2400 && $this->elo < 2600) {
-            $format = '§4Challenger';
-        } elseif ($this->elo >= 2600 && $this->elo < 2800) {
-            $format = '§5Legend';
-        } elseif ($this->elo >= 2800 && $this->elo < 3000) {
-            $format = '§6Legendary';
-        } elseif ($this->elo >= 3000 && $this->elo < 3200) {
-            $format = '§7Godlike';
-        } elseif ($this->elo >= 3200) {
-            $format = '§cUnbeatable';
-        }
-        return $format;
-    }
-
     public function getTag(): ?string
     {
         return $this->tag ?? null;

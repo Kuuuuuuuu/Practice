@@ -46,7 +46,7 @@ class PracticePlayer extends Player
                     if ($this->isDueling()) {
                         $attackSpeed = 7.5;
                     } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
+                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) || 10;
                     }
                 } catch (Throwable) {
                 }
@@ -69,8 +69,8 @@ class PracticePlayer extends Player
                 $yKb = 0.32;
                 $xzKB = 0.34;
             } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
-                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
+                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] || 0.4;
+                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] || 0.4;
             }
         } catch (Throwable) {
         }
@@ -244,10 +244,10 @@ class PracticePlayer extends Player
     {
         if (!$bool && $this->CombatTime > 0) {
             $this->CombatTime = 1;
-            return;
+        } else {
+            $this->Combat = $bool;
+            $this->CombatTime = 10;
         }
-        $this->Combat = $bool;
-        $this->CombatTime = 10;
     }
 
     private function setPVPTag(): void
@@ -279,9 +279,9 @@ class PracticePlayer extends Player
     {
         $name = $this->getName();
         if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
-            $nametag = PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName() . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f]';
+            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] ' . $this->getDisplayName();
         } else {
-            $nametag = PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getRank() . '§a ' . $this->getDisplayName();
+            $nametag = $this->getDisplayName();
         }
         $this->setNameTag($nametag);
     }
