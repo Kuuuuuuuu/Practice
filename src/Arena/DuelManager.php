@@ -5,10 +5,10 @@ namespace Kuu\Arena;
 use Exception;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
+use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\Server;
-use pocketmine\world\generator\Flat;
 use pocketmine\world\WorldCreationOptions;
 
 class DuelManager extends DuelManagerBase
@@ -21,7 +21,7 @@ class DuelManager extends DuelManagerBase
         $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . PracticeCore::getPracticeUtils()->generateUUID();
         $world = new WorldCreationOptions();
         if ($kit->getName() !== 'Sumo') {
-            $world->setGeneratorClass(Flat::class);
+            $world->setGeneratorClass(DuelGenerator::class);
         } else {
             $world->setGeneratorClass(SumoGenerator::class);
         }
@@ -40,7 +40,7 @@ class DuelManager extends DuelManagerBase
     {
         $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getPracticeUtils()->generateUUID();
         $world = new WorldCreationOptions();
-        $world->setGeneratorClass(Flat::class);
+        $world->setGeneratorClass(DuelGenerator::class);
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         $player->getInventory()->clearAll();
         $player->setDueling(true);

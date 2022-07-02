@@ -34,6 +34,7 @@ use Kuu\Task\PracticeTask;
 use Kuu\Utils\Discord\DiscordWebhook;
 use Kuu\Utils\Discord\DiscordWebhookEmbed;
 use Kuu\Utils\Discord\DiscordWebhookUtils;
+use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
@@ -270,6 +271,7 @@ class PracticeUtils
     private function registerGenerators(): void
     {
         GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
+        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, 'duel', fn() => null);
     }
 
     /**
