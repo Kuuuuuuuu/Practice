@@ -193,9 +193,9 @@ class FormUtils
                     case 1:
                         $player->setDisplayName($player->getName());
                         if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
-                            $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName() . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f]');
+                            $player->setNameTag('§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f] §b' . $player->getName());
                         } else {
-                            $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $player->getName());
+                            $player->setNameTag('§b' . $player->getName());
                         }
                         $player->sendMessage(PracticeCore::getPrefixCore() . '§eYour nickname has been resetted!');
                         break;
@@ -221,9 +221,9 @@ class FormUtils
                 } else {
                     $player->setDisplayName($data[0]);
                     if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $data[0] . ' §f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f]');
+                        $player->setNameTag('§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f] §b' . $data[0]);
                     } else {
-                        $player->setNameTag(PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getRank() . '§a ' . $data[0]);
+                        $player->setNameTag('§b' . $data[0]);
                     }
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§6Your nickname is now §c' . $data[0]);
                 }
@@ -454,8 +454,6 @@ class FormUtils
             '§aKills§f: §e' . $data->getKills() .
             "\n§e" .
             "\n§aDeath§f: §e" . $data->getDeaths() .
-            "\n§e" .
-            "\n§aRank§f: §e" . $data->getRank() .
             "\n§e" .
             "\n§aKDR§f: §e" . $data->getKdr() .
             "\n§e" .
