@@ -32,7 +32,7 @@ class ArenaManager
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getBoxingArena());
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getEffects()->clear();
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())?->getSafeSpawn());
@@ -49,7 +49,7 @@ class ArenaManager
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getFistArena());
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getFistArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
@@ -66,7 +66,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getInventory()->addItem(VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3));
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
@@ -83,7 +83,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 99999, 3, false));
             $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 99999, 4, false));
             $arrow = VanillaItems::ARROW();
@@ -114,7 +114,7 @@ class ArenaManager
             $random = PracticeCore::getArenaFactory()->getRandomSpawnOitc();
             $player->getInventory()->clearAll();
             $player->getEffects()->clear();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getArmorInventory()->clearAll();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())?->getSafeSpawn());
             $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
@@ -132,7 +132,7 @@ class ArenaManager
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getResistanceArena());
             $player->getInventory()->clearAll();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getResistanceArena())?->getSafeSpawn());
@@ -151,7 +151,7 @@ class ArenaManager
             $player->getInventory()->clearAll();
             $player->getArmorInventory()->clearAll();
             $player->getEffects()->clear();
-            $player->setHealth(20);
+            $player->setHealth($player->getMaxHealth());
             try {
                 if ($player instanceof PracticePlayer) {
                     foreach (PracticeCore::getInstance()->KitData->get($player->getName()) as $slot => $item) {

@@ -20,6 +20,7 @@ use Kuu\Utils\Discord\DiscordWebhookUtils;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\projectile\Arrow;
+use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\entity\Skin;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -28,6 +29,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
+use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerChangeSkinEvent;
@@ -61,6 +63,7 @@ use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\network\query\DedicatedQueryNetworkInterface;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
+use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\world\World;
@@ -285,6 +288,26 @@ class PracticeListener extends AbstractListener
             PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
         } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
             $ev->cancel();
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function potionHitEvent(ProjectileHitEvent $event): void
+    {
+        $type = $event->getEntity();
+        $owner = $type->getOwningEntity();
+        $owner?->setHealth($owner->getHealth() + 4);
+        if (($owner instanceof Player) && $type instanceof SplashPotion) {
+            foreach ($type->getWorld()->getNearbyEntities($type->getBoundingBox()->expand(2, 5, 2)) as $entity) {
+                if ($entity instanceof Player) {
+                    if ($entity->getName() === $owner->getName()) {
+                        continue;
+                    }
+                    $entity->setHealth($owner->getHealth() + random_int(2, 4));
+                }
+            }
         }
     }
 
