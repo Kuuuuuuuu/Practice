@@ -24,8 +24,6 @@ class DuelFactory extends DuelFactoryBase
     private ?PracticePlayer $loser = null;
     private KitManager $kit;
     private bool $ended = false;
-    private int $z = 40;
-    private int $z2 = 20;
 
     public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
     {
@@ -35,10 +33,6 @@ class DuelFactory extends DuelFactoryBase
         }
         if (PracticeCore::getCoreTask() instanceof PracticeTask) {
             PracticeCore::getCoreTask()?->addDuelTask($name, $this);
-        }
-        if ($kit->getName() === 'Sumo') {
-            $this->z = 0;
-            $this->z2 = 9;
         }
         $this->level = $world;
         $this->kit = $kit;
@@ -76,14 +70,13 @@ class DuelFactory extends DuelFactoryBase
                         }
                     }
                 }
-                $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(6, 110, $this->z, $this->level), 180);
-                }, static function (): void {
-                });
-                $this->level->orderChunkPopulation(6 >> 4, $this->z2 >> 4, null)->onCompletion(function (): void {
-                    $this->player2->teleport(new Position(6, 110, $this->z2, $this->level), 180);
-                }, static function (): void {
-                });
+                if ($this->kit->getName() === 'Sumo') {
+                    $this->player1->teleport(new Position(6, 110, 0, $this->level), 180);
+                    $this->player2->teleport(new Position(6, 110, 9, $this->level), 180);
+                } else {
+                    $this->player1->teleport(new Position(24, 110, 40, $this->level));
+                    $this->player2->teleport(new Position(24, 110, 10, $this->level));
+                }
                 break;
             case 902:
                 foreach ($this->getPlayers() as $player) {

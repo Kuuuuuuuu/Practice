@@ -19,11 +19,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 0 || $z === 0) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -32,11 +32,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($z === 0) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -45,11 +45,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 15 || $z === 0) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -58,11 +58,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 15) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -71,11 +71,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 15 || $z === 15) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -84,11 +84,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 0) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -96,7 +96,7 @@ class DuelGenerator extends Generator
             for ($x = 0; $x < 16; $x++) {
                 for ($z = 0; $z < 16; $z++) {
                     $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                    $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                    $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                 }
             }
         } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 2) {
@@ -104,11 +104,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($z === 15) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -117,11 +117,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($x === 0 || $z === 15) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }
@@ -130,11 +130,11 @@ class DuelGenerator extends Generator
                 for ($z = 0; $z < 16; $z++) {
                     if ($z === 15 && $x === 15) {
                         for ($y = 99; $y < 256; $y++) {
-                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getId() << 4);
+                            $chunk?->setFullBlock($x, $y, $z, VanillaBlocks::BARRIER()->getId() << 4);
                         }
                     } else {
                         $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
-                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::DARK_OAK_PLANKS()->getId() << 4);
+                        $chunk?->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getId() << 4);
                     }
                 }
             }

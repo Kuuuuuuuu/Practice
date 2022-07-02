@@ -70,9 +70,9 @@ class PracticeBot extends Human
         }
         $this->getInventory()->setHeldItemIndex(0);
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
-        $x = $position->x - $this->getLocation()->getX();
-        $z = $position->z - $this->getLocation()->getZ();
-        $y = $position->y - $this->getLocation()->getY();
+        $x = $position->getX() - $this->getLocation()->getX();
+        $z = $position->getZ() - $this->getLocation()->getZ();
+        $y = $position->getY() - $this->getLocation()->getY();
         if ($this->getTargetPlayer()->isSprinting()) {
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
@@ -84,13 +84,6 @@ class PracticeBot extends Human
             if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
                 if ($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 20) {
                     $this->pearl();
-                } elseif ($this->getHealth() < 5) {
-                    $x = $this->getTargetPlayer()->getPosition()->getX() - random_int(15, 30);
-                    $z = $this->getTargetPlayer()->getPosition()->getZ() - random_int(15, 30);
-                    $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
-                    $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-                    $this->teleport(new Vector3($x, $this->getLocation()->getY(), $z));
-                    $this->pot();
                 } elseif ($this->getTargetPlayer()->getHealth() < 3) {
                     $this->pearl();
                     $this->jump();
@@ -130,7 +123,7 @@ class PracticeBot extends Human
             $this->enderpearl--;
             $this->getWorld()->addParticle($origin = $this->getPosition(), new EndermanTeleportParticle());
             $this->getWorld()->addSound($origin, new EndermanTeleportSound());
-            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 10), 0, random_int(6, 15)));
+            $this->teleport($this->getTargetPlayer()?->getPosition()->asVector3()->subtract(random_int(0, 5), 0, random_int(0, 5)));
             $this->pearlcooldown = 10;
         }
     }
@@ -171,8 +164,8 @@ class PracticeBot extends Human
 
     private function isLookingAt(Vector3 $target): bool
     {
-        $xDist = $target->x - $this->getLocation()->getX();
-        $zDist = $target->z - $this->getLocation()->getZ();
+        $xDist = $target->getX() - $this->getLocation()->getX();
+        $zDist = $target->getZ() - $this->getLocation()->getZ();
         $expectedYaw = atan2($zDist, $xDist) / M_PI * 180 - 90;
         if ($expectedYaw < 0) {
             $expectedYaw += 360.0;

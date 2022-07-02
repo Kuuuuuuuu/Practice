@@ -61,12 +61,9 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->player1->sendTitle('§d3', '', 1, 3, 1);
                     $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
                     $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
+                    $this->player1->teleport(new Position(24, 110, 40, $this->level));
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                 }
-                $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(15, 110, 40, $this->level));
-                }, static function (): void {
-                });
                 break;
             case 902:
                 if ($this->player1->isOnline()) {
@@ -86,10 +83,7 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
-                    $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                        $this->player2 = new PracticeBot(new Location(15, 110, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
-                    }, static function (): void {
-                    });
+                    $this->player2 = new PracticeBot(new Location(24, 110, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
                 }
                 break;
             case 0:
