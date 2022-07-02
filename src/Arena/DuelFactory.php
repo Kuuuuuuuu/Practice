@@ -71,11 +71,11 @@ class DuelFactory extends DuelFactoryBase
                     }
                 }
                 if ($this->kit->getName() === 'Sumo') {
-                    $this->player1->teleport(new Location(6, 101, 0, $this->level, 180, 0));
-                    $this->player2->teleport(new Location(6, 101, 9, $this->level, 0, 0));
+                    $this->player1->teleport(new Location(6, 101, 0, $this->level, 0, 0));
+                    $this->player2->teleport(new Location(6, 101, 9, $this->level, 180, 0));
                 } else {
-                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 0, 0));
-                    $this->player2->teleport(new Location(24, 101, 10, $this->level, 180, 0));
+                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 180, 0));
+                    $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
                 }
                 break;
             case 902:
