@@ -17,7 +17,7 @@ class SumoGenerator extends Generator
         if ($chunkX === 0 && $chunkZ === 0) {
             for ($x = -5; $x < 12; $x++) {
                 for ($z = 0; $z < 12; $z++) {
-                    $chunk?->setFullBlock($x, 3, $z, BlockLegacyIds::GRASS << 4);
+                    $chunk?->setFullBlock($x, 100, $z, BlockLegacyIds::GRASS << 4);
                 }
             }
         }

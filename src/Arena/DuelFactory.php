@@ -77,11 +77,11 @@ class DuelFactory extends DuelFactoryBase
                     }
                 }
                 $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(6, 4, $this->z, $this->level), 180);
+                    $this->player1->teleport(new Position(6, 110, $this->z, $this->level), 180);
                 }, static function (): void {
                 });
                 $this->level->orderChunkPopulation(6 >> 4, $this->z2 >> 4, null)->onCompletion(function (): void {
-                    $this->player2->teleport(new Position(6, 4, $this->z2, $this->level), 180);
+                    $this->player2->teleport(new Position(6, 110, $this->z2, $this->level), 180);
                 }, static function (): void {
                 });
                 break;

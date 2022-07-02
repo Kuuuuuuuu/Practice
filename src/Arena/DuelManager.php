@@ -8,6 +8,7 @@ use Kuu\PracticePlayer;
 use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
 use Kuu\Utils\Kits\KitManager;
+use pocketmine\math\Vector3;
 use pocketmine\Server;
 use pocketmine\world\WorldCreationOptions;
 
@@ -22,6 +23,8 @@ class DuelManager extends DuelManagerBase
         $world = new WorldCreationOptions();
         if ($kit->getName() !== 'Sumo') {
             $world->setGeneratorClass(DuelGenerator::class);
+            $world->setSeed(0);
+            $world->setSpawnPosition(new Vector3(0, 100, 0));
         } else {
             $world->setGeneratorClass(SumoGenerator::class);
         }
@@ -41,6 +44,8 @@ class DuelManager extends DuelManagerBase
         $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getPracticeUtils()->generateUUID();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
+        $world->setSeed(0);
+        $world->setSpawnPosition(new Vector3(0, 100, 0));
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         $player->getInventory()->clearAll();
         $player->setDueling(true);

@@ -64,7 +64,7 @@ class BotDuelFactory extends DuelFactoryBase
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                 }
                 $this->level->orderChunkPopulation(15 >> 4, 40 >> 4, null)->onCompletion(function (): void {
-                    $this->player1->teleport(new Position(15, 4, 40, $this->level));
+                    $this->player1->teleport(new Position(15, 110, 40, $this->level));
                 }, static function (): void {
                 });
                 break;
@@ -87,7 +87,7 @@ class BotDuelFactory extends DuelFactoryBase
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
                     $this->level->orderChunkPopulation(15 >> 4, 10 >> 4, null)->onCompletion(function (): void {
-                        $this->player2 = new PracticeBot(new Location(15, 4, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
+                        $this->player2 = new PracticeBot(new Location(15, 110, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
                     }, static function (): void {
                     });
                 }
