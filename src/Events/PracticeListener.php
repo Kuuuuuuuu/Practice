@@ -468,7 +468,7 @@ class PracticeListener extends AbstractListener
         if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof PracticePlayer) {
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($damager instanceof PracticePlayer) {
-                $dname = $damager->getName() || 'Unknown';
+                $dname = $damager->getName() ?? 'Unknown';
                 PracticeCore::getInstance()->getPracticeUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 foreach ([$player, $damager] as $p) {
                     $p->setLastDamagePlayer('Unknown');
