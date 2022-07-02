@@ -70,15 +70,15 @@ class PracticeBot extends Human
         }
         $this->getInventory()->setHeldItemIndex(0);
         $position = $this->getTargetPlayer()->getPosition()->asVector3();
-        $x = $position->getX() - $this->getLocation()->getX();
-        $z = $position->getZ() - $this->getLocation()->getZ();
-        $y = $position->getY() - $this->getLocation()->getY();
+        $x = $position->x - $this->getLocation()->getX();
+        $z = $position->z - $this->getLocation()->getZ();
+        $y = $position->y - $this->getLocation()->getY();
         if ($this->getTargetPlayer()->isSprinting()) {
             $this->motion->x = $this->getSpeed() * 0.4 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.4 * ($z / (abs($x) + abs($z)));
         } else {
-            $this->motion->x = $this->getSpeed() * 0.3 * ($x / (abs($x) + abs($z)));
-            $this->motion->z = $this->getSpeed() * 0.3 * ($z / (abs($x) + abs($z)));
+            $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
+            $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
             if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
@@ -146,9 +146,6 @@ class PracticeBot extends Human
         $player?->getNetworkSession()->sendDataPacket($soundPacket);
         $effect = new EffectInstance(VanillaEffects::INSTANT_HEALTH(), 0, 1);
         $this->getEffects()->add($effect);
-        if ($this->getPosition()->distance($player?->getPosition()->asVector3()) <= 2) {
-            $player?->getEffects()->add($effect);
-        }
         $this->pots--;
     }
 
