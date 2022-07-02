@@ -339,8 +339,7 @@ class FormUtils
                 if ($data === 'None') {
                     return;
                 }
-                /* @var $player PracticePlayer */
-                $player->LoadData(false);
+                $event->LoadData(false);
                 $cosmetic = PracticeCore::getCosmeticHandler();
                 if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
                     if (str_contains($data, 'SP-')) {
