@@ -13,7 +13,6 @@ interface PracticeConfig
     public const MaximumCPS = 20;
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
-    public const SkillCooldownDelay = 250;
     public const IPV6 = false;
     public const BuildFFASpawns = [
         [

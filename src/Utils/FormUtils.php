@@ -283,6 +283,8 @@ class FormUtils
                         if (PracticeCore::getInstance()->CapeData->get($player->getName()) !== null) {
                             PracticeCore::getInstance()->CapeData->remove($player->getName());
                             PracticeCore::getInstance()->CapeData->save();
+                            /* @var $player PracticePlayer */
+                            $player->LoadData(false);
                         }
                         $player->sendMessage(PracticeCore::getPrefixCore() . '§aCape Removed!');
                         break;
@@ -318,6 +320,8 @@ class FormUtils
                     $player->sendMessage($msg);
                     PracticeCore::getInstance()->CapeData->set($player->getName(), $data);
                     PracticeCore::getInstance()->CapeData->save();
+                    /* @var $player PracticePlayer */
+                    $player->LoadData(false);
                 }
             }
         });
@@ -335,6 +339,8 @@ class FormUtils
                 if ($data === 'None') {
                     return;
                 }
+                /* @var $player PracticePlayer */
+                $player->LoadData(false);
                 $cosmetic = PracticeCore::getCosmeticHandler();
                 if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
                     if (str_contains($data, 'SP-')) {

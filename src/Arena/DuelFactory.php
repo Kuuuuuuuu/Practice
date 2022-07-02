@@ -6,6 +6,8 @@ use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Task\PracticeTask;
 use Kuu\Utils\Kits\KitManager;
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
 use pocketmine\world\Position;
@@ -69,6 +71,9 @@ class DuelFactory extends DuelFactoryBase
                         $player->setImmobile();
                         $player->sendTitle('§d3', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                        if ($this->kit->getName() === 'Sumo') {
+                            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 1000, 255, false));
+                        }
                     }
                 }
                 $this->level->orderChunkPopulation(6 >> 4, $this->z >> 4, null)->onCompletion(function (): void {

@@ -56,7 +56,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
-use RuntimeException;
 use SQLite3;
 use Throwable;
 use ZipArchive;

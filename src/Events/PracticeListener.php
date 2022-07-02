@@ -201,7 +201,7 @@ class PracticeListener extends AbstractListener
 
     public function onExhaust(PlayerExhaustEvent $event): void
     {
-        $player = $event->getPlayer();
+        //$player = $event->getPlayer();
         $event->setAmount(0);
         //$player->getHungerManager()->setFood(20);
     }

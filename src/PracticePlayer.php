@@ -27,7 +27,6 @@ class PracticePlayer extends Player
     private ?KitManager $duelKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
-    private bool $SkillCooldown = false;
     private bool $Combat = false;
     private ?string $Opponent = null;
     private array $savekitcache = [];
@@ -217,7 +216,6 @@ class PracticePlayer extends Player
                 $this->sendMessage(PracticeCore::getInstance()->MessageData['StopCombat']);
                 $this->BoxingPoint = 0;
                 $this->setOpponent(null);
-                $this->setSkillCooldown(false);
                 $this->setUnPVPTag();
             }
         }
@@ -302,18 +300,20 @@ class PracticePlayer extends Player
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($this);
-        $this->LoadData();
+        $this->LoadData(true);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }
 
     /**
      * @throws JsonException
      */
-    private function LoadData(): void
+    public function LoadData(bool $set): void
     {
         $this->cape = PracticeCore::getInstance()->CapeData->get($this->getName()) ?: '';
         $this->artifact = PracticeCore::getInstance()->ArtifactData->get($this->getName()) ?: '';
-        $this->setCosmetic();
+        if ($set) {
+            $this->setCosmetic();
+        }
     }
 
     /**
@@ -425,16 +425,6 @@ class PracticePlayer extends Player
         $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou have successfully saved your kit!');
         $this->kill();
         $this->setImmobile(false);
-    }
-
-    public function isSkillCooldown(): bool
-    {
-        return $this->SkillCooldown;
-    }
-
-    public function setSkillCooldown(bool $bool): void
-    {
-        $this->SkillCooldown = $bool;
     }
 
     public function getOpponent(): ?string
