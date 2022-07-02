@@ -36,7 +36,7 @@ class TbanCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if ($args === null) {
+                if (!isset($args[0])) {
                     $this->openPlayerListUI($sender);
                 } else {
                     PracticeCore::getCaches()->targetPlayer[$sender->getName()] = $args[0];
