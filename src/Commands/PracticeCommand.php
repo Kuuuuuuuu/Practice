@@ -43,17 +43,17 @@ class PracticeCommand extends Command
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd - setkillleader - setdeathleader - removeleader');
-                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                     break;
                 case 'make':
                 case 'create':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                     }
                     if (!isset($args[2])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                     }
                     switch ($args[1]) {
                         case 'fist':
@@ -92,15 +92,6 @@ class PracticeCommand extends Command
                                 PracticeCore::getArenaFactory()->setKnockbackArena($sender, $args[2]);
                             }
                             break;
-                        case 'KitPVP':
-                            if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                            } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
-                                PracticeCore::getArenaFactory()->setKitPVPArena($sender, $args[2]);
-                            }
-                            break;
                         case 'Resistance':
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
@@ -128,18 +119,9 @@ class PracticeCommand extends Command
                                 PracticeCore::getArenaFactory()->setBuildArena($sender, $args[2]);
                             }
                             break;
-                        case 'Bot':
-                            if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                            } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
-                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
-                                PracticeCore::getArenaFactory()->setBotArena($sender, $args[2]);
-                            }
-                            break;
                         default:
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                             break;
                     }
                     break;
@@ -186,7 +168,7 @@ class PracticeCommand extends Command
                 case 'remove':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                         return false;
                     }
                     switch ($args[1]) {
@@ -202,9 +184,6 @@ class PracticeCommand extends Command
                         case 'Knockback':
                             PracticeCore::getArenaFactory()->removeKnockback($sender);
                             break;
-                        case 'KitPVP':
-                            PracticeCore::getArenaFactory()->removeKitPVP($sender);
-                            break;
                         case 'Resistance':
                             PracticeCore::getArenaFactory()->removeResistance($sender);
                             break;
@@ -214,12 +193,9 @@ class PracticeCommand extends Command
                         case 'Build':
                             PracticeCore::getArenaFactory()->removeBuild($sender);
                             break;
-                        case 'Bot':
-                            PracticeCore::getArenaFactory()->removeBot($sender);
-                            break;
                         default:
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, KitPVP, Resistance, OITC, Bot');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
                             break;
                     }
                     break;

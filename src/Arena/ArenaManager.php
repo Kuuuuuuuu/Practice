@@ -6,7 +6,6 @@ declare(strict_types=1);
 
 namespace Kuu\Arena;
 
-use Exception;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\block\VanillaBlocks;
@@ -103,25 +102,6 @@ class ArenaManager
             $player->getInventory()->addItem($leap);
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
-            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function onJoinKitpvp(Player $player): void
-    {
-        if (PracticeCore::getArenaFactory()->getKitPVPArena() === null) {
-            $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
-        } else {
-            Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getKitPVPArena());
-            $player->getInventory()->clearAll();
-            $player->setHealth(20);
-            $player->getEffects()->clear();
-            $player->getArmorInventory()->clearAll();
-            $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKitPVPArena())?->getSafeSpawn());
-            PracticeCore::getInstance()->getPracticeUtils()->randomSpawn($player);
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
         }
     }

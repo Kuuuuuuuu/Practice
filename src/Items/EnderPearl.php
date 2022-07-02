@@ -25,9 +25,6 @@ class EnderPearl extends ItemEnderPearl
 
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
-        //TODO: Implement this
-
-        // (($player instanceof PracticePlayer) && !$player->isEnderPearlCooldown() && $player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
         $location = $player->getLocation();
         $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
         $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
@@ -41,8 +38,6 @@ class EnderPearl extends ItemEnderPearl
         $location->getWorld()->addSound($location, new ThrowSound());
         $this->pop();
         return ItemUseResult::SUCCESS();
-        // }
-        //return ItemUseResult::FAIL();
     }
 
     protected function createEntity(Location $location, Player $thrower): Throwable

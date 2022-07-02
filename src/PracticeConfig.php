@@ -11,7 +11,6 @@ interface PracticeConfig
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
     public const MaximumCPS = 20;
-    public const EnderPearlCooldown = 10;
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
     public const SkillCooldownDelay = 250;

@@ -138,16 +138,6 @@ class PracticeUtils
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    public function randomSpawn(Player $p): void
-    {
-        $x = $z = random_int(0, 15);
-        $y = $p->getWorld()->getHighestBlockAt($p->getPosition()->getFloorX(), $p->getPosition()->getFloorZ() + 1);
-        $p->teleport(new Vector3($x, $y + 10, $z));
-    }
-
     public function Enable(): void
     {
         $this->registerItems();

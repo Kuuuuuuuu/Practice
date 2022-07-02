@@ -66,12 +66,6 @@ class ArenaFactory
         return $data->get('Knockback');
     }
 
-    public function getKitPVPArena(): string
-    {
-        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('KitPVP');
-    }
-
     /**
      * @throws JsonException
      */
@@ -112,18 +106,6 @@ class ArenaFactory
      * @throws JsonException
      */
 
-    public function setBotArena(Player $player, string $world): void
-    {
-        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('Bot', $world);
-        $data->save();
-        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
-    }
-
-    /**
-     * @throws JsonException
-     */
-
     public function setBuildArena(Player $player, string $world): void
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -139,18 +121,6 @@ class ArenaFactory
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Resistance', $world);
-        $data->save();
-        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
-    }
-
-    /**
-     * @throws JsonException
-     */
-
-    public function setKitPVPArena(Player $player, string $world): void
-    {
-        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('KitPVP', $world);
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
@@ -225,17 +195,6 @@ class ArenaFactory
     /**
      * @throws JsonException
      */
-    public function removeBot(Player $player): void
-    {
-        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('Bot');
-        $data->save();
-        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
-    }
-
-    /**
-     * @throws JsonException
-     */
     public function removeKnockback(Player $player): void
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -273,17 +232,6 @@ class ArenaFactory
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Combo');
-        $data->save();
-        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function removeKitPVP(Player $player): void
-    {
-        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('KitPVP');
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }

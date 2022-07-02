@@ -32,8 +32,6 @@ class PracticePlayer extends Player
     private ?string $Opponent = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
-    private int $enderpearlcooldown = 0;
-    private bool $isEnderpearlCooldown = false;
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -218,13 +216,6 @@ class PracticePlayer extends Player
                 $this->setUnPVPTag();
             }
         }
-        if ($this->isEnderPearlCooldown()) {
-            $this->enderpearlcooldown--;
-            if ($this->enderpearlcooldown <= 0) {
-                $this->setEnderPearlCooldown(false);
-                $this->sendMessage(PracticeCore::getInstance()->MessageData['EnderPearlCooldownEnd']);
-            }
-        }
         if ($this->sec % 3 === 0) {
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
             $this->updateScoreboard();
@@ -234,7 +225,7 @@ class PracticePlayer extends Player
 
     private function updateTag(): void
     {
-        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKitPVPArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
         } elseif (!$this->isCombat()) {
             $this->setUnPVPTag();
@@ -268,20 +259,6 @@ class PracticePlayer extends Player
     {
         $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl;
         $this->setScoreTag($untagpvp);
-    }
-
-    public function isEnderPearlCooldown(): bool
-    {
-        return $this->isEnderpearlCooldown;
-    }
-
-    public function setEnderPearlCooldown(bool $bool): void
-    {
-        $this->isEnderpearlCooldown = $bool;
-        if ($bool) {
-            $this->sendMessage(PracticeCore::getInstance()->MessageData['EnderPearlCooldownStart']);
-            $this->enderpearlcooldown = PracticeConfig::EnderPearlCooldown;
-        }
     }
 
     private function updateScoreboard(): void

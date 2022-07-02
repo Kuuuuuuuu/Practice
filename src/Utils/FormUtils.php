@@ -7,18 +7,16 @@ namespace Kuu\Utils;
 use DateTime;
 use Exception;
 use JsonException;
+use Kuu\Lib\FormAPI\CustomForm;
+use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Utils\Discord\DiscordWebhook;
 use Kuu\Utils\Discord\DiscordWebhookEmbed;
 use Kuu\Utils\Discord\DiscordWebhookUtils;
-use Kuu\Lib\FormAPI\CustomForm;
-use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\entity\effect\EffectInstance;
-use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\Skin;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -53,12 +51,9 @@ class FormUtils
                         PracticeCore::getArenaManager()->onJoinResistance($player);
                         break;
                     case 5:
-                        $this->formkit($player);
-                        break;
-                    case 6:
                         PracticeCore::getArenaManager()->onJoinOITC($player);
                         break;
-                    case 7:
+                    case 6:
                         PracticeCore::getArenaManager()->onJoinBuild($player);
                         break;
                     default:
@@ -72,128 +67,9 @@ class FormUtils
         $form->addButton("§aCombo\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
         $form->addButton("§aKnockback\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
         $form->addButton("§aResistance\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
-        $form->addButton("§aKitPVP\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKitPVPArena()), 0, 'textures/ui/recipe_book_icon.png');
         $form->addButton("§aOITC\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
         $form->addButton("§aBuild\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
-    }
-
-    private function formkit(Player $player): void
-    {
-        $form = new SimpleForm(function (Player $player, int $data = null) {
-            if ($data !== null) {
-                switch ($data) {
-                    case 0:
-                        $this->assasins($player);
-                        break;
-                    case 1:
-                        $this->tank($player);
-                        break;
-                    case 2:
-                        $this->boxing($player);
-                        break;
-                    case 3:
-                        $this->bower($player);
-                        break;
-                    case 4;
-                        $this->reaper($player);
-                        break;
-                }
-            }
-        });
-        $form->setTitle(PracticeConfig::Server_Name . '§eKitPVP');
-        $form->setContent('§eNow Playing: §a' . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKitPVPArena()));
-        $form->addButton('§aAssasins');
-        $form->addButton('§aTank');
-        $form->addButton('§aBoxing');
-        $form->addButton('§aBower');
-        $form->addButton('§aReaper');
-        $player->sendForm($form);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function assasins(Player $player): void
-    {
-        PracticeCore::getArenaManager()->onJoinKitpvp($player);
-        $item = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-        $item2 = VanillaItems::SPIDER_EYE()->setCustomName('§r§6Teleport');
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->setItem(0, $item);
-        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-        $player->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 1));
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function tank(Player $player): void
-    {
-        PracticeCore::getArenaManager()->onJoinKitpvp($player);
-        $item = VanillaItems::DIAMOND_AXE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-        $player->getInventory()->setItem(0, $item);
-        $item2 = VanillaItems::REDSTONE_DUST()->setCustomName('§r§6Ultimate Tank');
-        $player->getInventory()->setItem(8, $item2);
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SLOWNESS(), 9999999, 0));
-        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-        $player->getArmorInventory()->setHelmet(VanillaItems::DIAMOND_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setBoots(VanillaItems::DIAMOND_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->setHealth(30);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function boxing(Player $player): void
-    {
-        PracticeCore::getArenaManager()->onJoinKitpvp($player);
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::STRENGTH(), 9999999, 2, false));
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 1, false));
-        $item2 = VanillaItems::DIAMOND()->setCustomName('§r§6Ultimate Boxing');
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-        $player->getArmorInventory()->setLeggings(VanillaItems::CHAINMAIL_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function bower(Player $player): void
-    {
-        PracticeCore::getArenaManager()->onJoinKitpvp($player);
-        $item = VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::INFINITY(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 4))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000));
-        $player->getInventory()->setItem(0, $item);
-        $item2 = VanillaItems::EMERALD()->setCustomName('§r§6Ultimate Bower');
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-        $player->getInventory()->addItem(VanillaItems::ARROW());
-        $player->getArmorInventory()->setHelmet(VanillaItems::LEATHER_CAP()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setChestplate(VanillaItems::LEATHER_TUNIC()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setLeggings(VanillaItems::LEATHER_PANTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getArmorInventory()->setBoots(VanillaItems::LEATHER_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2)));
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 9999999, 2));
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 9999999, 3));
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function reaper(Player $player): void
-    {
-        PracticeCore::getArenaManager()->onJoinKitpvp($player);
-        $item = VanillaItems::DIAMOND_HOE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 4));
-        $item2 = VanillaItems::WITHER_SKELETON_SKULL()->setCustomName('§r§6Reaper');
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-        $player->getInventory()->setItem(0, $item);
-        $player->getArmorInventory()->setBoots(VanillaItems::DIAMOND_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 4)));
     }
 
     public function duelForm(Player $player): void
