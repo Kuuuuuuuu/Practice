@@ -236,6 +236,13 @@ class PracticeListener extends AbstractListener
         $name = $player->getName();
         if ($player instanceof PracticePlayer) {
             $cosmetic = PracticeCore::getCosmeticHandler();
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                $cosmetic->resetSkin($player);
+            } else {
+                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
+            }
             $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
             $cosmetic->saveSkin($skin->getSkinData(), $name);
         }
