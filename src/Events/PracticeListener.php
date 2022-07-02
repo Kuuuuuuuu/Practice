@@ -161,7 +161,7 @@ class PracticeListener extends AbstractListener
                 $minute = floor($minuteSec / 60);
                 $remainingSec = $minuteSec % 60;
                 $second = ceil($remainingSec);
-                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], PracticeCore::getInstance()->MessageData['LoginBanMessage']));
+                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
                 $event->cancel();
                 $player->close();
             } else {
@@ -267,16 +267,20 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-            if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
-                $ev->setDropsVariadic(VanillaItems::AIR());
-                if ($block->getId() === BlockLegacyIds::WOOL) {
-                    $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
-                    PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
+        if ($player instanceof PracticePlayer) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
+                    $ev->setDropsVariadic(VanillaItems::AIR());
+                    if ($block->getId() === BlockLegacyIds::WOOL) {
+                        $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
+                        PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
+                    }
                 }
+            } elseif ($player->isDueling() && $block->getId() === VanillaBlocks::GRASS()) {
+                $ev->cancel();
+            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+                $ev->cancel();
             }
-        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-            $ev->cancel();
         }
     }
 
@@ -284,17 +288,19 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-            PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
-        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-            $ev->cancel();
+        if ($player instanceof PracticePlayer) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
+            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+                $ev->cancel();
+            }
         }
     }
 
     /**
      * @throws Exception
      */
-    public function potionHitEvent(ProjectileHitEvent $event): void
+    public function onProjectileHit(ProjectileHitEvent $event): void
     {
         $type = $event->getEntity();
         $owner = $type->getOwningEntity();
@@ -342,7 +348,7 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    public function onItemMoved(InventoryTransactionEvent $event): void
+    public function onInventoryTransaction(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
         $player = $transaction->getSource();
@@ -392,7 +398,7 @@ class PracticeListener extends AbstractListener
     /**
      * @throws Exception
      */
-    public function onInterrupt(EntityDamageByEntityEvent $event): void
+    public function onEntityDamageByEntity(EntityDamageByEntityEvent $event): void
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
@@ -414,7 +420,7 @@ class PracticeListener extends AbstractListener
                     $damager->setOpponent($player->getName());
                     foreach ([$player, $damager] as $p) {
                         /* @var PracticePlayer $p */
-                        $p->sendMessage(PracticeCore::getInstance()->MessageData['StartCombat']);
+                        $p->sendMessage(PracticeCore::getPrefixCore() . '§aYou Started combat!');
                         $p->setCombat(true);
                     }
                 }
@@ -454,7 +460,7 @@ class PracticeListener extends AbstractListener
      *
      * @throws Exception
      */
-    public function onDamage(EntityDamageEvent $event): void
+    public function onEntityDamag(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof PracticePlayer) {
@@ -526,10 +532,10 @@ class PracticeListener extends AbstractListener
         if (($player instanceof PracticePlayer) && isset(PracticeConfig::BanCommand[$cmd])) {
             if ($player->isCombat() || $player->isDueling()) {
                 $event->cancel();
-                $player->sendMessage(PracticeCore::getInstance()->MessageData['CantUseWantCombat']);
+                $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in combat!");
             } elseif ($player->getEditKit() !== null) {
                 $event->cancel();
-                $player->sendMessage(PracticeCore::getInstance()->MessageData['CantUseeditkit']);
+                $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in Editkit mode!");
             }
         }
     }

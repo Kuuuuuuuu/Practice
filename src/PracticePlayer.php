@@ -213,7 +213,7 @@ class PracticePlayer extends Player
             if ($this->CombatTime <= 0) {
                 $this->setCombat(false);
                 $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(PracticeCore::getInstance()->MessageData['StopCombat']);
+                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
                 $this->BoxingPoint = 0;
                 $this->setOpponent(null);
                 $this->setUnPVPTag();

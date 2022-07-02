@@ -40,7 +40,6 @@ class PracticeCore extends PluginBase
     private static DuelManager $duelmanager;
     private static ?PracticeTask $CoreTask;
     private static PracticeCaches $caches;
-    public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
     public SQLite3 $BanData;

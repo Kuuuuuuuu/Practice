@@ -2,7 +2,7 @@
 
 namespace Kuu;
 
-interface PracticeConfig
+final class PracticeConfig
 {
     public const PREFIX = '§dNeptune§f » §r';
     public const Server_Name = '§dNeptune§f ';
@@ -74,4 +74,9 @@ interface PracticeConfig
         'Switch',
         'Xbox'
     ];
+
+    public static function getInstance(): PracticeConfig
+    {
+        return new self();
+    }
 }

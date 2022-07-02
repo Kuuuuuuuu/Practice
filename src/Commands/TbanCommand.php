@@ -61,8 +61,8 @@ class TbanCommand extends Command
             $this->openTbanUI($player);
             return true;
         });
-        $form->setTitle(PracticeCore::getInstance()->MessageData['PlayerListTitle']);
-        $form->setContent(PracticeCore::getInstance()->MessageData['PlayerListContent']);
+        $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
+        $form->setContent('§c§lChoose Player');
         foreach (Server::getInstance()->getOnlinePlayers() as $online) {
             $form->addButton($online->getName(), -1, '', $online->getName());
         }
@@ -79,7 +79,7 @@ class TbanCommand extends Command
             }
             if (isset(PracticeCore::getCaches()->targetPlayer[$player->getName()])) {
                 if (PracticeCore::getCaches()->targetPlayer[$player->getName()] === $player->getName()) {
-                    $player->sendMessage(PracticeCore::getInstance()->MessageData['BanMyself']);
+                    $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't ban yourself");
                     return true;
                 }
                 $now = time();
@@ -99,14 +99,14 @@ class TbanCommand extends Command
                 $banInfo->execute();
                 $target = Server::getInstance()->getPlayerExact(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
                 if ($target instanceof Player) {
-                    $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['KickBanMessage']));
+                    $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
                 }
                 $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
                 $msg = new DiscordWebhookUtils();
                 $msg2 = str_replace(['@here', '@everyone'], '', $data[4]);
                 $msg->setContent('>>> ' . $player->getName() . ' has banned ' . PracticeCore::getCaches()->targetPlayer[$player->getName()] . ' for ' . $data[1] . ' days, ' . $data[2] . ' hours, ' . $data[3] . ' minutes. Reason: ' . $msg2);
                 $web->send($msg);
-                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], PracticeCore::getInstance()->MessageData['BroadcastBanMessage']));
+                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f"));
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
 
             }
