@@ -106,9 +106,9 @@ class BotDuelFactory extends DuelFactoryBase
             $winnerMessage = '';
             if ($playerLeft instanceof PracticePlayer) {
                 $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
-                $loserMessage = '§cLoser: §fFistBot';
+                $loserMessage = '§cLoser: §fPracticeBot';
             } elseif ($playerLeft === null) {
-                $winnerMessage = '§aWinner: §fFistBot';
+                $winnerMessage = '§aWinner: §fPracticeBot';
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
             if ($this->player1->isOnline()) {
