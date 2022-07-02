@@ -44,6 +44,9 @@ class DuelFactory extends DuelFactoryBase
     {
         foreach ($this->getPlayers() as $player) {
             if ($player->isOnline()) {
+                if (($player->getPosition()->getY() < 95) && $player->getWorld() === $this->level) {
+                    $player->kill();
+                }
                 if (!$player->isDueling()) {
                     $this->loser = $player;
                     $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
