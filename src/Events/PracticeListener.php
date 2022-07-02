@@ -40,6 +40,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
@@ -363,6 +364,14 @@ class PracticeListener extends AbstractListener
         $event->setQuitMessage('§f[§c-§f] §c' . $name);
         if ($player instanceof PracticePlayer) {
             $player->onQuit();
+        }
+    }
+
+    public function onMove(PlayerMoveEvent $event): void
+    {
+        $player = $event->getPlayer();
+        if (($player instanceof PracticePlayer) && $player->isDueling() && $player->getPosition()->getY() < 90) {
+            $player->kill();
         }
     }
 
