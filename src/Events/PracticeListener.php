@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection NotOptimalIfConditionsInspection */
 /** @noinspection PhpIllegalStringOffsetInspection */
 /** @noinspection PhpInconsistentReturnPointsInspection */
 /** @noinspection PhpParamsInspection */
@@ -210,7 +210,7 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if ($player->getGamemode() !== Gamemode::CREATIVE()) {
+        if ($player->getGamemode() !== GameMode::CREATIVE()) {
             if ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT) {
                 $event->cancel();
             }
@@ -309,7 +309,7 @@ class PracticeListener extends AbstractListener
                 if ($player instanceof PracticePlayer) {
                     PracticeCore::getClickHandler()->addClick($player);
                     if (PracticeCore::getClickHandler()->getClicks($player) >= PracticeConfig::MaximumCPS) {
-                        $player->sendTitle("§cYou CPS is too high!");
+                        $player->sendTitle('§cYou CPS is too high!');
                     }
                 }
             }
@@ -468,7 +468,7 @@ class PracticeListener extends AbstractListener
         if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof PracticePlayer) {
             $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
             if ($damager instanceof PracticePlayer) {
-                $dname = $damager->getName() || "Unknown";
+                $dname = $damager->getName() || 'Unknown';
                 PracticeCore::getInstance()->getPracticeUtils()->DeathReset($player, $damager, $damager->getWorld()->getFolderName());
                 foreach ([$player, $damager] as $p) {
                     $p->setLastDamagePlayer('Unknown');

@@ -52,11 +52,11 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
-use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
+use RuntimeException;
 use SQLite3;
 use Throwable;
 use ZipArchive;
@@ -178,14 +178,20 @@ class PracticeUtils
 
     private function registerConfigs(): void
     {
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
+        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'data/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
+        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'players/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
+        if (!mkdir($concurrentDirectory = PracticeCore::getInstance()->getDataFolder() . 'Kits/') && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
         PracticeCore::getInstance()->saveResource('config.yml');
         PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
         PracticeCore::getInstance()->CapeData = new Config(PracticeCore::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
-        PracticeCore::getInstance()->MessageData = (new Config(PracticeCore::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, array(
+        PracticeCore::getInstance()->MessageData = (new Config(PracticeCore::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, [
             'StartCombat' => '§dNeptune§f » §r§aYou Started combat!',
             'AntiCheatName' => '§fLunar §f» ',
             'CooldownMessage' => "§dNeptune§f » §r§cYou can't chat for {cooldown} seconds!",
@@ -210,7 +216,7 @@ class PracticeUtils
             'InfoUIUnBanButton' => '§aUnban',
             'EnderPearlCooldownStart' => '§dNeptune§f » §aEnderpearl cooldown started!',
             'EnderPearlCooldownEnd' => '§dNeptune§f » §aEnderpearl cooldown ended!',
-        )))->getAll();
+        ]))->getAll();
         PracticeCore::getInstance()->BanData = new SQLite3(PracticeCore::getInstance()->getDataFolder() . 'Ban.db');
         PracticeCore::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
@@ -271,19 +277,6 @@ class PracticeUtils
     private function registerGenerators(): void
     {
         GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
-    }
-
-    public function SkillCooldown(Player $player): void
-    {
-        if (($player instanceof PracticePlayer) && $player->isSkillCooldown()) {
-            PracticeCore::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player): void {
-                if ($player->getArmorInventory()->getHelmet()->getId() === ItemIds::SKULL) {
-                    $player->getArmorInventory()->setHelmet(VanillaItems::AIR());
-                }
-                $player->sendMessage(PracticeCore::getInstance()->MessageData['SkillCleared']);
-                $player->setSkillCooldown(false);
-            }), PracticeConfig::SkillCooldownDelay);
-        }
     }
 
     /**
@@ -431,7 +424,7 @@ class PracticeUtils
             PracticeCore::getDuelManager()->stopMatch($activeMatch);
         }
         PracticeCore::getDeleteBlockHandler()->RemoveAllBlock();
-        $this->loadMap("BUild");
+        $this->loadMap('BUild');
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             if (str_contains(mb_strtolower($world->getFolderName()), 'duel') || str_contains(mb_strtolower($world->getFolderName()), 'bot')) {
                 $name = $world->getFolderName();

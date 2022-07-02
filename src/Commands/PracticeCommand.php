@@ -60,7 +60,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setFistArena($sender, $args[2]);
                             }
@@ -69,7 +69,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setBoxingArena($sender, $args[2]);
                             }
@@ -78,7 +78,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setComboArena($sender, $args[2]);
                             }
@@ -87,7 +87,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setKnockbackArena($sender, $args[2]);
                             }
@@ -96,7 +96,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setResistanceArena($sender, $args[2]);
                             }
@@ -105,7 +105,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setOITCArena($sender, $args[2]);
                             }
@@ -114,7 +114,7 @@ class PracticeCommand extends Command
                             if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             } else {
-                                Server::getInstance()->getWorldManager()->loadworld($args[2]);
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                 $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                 PracticeCore::getArenaFactory()->setBuildArena($sender, $args[2]);
                             }

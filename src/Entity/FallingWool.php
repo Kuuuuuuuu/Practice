@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection NotOptimalIfConditionsInspection */
 
 declare(strict_types=1);
 

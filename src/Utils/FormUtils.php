@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection NotOptimalIfConditionsInspection */
 
 declare(strict_types=1);
 
@@ -452,7 +452,7 @@ class FormUtils
             "\n§e" .
             "\n§aRank§f: §e" . $data->getRank() .
             "\n§e" .
-            "\n§aKDR§f: §e" . $data->getKDR() .
+            "\n§aKDR§f: §e" . $data->getKdr() .
             "\n§e" .
             "\n§aElo§f: §e" . $data->getElo()
         );

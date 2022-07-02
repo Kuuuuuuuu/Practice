@@ -54,8 +54,12 @@ class CosmeticHandler
         $this->dataFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->saveSkin = $this->dataFolder . 'skin/';
         if (!is_dir($this->dataFolder)) {
-            @mkdir($this->dataFolder);
-            @mkdir($this->saveSkin);
+            if (!mkdir($concurrentDirectory = $this->dataFolder) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
+            if (!mkdir($concurrentDirectory = $this->saveSkin) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
         $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
@@ -131,7 +135,7 @@ class CosmeticHandler
 
     public function getCapes(): array
     {
-        $list = array();
+        $list = [];
         foreach (array_diff(scandir($this->capeFolder)) as $data) {
             $dat = explode('.', $data);
             if ($dat[1] === 'png') {
@@ -206,12 +210,12 @@ class CosmeticHandler
     public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
         try {
-            $img = @imagecreatefrompng($imagePath);
+            $img = imagecreatefrompng($imagePath);
             $size = getimagesize($imagePath);
             $skinBytes = '';
             for ($y = 0; $y < $size[1]; $y++) {
                 for ($x = 0; $x < $size[0]; $x++) {
-                    $pixelColor = @imagecolorat($img, $x, $y);
+                    $pixelColor = imagecolorat($img, $x, $y);
                     $a = ((~($pixelColor >> 24)) << 1) & 0xff;
                     $r = ($pixelColor >> 16) & 0xff;
                     $g = ($pixelColor >> 8) & 0xff;
@@ -219,7 +223,7 @@ class CosmeticHandler
                     $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
                 }
             }
-            @imagedestroy($img);
+            imagedestroy($img);
             return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
             PracticeUtils::getLogger((string)$e);
@@ -314,12 +318,12 @@ class CosmeticHandler
     {
         try {
             $path = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . "$capeName.png";
-            $img = @imagecreatefrompng($path);
+            $img = imagecreatefrompng($path);
             $bytes = '';
-            $l = (int)@getimagesize($path)[1];
+            $l = (int)getimagesize($path)[1];
             for ($y = 0; $y < $l; $y++) {
                 for ($x = 0; $x < 64; $x++) {
-                    $rgba = @imagecolorat($img, $x, $y);
+                    $rgba = imagecolorat($img, $x, $y);
                     $a = ((~($rgba >> 24)) << 1) & 0xff;
                     $r = ($rgba >> 16) & 0xff;
                     $g = ($rgba >> 8) & 0xff;
@@ -327,7 +331,7 @@ class CosmeticHandler
                     $bytes .= chr($r) . chr($g) . chr($b) . chr($a);
                 }
             }
-            @imagedestroy($img);
+            imagedestroy($img);
             return $bytes;
         } catch (Exception $e) {
             PracticeUtils::getLogger((string)$e);
