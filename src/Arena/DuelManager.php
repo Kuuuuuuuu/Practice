@@ -23,11 +23,11 @@ class DuelManager extends DuelManagerBase
         $world = new WorldCreationOptions();
         if ($kit->getName() !== 'Sumo') {
             $world->setGeneratorClass(DuelGenerator::class);
-            $world->setSeed(0);
-            $world->setSpawnPosition(new Vector3(0, 100, 0));
         } else {
             $world->setGeneratorClass(SumoGenerator::class);
         }
+        $world->setSeed(0);
+        $world->setSpawnPosition(new Vector3(0, 100, 0));
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         foreach ([$player1, $player2] as $player) {
             $player->getInventory()->clearAll();

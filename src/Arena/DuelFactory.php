@@ -8,9 +8,9 @@ use Kuu\Task\PracticeTask;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
-use pocketmine\world\Position;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
@@ -71,11 +71,11 @@ class DuelFactory extends DuelFactoryBase
                     }
                 }
                 if ($this->kit->getName() === 'Sumo') {
-                    $this->player1->teleport(new Position(6, 110, 0, $this->level), 180);
-                    $this->player2->teleport(new Position(6, 110, 9, $this->level), 180);
+                    $this->player1->teleport(new Location(6, 101, 0, $this->level, 0, 0));
+                    $this->player2->teleport(new Location(6, 101, 9, $this->level, 0, 0));
                 } else {
-                    $this->player1->teleport(new Position(24, 110, 40, $this->level));
-                    $this->player2->teleport(new Position(24, 110, 10, $this->level));
+                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 0, 0));
+                    $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
                 }
                 break;
             case 902:
