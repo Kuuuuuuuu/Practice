@@ -155,7 +155,13 @@ class PracticeCore extends PluginBase
 
     protected function onDisable(): void
     {
-        self::getPracticeUtils()->Disable();
-        self::setCoreTask(null);
+        for ($i = 5; $i >= 0; $--) {
+             if ($i === 3) {
+                 self::getPracticeUtils()->Disable();
+                 self::setCoreTask(null);
+             } elseif ($i <= 2) {
+                 sleep(1);
+             }
+        }
     }
 }
