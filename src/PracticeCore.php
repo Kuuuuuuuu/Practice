@@ -159,7 +159,6 @@ class PracticeCore extends PluginBase
              if ($i === 3) {
                  self::getPracticeUtils()->Disable();
                  self::setCoreTask(null);
-             } elseif ($i <= 2) {
                  sleep(1);
              }
         }
