@@ -412,7 +412,7 @@ class PracticeListener extends AbstractListener
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
             }
-            if (($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
+            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
                 $player->knockBack(5, 0.4, 2);
             } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
@@ -460,7 +460,7 @@ class PracticeListener extends AbstractListener
      *
      * @throws Exception
      */
-    public function onEntityDamag(EntityDamageEvent $event): void
+    public function onEntityDamage(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof PracticePlayer) {
