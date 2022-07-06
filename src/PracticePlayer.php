@@ -46,7 +46,7 @@ class PracticePlayer extends Player
                     if ($this->isDueling()) {
                         $attackSpeed = 7.5;
                     } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) || 10;
+                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
                     }
                 } catch (Throwable) {
                 }
@@ -69,8 +69,8 @@ class PracticePlayer extends Player
                 $yKb = 0.32;
                 $xzKB = 0.34;
             } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] || 0.4;
-                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] || 0.4;
+                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
+                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
             }
         } catch (Throwable) {
         }
