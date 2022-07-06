@@ -79,6 +79,7 @@ class PracticeListener extends AbstractListener
     public function onUse(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
         $item = $event->getItem();
         if ($player instanceof PracticePlayer) {
             if ($player->getEditKit() !== null) {
@@ -100,6 +101,17 @@ class PracticeListener extends AbstractListener
                 PracticeCore::getFormUtils()->duelForm($player);
             } elseif ($item->getCustomName() === '§r§dProfile') {
                 PracticeCore::getFormUtils()->ProfileForm($player, null);
+            } elseif ($item->getCustomName() === '§r§eLeap§r') {
+                if (!isset(PracticeCore::getCaches()->LeapCooldown[$name]) || PracticeCore::getCaches()->LeapCooldown[$name] <= time()) {
+                    $directionvector = $player->getDirectionVector()->multiply(4 / 2);
+                    $dx = $directionvector->getX();
+                    $dy = $directionvector->getY();
+                    $dz = $directionvector->getZ();
+                    $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
+                    PracticeCore::getCaches()->LeapCooldown[$name] = time() + 10;
+                } else {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . 'You can use leap again in ' . (10 - ((time() + 10) - (PracticeCore::getCaches()->LeapCooldown[$name] ?? 0))) . ' seconds');
+                }
             }
         }
     }
@@ -413,7 +425,9 @@ class PracticeListener extends AbstractListener
                 $player->setLastDamagePlayer($damager->getName());
             }
             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
-                $player->knockBack(5, 0.4, 2);
+                $x = $damager->getDirectionVector()->x;
+                $z = $damager->getDirectionVector()->z;
+                $player->knockBack($x, $z, 0.6);
             } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
                     $player->setOpponent($damager->getName());

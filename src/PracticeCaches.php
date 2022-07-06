@@ -10,5 +10,6 @@ class PracticeCaches
     public array $DeathLeaderboard = [];
     public array $ClickData = [];
     public array $buildBlocks = [];
+    public array $LeapCooldown = [];
     public bool $Restarted = false;
 }
