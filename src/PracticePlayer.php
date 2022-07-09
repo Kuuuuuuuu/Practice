@@ -205,7 +205,9 @@ class PracticePlayer extends Player
     public function update(): void
     {
         $this->tick++;
-        $this->updateTag();
+        if ($this->tick % 5 === 0) {
+            $this->updateTag();
+        }
         if ($this->tick % 20 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
