@@ -23,7 +23,7 @@ class PracticePlayer extends Player
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
-    private int $sec = 0;
+    private int $tick = 0;
     private ?KitManager $duelKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
@@ -204,25 +204,24 @@ class PracticePlayer extends Player
 
     public function update(): void
     {
-        $this->sec++;
+        $this->tick++;
         $this->updateTag();
-        $this->updateScoreboard();
-        if ($this->isCombat()) {
-            $percent = (float)($this->CombatTime / 10);
-            $this->getXpManager()->setXpProgress($percent);
-            $this->CombatTime--;
-            if ($this->CombatTime <= 0) {
-                $this->setCombat(false);
-                $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
-                $this->BoxingPoint = 0;
-                $this->setOpponent(null);
-                $this->setUnPVPTag();
-            }
-        }
-        if ($this->sec % 3 === 0) {
-            PracticeCore::getPracticeUtils()->DeviceCheck($this);
+        if ($this->tick % 20 === 0) {
+            $this->updateScoreboard();
             $this->updateNametag();
+            if ($this->isCombat()) {
+                $percent = (float)($this->CombatTime / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                $this->CombatTime--;
+                if ($this->CombatTime <= 0) {
+                    $this->setCombat(false);
+                    $this->getXpManager()->setXpProgress(0.0);
+                    $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
+                    $this->BoxingPoint = 0;
+                    $this->setOpponent(null);
+                    $this->setUnPVPTag();
+                }
+            }
         }
     }
 
