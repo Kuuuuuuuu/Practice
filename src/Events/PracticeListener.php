@@ -350,7 +350,7 @@ class PracticeListener extends AbstractListener
                 if ($player instanceof PracticePlayer) {
                     PracticeCore::getClickHandler()->addClick($player);
                     if (PracticeCore::getClickHandler()->getClicks($player) >= PracticeConfig::MaximumCPS) {
-                        $player->sendTitle('§cYou CPS is too high!');
+                        $player->sendTitle('§eWarning!', '§cYou CPS is too high', 20, 40, 20);
                     }
                 }
             }
@@ -427,7 +427,7 @@ class PracticeListener extends AbstractListener
             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
                 $x = $damager->getDirectionVector()->x;
                 $z = $damager->getDirectionVector()->z;
-                $player->knockBack($x, $z, 0.6);
+                $player->knockBack($x, $z, 0.8);
             } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
                     $player->setOpponent($damager->getName());
@@ -448,7 +448,7 @@ class PracticeListener extends AbstractListener
                             $p->setCombat(true);
                         }
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            if ($damager->BoxingPoint < 100) {
+                            if ($damager->BoxingPoint <= 100) {
                                 $damager->BoxingPoint++;
                                 foreach ([$player, $damager] as $p) {
                                     /* @var PracticePlayer $p */

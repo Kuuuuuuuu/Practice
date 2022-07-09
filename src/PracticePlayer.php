@@ -206,6 +206,7 @@ class PracticePlayer extends Player
     {
         $this->sec++;
         $this->updateTag();
+        $this->updateScoreboard();
         if ($this->isCombat()) {
             $percent = (float)($this->CombatTime / 10);
             $this->getXpManager()->setXpProgress($percent);
@@ -221,7 +222,6 @@ class PracticePlayer extends Player
         }
         if ($this->sec % 3 === 0) {
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
-            $this->updateScoreboard();
             $this->updateNametag();
         }
     }

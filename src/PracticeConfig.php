@@ -10,7 +10,7 @@ final class PracticeConfig
     public const MOTD = '§d§lNeptune';
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
-    public const MaximumCPS = 18;
+    public const MaximumCPS = 16;
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
     public const IPV6 = false;
