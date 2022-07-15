@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kuu\Task;
 
 use Kuu\PracticeCore;

@@ -3,6 +3,7 @@
 namespace Kuu\Entity;
 
 use Exception;
+use Kuu\PracticeConfig;
 use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -96,7 +97,7 @@ class PracticeBot extends Human
         $this->location->yaw = rad2deg(atan2(-$x, $z));
         $this->location->pitch = rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         $health = round($this->getHealth());
-        $this->setNameTag('§bPracticeBot ' . "\n" . TextFormat::RED . $health);
+        $this->setNameTag(PracticeConfig::BOTNAME . "\n" . TextFormat::RED . $health);
         $this->attackTargetPlayer();
         if (!$this->isSprinting()) {
             $this->setSprinting();

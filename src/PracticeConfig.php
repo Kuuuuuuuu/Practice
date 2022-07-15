@@ -13,6 +13,7 @@ final class PracticeConfig
     public const MaximumCPS = 16;
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
+    public const BOTNAME = 'PracticeBot ';
     public const IPV6 = false;
     public const BuildFFASpawns = [
         [
@@ -74,9 +75,4 @@ final class PracticeConfig
         'Switch',
         'Xbox'
     ];
-
-    public static function getInstance(): PracticeConfig
-    {
-        return new self();
-    }
 }

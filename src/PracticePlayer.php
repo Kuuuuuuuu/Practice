@@ -209,8 +209,6 @@ class PracticePlayer extends Player
             $this->updateTag();
         }
         if ($this->tick % 20 === 0) {
-            $this->updateScoreboard();
-            $this->updateNametag();
             if ($this->isCombat()) {
                 $percent = (float)($this->CombatTime / 10);
                 $this->getXpManager()->setXpProgress($percent);
@@ -224,6 +222,10 @@ class PracticePlayer extends Player
                     $this->setUnPVPTag();
                 }
             }
+        }
+        if ($this->tick % 40 === 0) {
+            $this->updateScoreboard();
+            $this->updateNametag();
         }
     }
 

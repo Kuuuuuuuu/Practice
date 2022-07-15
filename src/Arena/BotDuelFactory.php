@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kuu\Arena;
 
 use Kuu\Entity\PracticeBot;
+use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Task\PracticeTask;
@@ -97,9 +100,9 @@ class BotDuelFactory extends DuelFactoryBase
         if (!$this->ended) {
             if ($playerLeft instanceof PracticePlayer) {
                 $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
-                $loserMessage = '§cLoser: §fPracticeBot';
+                $loserMessage = '§cLoser: §f' . PracticeConfig::BOTNAME;
             } else {
-                $winnerMessage = '§aWinner: §fPracticeBot';
+                $winnerMessage = '§aWinner: §f' . PracticeConfig::BOTNAME;
                 $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
             }
             if ($this->player1->isOnline()) {

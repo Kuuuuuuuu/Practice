@@ -543,13 +543,15 @@ class PracticeListener extends AbstractListener
     {
         $player = Server::getInstance()->getPlayerByPrefix($event->getSender()->getName());
         $cmd = $event->getCommand();
-        if (($player instanceof PracticePlayer) && isset(PracticeConfig::BanCommand[$cmd])) {
-            if ($player->isCombat() || $player->isDueling()) {
-                $event->cancel();
-                $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in combat!");
-            } elseif ($player->getEditKit() !== null) {
-                $event->cancel();
-                $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in Editkit mode!");
+        foreach (PracticeConfig::BanCommand as $ban) {
+            if (mb_strtolower($ban) === mb_strtolower($cmd) && $player instanceof PracticePlayer) {
+                if ($player->isCombat() || $player->isDueling()) {
+                    $event->cancel();
+                    $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in combat!");
+                } elseif ($player->getEditKit() !== null) {
+                    $event->cancel();
+                    $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in Editkit mode!");
+                }
             }
         }
     }
