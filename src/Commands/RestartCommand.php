@@ -24,9 +24,7 @@ class RestartCommand extends Command
         if ($sender instanceof Player) {
             if (PracticeCore::getCaches()->Restarted) {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cServer is already restarting!');
-                return;
-            }
-            if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+            } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 if (isset($args[0])) {
                     if (is_numeric($args[0])) {
                         PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)$args[0]), 20);

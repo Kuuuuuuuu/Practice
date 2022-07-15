@@ -23,7 +23,7 @@ class PlayerInfoCommand extends Command
     {
         if (!$sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
-        } elseif ($args === null) {
+        } elseif (!isset($args[0])) {
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /playerinfo <player>');
         } else {
             $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);

@@ -35,8 +35,7 @@ class PracticeCommand extends Command
     {
         if (!isset($args[0])) {
             $sender->sendMessage(Color::BOLD . Color::WHITE . '>> ' . Color::RESET . Color::RED . 'use /core help');
-        }
-        if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+        } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             switch ($args[0]) {
                 case 'help':
                     $sender->sendMessage(Color::BOLD . Color::GREEN . PracticeCore::getPrefixCore());
