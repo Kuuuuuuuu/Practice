@@ -16,7 +16,7 @@ use pocketmine\world\World;
 
 class BotDuelFactory extends DuelFactoryBase
 {
-    private int $time = self::DEFAULT_TIME;
+    private static int $time = self::DEFAULT_TIME;
     private PracticePlayer $player1;
     private ?PracticeBot $player2;
     private World $level;
@@ -49,7 +49,7 @@ class BotDuelFactory extends DuelFactoryBase
                         $this->onEnd($this->player1);
                     }
                 }
-                if ($this->time === 903) {
+                if (self::$time === 903) {
                     $this->player1->setImmobile();
                     $this->player1->setGamemode(GameMode::SURVIVAL());
                     $this->player1->sendTitle('§d3', '', 1, 3, 1);
@@ -57,24 +57,24 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
                     $this->player1->teleport(new Location(24, 101, 40, $this->level, 190, 0));
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                } elseif ($this->time === 902) {
+                } elseif (self::$time === 902) {
                     $this->player1->setCurrentKit(null);
                     $this->player1->sendTitle('§d2', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                } elseif ($this->time === 901) {
+                } elseif (self::$time === 901) {
                     $this->player1->sendTitle('§d1', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                } elseif ($this->time === 900) {
+                } elseif (self::$time === 900) {
                     $this->phase = self::INGAME;
                     $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
                     $this->player1->setImmobile(false);
                     $this->player2 = new PracticeBot(new Location(24, 101, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
-                } elseif ($this->time <= 1) {
+                } elseif (self::$time <= 1) {
                     $this->onEnd();
                 }
             }
-            $this->time--;
+            self::$time--;
         } else {
             $this->onEnd();
         }

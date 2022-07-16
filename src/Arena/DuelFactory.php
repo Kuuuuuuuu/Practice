@@ -16,7 +16,7 @@ use pocketmine\world\World;
 
 class DuelFactory extends DuelFactoryBase
 {
-    private int $time = self::DEFAULT_TIME;
+    private static int $time = self::DEFAULT_TIME;
     private PracticePlayer $player1;
     private PracticePlayer $player2;
     private ?PracticePlayer $winner = null;
@@ -54,7 +54,7 @@ class DuelFactory extends DuelFactoryBase
                     $this->onEnd($player);
                 }
             }
-            if ($this->time === 903) {
+            if (self::$time === 903) {
                 foreach ([$this->player1, $this->player2] as $player) {
                     /* @var PracticePlayer $player */
                     $player->setGamemode(GameMode::SURVIVAL());
@@ -74,20 +74,20 @@ class DuelFactory extends DuelFactoryBase
                     $this->player1->teleport(new Location(24, 101, 40, $this->level, 180, 0));
                     $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
                 }
-            } elseif ($this->time === 902) {
+            } elseif (self::$time === 902) {
                 foreach ([$this->player1, $this->player2] as $player) {
                     /* @var PracticePlayer $player */
                     $player->setCurrentKit(null);
                     $player->sendTitle('§d2', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
-            } elseif ($this->time === 901) {
+            } elseif (self::$time === 901) {
                 foreach ([$this->player1, $this->player2] as $player) {
                     /* @var PracticePlayer $player */
                     $player->sendTitle('§d1', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
-            } elseif ($this->time === 900) {
+            } elseif (self::$time === 900) {
                 $this->phase = self::INGAME;
                 foreach ([$this->player1, $this->player2] as $player) {
                     /* @var PracticePlayer $player */
@@ -95,11 +95,11 @@ class DuelFactory extends DuelFactoryBase
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
                     $player->setImmobile(false);
                 }
-            } elseif ($this->time <= 1) {
+            } elseif (self::$time <= 1) {
                 $this->onEnd();
             }
         }
-        $this->time--;
+        self::$time--;
     }
 
     public function onEnd(?PracticePlayer $playerLeft = null): void

@@ -11,21 +11,21 @@ use pocketmine\Server;
 class OnceRestartTask extends Task
 {
 
-    private int $time;
+    private static int $time;
 
     public function __construct(int $time)
     {
-        $this->time = $time;
+        self::$time = $time;
         PracticeCore::getCaches()->Restarted = true;
     }
 
     public function onRun(): void
     {
-        $this->time--;
-        if ($this->time % 5 === 0) {
-            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
+        self::$time--;
+        if (self::$time % 5 === 0) {
+            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . self::$time . '§c seconds');
         }
-        if ($this->time <= 1) {
+        if (self::$time <= 1) {
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 $player->kick('§cServer restarted');
             }
