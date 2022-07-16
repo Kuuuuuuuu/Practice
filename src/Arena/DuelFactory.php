@@ -16,7 +16,7 @@ use pocketmine\world\World;
 
 class DuelFactory extends DuelFactoryBase
 {
-    private static int $time = self::DEFAULT_TIME;
+    private static int $time;
     private PracticePlayer $player1;
     private PracticePlayer $player2;
     private ?PracticePlayer $winner = null;
@@ -32,6 +32,7 @@ class DuelFactory extends DuelFactoryBase
         $this->kit = $kit;
         $this->player1 = $player1;
         $this->player2 = $player2;
+        self::$time = self::DEFAULT_TIME;
     }
 
     public function update(): void
