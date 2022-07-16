@@ -19,7 +19,7 @@ use Kuu\Utils\FormUtils;
 use Kuu\Utils\KnockbackManager;
 use Kuu\Utils\PracticeUtils;
 use Kuu\Utils\ScoreboardManager;
-use Kuu\utils\ScoreboardsUtils;
+use Kuu\Utils\ScoreboardsUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use SQLite3;
