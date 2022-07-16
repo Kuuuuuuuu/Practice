@@ -13,20 +13,20 @@ use Throwable;
 
 class PracticePlayer extends Player
 {
+    private static int $CombatTime = 0;
+    private static int $sec = 0;
+    private static bool $Combat = false;
     public string $PlayerOS = 'Unknown';
     public string $PlayerControl = 'Unknown';
     public string $PlayerDevice = 'Unknown';
     public string $ToolboxStatus = 'Normal';
     public string $lastDamagePlayer = 'Unknown';
-    private int $CombatTime = 0;
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
-    private int $sec = 0;
     private ?KitManager $duelKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
-    private bool $Combat = false;
     private ?string $Opponent = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
@@ -203,13 +203,13 @@ class PracticePlayer extends Player
 
     public function update(): void
     {
-        $this->sec++;
+        self::$sec++;
         $this->updateTag();
         if ($this->isCombat()) {
-            $percent = (float)($this->CombatTime / 10);
+            $percent = (float)(self::$CombatTime / 10);
             $this->getXpManager()->setXpProgress($percent);
-            $this->CombatTime--;
-            if ($this->CombatTime <= 0) {
+            self::$CombatTime--;
+            if (self::$CombatTime <= 0) {
                 $this->setCombat(false);
                 $this->getXpManager()->setXpProgress(0.0);
                 $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
@@ -218,10 +218,12 @@ class PracticePlayer extends Player
                 $this->setUnPVPTag();
             }
         }
-        if ($this->sec % 3 === 0) {
-            PracticeCore::getPracticeUtils()->DeviceCheck($this);
+        if (self::$sec % 3 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
+        }
+        if (self::$sec % 10 === 0) {
+            PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }
     }
 
@@ -236,17 +238,7 @@ class PracticePlayer extends Player
 
     public function isCombat(): bool
     {
-        return $this->Combat;
-    }
-
-    public function setCombat(bool $bool): void
-    {
-        if (!$bool && $this->CombatTime > 0) {
-            $this->CombatTime = 1;
-        } else {
-            $this->Combat = $bool;
-            $this->CombatTime = 10;
-        }
+        return self::$Combat;
     }
 
     private function setPVPTag(): void
@@ -261,6 +253,16 @@ class PracticePlayer extends Player
     {
         $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl;
         $this->setScoreTag($untagpvp);
+    }
+
+    public function setCombat(bool $bool): void
+    {
+        if (!$bool && self::$CombatTime > 0) {
+            self::$CombatTime = 1;
+        } else {
+            self::$Combat = $bool;
+            self::$CombatTime = 10;
+        }
     }
 
     private function updateScoreboard(): void
