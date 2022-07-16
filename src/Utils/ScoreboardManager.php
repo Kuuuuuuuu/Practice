@@ -26,7 +26,7 @@ class ScoreboardManager
             3 => "§dPing§f: §a$ping",
             4 => '§a',
             5 => "§dK§f: §a$kills §dD§f: §a$deaths",
-            6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
+            6 => "§dKDR§f: §a$rate",
             7 => '§e',
             8 => "§dIn-Queue §a$queue",
             9 => "§dIn-Duel §a$duel",
@@ -81,12 +81,12 @@ class ScoreboardManager
     public function Boxing(Player $player): void
     {
         if ($player instanceof PracticePlayer) {
-            $boxingp = $player->BoxingPoint;
+            $boxingp = PracticeCore::getCaches()->BoxingPoint[$player->getName()] ?? 0;
             $opponent = $player->getOpponent();
             if ($opponent !== null) {
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                 /** @var PracticePlayer $oppopl */
-                $opponentboxingp = $oppopl?->BoxingPoint;
+                $opponentboxingp = PracticeCore::getCaches()->BoxingPoint[$oppopl?->getName()] ?? 0;
             } else {
                 $opponentboxingp = 0;
             }

@@ -441,7 +441,6 @@ class FormUtils
     {
         $form = new CustomForm(static function (Player $player, $data) {
         });
-
         if ($player2 !== null) {
             $data = PracticeCore::getPracticeUtils()->getData($player2->getName());
             $name = $player2->getName();
@@ -455,9 +454,7 @@ class FormUtils
             "\n§e" .
             "\n§aDeath§f: §e" . $data->getDeaths() .
             "\n§e" .
-            "\n§aKDR§f: §e" . $data->getKdr() .
-            "\n§e" .
-            "\n§aElo§f: §e" . $data->getElo()
+            "\n§aKDR§f: §e" . $data->getKdr()
         );
         $player->sendForm($form);
     }

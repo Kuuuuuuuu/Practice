@@ -32,7 +32,6 @@ use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
-use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -242,27 +241,6 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function onChangeSkin(PlayerChangeSkinEvent $event): void
-    {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if ($player instanceof PracticePlayer) {
-            $cosmetic = PracticeCore::getCosmeticHandler();
-            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
-                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
-                $cosmetic->resetSkin($player);
-            } else {
-                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
-                $cosmetic->saveSkin($skin->getSkinData(), $name);
-            }
-            $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-            $cosmetic->saveSkin($skin->getSkinData(), $name);
-        }
-    }
-
     public function onCraft(CraftItemEvent $event): void
     {
         $event->cancel();
@@ -448,8 +426,10 @@ class PracticeListener extends AbstractListener
                             $p->setCombat(true);
                         }
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            if ($damager->BoxingPoint <= 100) {
-                                $damager->BoxingPoint++;
+                            if (!isset(PracticeCore::getCaches()->BoxingPoint[$damager->getName()])) {
+                                PracticeCore::getCaches()->BoxingPoint[$damager->getName()] = 1;
+                            } elseif (PracticeCore::getCaches()->BoxingPoint[$damager->getName()] <= 100) {
+                                PracticeCore::getCaches()->BoxingPoint[$damager->getName()]++;
                                 foreach ([$player, $damager] as $p) {
                                     /* @var PracticePlayer $p */
                                     PracticeCore::getScoreboardManager()->Boxing($p);

@@ -392,7 +392,6 @@ class PracticeUtils
         foreach (PracticeCore::getCaches()->DuelMatch as $activeMatch) {
             PracticeCore::getDuelManager()->stopMatch($activeMatch);
         }
-        PracticeCore::getDeleteBlockHandler()->RemoveAllBlock();
         $this->loadMap('BUild');
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             if (str_contains(mb_strtolower($world->getFolderName()), 'duel') || str_contains(mb_strtolower($world->getFolderName()), 'bot')) {

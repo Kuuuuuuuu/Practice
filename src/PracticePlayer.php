@@ -13,7 +13,6 @@ use Throwable;
 
 class PracticePlayer extends Player
 {
-    public int $BoxingPoint = 0;
     public string $PlayerOS = 'Unknown';
     public string $PlayerControl = 'Unknown';
     public string $PlayerDevice = 'Unknown';
@@ -214,7 +213,7 @@ class PracticePlayer extends Player
                 $this->setCombat(false);
                 $this->getXpManager()->setXpProgress(0.0);
                 $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
-                $this->BoxingPoint = 0;
+                PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
                 $this->setOpponent(null);
                 $this->setUnPVPTag();
             }

@@ -6,6 +6,7 @@ namespace Kuu;
 
 class PracticeCaches
 {
+    public array $BoxingPoint = [];
     public array $DuelMatch = [];
     public array $targetPlayer = [];
     public array $KillLeaderboard = [];
