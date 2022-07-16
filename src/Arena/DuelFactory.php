@@ -6,7 +6,6 @@ namespace Kuu\Arena;
 
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
-use Kuu\Task\PracticeTask;
 use Kuu\Utils\Kits\KitManager;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -14,28 +13,21 @@ use pocketmine\entity\Location;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
 use pocketmine\world\World;
-use pocketmine\world\WorldException;
 
 class DuelFactory extends DuelFactoryBase
 {
     private int $time = 903;
     private PracticePlayer $player1;
     private PracticePlayer $player2;
-    private World $level;
     private ?PracticePlayer $winner = null;
     private ?PracticePlayer $loser = null;
+    private World $level;
     private KitManager $kit;
-    private bool $ended = false;
+    private int $phase = 0;
 
     public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
     {
-        $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
-        if ($world === null) {
-            throw new WorldException('World does not exist');
-        }
-        if (PracticeCore::getCoreTask() instanceof PracticeTask) {
-            PracticeCore::getCoreTask()?->addDuelTask($name, $this);
-        }
+        $world = $this->Load($name, $this);
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -44,7 +36,8 @@ class DuelFactory extends DuelFactoryBase
 
     public function update(): void
     {
-        foreach ($this->getPlayers() as $player) {
+        foreach ([$this->player1, $this->player2] as $player) {
+            /* @var PracticePlayer $player */
             if ($player->isOnline()) {
                 if (($player->getPosition()->getY() < 100) && $player->getWorld() === $this->level) {
                     $player->kill();
@@ -60,19 +53,18 @@ class DuelFactory extends DuelFactoryBase
                 $this->onEnd($player);
             }
         }
-        switch ($this->time) {
-            case 903:
-                foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof PracticePlayer) {
-                        $player->setGamemode(GameMode::SURVIVAL());
-                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                        $player->getInventory()->setContents($this->kit->getInventoryItems());
-                        $player->setImmobile();
-                        $player->sendTitle('§d3', '', 1, 3, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
-                        if ($this->kit->getName() === 'Sumo') {
-                            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 1000, 255, false));
-                        }
+        if ($this->phase !== self::ENDED) {
+            if ($this->time === 903) {
+                foreach ([$this->player1, $this->player2] as $player) {
+                    /* @var PracticePlayer $player */
+                    $player->setGamemode(GameMode::SURVIVAL());
+                    $player->getArmorInventory()->setContents($this->kit->getArmorItems());
+                    $player->getInventory()->setContents($this->kit->getInventoryItems());
+                    $player->setImmobile();
+                    $player->sendTitle('§d3', '', 1, 3, 1);
+                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                    if ($this->kit->getName() === 'Sumo') {
+                        $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 1000, 255, false));
                     }
                 }
                 if ($this->kit->getName() === 'Sumo') {
@@ -82,53 +74,47 @@ class DuelFactory extends DuelFactoryBase
                     $this->player1->teleport(new Location(24, 101, 40, $this->level, 180, 0));
                     $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
                 }
-                break;
-            case 902:
-                foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof PracticePlayer) {
-                        $player->setCurrentKit(null);
-                    }
+            } elseif ($this->time === 902) {
+                foreach ([$this->player1, $this->player2] as $player) {
+                    /* @var PracticePlayer $player */
+                    $player->setCurrentKit(null);
                     $player->sendTitle('§d2', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
-                break;
-            case 901:
-                foreach ($this->getPlayers() as $player) {
+            } elseif ($this->time === 901) {
+                foreach ([$this->player1, $this->player2] as $player) {
+                    /* @var PracticePlayer $player */
                     $player->sendTitle('§d1', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }
-                break;
-            case 900:
-                foreach ($this->getPlayers() as $player) {
+            } elseif ($this->time === 900) {
+                $this->phase = self::INGAME;
+                foreach ([$this->player1, $this->player2] as $player) {
+                    /* @var PracticePlayer $player */
                     $player->sendTitle('§dFight!', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
                     $player->setImmobile(false);
                 }
-                break;
-            case 0:
+            } elseif ($this->time <= 1) {
                 $this->onEnd();
-                break;
+            }
         }
         $this->time--;
     }
 
-    public function getPlayers(): array
-    {
-        return [$this->player1, $this->player2];
-    }
-
     public function onEnd(?PracticePlayer $playerLeft = null): void
     {
-        if (!$this->ended) {
-            foreach ($this->getPlayers() as $online) {
+        if ($this->phase === self::INGAME) {
+            foreach ([$this->player1, $this->player2] as $online) {
+                /* @var PracticePlayer $online */
                 if (is_null($playerLeft) || $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof PracticePlayer) {
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
-                        $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
+                        $winnerMessage .= ($this->winner !== null) ? $this->winner->getName() : 'None';
                         $online->sendMessage($winnerMessage);
                         $loserMessage = '§cLoser: §f';
-                        $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
+                        $loserMessage .= ($this->loser !== null) ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
                         PracticeCore::getPracticeUtils()->GiveLobbyItem($online);
@@ -136,12 +122,13 @@ class DuelFactory extends DuelFactoryBase
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
                         $online->setHealth(20);
+                        $online->setGamemode(GameMode::ADVENTURE());
                         $online->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
                     }
                 }
             }
-            $this->ended = true;
+            $this->phase = self::ENDED;
+            PracticeCore::getDuelManager()->stopMatch($this->level->getFolderName());
         }
-        PracticeCore::getDuelManager()->stopMatch($this->level->getFolderName());
     }
 }
