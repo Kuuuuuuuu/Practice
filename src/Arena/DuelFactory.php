@@ -16,7 +16,7 @@ use pocketmine\world\World;
 
 class DuelFactory extends DuelFactoryBase
 {
-    private int $time = 903;
+    private int $time = self::DEFAULT_TIME;
     private PracticePlayer $player1;
     private PracticePlayer $player2;
     private ?PracticePlayer $winner = null;
@@ -27,7 +27,7 @@ class DuelFactory extends DuelFactoryBase
 
     public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
     {
-        $world = $this->Load($name, $this);
+        $world = self::Load($name, $this);
         $this->level = $world;
         $this->kit = $kit;
         $this->player1 = $player1;
@@ -36,24 +36,24 @@ class DuelFactory extends DuelFactoryBase
 
     public function update(): void
     {
-        foreach ([$this->player1, $this->player2] as $player) {
-            /* @var PracticePlayer $player */
-            if ($player->isOnline()) {
-                if (($player->getPosition()->getY() < 100) && $player->getWorld() === $this->level) {
-                    $player->kill();
-                }
-                if (!$player->isDueling()) {
+        if ($this->phase !== self::ENDED) {
+            foreach ([$this->player1, $this->player2] as $player) {
+                /* @var PracticePlayer $player */
+                if ($player->isOnline()) {
+                    if ($player->getPosition()->getY() < 100 && $player->getWorld() === $this->level) {
+                        $player->kill();
+                    }
+                    if (!$player->isDueling()) {
+                        $this->loser = $player;
+                        $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
+                        $this->onEnd();
+                    }
+                } else {
                     $this->loser = $player;
                     $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                    $this->onEnd();
+                    $this->onEnd($player);
                 }
-            } else {
-                $this->loser = $player;
-                $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                $this->onEnd($player);
             }
-        }
-        if ($this->phase !== self::ENDED) {
             if ($this->time === 903) {
                 foreach ([$this->player1, $this->player2] as $player) {
                     /* @var PracticePlayer $player */

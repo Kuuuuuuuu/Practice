@@ -13,10 +13,11 @@ use pocketmine\world\WorldException;
 
 abstract class DuelFactoryBase
 {
+    protected const DEFAULT_TIME = 903;
     protected const INGAME = 1;
     protected const ENDED = 2;
 
-    protected function Load(string $name, DuelFactory|BotDuelFactory $factory): World|null
+    protected static function Load(string $name, DuelFactory|BotDuelFactory $factory): World|null
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {

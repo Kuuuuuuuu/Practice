@@ -6,10 +6,33 @@ namespace Kuu\Arena;
 
 use Exception;
 use Kuu\PracticeCore;
+use Kuu\Utils\Generator\DuelGenerator;
+use Kuu\Utils\Generator\SumoGenerator;
+use Kuu\Utils\Kits\KitManager;
+use pocketmine\math\Vector3;
 use pocketmine\Server;
+use pocketmine\world\WorldCreationOptions;
 
-class DuelManagerBase
+abstract class DuelManagerBase
 {
+
+    public static function Load(KitManager $kit, string $mode): WorldCreationOptions
+    {
+        $world = new WorldCreationOptions();
+        if ($mode === 'Duel') {
+            if ($kit->getName() !== 'Sumo') {
+                $world->setGeneratorClass(DuelGenerator::class);
+            } else {
+                $world->setGeneratorClass(SumoGenerator::class);
+            }
+        } elseif ($mode === 'Bot') {
+            $world->setGeneratorClass(DuelGenerator::class);
+        }
+        $world->setSeed(0);
+        $world->setSpawnPosition(new Vector3(0, 100, 0));
+        return $world;
+    }
+
     public function addMatch(string $name, DuelFactory|BotDuelFactory $task): void
     {
         PracticeCore::getCaches()->DuelMatch[$name] = $task;

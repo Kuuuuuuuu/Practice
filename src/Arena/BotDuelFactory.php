@@ -16,7 +16,7 @@ use pocketmine\world\World;
 
 class BotDuelFactory extends DuelFactoryBase
 {
-    private int $time = 903;
+    private int $time = self::DEFAULT_TIME;
     private PracticePlayer $player1;
     private ?PracticeBot $player2;
     private World $level;
@@ -26,7 +26,7 @@ class BotDuelFactory extends DuelFactoryBase
 
     public function __construct(string $name, PracticePlayer $player1, KitManager $kit, string $mode)
     {
-        $world = $this->Load($name, $this);
+        $world = self::Load($name, $this);
         $this->level = $world;
         $this->player1 = $player1;
         $this->player2 = null;
@@ -37,18 +37,18 @@ class BotDuelFactory extends DuelFactoryBase
     public function update(): void
     {
         if ($this->player1->isOnline()) {
-            if (!$this->player1->isDueling()) {
-                $this->onEnd();
-            }
-            if ($this->player2 instanceof PracticeBot) {
-                if ($this->player2?->pearlcooldown !== 0) {
-                    $this->player2->pearlcooldown--;
-                }
-                if (!$this->player2?->isAlive() || $this->player2?->isClosed()) {
-                    $this->onEnd($this->player1);
-                }
-            }
             if ($this->phase !== self::ENDED) {
+                if (!$this->player1->isDueling()) {
+                    $this->onEnd();
+                }
+                if ($this->player2 instanceof PracticeBot) {
+                    if ($this->player2?->pearlcooldown !== 0) {
+                        $this->player2->pearlcooldown--;
+                    }
+                    if (!$this->player2?->isAlive() || $this->player2?->isClosed()) {
+                        $this->onEnd($this->player1);
+                    }
+                }
                 if ($this->time === 903) {
                     $this->player1->setImmobile();
                     $this->player1->setGamemode(GameMode::SURVIVAL());
