@@ -221,8 +221,6 @@ class PracticePlayer extends Player
         if (self::$sec % 3 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
-        }
-        if (self::$sec % 10 === 0) {
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }
     }

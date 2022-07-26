@@ -403,9 +403,17 @@ class PracticeListener extends AbstractListener
                 $player->setLastDamagePlayer($damager->getName());
             }
             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
-                $x = $damager->getDirectionVector()->x;
-                $z = $damager->getDirectionVector()->z;
-                $player->knockBack($x, $z, 0.8);
+                $x = $player->getLocation()->getX();
+                $y = $player->getLocation()->getY();
+                $z = $player->getLocation()->getZ();
+                $safex = $player->getWorld()->getSafeSpawn()->getX();
+                $safey = $player->getWorld()->getSafeSpawn()->getY();
+                $safez = $player->getWorld()->getSafeSpawn()->getZ();
+                $protect = PracticeConfig::RadiusSpawnProtect;
+                if (abs($safex - $x) < $protect && abs($safey - $y) < $protect && abs($safez - $z) < $protect) {
+                    $event->cancel();
+                    $damager->sendMessage(PracticeConfig::PREFIX . "§r§cYou can't hit the players here!");
+                }
             } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
                     $player->setOpponent($damager->getName());

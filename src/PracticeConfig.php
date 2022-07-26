@@ -15,6 +15,7 @@ final class PracticeConfig
     public const OITCBowDelay = 100;
     public const BOTNAME = 'PracticeBot';
     public const IPV6 = false;
+    public const RadiusSpawnProtect = 6;
     public const BuildFFASpawns = [
         [
             'x' => 263,
