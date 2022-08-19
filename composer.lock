@@ -727,7 +727,7 @@
         },
         {
             "name": "pocketmine/pocketmine-mp",
-            "version": "4.5.1",
+            "version": "4.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/PocketMine-MP.git",
@@ -810,7 +810,7 @@
             "homepage": "https://pmmp.io",
             "support": {
                 "issues": "https://github.com/pmmp/PocketMine-MP/issues",
-                "source": "https://github.com/pmmp/PocketMine-MP/tree/4.5.1"
+                "source": "https://github.com/pmmp/PocketMine-MP/tree/4.7.2"
             },
             "funding": [
                 {
