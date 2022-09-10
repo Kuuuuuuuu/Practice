@@ -209,7 +209,9 @@ class PracticePlayer extends Player
 
     public function onUpdate(int $currentTick): bool
     {
-        $this->updateTag();
+        if ($currentTick % 100 === 0) {
+            $this->updateTag();
+        }
         return parent::onUpdate($currentTick);
     }
 
