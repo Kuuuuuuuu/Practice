@@ -218,7 +218,7 @@ class PracticePlayer extends Player
                 $this->setUnPVPTag();
             }
         }
-        if (self::$sec % 3 === 0) {
+        if (self::$sec % 5 === 0) {
             $this->updateScoreboard();
             $this->updateNametag();
             PracticeCore::getPracticeUtils()->DeviceCheck($this);

@@ -38,7 +38,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
-            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
+            PracticeCore::getInstance()->getScoreboardManager()->Boxing($player);
         }
     }
 
