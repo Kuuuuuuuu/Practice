@@ -8,6 +8,7 @@ final class PracticeConfig
     public const Server_Name = '§dNeptune§f ';
     public const SBPREFIX = '§f» §dNeptune §f«';
     public const MOTD = '§d§lNeptune';
+    public const COLOR = '§d';
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
     public const MaximumCPS = 16;

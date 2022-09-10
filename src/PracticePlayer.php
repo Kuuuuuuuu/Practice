@@ -7,7 +7,13 @@ namespace Kuu;
 use Exception;
 use JsonException;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
+use pocketmine\{entity\Skin,
+    network\mcpe\protocol\types\entity\EntityMetadataProperties,
+    network\mcpe\protocol\types\entity\StringMetadataProperty,
+    player\GameMode,
+    player\Player,
+    Server
+};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use Throwable;
 
@@ -243,14 +249,12 @@ class PracticePlayer extends Player
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = PracticeCore::getClickHandler()->getClicks($this);
-        $tagpvp = '§d' . $ping . '§fms §f| §d' . $nowcps . ' §fCPS';
-        $this->setScoreTag($tagpvp);
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . '§fMS §f| ' . PracticeConfig::COLOR . $nowcps . ' §fCPS')]);
     }
 
     private function setUnPVPTag(): void
     {
-        $untagpvp = '§d' . $this->PlayerOS . ' §f| §d' . $this->PlayerControl;
-        $this->setScoreTag($untagpvp);
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . "§f | §f" . $this->PlayerControl)]);
     }
 
     public function setCombat(bool $bool): void
