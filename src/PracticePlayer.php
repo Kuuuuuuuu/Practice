@@ -20,7 +20,6 @@ use Throwable;
 class PracticePlayer extends Player
 {
     private static int $CombatTime = 0;
-    private static int $sec = 0;
     private static bool $Combat = false;
     public string $PlayerOS = 'Unknown';
     public string $PlayerControl = 'Unknown';
@@ -209,8 +208,28 @@ class PracticePlayer extends Player
 
     public function onUpdate(int $currentTick): bool
     {
-        if ($currentTick % 100 === 0) {
+        if ($currentTick % 5 === 0) {
             $this->updateTag();
+            $this->updateScoreboard();
+        }
+        if ($currentTick % 20 === 0) {
+            if ($this->isCombat()) {
+                $percent = (float)(self::$CombatTime / 10);
+                $this->getXpManager()->setXpProgress($percent);
+                self::$CombatTime--;
+                if (self::$CombatTime <= 0) {
+                    $this->setCombat(false);
+                    $this->getXpManager()->setXpProgress(0.0);
+                    $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
+                    PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
+                    $this->setOpponent(null);
+                    $this->setUnPVPTag();
+                }
+            }
+        }
+        if ($currentTick % 40 === 0) {
+            $this->updateNametag();
+            PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }
         return parent::onUpdate($currentTick);
     }
@@ -241,26 +260,14 @@ class PracticePlayer extends Player
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . "§f | §f" . $this->PlayerControl)]);
     }
 
-    public function update(): void
+    private function updateScoreboard(): void
     {
-        self::$sec++;
-        if ($this->isCombat()) {
-            $percent = (float)(self::$CombatTime / 10);
-            $this->getXpManager()->setXpProgress($percent);
-            self::$CombatTime--;
-            if (self::$CombatTime <= 0) {
-                $this->setCombat(false);
-                $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
-                PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
-                $this->setOpponent(null);
-                $this->setUnPVPTag();
-            }
-        }
-        if (self::$sec % 3 === 0) {
-            $this->updateScoreboard();
-            $this->updateNametag();
-            PracticeCore::getPracticeUtils()->DeviceCheck($this);
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            PracticeCore::getInstance()->getScoreboardManager()->sb($this);
+        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
+        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
         }
     }
 
@@ -271,17 +278,6 @@ class PracticePlayer extends Player
         } else {
             self::$Combat = $bool;
             self::$CombatTime = 10;
-        }
-    }
-
-    private function updateScoreboard(): void
-    {
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            PracticeCore::getInstance()->getScoreboardManager()->sb($this);
-        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-            PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
-        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-            PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
         }
     }
 

@@ -27,11 +27,6 @@ class PracticeTask extends Task
 
         if (self::$tick % 20 === 0) {
             PracticeCore::getDeleteBlockHandler()->update();
-            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                if ($player instanceof PracticePlayer) {
-                    $player->update();
-                }
-            }
             foreach (self::$DuelTask as $duel) {
                 if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
                     $duel->update();
