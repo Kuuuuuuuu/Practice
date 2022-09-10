@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Arena;
+namespace Kuu\Arena\Duel;
 
 use Kuu\Entity\PracticeBot;
 use Kuu\PracticeConfig;

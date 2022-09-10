@@ -10,7 +10,7 @@ namespace Kuu;
 
 use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
-use Kuu\Arena\DuelManager;
+use Kuu\Arena\Duel\DuelManager;
 use Kuu\Task\PracticeTask;
 use Kuu\Utils\ClickHandler;
 use Kuu\Utils\CosmeticHandler;
