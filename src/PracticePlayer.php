@@ -207,28 +207,10 @@ class PracticePlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
-    public function update(): void
+    public function onUpdate(int $currentTick): bool
     {
-        self::$sec++;
         $this->updateTag();
-        if ($this->isCombat()) {
-            $percent = (float)(self::$CombatTime / 10);
-            $this->getXpManager()->setXpProgress($percent);
-            self::$CombatTime--;
-            if (self::$CombatTime <= 0) {
-                $this->setCombat(false);
-                $this->getXpManager()->setXpProgress(0.0);
-                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
-                PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
-                $this->setOpponent(null);
-                $this->setUnPVPTag();
-            }
-        }
-        if (self::$sec % 5 === 0) {
-            $this->updateScoreboard();
-            $this->updateNametag();
-            PracticeCore::getPracticeUtils()->DeviceCheck($this);
-        }
+        return parent::onUpdate($currentTick);
     }
 
     private function updateTag(): void
@@ -255,6 +237,29 @@ class PracticePlayer extends Player
     private function setUnPVPTag(): void
     {
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . "§f | §f" . $this->PlayerControl)]);
+    }
+
+    public function update(): void
+    {
+        self::$sec++;
+        if ($this->isCombat()) {
+            $percent = (float)(self::$CombatTime / 10);
+            $this->getXpManager()->setXpProgress($percent);
+            self::$CombatTime--;
+            if (self::$CombatTime <= 0) {
+                $this->setCombat(false);
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
+                PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
+                $this->setOpponent(null);
+                $this->setUnPVPTag();
+            }
+        }
+        if (self::$sec % 3 === 0) {
+            $this->updateScoreboard();
+            $this->updateNametag();
+            PracticeCore::getPracticeUtils()->DeviceCheck($this);
+        }
     }
 
     public function setCombat(bool $bool): void
