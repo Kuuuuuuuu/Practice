@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kuu\Commands;
 
 use JsonException;
-use Kuu\Entity\DeathLeaderboard;
-use Kuu\Entity\KillLeaderboard;
+use Kuu\Entity\Leaderboard\DeathLeaderboard;
+use Kuu\Entity\Leaderboard\KillLeaderboard;
 use Kuu\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;

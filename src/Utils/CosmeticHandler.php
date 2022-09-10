@@ -104,7 +104,6 @@ class CosmeticHandler
             }
             return $cubes;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -124,7 +123,6 @@ class CosmeticHandler
             }
             return $bounds;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -154,7 +152,6 @@ class CosmeticHandler
             }
             imagepng($img, $path . 'skin/' . $name . '.png');
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
         }
     }
 
@@ -186,8 +183,7 @@ class CosmeticHandler
             }
             imagesavealpha($image, true);
             return $image;
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -221,8 +217,7 @@ class CosmeticHandler
             }
             imagedestroy($img);
             return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -239,8 +234,7 @@ class CosmeticHandler
                 $player->setSkin($skin);
                 $player->sendSkin();
             }
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return;
         }
     }
@@ -257,8 +251,7 @@ class CosmeticHandler
             $imagePathh = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
             $geometryPath = $this->artifactFolder . $stuffName . '.json';
             return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -279,8 +272,7 @@ class CosmeticHandler
             imagecopymerge($down, $upper, 0, 0, 0, 0, $size[0], $size[1], 100);
             imagepng($down, $this->dataFolder . 'temp.png');
             return $this->dataFolder . 'temp.png';
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -304,8 +296,7 @@ class CosmeticHandler
             imagesavealpha($dst, true);
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -329,8 +320,7 @@ class CosmeticHandler
             }
             imagedestroy($img);
             return $bytes;
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }
@@ -347,7 +337,6 @@ class CosmeticHandler
                 $player->sendSkin();
             }
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
         }
     }
 
@@ -390,8 +379,7 @@ class CosmeticHandler
                 }
             }
             return (int)round($transparentPixels * 100 / max(1, $pixels));
-        } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+        } catch (Exception) {
             return null;
         }
     }

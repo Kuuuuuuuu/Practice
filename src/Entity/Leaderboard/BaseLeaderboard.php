@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Entity;
+namespace Kuu\Entity\Leaderboard;
 
 use JsonException;
 use pocketmine\entity\Human;

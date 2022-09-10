@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kuu\Utils;
 
-use DateTime;
 use Exception;
 use JsonException;
 use Kuu\Lib\FormAPI\CustomForm;
@@ -12,9 +11,6 @@ use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
-use Kuu\Utils\Discord\DiscordWebhook;
-use Kuu\Utils\Discord\DiscordWebhookEmbed;
-use Kuu\Utils\Discord\DiscordWebhookUtils;
 use Kuu\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\Skin;
@@ -243,21 +239,10 @@ class FormUtils
         $this->players[$player->getName()] = $list;
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
-                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-                $msg = new DiscordWebhookUtils();
-                $e = new DiscordWebhookEmbed();
-                $index = $data[1];
-                $e->setTitle('Player Report');
-                $e->setFooter('Made By KohakuChan');
-                $e->setTimestamp(new Datetime());
-                $e->setColor(0x00ff00);
-                $e->setDescription("{$player->getName()} Report {$this->players[$player->getName()][$index]}  | Reason: $data[2]");
-                $msg->addEmbed($e);
-                $web->send($msg);
                 $player->sendMessage(PracticeCore::getPrefixCore() . '§aReport Sent!');
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                        $p->sendMessage(PracticeCore::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$index]} §e| Reason: §a$data[2]");
+                        $p->sendMessage(PracticeCore::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$data[1]]} §e| Reason: §a$data[2]");
                     }
                 }
             }

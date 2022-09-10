@@ -14,7 +14,6 @@ final class PracticeConfig
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
     public const BOTNAME = 'PracticeBot';
-    public const IPV6 = false;
     public const RadiusSpawnProtect = 6;
     public const BuildFFASpawns = [
         [

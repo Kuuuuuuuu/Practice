@@ -7,8 +7,6 @@ namespace Kuu\Commands;
 use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
-use Kuu\Utils\Discord\DiscordWebhook;
-use Kuu\Utils\Discord\DiscordWebhookUtils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -81,10 +79,6 @@ class TcheckCommand extends Command
                 if (!empty($array)) {
                     PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§b{player} §ahas been unban'));
-                    $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-                    $msg = new DiscordWebhookUtils();
-                    $msg->setContent('>>> ' . str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§a{player} has been unban'));
-                    $web->send($msg);
                 }
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
             }

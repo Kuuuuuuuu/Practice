@@ -358,6 +358,7 @@ class PracticePlayer extends Player
                 $player->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $this->getName());
                 foreach ([$player, $this] as $p) {
                     $p->setInQueue(false);
+                    PracticeCore::getInstance()->getScoreboardManager()->sb2($p);
                 }
             }
         }

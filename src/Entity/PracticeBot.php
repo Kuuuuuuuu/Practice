@@ -42,19 +42,14 @@ class PracticeBot extends Human
         $this->gravity = 0.08;
         $this->mode = $mode;
         if ($mode === 'NoDebuff') {
-            $this->giveItems();
+            $sword = VanillaItems::DIAMOND_SWORD();
+            $this->getInventory()->setItem(0, $sword);
+            $this->getArmorInventory()->setHelmet(VanillaItems::DIAMOND_HELMET());
+            $this->getArmorInventory()->setChestplate(VanillaItems::DIAMOND_CHESTPLATE());
+            $this->getArmorInventory()->setLeggings(VanillaItems::DIAMOND_LEGGINGS());
+            $this->getArmorInventory()->setBoots(VanillaItems::DIAMOND_BOOTS());
+            $this->getInventory()->setHeldItemIndex(0);
         }
-    }
-
-    private function giveItems(): void
-    {
-        $sword = VanillaItems::DIAMOND_SWORD();
-        $this->getInventory()->setItem(0, $sword);
-        $this->getArmorInventory()->setHelmet(VanillaItems::DIAMOND_HELMET());
-        $this->getArmorInventory()->setChestplate(VanillaItems::DIAMOND_CHESTPLATE());
-        $this->getArmorInventory()->setLeggings(VanillaItems::DIAMOND_LEGGINGS());
-        $this->getArmorInventory()->setBoots(VanillaItems::DIAMOND_BOOTS());
-        $this->getInventory()->setHeldItemIndex(0);
     }
 
     /**
@@ -82,6 +77,9 @@ class PracticeBot extends Human
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
         if ($this->mode === 'NoDebuff') {
+            if ($this->getTargetPlayer()->getPosition()->getY() - $this->getPosition()->getY()) {
+                $this->teleport($this->getTargetPlayer()->getPosition());
+            }
             if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
                 if ($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 20) {
                     $this->pearl();
@@ -133,7 +131,7 @@ class PracticeBot extends Human
     {
         if ($this->getLocation()->getYaw() < 0) {
             $this->getLocation()->yaw = abs($this->getLocation()->getYaw());
-        } elseif ($this->getLocation()->getYaw() === 0) {
+        } elseif ($this->getLocation()->getYaw() == 0) {
             $this->getLocation()->yaw = -180;
         } else {
             $this->getLocation()->yaw = -$this->getLocation()->getYaw();

@@ -38,6 +38,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
         }
     }
 
@@ -54,6 +55,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getFistArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
         }
     }
 
@@ -71,6 +73,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
         }
     }
 
@@ -103,6 +106,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())?->getSafeSpawn());
             $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
         }
     }
 
@@ -119,6 +123,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())?->getSafeSpawn());
             $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
             $player->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
             $player->getInventory()->setItem(8, VanillaItems::ARROW());
             $player->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 200)));
@@ -137,6 +142,7 @@ class ArenaManager
             $player->getEffects()->clear();
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getResistanceArena())?->getSafeSpawn());
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
             $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
         }
     }
@@ -173,6 +179,7 @@ class ArenaManager
             $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())?->getSafeSpawn());
             $player->teleport(new Vector3($random['x'], $random['y'], $random['z']));
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            PracticeCore::getInstance()->getScoreboardManager()->sb2($player);
             $player->setGamemode(GameMode::SURVIVAL());
         }
     }

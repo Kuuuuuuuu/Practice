@@ -17,11 +17,10 @@ use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\ArrowEntity;
-use Kuu\Entity\BaseLeaderboard;
-use Kuu\Entity\DeathLeaderboard;
 use Kuu\Entity\EnderPearlEntity;
-use Kuu\Entity\FallingWool;
-use Kuu\Entity\KillLeaderboard;
+use Kuu\Entity\Leaderboard\BaseLeaderboard;
+use Kuu\Entity\Leaderboard\DeathLeaderboard;
+use Kuu\Entity\Leaderboard\KillLeaderboard;
 use Kuu\Entity\PracticeBot;
 use Kuu\Events\PracticeListener;
 use Kuu\Items\Bow;
@@ -31,9 +30,6 @@ use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use Kuu\Task\PracticeTask;
-use Kuu\Utils\Discord\DiscordWebhook;
-use Kuu\Utils\Discord\DiscordWebhookEmbed;
-use Kuu\Utils\Discord\DiscordWebhookUtils;
 use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
 use pocketmine\block\VanillaBlocks;
@@ -215,9 +211,6 @@ class PracticeUtils
 
     private function registerEntitys(): void
     {
-        EntityFactory::getInstance()->register(FallingWool::class, function (World $world, CompoundTag $nbt): FallingWool {
-            return new FallingWool(EntityDataHelper::parseLocation($nbt, $world), VanillaBlocks::WOOL(), $nbt);
-        }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
         EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): KillLeaderboard {
             return new KillLeaderboard(EntityDataHelper::parseLocation($nbt, $world), KillLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
@@ -451,18 +444,5 @@ class PracticeUtils
             }
         }
         rmdir($dirPath);
-    }
-
-    public static function getLogger(string $err): void
-    {
-        $e = new DiscordWebhookEmbed();
-        $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-        $msg = new DiscordWebhookUtils();
-        $e->setTitle('Server Logger');
-        $e->setTimestamp(new Datetime());
-        $e->setColor(0x00ff00);
-        $e->setDescription($err);
-        $msg->addEmbed($e);
-        $web->send($msg);
     }
 }

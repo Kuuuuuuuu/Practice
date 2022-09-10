@@ -11,8 +11,6 @@ use Kuu\Lib\FormAPI\CustomForm;
 use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
-use Kuu\Utils\Discord\DiscordWebhook;
-use Kuu\Utils\Discord\DiscordWebhookUtils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -101,11 +99,6 @@ class TbanCommand extends Command
                 if ($target instanceof Player) {
                     $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
                 }
-                $web = new DiscordWebhook(PracticeCore::getInstance()->getConfig()->get('Webhook'));
-                $msg = new DiscordWebhookUtils();
-                $msg2 = str_replace(['@here', '@everyone'], '', $data[4]);
-                $msg->setContent('>>> ' . $player->getName() . ' has banned ' . PracticeCore::getCaches()->targetPlayer[$player->getName()] . ' for ' . $data[1] . ' days, ' . $data[2] . ' hours, ' . $data[3] . ' minutes. Reason: ' . $msg2);
-                $web->send($msg);
                 Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f"));
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
 
