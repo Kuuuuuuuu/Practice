@@ -176,7 +176,6 @@ class PracticeUtils
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
-        PracticeCore::getInstance()->saveResource('config.yml');
         PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
         PracticeCore::getInstance()->CapeData = new Config(PracticeCore::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
