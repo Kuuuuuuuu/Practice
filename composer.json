@@ -1,6 +1,6 @@
 {
   "require": {
-    "pocketmine/pocketmine-mp": "^4.7.2",
+    "pocketmine/pocketmine-mp": "^4.8.1",
     "ext-gd": "*",
     "ext-sqlite3": "*",
     "ext-mbstring": "*",
