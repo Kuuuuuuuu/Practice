@@ -7,15 +7,10 @@ namespace Kuu;
 use Exception;
 use JsonException;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin,
-    network\mcpe\protocol\types\entity\EntityMetadataProperties,
-    network\mcpe\protocol\types\entity\StringMetadataProperty,
-    player\GameMode,
-    player\Player,
-    Server
-};
+use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
-use Throwable;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 
 class PracticePlayer extends Player
 {
@@ -40,19 +35,15 @@ class PracticePlayer extends Player
     {
         $attackSpeed = 10;
         parent::attack($source);
-        if ($source->isCancelled()) {
-            return;
-        }
-        if ($source instanceof EntityDamageByEntityEvent) {
-            $damager = $source->getDamager();
-            if ($damager instanceof Player) {
-                try {
+        if (!$source->isCancelled()) {
+            if ($source instanceof EntityDamageByEntityEvent) {
+                $damager = $source->getDamager();
+                if ($damager instanceof Player) {
                     if ($this->isDueling()) {
                         $attackSpeed = 7.5;
-                    } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
-                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
+                    } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName())) {
+                        $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName());
                     }
-                } catch (Throwable) {
                 }
             }
         }
@@ -68,15 +59,12 @@ class PracticePlayer extends Player
     {
         $xzKB = 0.4;
         $yKb = 0.4;
-        try {
-            if ($this->isDueling()) {
-                $yKb = 0.32;
-                $xzKB = 0.34;
-            } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
-                $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
-                $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;
-            }
-        } catch (Throwable) {
+        if ($this->isDueling()) {
+            $yKb = 0.32;
+            $xzKB = 0.34;
+        } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())) {
+            $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'];
+            $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'];
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
@@ -257,7 +245,7 @@ class PracticePlayer extends Player
 
     private function setUnPVPTag(): void
     {
-        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . "§f | §f" . $this->PlayerControl)]);
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . '§f | §f' . $this->PlayerControl)]);
     }
 
     private function updateScoreboard(): void

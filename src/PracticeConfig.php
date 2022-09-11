@@ -11,11 +11,11 @@ final class PracticeConfig
     public const COLOR = '§d';
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
-    public const MaximumCPS = 16;
-    public const SplashForce = 0.25;
+    public const MaximumCPS = 15;
+    public const SplashForce = 0.3;
     public const OITCBowDelay = 100;
     public const BOTNAME = 'PracticeBot';
-    public const RadiusSpawnProtect = 6;
+    public const RadiusSpawnProtect = 8;
     public const BuildFFASpawns = [
         [
             'x' => 263,

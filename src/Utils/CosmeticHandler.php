@@ -22,7 +22,6 @@ class CosmeticHandler
     public const BOUNDS_64_64 = 0;
     public const BOUNDS_64_32 = self::BOUNDS_64_64;
     public const BOUNDS_128_128 = 1;
-
     public string $dataFolder;
     public string $resourcesFolder;
     public string $artifactFolder;
@@ -103,7 +102,7 @@ class CosmeticHandler
                 }
             }
             return $cubes;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
     }
@@ -151,7 +150,8 @@ class CosmeticHandler
                 return;
             }
             imagepng($img, $path . 'skin/' . $name . '.png');
-        } catch (Exception $e) {
+        } catch (Exception) {
+            return;
         }
     }
 
@@ -336,7 +336,8 @@ class CosmeticHandler
                 $player->setSkin($skin);
                 $player->sendSkin();
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
+            return;
         }
     }
 

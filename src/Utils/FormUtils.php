@@ -24,8 +24,6 @@ use pocketmine\Server;
 class FormUtils
 {
 
-    private array $players = [];
-
     public function Form1($player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -236,13 +234,12 @@ class FormUtils
         foreach (PracticeCore::getInstance()->getServer()->getOnlinePlayers() as $p) {
             $list[] = $p->getName();
         }
-        $this->players[$player->getName()] = $list;
-        $form = new CustomForm(function (Player $player, array $data = null) {
+        $form = new CustomForm(function (Player $player, array $data = null) use ($list) {
             if ($data !== null) {
                 $player->sendMessage(PracticeCore::getPrefixCore() . '§aReport Sent!');
                 foreach (Server::getInstance()->getOnlinePlayers() as $p) {
                     if ($p->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                        $p->sendMessage(PracticeCore::getPrefixCore() . "§a{$player->getName()} §eReport §a{$this->players[$player->getName()][$data[1]]} §e| Reason: §a$data[2]");
+                        $p->sendMessage(PracticeCore::getPrefixCore() . "§a{$player->getName()} §eReport §a{$list[$data[1]]} §e| Reason: §a$data[2]");
                     }
                 }
             }
@@ -250,7 +247,7 @@ class FormUtils
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cReport');
         $form->addLabel('§aReport');
-        $form->addDropdown('§eSelect a player', $this->players[$player->getName()]);
+        $form->addDropdown('§eSelect a player', $list);
         $form->addInput('§dReason', 'Type a reason');
         $player->sendForm($form);
     }

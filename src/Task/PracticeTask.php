@@ -7,9 +7,7 @@ namespace Kuu\Task;
 use Kuu\Arena\Duel\BotDuelFactory;
 use Kuu\Arena\Duel\DuelFactory;
 use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
 use pocketmine\scheduler\Task;
-use pocketmine\Server;
 
 class PracticeTask extends Task
 {

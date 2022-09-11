@@ -28,11 +28,6 @@ class ChunkManager implements ChunkListener, ChunkLoader
         $this->callable = $callable;
     }
 
-    public function isLoaderActive(): bool
-    {
-        return true;
-    }
-
     public function getPosition(): Position
     {
         return $this->position;
@@ -49,12 +44,11 @@ class ChunkManager implements ChunkListener, ChunkLoader
 
     public function onChunkLoaded(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
-        if (!$chunk->isPopulated()) {
-            return;
+        if ($chunk->isPopulated()) {
+            $this->world->unregisterChunkLoader($this, $this->chunkX, $this->chunkZ);
+            $this->world->unregisterChunkListener($this, $this->chunkX, $this->chunkZ);
+            ($this->callable)();
         }
-        $this->world->unregisterChunkLoader($this, $this->chunkX, $this->chunkZ);
-        $this->world->unregisterChunkListener($this, $this->chunkX, $this->chunkZ);
-        ($this->callable)();
     }
 
     public function onChunkUnloaded(int $chunkX, int $chunkZ, Chunk $chunk): void

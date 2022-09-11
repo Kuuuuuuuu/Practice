@@ -294,7 +294,7 @@ class PracticeListener extends AbstractListener
     {
         $type = $event->getEntity();
         $owner = $type->getOwningEntity();
-        $owner?->setHealth($owner?->getHealth() + 4);
+        $owner?->setHealth($owner->getHealth() + 4);
         if (($owner instanceof Player) && $type instanceof SplashPotion) {
             foreach ($type->getWorld()->getNearbyEntities($type->getBoundingBox()->expand(2, 5, 2)) as $entity) {
                 if ($entity instanceof Player) {

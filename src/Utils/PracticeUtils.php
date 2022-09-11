@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kuu\Utils;
 
-use DateTime;
 use Exception;
 use Kuu\Commands\BroadcastCommand;
 use Kuu\Commands\HologramCommand;

@@ -43,10 +43,10 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->onEnd();
                 }
                 if ($this->player2 instanceof PracticeBot) {
-                    if ($this->player2?->pearlcooldown !== 0) {
+                    if ($this->player2->pearlcooldown !== 0) {
                         $this->player2->pearlcooldown--;
                     }
-                    if (!$this->player2?->isAlive() || $this->player2?->isClosed()) {
+                    if (!$this->player2->isAlive() || $this->player2->isClosed()) {
                         $this->onEnd($this->player1);
                     }
                 }
