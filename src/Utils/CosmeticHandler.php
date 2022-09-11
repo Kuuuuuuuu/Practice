@@ -19,24 +19,24 @@ use function strlen;
 
 class CosmeticHandler
 {
-    public const BOUNDS_64_64 = 0;
-    public const BOUNDS_64_32 = self::BOUNDS_64_64;
-    public const BOUNDS_128_128 = 1;
-    public string $dataFolder;
-    public string $resourcesFolder;
-    public string $artifactFolder;
-    public string $humanoidFile;
-    public string $saveSkin;
-    public array $skinBounds = [];
+    private const BOUNDS_64_64 = 0;
+    private const BOUNDS_64_32 = self::BOUNDS_64_64;
+    private const BOUNDS_128_128 = 1;
     public array $cosmeticAvailable = [];
-    public array $skin_widght_map = [
+    private string $dataFolder;
+    private string $resourcesFolder;
+    private string $artifactFolder;
+    private string $humanoidFile;
+    private string $saveSkin;
+    private array $skinBounds = [];
+    private array $skin_widght_map = [
         64 * 32 * 4 => 64,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
         128 * 256 * 4 => 256
 
     ];
-    public array $skin_height_map = [
+    private array $skin_height_map = [
         64 * 32 * 4 => 32,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
