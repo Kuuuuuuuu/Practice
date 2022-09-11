@@ -26,7 +26,6 @@ class CosmeticHandler
     public string $resourcesFolder;
     public string $artifactFolder;
     public string $humanoidFile;
-    public string $stevePng;
     public string $saveSkin;
     public array $skinBounds = [];
     public array $cosmeticAvailable = [];
@@ -59,7 +58,6 @@ class CosmeticHandler
         $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
-        $this->stevePng = $this->resourcesFolder . 'steve.png';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true, 512, JSON_THROW_ON_ERROR)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
@@ -322,22 +320,6 @@ class CosmeticHandler
             return $bytes;
         } catch (Exception) {
             return null;
-        }
-    }
-
-    public function resetSkin(Player $player): void
-    {
-        try {
-            $name = $player->getName();
-            $imagePath = $this->getSaveSkin($name);
-            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), 'geometry.humanoid.customSlim');
-            if ($skin !== null) {
-                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
-                $player->setSkin($skin);
-                $player->sendSkin();
-            }
-        } catch (Exception) {
-            return;
         }
     }
 
