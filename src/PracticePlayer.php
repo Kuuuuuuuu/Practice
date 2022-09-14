@@ -205,13 +205,14 @@ class PracticePlayer extends Player
 
     public function update()
     {
+        $this->sec++;
         if ($this->isCombat()) {
             $percent = (float)(self::$CombatTime / 10);
             $this->getXpManager()->setXpProgress($percent);
             self::$CombatTime--;
             if (self::$CombatTime <= 0) {
                 self::$Combat = false;
-                self::$CombatTime = 10;
+                self::$CombatTime = 0;
                 $this->getXpManager()->setXpProgress(0.0);
                 $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
                 PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
@@ -221,7 +222,7 @@ class PracticePlayer extends Player
         }
         $this->updateTag();
         $this->updateScoreboard();
-        if ($this->sec % 40 === 0) {
+        if ($this->sec % 5 === 0) {
             $this->updateNametag();
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }
