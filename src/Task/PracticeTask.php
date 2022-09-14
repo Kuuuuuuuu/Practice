@@ -24,12 +24,12 @@ class PracticeTask extends Task
     public function onRun(): void
     {
         self::$tick++;
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-            if ($player instanceof PracticePlayer) {
-                $player->update();
-            }
-        }
         if (self::$tick % 20 === 0) {
+            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                if ($player instanceof PracticePlayer) {
+                    $player->update();
+                }
+            }
             PracticeCore::getDeleteBlockHandler()->update();
             foreach (self::$DuelTask as $duel) {
                 if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
