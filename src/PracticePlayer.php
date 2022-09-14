@@ -31,6 +31,7 @@ class PracticePlayer extends Player
     private ?string $Opponent = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
+    private int $sec = 0;
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -202,32 +203,47 @@ class PracticePlayer extends Player
         $this->lastDamagePlayer = $name;
     }
 
-    public function onUpdate(int $currentTick): bool
+    public function update()
     {
-        if ($currentTick % 5 === 0) {
-            $this->updateTag();
-            $this->updateScoreboard();
-        }
-        if ($currentTick % 20 === 0) {
-            if ($this->isCombat()) {
-                $percent = (float)(self::$CombatTime / 10);
-                $this->getXpManager()->setXpProgress($percent);
-                self::$CombatTime--;
-                if (self::$CombatTime <= 0) {
-                    $this->setCombat(false);
-                    $this->getXpManager()->setXpProgress(0.0);
-                    $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
-                    PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
-                    $this->setOpponent(null);
-                    $this->setUnPVPTag();
-                }
+        if ($this->isCombat()) {
+            $percent = (float)(self::$CombatTime / 10);
+            $this->getXpManager()->setXpProgress($percent);
+            self::$CombatTime--;
+            if (self::$CombatTime <= 0) {
+                $this->setCombat(false);
+                $this->getXpManager()->setXpProgress(0.0);
+                $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
+                PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
+                $this->setOpponent(null);
+                $this->setUnPVPTag();
             }
         }
-        if ($currentTick % 40 === 0) {
+        $this->updateTag();
+        $this->updateScoreboard();
+        if ($this->sec % 40 === 0) {
             $this->updateNametag();
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }
-        return parent::onUpdate($currentTick);
+    }
+
+    public function isCombat(): bool
+    {
+        return self::$Combat;
+    }
+
+    public function setCombat(bool $bool): void
+    {
+        if (!$bool && self::$CombatTime > 0) {
+            self::$CombatTime = 1;
+        } else {
+            self::$Combat = $bool;
+            self::$CombatTime = 10;
+        }
+    }
+
+    private function setUnPVPTag(): void
+    {
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . '§f | §f' . $this->PlayerControl)]);
     }
 
     private function updateTag(): void
@@ -239,21 +255,11 @@ class PracticePlayer extends Player
         }
     }
 
-    public function isCombat(): bool
-    {
-        return self::$Combat;
-    }
-
     private function setPVPTag(): void
     {
         $ping = $this->getNetworkSession()->getPing();
         $nowcps = PracticeCore::getClickHandler()->getClicks($this);
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . '§fMS §f| ' . PracticeConfig::COLOR . $nowcps . ' §fCPS')]);
-    }
-
-    private function setUnPVPTag(): void
-    {
-        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . '§f | §f' . $this->PlayerControl)]);
     }
 
     private function updateScoreboard(): void
@@ -264,16 +270,6 @@ class PracticePlayer extends Player
             PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
         } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
             PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
-        }
-    }
-
-    public function setCombat(bool $bool): void
-    {
-        if (!$bool && self::$CombatTime > 0) {
-            self::$CombatTime = 1;
-        } else {
-            self::$Combat = $bool;
-            self::$CombatTime = 10;
         }
     }
 
