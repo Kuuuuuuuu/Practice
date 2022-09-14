@@ -211,7 +211,7 @@ class PracticePlayer extends Player
             $this->getXpManager()->setXpProgress($percent);
             self::$CombatTime--;
             if (self::$CombatTime <= 0) {
-                self::$Combat = false;
+                $this->setCombat(false);
                 $this->getXpManager()->setXpProgress(0.0);
                 $this->sendMessage(PracticeCore::getPrefixCore() . '§aYou Cleared combat!');
                 PracticeCore::getCaches()->BoxingPoint[$this->getName()] = 0;
