@@ -235,7 +235,7 @@ class PracticePlayer extends Player
     public function setCombat(bool $bool): void
     {
         if (!$bool && self::$CombatTime > 0) {
-            self::$CombatTime = 1;
+            self::$CombatTime = 0;
         } else {
             self::$Combat = $bool;
             self::$CombatTime = 10;
