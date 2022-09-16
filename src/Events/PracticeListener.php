@@ -358,7 +358,6 @@ class PracticeListener extends AbstractListener
                     $player->saveKit();
                 } else {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§aType §l§cConfirm §r§a to confirm');
-                    $player->sendMessage(PracticeCore::getPrefixCore() . '§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน');
                 }
             }
         }
