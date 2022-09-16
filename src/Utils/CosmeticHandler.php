@@ -12,6 +12,7 @@ use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\entity\Skin;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use RuntimeException;
 use function ord;
 use function round;
@@ -104,7 +105,7 @@ class CosmeticHandler
             }
             return $cubes;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -124,7 +125,7 @@ class CosmeticHandler
             }
             return $bounds;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -154,7 +155,7 @@ class CosmeticHandler
             }
             imagepng($img, $path . 'skin/' . $name . '.png');
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
         }
     }
 
@@ -187,7 +188,7 @@ class CosmeticHandler
             imagesavealpha($image, true);
             return $image;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -222,7 +223,7 @@ class CosmeticHandler
             imagedestroy($img);
             return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -240,7 +241,7 @@ class CosmeticHandler
                 $player->sendSkin();
             }
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return;
         }
     }
@@ -258,7 +259,7 @@ class CosmeticHandler
             $geometryPath = $this->artifactFolder . $stuffName . '.json';
             return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -280,7 +281,7 @@ class CosmeticHandler
             imagepng($down, $this->dataFolder . 'temp.png');
             return $this->dataFolder . 'temp.png';
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -305,7 +306,7 @@ class CosmeticHandler
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -330,7 +331,7 @@ class CosmeticHandler
             imagedestroy($img);
             return $bytes;
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }
@@ -347,7 +348,7 @@ class CosmeticHandler
                 $player->sendSkin();
             }
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
         }
     }
 
@@ -391,7 +392,7 @@ class CosmeticHandler
             }
             return (int)round($transparentPixels * 100 / max(1, $pixels));
         } catch (Exception $e) {
-            PracticeUtils::getLogger((string)$e);
+            Server::getInstance()->getLogger()->error((string)$e);
             return null;
         }
     }

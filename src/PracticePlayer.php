@@ -7,14 +7,10 @@ namespace Kuu;
 use Exception;
 use JsonException;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
-use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-use pocketmine\{entity\Skin,
-    player\GameMode,
-    player\Player,
-    Server
-};
+use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
 
 class PracticePlayer extends Player
