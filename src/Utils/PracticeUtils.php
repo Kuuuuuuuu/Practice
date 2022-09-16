@@ -17,6 +17,7 @@ use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\ArrowEntity;
 use Kuu\Entity\EnderPearlEntity;
+use Kuu\Entity\FallingWool;
 use Kuu\Entity\Leaderboard\BaseLeaderboard;
 use Kuu\Entity\Leaderboard\DeathLeaderboard;
 use Kuu\Entity\Leaderboard\KillLeaderboard;
@@ -176,9 +177,29 @@ class PracticeUtils
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
+        PracticeCore::getInstance()->saveResource('config.yml');
         PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
         PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
         PracticeCore::getInstance()->CapeData = new Config(PracticeCore::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
+        PracticeCore::getInstance()->MessageData = (new Config(PracticeCore::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, [
+            'StartCombat' => '§dNeptune§f » §r§aYou Started combat!',
+            'StopCombat' => '§dNeptune§f » §r§aYou Cleared combat!',
+            'CantUseeditkit' => "§dNeptune§f » §r§cYou can't use this command in editkit mode!",
+            'CantUseWantCombat' => "§dNeptune§f » §r§cYou can't use this command in combat!",
+            'BroadcastBanMessage' => "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f",
+            'KickBanMessage' => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            'LoginBanMessage' => "§fLunar\n§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M",
+            'BanMyself' => "§dNeptune§f » §cYou can't ban yourself",
+            'NoBanPlayers' => '§dNeptune§f » §aNo ban players',
+            'UnBanPlayer' => '§dNeptune§f » §b{player} §ahas been unban',
+            'AutoUnBanPlayer' => '§dNeptune§f »» §a{player} Has Auto Unban Already!',
+            'BanListTitle' => PracticeConfig::Server_Name . '§eBanSystem',
+            'BanListContent' => '§c§lChoose player',
+            'PlayerListTitle' => PracticeConfig::Server_Name . '§eBanSystem',
+            'PlayerListContent' => '§c§lChoose Player',
+            'InfoUIContent' => "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}",
+            'InfoUIUnBanButton' => '§aUnban',
+        ]))->getAll();
         PracticeCore::getInstance()->BanData = new SQLite3(PracticeCore::getInstance()->getDataFolder() . 'Ban.db');
         PracticeCore::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
@@ -442,5 +463,10 @@ class PracticeUtils
             }
         }
         rmdir($dirPath);
+    }
+
+    public static function getLogger(string $err): void
+    {
+        Server::getInstance()->getLogger()->error($err);
     }
 }

@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Kuu\Utils;
 
+use Exception;
 use JetBrains\PhpStorm\Pure;
 use Kuu\PracticeCore;
 
@@ -17,6 +18,7 @@ class DataManager
     private int|float $kdr = 0;
     private int $deaths = 0;
     private array $data = [];
+    private int $elo = 1000;
     private ?string $tag = null;
 
     public function __construct(string $player)
@@ -45,6 +47,11 @@ class DataManager
                 $this->kdr = $data['kdr'];
             } else {
                 $this->kdr = 1;
+            }
+            if (isset($data['elo'])) {
+                $this->elo = $data['elo'];
+            } else {
+                $this->elo = 1000;
             }
             if (isset($data['tag'])) {
                 $this->tag = $data['tag'];
@@ -88,7 +95,7 @@ class DataManager
 
     private function save(): void
     {
-        yaml_emit_file($this->getPath(), ['name' => $this->player, 'kills' => $this->kills, 'killstreak' => $this->killStreak, 'kdr' => $this->getKdr(), 'deaths' => $this->deaths, 'tag' => $this->tag]);
+        yaml_emit_file($this->getPath(), ['name' => $this->player, 'kills' => $this->kills, 'killstreak' => $this->killStreak, 'kdr' => $this->getKdr(), 'deaths' => $this->deaths, 'elo' => $this->elo, 'tag' => $this->tag]);
     }
 
     public function getKdr(): float|int
@@ -97,6 +104,33 @@ class DataManager
             return $this->kills / $this->deaths;
         }
         return 1;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addElo(): int
+    {
+        $random = random_int(1, 30);
+        $this->elo += $random;
+        $this->save();
+        return $random;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function removeElo(): int
+    {
+        $random = random_int(1, 30);
+        $this->elo -= $random;
+        $this->save();
+        return $random;
+    }
+
+    public function getElo(): int
+    {
+        return $this->elo;
     }
 
     public function addDeath(): void

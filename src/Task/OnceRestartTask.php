@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Kuu\Task;
 
 use Kuu\PracticeCore;
@@ -11,21 +9,21 @@ use pocketmine\Server;
 class OnceRestartTask extends Task
 {
 
-    private static int $time;
+    private int $time;
 
     public function __construct(int $time)
     {
-        self::$time = $time;
+        $this->time = $time;
         PracticeCore::getCaches()->Restarted = true;
     }
 
     public function onRun(): void
     {
-        self::$time--;
-        if (self::$time % 5 === 0) {
-            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . self::$time . '§c seconds');
+        $this->time--;
+        if ($this->time % 5 === 0) {
+            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
         }
-        if (self::$time <= 1) {
+        if ($this->time <= 1) {
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 $player->kick('§cServer restarted');
             }

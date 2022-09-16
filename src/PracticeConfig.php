@@ -2,20 +2,20 @@
 
 namespace Kuu;
 
-final class PracticeConfig
+use pocketmine\utils\TextFormat;
+
+interface PracticeConfig
 {
     public const PREFIX = '§dNeptune§f » §r';
     public const Server_Name = '§dNeptune§f ';
     public const SBPREFIX = '§f» §dNeptune §f«';
     public const MOTD = '§d§lNeptune';
-    public const COLOR = '§d';
     public const PearlForce = 2.5;
     public const DeleteBlockTime = 10;
-    public const MaximumCPS = 15;
-    public const SplashForce = 0.3;
+    public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
-    public const BOTNAME = 'PracticeBot';
-    public const RadiusSpawnProtect = 8;
+    public const COLOR = TextFormat::LIGHT_PURPLE;
+    public const RadiusSpawnProtect = 6;
     public const BuildFFASpawns = [
         [
             'x' => 263,

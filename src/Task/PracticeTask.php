@@ -7,9 +7,7 @@ namespace Kuu\Task;
 use Kuu\Arena\Duel\BotDuelFactory;
 use Kuu\Arena\Duel\DuelFactory;
 use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
 use pocketmine\scheduler\Task;
-use pocketmine\Server;
 
 class PracticeTask extends Task
 {
@@ -25,11 +23,6 @@ class PracticeTask extends Task
     {
         self::$tick++;
         if (self::$tick % 20 === 0) {
-            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
-                if ($player instanceof PracticePlayer) {
-                    $player->update();
-                }
-            }
             PracticeCore::getDeleteBlockHandler()->update();
             foreach (self::$DuelTask as $duel) {
                 if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {

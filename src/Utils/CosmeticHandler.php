@@ -19,24 +19,26 @@ use function strlen;
 
 class CosmeticHandler
 {
-    private const BOUNDS_64_64 = 0;
-    private const BOUNDS_64_32 = self::BOUNDS_64_64;
-    private const BOUNDS_128_128 = 1;
+    public const BOUNDS_64_64 = 0;
+    public const BOUNDS_64_32 = self::BOUNDS_64_64;
+    public const BOUNDS_128_128 = 1;
+
+    public string $dataFolder;
+    public string $resourcesFolder;
+    public string $artifactFolder;
+    public string $humanoidFile;
+    public string $stevePng;
+    public string $saveSkin;
+    public array $skinBounds = [];
     public array $cosmeticAvailable = [];
-    private string $dataFolder;
-    private string $resourcesFolder;
-    private string $artifactFolder;
-    private string $humanoidFile;
-    private string $saveSkin;
-    private array $skinBounds = [];
-    private array $skin_widght_map = [
+    public array $skin_widght_map = [
         64 * 32 * 4 => 64,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
         128 * 256 * 4 => 256
 
     ];
-    private array $skin_height_map = [
+    public array $skin_height_map = [
         64 * 32 * 4 => 32,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
@@ -58,6 +60,7 @@ class CosmeticHandler
         $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
+        $this->stevePng = $this->resourcesFolder . 'steve.png';
         $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
         $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true, 512, JSON_THROW_ON_ERROR)['geometry.humanoid']);
         $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
@@ -100,7 +103,8 @@ class CosmeticHandler
                 }
             }
             return $cubes;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -120,6 +124,7 @@ class CosmeticHandler
             }
             return $bounds;
         } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -148,8 +153,8 @@ class CosmeticHandler
                 return;
             }
             imagepng($img, $path . 'skin/' . $name . '.png');
-        } catch (Exception) {
-            return;
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
         }
     }
 
@@ -181,7 +186,8 @@ class CosmeticHandler
             }
             imagesavealpha($image, true);
             return $image;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -215,7 +221,8 @@ class CosmeticHandler
             }
             imagedestroy($img);
             return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -232,7 +239,8 @@ class CosmeticHandler
                 $player->setSkin($skin);
                 $player->sendSkin();
             }
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return;
         }
     }
@@ -249,7 +257,8 @@ class CosmeticHandler
             $imagePathh = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
             $geometryPath = $this->artifactFolder . $stuffName . '.json';
             return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -270,7 +279,8 @@ class CosmeticHandler
             imagecopymerge($down, $upper, 0, 0, 0, 0, $size[0], $size[1], 100);
             imagepng($down, $this->dataFolder . 'temp.png');
             return $this->dataFolder . 'temp.png';
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -294,7 +304,8 @@ class CosmeticHandler
             imagesavealpha($dst, true);
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }
@@ -318,8 +329,25 @@ class CosmeticHandler
             }
             imagedestroy($img);
             return $bytes;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
+        }
+    }
+
+    public function resetSkin(Player $player): void
+    {
+        try {
+            $name = $player->getName();
+            $imagePath = $this->getSaveSkin($name);
+            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), 'geometry.humanoid.customSlim');
+            if ($skin !== null) {
+                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
+                $player->setSkin($skin);
+                $player->sendSkin();
+            }
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
         }
     }
 
@@ -362,7 +390,8 @@ class CosmeticHandler
                 }
             }
             return (int)round($transparentPixels * 100 / max(1, $pixels));
-        } catch (Exception) {
+        } catch (Exception $e) {
+            PracticeUtils::getLogger((string)$e);
             return null;
         }
     }

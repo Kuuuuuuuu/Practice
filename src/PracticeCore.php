@@ -40,6 +40,7 @@ class PracticeCore extends PluginBase
     private static DuelManager $duelmanager;
     private static ?PracticeTask $CoreTask;
     private static PracticeCaches $caches;
+    public Config|array $MessageData;
     public Config $CapeData;
     public Config $ArtifactData;
     public SQLite3 $BanData;
@@ -155,12 +156,7 @@ class PracticeCore extends PluginBase
 
     protected function onDisable(): void
     {
-        for ($i = 5; $i >= 0; $i--) {
-            if ($i <= 3) {
-                self::getPracticeUtils()->Disable();
-                self::setCoreTask(null);
-                sleep(1);
-            }
-        }
+        self::getPracticeUtils()->Disable();
+        self::setCoreTask(null);
     }
 }

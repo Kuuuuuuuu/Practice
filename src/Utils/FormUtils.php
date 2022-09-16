@@ -76,42 +76,42 @@ class FormUtils
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 1:
                         $player->setCurrentKit(KitRegistry::fromString('NoDebuff'));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 2:
                         $player->setCurrentKit(KitRegistry::fromString('Classic'));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 3:
                         $player->setCurrentKit(KitRegistry::fromString('SG'));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 4:
                         $player->setCurrentKit(KitRegistry::fromString('BuildUHC'));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                     case 5:
                         $player->setCurrentKit(KitRegistry::fromString('Sumo'));
                         $player->setInQueue(true);
                         $player->getInventory()->clearAll();
                         $player->checkQueue();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        $player->getInventory()->setItem(8, VanillaItems::COMPASS()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                         break;
                 }
             }
@@ -436,7 +436,9 @@ class FormUtils
             "\n§e" .
             "\n§aDeath§f: §e" . $data->getDeaths() .
             "\n§e" .
-            "\n§aKDR§f: §e" . $data->getKdr()
+            "\n§aKDR§f: §e" . $data->getKdr() .
+            "\n§e" .
+            "\n§aElo§f: §e" . $data->getElo()
         );
         $player->sendForm($form);
     }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Kuu\Items;
 
 use Kuu\Entity\ArrowEntity;
@@ -42,9 +40,8 @@ class Bow extends ItemBow
         $location = $player->getLocation();
         $diff = $player->getItemUseDuration();
         $p = $diff / 20;
+        $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
         if ($player->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
-            $baseForce = min((($p ** 2) + $p * 2) / 3, 1);
-        } else {
             $baseForce = 2.5;
         }
         $entity = new ArrowEntity(Location::fromObject(

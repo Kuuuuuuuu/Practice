@@ -29,6 +29,7 @@ use pocketmine\event\entity\ProjectileHitBlockEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
+use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -74,49 +75,27 @@ class PracticeListener extends AbstractListener
     public function onUse(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         $item = $event->getItem();
         if ($player instanceof PracticePlayer) {
             if ($player->getEditKit() !== null) {
                 if ($item->getId() === ItemIds::ENDER_PEARL || $item->getId() === ItemIds::GOLDEN_APPLE) {
                     $event->cancel();
                 }
-            } else {
-                switch ($item->getCustomName()) {
-                    case '§r§dPlay':
-                        PracticeCore::getFormUtils()->Form1($player);
-                        break;
-                    case '§r§dSettings':
-                        PracticeCore::getFormUtils()->settingsForm($player);
-                        break;
-                    case '§r§dBot':
-                        PracticeCore::getFormUtils()->botForm($player);
-                        break;
-                    case '§r§cLeave Queue':
-                        $player->sendMessage(PracticeCore::getPrefixCore() . 'Left the queue');
-                        $player->setCurrentKit(null);
-                        $player->setInQueue(false);
-                        PracticeCore::getPracticeUtils()->GiveLobbyItem($player);
-                        break;
-                    case '§r§dDuel':
-                        PracticeCore::getFormUtils()->duelForm($player);
-                        break;
-                    case '§r§dProfile':
-                        PracticeCore::getFormUtils()->ProfileForm($player, null);
-                        break;
-                    case '§r§eLeap§r':
-                        if (!isset(PracticeCore::getCaches()->LeapCooldown[$name]) || PracticeCore::getCaches()->LeapCooldown[$name] <= time()) {
-                            $directionvector = $player->getDirectionVector()->multiply(4 / 2);
-                            $dx = $directionvector->getX();
-                            $dy = $directionvector->getY();
-                            $dz = $directionvector->getZ();
-                            $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
-                            PracticeCore::getCaches()->LeapCooldown[$name] = time() + 10;
-                        } else {
-                            $player->sendMessage(PracticeCore::getPrefixCore() . 'You can use leap again in ' . (10 - ((time() + 10) - (PracticeCore::getCaches()->LeapCooldown[$name] ?? 0))) . ' seconds');
-                        }
-                        break;
-                }
+            } elseif ($item->getCustomName() === '§r§dPlay') {
+                PracticeCore::getFormUtils()->Form1($player);
+            } elseif ($item->getCustomName() === '§r§dSettings') {
+                PracticeCore::getFormUtils()->settingsForm($player);
+            } elseif ($item->getCustomName() === '§r§dBot') {
+                PracticeCore::getFormUtils()->botForm($player);
+            } elseif ($item->getCustomName() === '§r§cLeave Queue') {
+                $player->sendMessage(PracticeCore::getPrefixCore() . 'Left the queue');
+                $player->setCurrentKit(null);
+                $player->setInQueue(false);
+                PracticeCore::getPracticeUtils()->GiveLobbyItem($player);
+            } elseif ($item->getCustomName() === '§r§dDuel') {
+                PracticeCore::getFormUtils()->duelForm($player);
+            } elseif ($item->getCustomName() === '§r§dProfile') {
+                PracticeCore::getFormUtils()->ProfileForm($player, null);
             }
         }
     }
@@ -178,7 +157,7 @@ class PracticeListener extends AbstractListener
                 $minute = floor($minuteSec / 60);
                 $remainingSec = $minuteSec % 60;
                 $second = ceil($remainingSec);
-                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
+                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], PracticeCore::getInstance()->MessageData['LoginBanMessage']));
                 $event->cancel();
                 $player->close();
             } else {
@@ -228,8 +207,10 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if ($player->getGamemode() !== GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
-            $event->cancel();
+        if ($player->getGamemode() !== GameMode::CREATIVE()) {
+            if ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT) {
+                $event->cancel();
+            }
         }
     }
 
@@ -240,6 +221,27 @@ class PracticeListener extends AbstractListener
         $to = $event->getTo();
         if ($entity instanceof PracticePlayer && $from->getWorld() !== $to->getWorld()) {
             $entity->setCombat(false);
+        }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function onChangeSkin(PlayerChangeSkinEvent $event): void
+    {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        if ($player instanceof PracticePlayer) {
+            $cosmetic = PracticeCore::getCosmeticHandler();
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                $cosmetic->resetSkin($player);
+            } else {
+                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
+            }
+            $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+            $cosmetic->saveSkin($skin->getSkinData(), $name);
         }
     }
 
@@ -259,18 +261,16 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player instanceof PracticePlayer) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena()) && ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB)) {
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+            if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
                 $ev->setDropsVariadic(VanillaItems::AIR());
                 if ($block->getId() === BlockLegacyIds::WOOL) {
                     $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
                     PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
                 }
-            } elseif ($player->isDueling() && $block->getId() === ItemIds::GRASS) {
-                $ev->cancel();
-            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-                $ev->cancel();
             }
+        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+            $ev->cancel();
         }
     }
 
@@ -278,19 +278,17 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player instanceof PracticePlayer) {
-            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-                PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
-            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-                $ev->cancel();
-            }
+        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+            PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
+        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+            $ev->cancel();
         }
     }
 
     /**
      * @throws Exception
      */
-    public function onProjectileHit(ProjectileHitEvent $event): void
+    public function potionHitEvent(ProjectileHitEvent $event): void
     {
         $type = $event->getEntity();
         $owner = $type->getOwningEntity();
@@ -327,9 +325,6 @@ class PracticeListener extends AbstractListener
             if (($packet::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $packet->trData instanceof UseItemOnEntityTransactionData) || ($packet::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE)) {
                 if ($player instanceof PracticePlayer) {
                     PracticeCore::getClickHandler()->addClick($player);
-                    if (PracticeCore::getClickHandler()->getClicks($player) >= PracticeConfig::MaximumCPS) {
-                        $player->sendTitle('§eWarning!', '§cYou CPS is too high', 5, 5, 5);
-                    }
                 }
             }
         } elseif ($packet->pid() === AnimatePacket::NETWORK_ID) {
@@ -338,7 +333,7 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    public function onInventoryTransaction(InventoryTransactionEvent $event): void
+    public function onItemMoved(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
         $player = $transaction->getSource();
@@ -363,6 +358,7 @@ class PracticeListener extends AbstractListener
                     $player->saveKit();
                 } else {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§aType §l§cConfirm §r§a to confirm');
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§aพิมพ์ §l§cConfirm §r§a เพื่อยืนยัน');
                 }
             }
         }
@@ -381,7 +377,7 @@ class PracticeListener extends AbstractListener
     /**
      * @throws Exception
      */
-    public function onEntityDamageByEntity(EntityDamageByEntityEvent $event): void
+    public function onInterrupt(EntityDamageByEntityEvent $event): void
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
@@ -395,8 +391,7 @@ class PracticeListener extends AbstractListener
                 $damager->setLastDamagePlayer($player->getName());
                 $player->setLastDamagePlayer($damager->getName());
             }
-            if (($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()))) {
-                $player->knockBack(5, 0.4, 2);
+            if (($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
                 $x = $player->getLocation()->getX();
                 $y = $player->getLocation()->getY();
                 $z = $player->getLocation()->getZ();
@@ -407,6 +402,8 @@ class PracticeListener extends AbstractListener
                 if (abs($safex - $x) < $protect && abs($safey - $y) < $protect && abs($safez - $z) < $protect) {
                     $event->cancel();
                     $damager->sendMessage(PracticeConfig::PREFIX . "§r§cYou can't hit the players here!");
+                } else {
+                    $player->knockBack(5, 0.4, 2);
                 }
             } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
@@ -414,7 +411,7 @@ class PracticeListener extends AbstractListener
                     $damager->setOpponent($player->getName());
                     foreach ([$player, $damager] as $p) {
                         /* @var PracticePlayer $p */
-                        $p->sendMessage(PracticeCore::getPrefixCore() . '§aYou Started combat!');
+                        $p->sendMessage(PracticeCore::getInstance()->MessageData['StartCombat']);
                         $p->setCombat(true);
                     }
                 }
@@ -428,10 +425,8 @@ class PracticeListener extends AbstractListener
                             $p->setCombat(true);
                         }
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            if (!isset(PracticeCore::getCaches()->BoxingPoint[$damager->getName()])) {
-                                PracticeCore::getCaches()->BoxingPoint[$damager->getName()] = 1;
-                            } elseif (PracticeCore::getCaches()->BoxingPoint[$damager->getName()] <= 100) {
-                                PracticeCore::getCaches()->BoxingPoint[$damager->getName()]++;
+                            if ($damager->BoxingPoint < 100) {
+                                $damager->BoxingPoint++;
                                 foreach ([$player, $damager] as $p) {
                                     /* @var PracticePlayer $p */
                                     PracticeCore::getScoreboardManager()->Boxing($p);
@@ -456,7 +451,7 @@ class PracticeListener extends AbstractListener
      *
      * @throws Exception
      */
-    public function onEntityDamage(EntityDamageEvent $event): void
+    public function onDamage(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof PracticePlayer) {
@@ -525,22 +520,21 @@ class PracticeListener extends AbstractListener
     {
         $player = Server::getInstance()->getPlayerByPrefix($event->getSender()->getName());
         $cmd = $event->getCommand();
-        foreach (PracticeConfig::BanCommand as $ban) {
-            if (mb_strtolower($ban) === mb_strtolower($cmd) && $player instanceof PracticePlayer) {
-                if ($player->isCombat() || $player->isDueling()) {
-                    $event->cancel();
-                    $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in combat!");
-                } elseif ($player->getEditKit() !== null) {
-                    $event->cancel();
-                    $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command in Editkit mode!");
-                }
+        if (($player instanceof PracticePlayer) && isset(PracticeConfig::BanCommand[$cmd])) {
+            if ($player->isCombat() || $player->isDueling()) {
+                $event->cancel();
+                $player->sendMessage(PracticeCore::getInstance()->MessageData['CantUseWantCombat']);
+            } elseif ($player->getEditKit() !== null) {
+                $event->cancel();
+                $player->sendMessage(PracticeCore::getInstance()->MessageData['CantUseeditkit']);
             }
         }
     }
 
     public function onNetworkRegister(NetworkInterfaceRegisterEvent $event): void
     {
-        if ($event->getInterface() instanceof DedicatedQueryNetworkInterface) {
+        $interface = $event->getInterface();
+        if ($interface instanceof DedicatedQueryNetworkInterface) {
             $event->cancel();
         }
     }

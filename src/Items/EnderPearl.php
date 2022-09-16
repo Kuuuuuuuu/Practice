@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Kuu\Items;
 
 use JetBrains\PhpStorm\Pure;
