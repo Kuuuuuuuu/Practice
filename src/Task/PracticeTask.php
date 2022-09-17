@@ -25,13 +25,13 @@ class PracticeTask extends Task
     {
         self::$tick++;
         try {
+            foreach (self::$DuelTask as $duel) {
+                if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
+                    $duel->update();
+                }
+            }
             if (self::$tick % 20 === 0) {
                 PracticeCore::getDeleteBlockHandler()->update();
-                foreach (self::$DuelTask as $duel) {
-                    if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
-                        $duel->update();
-                    }
-                }
             }
         } catch (Throwable $e) {
             Server::getInstance()->getLogger()->error($e);

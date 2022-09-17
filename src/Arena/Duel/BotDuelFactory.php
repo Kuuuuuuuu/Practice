@@ -39,56 +39,60 @@ class BotDuelFactory extends DuelFactoryBase
         $this->mode = $mode;
     }
 
-    public function update(): void
+    public function update(int $tick): void
     {
         if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
             $this->onEnd();
         }
         if ($this->player2 instanceof PracticeBot) {
-            if ($this->player2?->pearlcooldown !== 0) {
-                $this->player2->pearlcooldown--;
+            if ($this->player2->pearlcooldown !== 0) {
+                if ($tick % 20 === 0) {
+                    $this->player2->pearlcooldown--;
+                }
             }
             if (!$this->player2?->isAlive() || $this->player2?->isClosed()) {
                 $this->onEnd($this->player1);
             }
         }
-        switch ($this->time) {
-            case 903:
-                if ($this->player1->isOnline()) {
-                    $this->player1->setImmobile();
-                    $this->player1->setGamemode(GameMode::SURVIVAL());
-                    $this->player1->sendTitle('§d3', '', 1, 3, 1);
-                    $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
-                    $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
-                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 190, 0));
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                }
-                break;
-            case 902:
-                if ($this->player1->isOnline()) {
-                    $this->player1->sendTitle('§d2', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                }
-                break;
-            case 901:
-                if ($this->player1->isOnline()) {
-                    $this->player1->sendTitle('§d1', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
-                }
-                break;
-            case 900:
-                if ($this->player1->isOnline()) {
-                    $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
-                    $this->player1->setImmobile(false);
-                    $this->player2 = new PracticeBot(new Location(24, 101, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
-                }
-                break;
-            case 0:
-                $this->onEnd();
-                break;
+        if ($tick % 20 === 0) {
+            switch ($this->time) {
+                case 903:
+                    if ($this->player1->isOnline()) {
+                        $this->player1->setImmobile();
+                        $this->player1->setGamemode(GameMode::SURVIVAL());
+                        $this->player1->sendTitle('§d3', '', 1, 3, 1);
+                        $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
+                        $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
+                        $this->player1->teleport(new Location(24, 101, 40, $this->level, 190, 0));
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
+                    }
+                    break;
+                case 902:
+                    if ($this->player1->isOnline()) {
+                        $this->player1->sendTitle('§d2', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
+                    }
+                    break;
+                case 901:
+                    if ($this->player1->isOnline()) {
+                        $this->player1->sendTitle('§d1', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
+                    }
+                    break;
+                case 900:
+                    if ($this->player1->isOnline()) {
+                        $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
+                        $this->player1->setImmobile(false);
+                        $this->player2 = new PracticeBot(new Location(24, 101, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);
+                    }
+                    break;
+                case 0:
+                    $this->onEnd();
+                    break;
+            }
+            $this->time--;
         }
-        $this->time--;
     }
 
     public function onEnd(?PracticePlayer $playerLeft = null): void

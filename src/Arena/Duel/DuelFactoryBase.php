@@ -8,5 +8,5 @@ abstract class DuelFactoryBase
 {
     abstract public function onEnd(?PracticePlayer $playerLeft = null): void;
 
-    abstract public function update(): void;
+    abstract public function update(int $tick): void;
 }

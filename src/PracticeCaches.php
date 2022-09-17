@@ -12,4 +12,5 @@ class PracticeCaches
     public array $buildBlocks = [];
     public bool $Restarted = false;
     public array $AvailableDuel = [];
+    public array $LeapCooldown = [];
 }

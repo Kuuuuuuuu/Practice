@@ -40,7 +40,7 @@ class DuelFactory extends DuelFactoryBase
         $this->player2 = $player2;
     }
 
-    public function update(): void
+    public function update(int $tick): void
     {
         foreach ($this->getPlayers() as $player) {
             if ($player->isOnline()) {
@@ -58,53 +58,55 @@ class DuelFactory extends DuelFactoryBase
                 $this->onEnd($player);
             }
         }
-        switch ($this->time) {
-            case 903:
-                foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof PracticePlayer) {
-                        $player->setGamemode(GameMode::SURVIVAL());
-                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                        $player->getInventory()->setContents($this->kit->getInventoryItems());
-                        $player->setImmobile();
-                        $player->sendTitle('§d3', '', 1, 3, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
-                        if ($this->kit->getName() === 'Sumo') {
-                            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 100000, 255, false));
+        if ($tick % 20 === 0) {
+            switch ($this->time) {
+                case 903:
+                    foreach ($this->getPlayers() as $player) {
+                        if ($player instanceof PracticePlayer) {
+                            $player->setGamemode(GameMode::SURVIVAL());
+                            $player->getArmorInventory()->setContents($this->kit->getArmorItems());
+                            $player->getInventory()->setContents($this->kit->getInventoryItems());
+                            $player->setImmobile();
+                            $player->sendTitle('§d3', '', 1, 3, 1);
+                            PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                            if ($this->kit->getName() === 'Sumo') {
+                                $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 100000, 255, false));
+                            }
                         }
                     }
-                }
-                if ($this->kit->getName() === 'Sumo') {
-                    $this->player1->teleport(new Location(6, 101, 0, $this->level, 0, 0));
-                    $this->player2->teleport(new Location(6, 101, 9, $this->level, 180, 0));
-                } else {
-                    $this->player1->teleport(new Location(24, 101, 40, $this->level, 180, 0));
-                    $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
-                }
-                break;
-            case 902:
-                foreach ($this->getPlayers() as $player) {
-                    $player->sendTitle('§d2', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
-                }
-                break;
-            case 901:
-                foreach ($this->getPlayers() as $player) {
-                    $player->sendTitle('§d1', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
-                }
-                break;
-            case 900:
-                foreach ($this->getPlayers() as $player) {
-                    $player->sendTitle('§dFight!', '', 1, 3, 1);
-                    PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
-                    $player->setImmobile(false);
-                }
-                break;
-            case 0:
-                $this->onEnd();
-                break;
+                    if ($this->kit->getName() === 'Sumo') {
+                        $this->player1->teleport(new Location(6, 101, 0, $this->level, 0, 0));
+                        $this->player2->teleport(new Location(6, 101, 9, $this->level, 180, 0));
+                    } else {
+                        $this->player1->teleport(new Location(24, 101, 40, $this->level, 180, 0));
+                        $this->player2->teleport(new Location(24, 101, 10, $this->level, 0, 0));
+                    }
+                    break;
+                case 902:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle('§d2', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                    }
+                    break;
+                case 901:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle('§d1', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                    }
+                    break;
+                case 900:
+                    foreach ($this->getPlayers() as $player) {
+                        $player->sendTitle('§dFight!', '', 1, 3, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
+                        $player->setImmobile(false);
+                    }
+                    break;
+                case 0:
+                    $this->onEnd();
+                    break;
+            }
+            $this->time--;
         }
-        $this->time--;
     }
 
     public function getPlayers(): array

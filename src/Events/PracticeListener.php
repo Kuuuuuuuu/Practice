@@ -76,26 +76,48 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
+        $name = $player->getName();
         if ($player instanceof PracticePlayer) {
             if ($player->getEditKit() !== null) {
                 if ($item->getId() === ItemIds::ENDER_PEARL || $item->getId() === ItemIds::GOLDEN_APPLE) {
                     $event->cancel();
                 }
-            } elseif ($item->getCustomName() === '§r§dPlay') {
-                PracticeCore::getFormUtils()->Form1($player);
-            } elseif ($item->getCustomName() === '§r§dSettings') {
-                PracticeCore::getFormUtils()->settingsForm($player);
-            } elseif ($item->getCustomName() === '§r§dBot') {
-                PracticeCore::getFormUtils()->botForm($player);
-            } elseif ($item->getCustomName() === '§r§cLeave Queue') {
-                $player->sendMessage(PracticeCore::getPrefixCore() . 'Left the queue');
-                $player->setCurrentKit(null);
-                $player->setInQueue(false);
-                PracticeCore::getPracticeUtils()->GiveLobbyItem($player);
-            } elseif ($item->getCustomName() === '§r§dDuel') {
-                PracticeCore::getFormUtils()->duelForm($player);
-            } elseif ($item->getCustomName() === '§r§dProfile') {
-                PracticeCore::getFormUtils()->ProfileForm($player, null);
+            } else {
+                switch ($item->getCustomName()) {
+                    case '§r§dPlay':
+                        PracticeCore::getFormUtils()->Form1($player);
+                        break;
+                    case '§r§dSettings':
+                        PracticeCore::getFormUtils()->settingsForm($player);
+                        break;
+                    case '§r§dBot':
+                        PracticeCore::getFormUtils()->botForm($player);
+                        break;
+                    case '§r§cLeave Queue':
+                        $player->sendMessage(PracticeCore::getPrefixCore() . 'Left the queue');
+                        $player->setCurrentKit(null);
+                        $player->setInQueue(false);
+                        PracticeCore::getPracticeUtils()->GiveLobbyItem($player);
+                        break;
+                    case '§r§dDuel':
+                        PracticeCore::getFormUtils()->duelForm($player);
+                        break;
+                    case '§r§dProfile':
+                        PracticeCore::getFormUtils()->ProfileForm($player, null);
+                        break;
+                    case '§r§eLeap§r':
+                        if (!isset(PracticeCore::getCaches()->LeapCooldown[$name]) || PracticeCore::getCaches()->LeapCooldown[$name] <= time()) {
+                            $directionvector = $player->getDirectionVector()->multiply(4 / 2);
+                            $dx = $directionvector->getX();
+                            $dy = $directionvector->getY();
+                            $dz = $directionvector->getZ();
+                            $player->setMotion(new Vector3($dx, $dy + 0.5, $dz));
+                            PracticeCore::getCaches()->LeapCooldown[$name] = time() + 10;
+                        } else {
+                            $player->sendMessage(PracticeCore::getPrefixCore() . 'You can use leap again in ' . (10 - ((time() + 10) - (PracticeCore::getCaches()->LeapCooldown[$name] ?? 0))) . ' seconds');
+                        }
+                        break;
+                }
             }
         }
     }
