@@ -205,7 +205,7 @@ class PracticePlayer extends Player
 
     public function onUpdate(int $currentTick): bool
     {
-        if ($currentTick % 5 === 0) {
+        if ($currentTick % 3 === 0) {
             $this->updateTag();
             $this->updateScoreboard();
         }
@@ -224,7 +224,7 @@ class PracticePlayer extends Player
                 }
             }
         }
-        if ($currentTick % 60 === 0) {
+        if ($currentTick % 40 === 0) {
             $this->updateNametag();
             PracticeCore::getPracticeUtils()->DeviceCheck($this);
         }

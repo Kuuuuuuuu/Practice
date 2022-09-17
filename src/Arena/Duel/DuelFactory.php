@@ -69,7 +69,7 @@ class DuelFactory extends DuelFactoryBase
                         $player->sendTitle('§d3', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                         if ($this->kit->getName() === 'Sumo') {
-                            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 1000, 255, false));
+                            $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 100000, 255, false));
                         }
                     }
                 }

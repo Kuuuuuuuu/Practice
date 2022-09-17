@@ -404,7 +404,7 @@ class PracticeListener extends AbstractListener
                 } else {
                     $player->knockBack(5, 0.4, 2);
                 }
-            } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
+            } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
                     $player->setOpponent($damager->getName());
                     $damager->setOpponent($player->getName());
