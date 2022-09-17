@@ -67,8 +67,13 @@ class PracticePlayer extends Player
         $yKb = 0.4;
         try {
             if ($this->isDueling()) {
-                $yKb = 0.32;
-                $xzKB = 0.34;
+                if ($this->duelKit?->getName() === 'Sumo') {
+                    $yKb = 0.35;
+                    $xzKB = 0.37;
+                } else {
+                    $yKb = 0.32;
+                    $xzKB = 0.34;
+                }
             } elseif (PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName()) !== null) {
                 $xzKB = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['hkb'] ?? 0.4;
                 $yKb = PracticeCore::getKnockbackManager()->getKnockback($this->getWorld()->getFolderName())['ykb'] ?? 0.4;

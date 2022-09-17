@@ -83,9 +83,6 @@ class DuelFactory extends DuelFactoryBase
                 break;
             case 902:
                 foreach ($this->getPlayers() as $player) {
-                    if ($player instanceof PracticePlayer) {
-                        $player->setCurrentKit(null);
-                    }
                     $player->sendTitle('§d2', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                 }

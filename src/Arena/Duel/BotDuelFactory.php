@@ -66,7 +66,6 @@ class BotDuelFactory extends DuelFactoryBase
                 break;
             case 902:
                 if ($this->player1->isOnline()) {
-                    $this->player1->setCurrentKit(null);
                     $this->player1->sendTitle('§d2', '', 1, 3, 1);
                     PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                 }
