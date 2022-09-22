@@ -186,8 +186,8 @@ class FormUtils
                         break;
                     case 1:
                         $player->setDisplayName($player->getName());
-                        if ($player->getData()?->getTag() !== null) {
-                            $player->setNameTag('§f[' . $player->getData()?->getTag() . '§f] §b' . $player->getName());
+                        if ($player->getData()->getTag() !== null) {
+                            $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $player->getName());
                         } else {
                             $player->setNameTag('§b' . $player->getName());
                         }
@@ -214,8 +214,8 @@ class FormUtils
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
                     $player->setDisplayName($data[0]);
-                    if ($player->getData()?->getTag() !== null) {
-                        $player->setNameTag('§f[' . $player->getData()?->getTag() . '§f] §b' . $data[0]);
+                    if ($player->getData()->getTag() !== null) {
+                        $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $data[0]);
                     } else {
                         $player->setNameTag('§b' . $data[0]);
                     }
@@ -432,13 +432,13 @@ class FormUtils
         }
         $form->setTitle("$name's §cProfile");
         $form->addLabel(
-            '§aKills§f: §e' . $data?->getKills() .
+            '§aKills§f: §e' . $data->getKills() .
             "\n§e" .
-            "\n§aDeath§f: §e" . $data?->getDeaths() .
+            "\n§aDeath§f: §e" . $data->getDeaths() .
             "\n§e" .
-            "\n§aKDR§f: §e" . $data?->getKdr() .
+            "\n§aKDR§f: §e" . $data->getKdr() .
             "\n§e" .
-            "\n§aElo§f: §e" . $data?->getElo()
+            "\n§aElo§f: §e" . $data->getElo()
         );
         $player->sendForm($form);
     }

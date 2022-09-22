@@ -8,8 +8,6 @@ use Exception;
 use JsonException;
 use Kuu\Utils\DataManager;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\network\mcpe\NetworkSession;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\{entity\Location,
     entity\Skin,
     item\VanillaItems,
@@ -21,6 +19,8 @@ use pocketmine\{entity\Location,
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
@@ -148,21 +148,17 @@ class PracticePlayer extends Player
 
     public function getChatFormat(string $message): string
     {
-        if ($this->getData()?->getTag() !== null && $this->getData()?->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()?->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
+        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
         } else {
             $nametag = '§a ' . $this->getDisplayName() . '§r§a > §r' . $message;
         }
         return $nametag;
     }
 
-    public function getData(): ?DataManager
+    public function getData(): DataManager
     {
-        if ($this->DataManager instanceof DataManager) {
-            return $this->DataManager;
-        } else {
-            return null;
-        }
+        return $this->DataManager;
     }
 
     public function getAllArtifact(): void
@@ -323,8 +319,8 @@ class PracticePlayer extends Player
 
     private function updateNametag(): void
     {
-        if ($this->getData()?->getTag() !== null && $this->getData()?->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()?->getTag() . '§f] §b' . $this->getDisplayName();
+        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName();
         } else {
             $nametag = '§b' . $this->getDisplayName();
         }
@@ -522,7 +518,7 @@ class PracticePlayer extends Player
         } else {
             PracticeCore::getCaches()->DeathLeaderboard[$this->getName()]++;
         }
-        $this->getData()?->addDeath();
+        $this->getData()->addDeath();
     }
 
     public function addKill(): void
@@ -532,6 +528,6 @@ class PracticePlayer extends Player
         } else {
             PracticeCore::getCaches()->KillLeaderboard[$this->getName()]++;
         }
-        $this->getData()?->addKill();
+        $this->getData()->addKill();
     }
 }

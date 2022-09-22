@@ -30,7 +30,7 @@ class SetTagCommand extends Command
         } else {
             $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
             if ($playerinfo instanceof PracticePlayer) {
-                $playerinfo->getData()?->setTag($args[1]);
+                $playerinfo->getData()->setTag($args[1]);
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTag set to §e' . $args[1]);
             } else {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlayer not found.');

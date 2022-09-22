@@ -255,8 +255,8 @@ class PracticeUtils
     {
         $killer = $player->getData();
         $loser = $death->getData();
-        $oldStreak = $loser?->getStreak();
-        $newStreak = $killer?->getStreak();
+        $oldStreak = $loser->getStreak();
+        $newStreak = $killer->getStreak();
         if ($oldStreak > 10) {
             $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
             $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreak!');
