@@ -113,7 +113,7 @@ class BotDuelFactory extends DuelFactoryBase
                 $this->player1->setDueling(false);
                 $this->player1->setCurrentKit(null);
                 $this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn(), 0, 0);
-                PracticeCore::getPracticeUtils()->GiveLobbyItem($this->player1);
+                $this->player1->setLobbyItem();
                 PracticeCore::getScoreboardManager()->sb($this->player1);
                 $this->player1->setHealth(20);
             }

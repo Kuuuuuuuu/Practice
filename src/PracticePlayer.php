@@ -6,15 +6,19 @@ namespace Kuu;
 
 use Exception;
 use JsonException;
+use Kuu\Utils\DataManager;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin, player\GameMode, player\Player, Server};
+use pocketmine\{entity\Skin, item\VanillaItems, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
 
 class PracticePlayer extends Player
 {
+    public ?DataManager $DataManager;
     public int $BoxingPoint = 0;
     public string $PlayerOS = 'Unknown';
     public string $PlayerControl = 'Unknown';
@@ -125,6 +129,22 @@ class PracticePlayer extends Player
         if ($key === false) {
             $this->validstuffs[] = $stuff;
         }
+    }
+
+    public function getChatFormat(string $message): string
+    {
+        $name = $this->getName();
+        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
+        } else {
+            $nametag = '§a ' . $this->getDisplayName() . '§r§a > §r' . $message;
+        }
+        return $nametag;
+    }
+
+    public function getData(): DataManager
+    {
+        return $this->DataManager;
     }
 
     public function getAllArtifact(): void
@@ -285,9 +305,8 @@ class PracticePlayer extends Player
 
     private function updateNametag(): void
     {
-        $name = $this->getName();
-        if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
-            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] §b' . $this->getDisplayName();
+        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName();
         } else {
             $nametag = '§b' . $this->getDisplayName();
         }
@@ -307,9 +326,33 @@ class PracticePlayer extends Player
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
-        PracticeCore::getInstance()->getPracticeUtils()->GiveLobbyItem($this);
+        $this->setLobbyItem();
+        $this->DataManager = new DataManager($this->getName());
         $this->LoadData(true);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
+    }
+
+    public function setLobbyItem(): void
+    {
+        $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item->setCustomName('§r§dPlay');
+        $item2 = VanillaItems::CLOCK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item2->setCustomName('§r§dSettings');
+        $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item3->setCustomName('§r§dBot');
+        $item4 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4->setCustomName('§r§dDuel');
+        $item6 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item6->setCustomName('§r§dProfile');
+        $this->getOffHandInventory()->clearAll();
+        $this->getInventory()->clearAll();
+        $this->getArmorInventory()->clearAll();
+        $this->getEffects()->clear();
+        $this->getInventory()->setItem(0, $item);
+        $this->getInventory()->setItem(8, $item2);
+        $this->getInventory()->setItem(1, $item4);
+        $this->getInventory()->setItem(2, $item3);
+        $this->getInventory()->setItem(4, $item6);
     }
 
     /**
@@ -453,5 +496,26 @@ class PracticePlayer extends Player
     public function setEditKit(?string $kit): void
     {
         $this->EditKit = $kit;
+    }
+
+    public function addDeath(): void
+    {
+        if (!isset(PracticeCore::getCaches()->DeathLeaderboard[$this->getName()])) {
+            PracticeCore::getCaches()->DeathLeaderboard[$this->getName()] = 1;
+        } else {
+            PracticeCore::getCaches()->DeathLeaderboard[$this->getName()]++;
+        }
+        $this->getData()->addDeath();
+    }
+
+    public function addKill(): void
+    {
+        $data = $this->getData();
+        if (!isset(PracticeCore::getCaches()->KillLeaderboard[$this->getName()])) {
+            PracticeCore::getCaches()->KillLeaderboard[$this->getName()] = 1;
+        } else {
+            PracticeCore::getCaches()->KillLeaderboard[$this->getName()]++;
+        }
+        $data->addKill();
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Utils;
+namespace Kuu\Utils\Scoreboard;
 
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
@@ -10,7 +10,7 @@ use pocketmine\network\mcpe\protocol\SetScorePacket;
 use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
 use pocketmine\player\Player;
 
-class ScoreboardsUtils
+class ScoreboardUtils
 {
 
     public static $instance;

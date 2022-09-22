@@ -1,6 +1,6 @@
 <?php
 
-namespace Kuu\Utils;
+namespace Kuu\Utils\Scoreboard;
 
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
@@ -10,10 +10,10 @@ use pocketmine\Server;
 class ScoreboardManager
 {
 
-    public function sb(Player $player): void
+    public function sb(PracticePlayer $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $data = PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName());
+        $data = $player->getData();
         $kills = $data->getKills();
         $rate = round($data->getKdr(), 2);
         $deaths = $data->getDeaths();

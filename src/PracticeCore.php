@@ -13,13 +13,12 @@ use Kuu\Arena\ArenaManager;
 use Kuu\Arena\Duel\DuelManager;
 use Kuu\Task\PracticeTask;
 use Kuu\Utils\ClickHandler;
-use Kuu\Utils\CosmeticHandler;
+use Kuu\Utils\CosmeticManager;
 use Kuu\Utils\DeleteBlocksHandler;
 use Kuu\Utils\FormUtils;
 use Kuu\Utils\KnockbackManager;
-use Kuu\Utils\PracticeUtils;
-use Kuu\Utils\ScoreboardManager;
-use Kuu\Utils\ScoreboardsUtils;
+use Kuu\Utils\Scoreboard\ScoreboardManager;
+use Kuu\Utils\Scoreboard\ScoreboardUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use SQLite3;
@@ -28,13 +27,13 @@ class PracticeCore extends PluginBase
 {
     private static self $plugin;
     private static ClickHandler $cps;
-    private static ScoreboardsUtils $score;
+    private static ScoreboardUtils $score;
     private static FormUtils $form;
     private static ArenaFactory $arenafac;
     private static ArenaManager $arena;
     private static DeleteBlocksHandler $blockhandle;
     private static KnockbackManager $knockback;
-    private static CosmeticHandler $cosmetics;
+    private static CosmeticManager $cosmetics;
     private static PracticeUtils $PracticeUtils;
     private static ScoreboardManager $scoremanager;
     private static DuelManager $duelmanager;
@@ -86,7 +85,7 @@ class PracticeCore extends PluginBase
         return self::$arena;
     }
 
-    public static function getScoreboardUtils(): ScoreboardsUtils
+    public static function getScoreboardUtils(): ScoreboardUtils
     {
         return self::$score;
     }
@@ -101,7 +100,7 @@ class PracticeCore extends PluginBase
         return self::$knockback;
     }
 
-    public static function getCosmeticHandler(): CosmeticHandler
+    public static function getCosmeticHandler(): CosmeticManager
     {
         return self::$cosmetics;
     }
@@ -131,13 +130,13 @@ class PracticeCore extends PluginBase
     {
         self::$plugin = $this;
         self::$cps = new ClickHandler();
-        self::$score = new ScoreboardsUtils();
+        self::$score = new ScoreboardUtils();
         self::$form = new FormUtils();
         self::$arenafac = new ArenaFactory();
         self::$arena = new ArenaManager();
         self::$blockhandle = new DeleteBlocksHandler();
         self::$knockback = new KnockbackManager();
-        self::$cosmetics = new CosmeticHandler();
+        self::$cosmetics = new CosmeticManager();
         self::$PracticeUtils = new PracticeUtils();
         self::$scoremanager = new ScoreboardManager();
         self::$duelmanager = new DuelManager();
@@ -146,7 +145,7 @@ class PracticeCore extends PluginBase
 
     protected function onEnable(): void
     {
-        self::getPracticeUtils()->Enable();
+        self::getPracticeUtils()->initialize();
     }
 
     public static function getPracticeUtils(): PracticeUtils
@@ -156,7 +155,7 @@ class PracticeCore extends PluginBase
 
     protected function onDisable(): void
     {
-        self::getPracticeUtils()->Disable();
+        self::getPracticeUtils()->dispose();
         self::setCoreTask(null);
     }
 }

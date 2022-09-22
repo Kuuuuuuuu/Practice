@@ -18,7 +18,7 @@ use function ord;
 use function round;
 use function strlen;
 
-class CosmeticHandler
+class CosmeticManager
 {
     public const BOUNDS_64_64 = 0;
     public const BOUNDS_64_32 = self::BOUNDS_64_64;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Utils;
+namespace Kuu;
 
 use Exception;
 use Kuu\Commands\BroadcastCommand;
@@ -17,7 +17,6 @@ use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\ArrowEntity;
 use Kuu\Entity\EnderPearlEntity;
-use Kuu\Entity\FallingWool;
 use Kuu\Entity\Leaderboard\BaseLeaderboard;
 use Kuu\Entity\Leaderboard\DeathLeaderboard;
 use Kuu\Entity\Leaderboard\KillLeaderboard;
@@ -26,25 +25,18 @@ use Kuu\Events\PracticeListener;
 use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
 use Kuu\Task\PracticeTask;
+use Kuu\Utils\ChunkManager;
 use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
-use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\VanillaEnchantments;
-use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
-use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
@@ -54,7 +46,6 @@ use pocketmine\utils\Config;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
-use Throwable;
 use ZipArchive;
 
 class PracticeUtils
@@ -134,7 +125,7 @@ class PracticeUtils
         }
     }
 
-    public function Enable(): void
+    public function initialize(): void
     {
         $this->registerItems();
         $this->registerConfigs();
@@ -260,123 +251,10 @@ class PracticeUtils
         GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, 'duel', fn() => null);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function DeathReset(Player $player, PracticePlayer $dplayer, $arena = null): void
+    public function handleStreak(PracticePlayer $player, PracticePlayer $death): void
     {
-        if ($dplayer->isAlive()) {
-            if ($arena === PracticeCore::getArenaFactory()->getOITCArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
-                    $dplayer->getInventory()->clearAll();
-                    $dplayer->getArmorInventory()->clearAll();
-                    $dplayer->setHealth(20);
-                    $dplayer->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-                    $dplayer->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    $dplayer->getInventory()->setItem(8, VanillaItems::ARROW());
-                }
-            } elseif ($arena === PracticeCore::getArenaFactory()->getBuildArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-                    $dplayer->getInventory()->clearAll();
-                    $dplayer->getArmorInventory()->clearAll();
-                    $dplayer->setHealth(20);
-                    try {
-                        foreach (PracticeCore::getInstance()->KitData->get($dplayer->getName()) as $slot => $item) {
-                            $dplayer->getInventory()->setItem($slot, Item::jsonDeserialize($item));
-                        }
-                    } catch (Throwable) {
-                        $dplayer->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        $dplayer->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-                        $dplayer->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
-                        $dplayer->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
-                        $dplayer->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
-                        $dplayer->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                    }
-                }
-                $dplayer->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                $dplayer->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-            } elseif ($arena === PracticeCore::getArenaFactory()->getBoxingArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                    $dplayer->setHealth(20);
-                }
-            } elseif ($arena === PracticeCore::getArenaFactory()->getComboArena()) {
-                if ($dplayer->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())) {
-                    $dplayer->getInventory()->clearAll();
-                    $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
-                    $dplayer->getInventory()->addItem($item);
-                }
-            }
-        }
-        foreach ([$dplayer, $player] as $p) {
-            if ($p instanceof PracticePlayer) {
-                $p->setCombat(false);
-                $p->setLastDamagePlayer('Unknown');
-            }
-        }
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->getOffHandInventory()->clearAll();
-        $this->addDeath($player);
-        $this->GiveLobbyItem($player);
-        $this->addKill($dplayer);
-        $this->handleStreak($dplayer, $player);
-    }
-
-    public function addDeath(Player $player): void
-    {
-        if (!isset(PracticeCore::getCaches()->DeathLeaderboard[$player->getName()])) {
-            PracticeCore::getCaches()->DeathLeaderboard[$player->getName()] = 1;
-        } else {
-            PracticeCore::getCaches()->DeathLeaderboard[$player->getName()]++;
-        }
-        $this->getData($player->getName())->addDeath();
-    }
-
-    public function getData($name): DataManager
-    {
-        return new DataManager($name);
-    }
-
-    public function GiveLobbyItem(Player $player): void
-    {
-        $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item->setCustomName('§r§dPlay');
-        $item2 = VanillaItems::CLOCK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item2->setCustomName('§r§dSettings');
-        $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item3->setCustomName('§r§dBot');
-        $item4 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item4->setCustomName('§r§dDuel');
-        $item6 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item6->setCustomName('§r§dProfile');
-        $player->getOffHandInventory()->clearAll();
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->getEffects()->clear();
-        $player->getInventory()->setItem(0, $item);
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->setItem(1, $item4);
-        $player->getInventory()->setItem(2, $item3);
-        $player->getInventory()->setItem(4, $item6);
-    }
-
-    public function addKill(Player $player): void
-    {
-        $data = $this->getData($player->getName());
-        if (!isset(PracticeCore::getCaches()->KillLeaderboard[$player->getName()])) {
-            PracticeCore::getCaches()->KillLeaderboard[$player->getName()] = 1;
-        } else {
-            PracticeCore::getCaches()->KillLeaderboard[$player->getName()]++;
-        }
-        $data->addKill();
-    }
-
-    public function handleStreak(Player $player, Player $death): void
-    {
-        $killer = $this->getData($player->getName());
-        $loser = $this->getData($death->getName());
+        $killer = $player->getData();
+        $loser = $death->getData();
         $oldStreak = $loser->getStreak();
         $newStreak = $killer->getStreak();
         if ($oldStreak > 10) {
@@ -388,18 +266,7 @@ class PracticeUtils
         }
     }
 
-    public function getChatFormat(Player $player, string $message): string
-    {
-        $name = $player->getName();
-        if (PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== null && PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() !== '') {
-            $nametag = '§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($name)->getTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
-        } else {
-            $nametag = '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
-        }
-        return $nametag;
-    }
-
-    public function Disable(): void
+    public function dispose(): void
     {
         foreach (PracticeCore::getCaches()->DuelMatch as $activeMatch) {
             PracticeCore::getDuelManager()->stopMatch($activeMatch);

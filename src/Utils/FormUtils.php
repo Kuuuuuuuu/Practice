@@ -178,7 +178,7 @@ class FormUtils
 
     public function NickForm($player): void
     {
-        $form = new SimpleForm(function (Player $player, int $data = null) {
+        $form = new SimpleForm(function (PracticePlayer $player, int $data = null) {
             if ($data !== null) {
                 switch ($data) {
                     case 0:
@@ -186,8 +186,8 @@ class FormUtils
                         break;
                     case 1:
                         $player->setDisplayName($player->getName());
-                        if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
-                            $player->setNameTag('§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f] §b' . $player->getName());
+                        if ($player->getData()->getTag() !== null) {
+                            $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $player->getName());
                         } else {
                             $player->setNameTag('§b' . $player->getName());
                         }
@@ -206,7 +206,7 @@ class FormUtils
 
     public function CustomNickForm($player): void
     {
-        $form = new CustomForm(function (Player $player, array $data = null) {
+        $form = new CustomForm(function (PracticePlayer $player, array $data = null) {
             if ($data !== null) {
                 if (strlen($data[0]) >= 15) {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYour nickname is too long!');
@@ -214,8 +214,8 @@ class FormUtils
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
                     $player->setDisplayName($data[0]);
-                    if (PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() !== null) {
-                        $player->setNameTag('§f[' . PracticeCore::getInstance()->getPracticeUtils()->getData($player->getName())->getTag() . '§f] §b' . $data[0]);
+                    if ($player->getData()->getTag() !== null) {
+                        $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $data[0]);
                     } else {
                         $player->setNameTag('§b' . $data[0]);
                     }
@@ -423,11 +423,11 @@ class FormUtils
     {
         $form = new CustomForm(static function (Player $player, $data) {
         });
-        if ($player2 !== null) {
-            $data = PracticeCore::getPracticeUtils()->getData($player2->getName());
+        if ($player2 instanceof PracticePlayer) {
+            $data = $player2->getData();
             $name = $player2->getName();
         } else {
-            $data = PracticeCore::getPracticeUtils()->getData($player->getName());
+            $data = $player->getData();
             $name = $player->getName();
         }
         $form->setTitle("$name's §cProfile");

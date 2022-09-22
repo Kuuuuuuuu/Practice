@@ -27,7 +27,7 @@ class PracticeTask extends Task
         try {
             foreach (self::$DuelTask as $duel) {
                 if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
-                    $duel->update();
+                    $duel->update(self::$tick);
                 }
             }
             if (self::$tick % 20 === 0) {

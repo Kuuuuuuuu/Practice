@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Commands;
 
 use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -28,8 +29,8 @@ class SetTagCommand extends Command
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /setTag <player> <tag>');
         } else {
             $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
-            if ($playerinfo !== null) {
-                PracticeCore::getInstance()->getPracticeUtils()->getData($playerinfo->getName())->setTag($args[1]);
+            if ($playerinfo instanceof PracticePlayer) {
+                $playerinfo->getData()->setTag($args[1]);
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTag set to §e' . $args[1]);
             } else {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlayer not found.');

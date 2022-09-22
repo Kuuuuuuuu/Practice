@@ -128,7 +128,7 @@ class DuelFactory extends DuelFactoryBase
                         $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
-                        PracticeCore::getPracticeUtils()->GiveLobbyItem($online);
+                        $online->setLobbyItem();
                         PracticeCore::getScoreboardManager()->sb($online);
                         $online->setDueling(false);
                         $online->setCurrentKit(null);
