@@ -134,17 +134,21 @@ class PracticePlayer extends Player
     public function getChatFormat(string $message): string
     {
         $name = $this->getName();
-        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
+        if ($this->getData()?->getTag() !== null && $this->getData()?->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()?->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
         } else {
             $nametag = '§a ' . $this->getDisplayName() . '§r§a > §r' . $message;
         }
         return $nametag;
     }
 
-    public function getData(): DataManager
+    public function getData(): ?DataManager
     {
-        return $this->DataManager;
+        if ($this->DataManager instanceof DataManager) {
+            return $this->DataManager;
+        } else {
+            return null;
+        }
     }
 
     public function getAllArtifact(): void
@@ -305,8 +309,8 @@ class PracticePlayer extends Player
 
     private function updateNametag(): void
     {
-        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName();
+        if ($this->getData()?->getTag() !== null && $this->getData()?->getTag() !== '') {
+            $nametag = '§f[' . $this->getData()?->getTag() . '§f] §b' . $this->getDisplayName();
         } else {
             $nametag = '§b' . $this->getDisplayName();
         }
@@ -505,17 +509,16 @@ class PracticePlayer extends Player
         } else {
             PracticeCore::getCaches()->DeathLeaderboard[$this->getName()]++;
         }
-        $this->getData()->addDeath();
+        $this->getData()?->addDeath();
     }
 
     public function addKill(): void
     {
-        $data = $this->getData();
         if (!isset(PracticeCore::getCaches()->KillLeaderboard[$this->getName()])) {
             PracticeCore::getCaches()->KillLeaderboard[$this->getName()] = 1;
         } else {
             PracticeCore::getCaches()->KillLeaderboard[$this->getName()]++;
         }
-        $data->addKill();
+        $this->getData()?->addKill();
     }
 }
