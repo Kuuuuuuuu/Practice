@@ -8,7 +8,16 @@ use Exception;
 use JsonException;
 use Kuu\Utils\DataManager;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\{entity\Skin, item\VanillaItems, player\GameMode, player\Player, Server};
+use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\{entity\Location,
+    entity\Skin,
+    item\VanillaItems,
+    player\GameMode,
+    player\Player,
+    player\PlayerInfo,
+    Server
+};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -36,6 +45,12 @@ class PracticePlayer extends Player
     private ?string $Opponent = null;
     private array $savekitcache = [];
     private array $validstuffs = [];
+
+    public function __construct(Server $server, NetworkSession $session, PlayerInfo $playerInfo, bool $authenticated, Location $spawnLocation, ?CompoundTag $namedtag)
+    {
+        parent::__construct($server, $session, $playerInfo, $authenticated, $spawnLocation, $namedtag);
+        $this->DataManager = new DataManager($this->getName());
+    }
 
     public function attack(EntityDamageEvent $source): void
     {
@@ -133,7 +148,6 @@ class PracticePlayer extends Player
 
     public function getChatFormat(string $message): string
     {
-        $name = $this->getName();
         if ($this->getData()?->getTag() !== null && $this->getData()?->getTag() !== '') {
             $nametag = '§f[' . $this->getData()?->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
         } else {
@@ -331,7 +345,6 @@ class PracticePlayer extends Player
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         $this->setLobbyItem();
-        $this->DataManager = new DataManager($this->getName());
         $this->LoadData(true);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }
