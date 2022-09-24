@@ -62,39 +62,54 @@ class ScoreboardManager
 
     public function sb2(Player $player): void
     {
-        $ping = $player->getNetworkSession()->getPing();
-        $server = Server::getInstance();
-        $on = count(Server::getInstance()->getOnlinePlayers());
-        $lines = [
-            1 => '§7---------------§0',
-            2 => "§dOnline§f: §a$on",
-            3 => "§dPing§f: §a$ping",
-            4 => "§dTPS§f: §a{$server->getTicksPerSecond()} ({$server->getTickUsage()})",
-            5 => '§7---------------'
-        ];
-        PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
-        foreach ($lines as $line => $content) {
-            PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+        if ($player instanceof PracticePlayer) {
+            $opponent = $player->getOpponent();
+            if ($opponent !== null) {
+                $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
+                $pingoppo = $oppopl->getNetworkSession()->getPing();
+            } else {
+                $pingoppo = 0;
+            }
+            $ping = $player->getNetworkSession()->getPing();
+            $on = count(Server::getInstance()->getOnlinePlayers());
+            $lines = [
+                1 => '§7---------------§0',
+                2 => "§dOnline§f: §a$on",
+                3 => '§c',
+                4 => "§aYour §fPing: §a$ping" . '§fms',
+                5 => "§cTheir §fPing: §c$pingoppo" . '§fms',
+                6 => '§7---------------'
+            ];
+            PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
+            foreach ($lines as $line => $content) {
+                PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+            }
         }
     }
 
     public function Boxing(Player $player): void
     {
         if ($player instanceof PracticePlayer) {
+            $ping = $player->getNetworkSession()->getPing();
             $boxingp = $player->BoxingPoint;
             $opponent = $player->getOpponent();
             if ($opponent !== null) {
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                 /** @var PracticePlayer $oppopl */
                 $opponentboxingp = $oppopl?->BoxingPoint;
+                $pingoppo = $oppopl->getNetworkSession()->getPing();
             } else {
                 $opponentboxingp = 0;
+                $pingoppo = 0;
             }
             $lines = [
                 1 => '§7---------------§0',
-                2 => "§dYour§f: §a$boxingp",
-                3 => "§dOpponent§f: §c$opponentboxingp",
-                4 => '§7---------------'
+                2 => "§aYour§f: §a$boxingp",
+                3 => "§cTheir §f: §c$opponentboxingp",
+                4 => '§c',
+                5 => "§aYour §fPing: §a$ping" . '§fms',
+                6 => "§cTheir §fPing: §c$pingoppo" . '§fms',
+                7 => '§7---------------'
             ];
             PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
             foreach ($lines as $line => $content) {
