@@ -572,7 +572,6 @@ class PracticeListener extends AbstractListener
                     $damager->addKill();
                     PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
                     foreach ([$player, $damager] as $p) {
-                        $p->setLastDamagePlayer('Unknown');
                         $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
                     }
                     $damager->setHealth(20);

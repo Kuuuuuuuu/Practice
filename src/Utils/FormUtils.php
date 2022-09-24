@@ -132,7 +132,7 @@ class FormUtils
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p instanceof PracticePlayer) {
                 try {
-                    if ($p->getDuelKit()?->getName() === $kit) {
+                    if ($p->getDuelKit()?->getName() === $kit && !$p->isDueling()) {
                         $kitcount++;
                     }
                 } catch (Exception) {
