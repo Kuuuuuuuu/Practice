@@ -33,7 +33,6 @@ class PracticePlayer extends Player
     public string $PlayerControl = 'Unknown';
     public string $PlayerDevice = 'Unknown';
     public string $ToolboxStatus = 'Normal';
-    public string $lastDamagePlayer = 'Unknown';
     private int $CombatTime = 0;
     private string $cape = '';
     private string $artifact = '';
@@ -230,16 +229,6 @@ class PracticePlayer extends Player
         foreach ($artifact as $arti) {
             $this->setValidStuffs($arti);
         }
-    }
-
-    public function getLastDamagePlayer(): string
-    {
-        return $this->lastDamagePlayer;
-    }
-
-    public function setLastDamagePlayer(string $name): void
-    {
-        $this->lastDamagePlayer = $name;
     }
 
     public function onUpdate(int $currentTick): bool

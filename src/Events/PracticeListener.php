@@ -412,11 +412,8 @@ class PracticeListener extends AbstractListener
                     PracticeCore::getFormUtils()->ProfileForm($damager, $player);
                 }
                 $event->cancel();
-            } else {
-                $damager->setLastDamagePlayer($player->getName());
-                $player->setLastDamagePlayer($damager->getName());
             }
-            if (($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena())) && $damager->getInventory()->getItemInHand()->getId() === ItemIds::STICK) {
+            if (($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()))) {
                 $x = $player->getLocation()->getX();
                 $y = $player->getLocation()->getY();
                 $z = $player->getLocation()->getZ();
@@ -430,7 +427,7 @@ class PracticeListener extends AbstractListener
                 } else {
                     $player->knockBack(5, 0.4, 2);
                 }
-            } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+            } elseif ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 if ($player->getOpponent() === null && $damager->getOpponent() === null) {
                     $player->setOpponent($damager->getName());
                     $damager->setOpponent($player->getName());
@@ -440,33 +437,35 @@ class PracticeListener extends AbstractListener
                         $p->setCombat(true);
                     }
                 }
-                if ($player->getOpponent() !== null && $damager->getOpponent() !== null) {
-                    if ($player->getOpponent() !== $damager->getName() && $damager->getOpponent() !== $player->getName()) {
-                        $event->cancel();
-                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                    } elseif ($player->getOpponent() === $damager->getName() && $damager->getOpponent() === $player->getName()) {
-                        foreach ([$player, $damager] as $p) {
-                            /* @var PracticePlayer $p */
-                            $p->setCombat(true);
-                        }
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            if ($damager->BoxingPoint < 100) {
-                                $damager->BoxingPoint++;
-                                foreach ([$player, $damager] as $p) {
-                                    /* @var PracticePlayer $p */
-                                    PracticeCore::getScoreboardManager()->Boxing($p);
+                if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                    if ($player->getOpponent() !== null && $damager->getOpponent() !== null) {
+                        if ($player->getOpponent() !== $damager->getName() && $damager->getOpponent() !== $player->getName()) {
+                            $event->cancel();
+                            $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                        } elseif ($player->getOpponent() === $damager->getName() && $damager->getOpponent() === $player->getName()) {
+                            foreach ([$player, $damager] as $p) {
+                                /* @var PracticePlayer $p */
+                                $p->setCombat(true);
+                            }
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+                                if ($damager->BoxingPoint < 100) {
+                                    $damager->BoxingPoint++;
+                                    foreach ([$player, $damager] as $p) {
+                                        /* @var PracticePlayer $p */
+                                        PracticeCore::getScoreboardManager()->Boxing($p);
+                                    }
+                                } else {
+                                    $player->kill();
                                 }
-                            } else {
-                                $player->kill();
                             }
                         }
+                    } elseif ($player->getOpponent() !== null && $damager->getOpponent() === null) {
+                        $event->cancel();
+                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                    } elseif ($player->getOpponent() === null && $damager->getOpponent() !== null) {
+                        $event->cancel();
+                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                     }
-                } elseif ($player->getOpponent() !== null && $damager->getOpponent() === null) {
-                    $event->cancel();
-                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                } elseif ($player->getOpponent() === null && $damager->getOpponent() !== null) {
-                    $event->cancel();
-                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                 }
             }
         }
@@ -511,7 +510,7 @@ class PracticeListener extends AbstractListener
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof PracticePlayer) {
-            $damager = Server::getInstance()->getPlayerByPrefix($player->getLastDamagePlayer());
+            $damager = Server::getInstance()->getPlayerByPrefix($player->getOpponent());
             if ($damager instanceof PracticePlayer) {
                 $dname = $damager->getName() ?? 'Unknown';
                 if ($damager->isAlive()) {
@@ -562,7 +561,6 @@ class PracticeListener extends AbstractListener
                 foreach ([$damager, $player] as $p) {
                     if ($p instanceof PracticePlayer) {
                         $p->setCombat(false);
-                        $p->setLastDamagePlayer('Unknown');
                     }
                 }
                 $player->setLobbyItem();
