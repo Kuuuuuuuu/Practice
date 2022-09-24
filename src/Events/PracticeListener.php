@@ -510,71 +510,73 @@ class PracticeListener extends AbstractListener
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
         if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof PracticePlayer) {
-            $damager = Server::getInstance()->getPlayerByPrefix($player->getOpponent());
-            if ($damager instanceof PracticePlayer) {
-                $dname = $damager->getName() ?? 'Unknown';
-                if ($damager->isAlive()) {
-                    $arena = $damager->getWorld()->getDisplayName();
-                    if ($arena === PracticeCore::getArenaFactory()->getOITCArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
-                            $damager->getInventory()->clearAll();
-                            $damager->getArmorInventory()->clearAll();
-                            $damager->setHealth(20);
-                            $damager->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
-                            $damager->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                            $damager->getInventory()->setItem(8, VanillaItems::ARROW());
-                        }
-                    } elseif ($arena === PracticeCore::getArenaFactory()->getBuildArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-                            $damager->getInventory()->clearAll();
-                            $damager->getArmorInventory()->clearAll();
-                            $damager->setHealth(20);
-                            try {
-                                foreach (PracticeCore::getInstance()->KitData->get($damager->getName()) as $slot => $item) {
-                                    $damager->getInventory()->setItem($slot, Item::jsonDeserialize($item));
+            if ($player->getOpponent() !== null) {
+                $damager = Server::getInstance()->getPlayerByPrefix($player->getOpponent());
+                if ($damager instanceof PracticePlayer) {
+                    $dname = $damager->getName() ?? 'Unknown';
+                    if ($damager->isAlive()) {
+                        $arena = $damager->getWorld()->getDisplayName();
+                        if ($arena === PracticeCore::getArenaFactory()->getOITCArena()) {
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
+                                $damager->getInventory()->clearAll();
+                                $damager->getArmorInventory()->clearAll();
+                                $damager->setHealth(20);
+                                $damager->getInventory()->setItem(0, VanillaItems::STONE_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1)));
+                                $damager->getInventory()->setItem(1, VanillaItems::BOW()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 500))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                                $damager->getInventory()->setItem(8, VanillaItems::ARROW());
+                            }
+                        } elseif ($arena === PracticeCore::getArenaFactory()->getBuildArena()) {
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                                $damager->getInventory()->clearAll();
+                                $damager->getArmorInventory()->clearAll();
+                                $damager->setHealth(20);
+                                try {
+                                    foreach (PracticeCore::getInstance()->KitData->get($damager->getName()) as $slot => $item) {
+                                        $damager->getInventory()->setItem($slot, Item::jsonDeserialize($item));
+                                    }
+                                } catch (Throwable) {
+                                    $damager->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                                    $damager->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
+                                    $damager->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
+                                    $damager->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
+                                    $damager->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
+                                    $damager->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                                 }
-                            } catch (Throwable) {
-                                $damager->getInventory()->setItem(0, VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                                $damager->getInventory()->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
-                                $damager->getInventory()->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
-                                $damager->getInventory()->addItem(VanillaBlocks::WOOL()->asItem()->setCount(128));
-                                $damager->getInventory()->addItem(VanillaBlocks::COBWEB()->asItem());
-                                $damager->getInventory()->addItem(VanillaItems::SHEARS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                            }
+                            $damager->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                            $damager->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                            $damager->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                            $damager->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
+                        } elseif ($arena === PracticeCore::getArenaFactory()->getBoxingArena()) {
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+                                $damager->setHealth(20);
+                            }
+                        } elseif ($arena === PracticeCore::getArenaFactory()->getComboArena()) {
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())) {
+                                $damager->getInventory()->clearAll();
+                                $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
+                                $damager->getInventory()->addItem($item);
                             }
                         }
-                        $damager->getArmorInventory()->setHelmet(VanillaItems::IRON_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                        $damager->getArmorInventory()->setChestplate(VanillaItems::IRON_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                        $damager->getArmorInventory()->setLeggings(VanillaItems::IRON_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                        $damager->getArmorInventory()->setBoots(VanillaItems::IRON_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 32000))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)));
-                    } elseif ($arena === PracticeCore::getArenaFactory()->getBoxingArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            $damager->setHealth(20);
-                        }
-                    } elseif ($arena === PracticeCore::getArenaFactory()->getComboArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getComboArena())) {
-                            $damager->getInventory()->clearAll();
-                            $item = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(3);
-                            $damager->getInventory()->addItem($item);
+                    }
+                    foreach ([$damager, $player] as $p) {
+                        if ($p instanceof PracticePlayer) {
+                            $p->setCombat(false);
                         }
                     }
-                }
-                foreach ([$damager, $player] as $p) {
-                    if ($p instanceof PracticePlayer) {
-                        $p->setCombat(false);
+                    $player->setLobbyItem();
+                    $player->getInventory()->clearAll();
+                    $player->getArmorInventory()->clearAll();
+                    $player->getOffHandInventory()->clearAll();
+                    $player->addDeath();
+                    $damager->addKill();
+                    PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
+                    foreach ([$player, $damager] as $p) {
+                        $p->setLastDamagePlayer('Unknown');
+                        $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
                     }
+                    $damager->setHealth(20);
                 }
-                $player->setLobbyItem();
-                $player->getInventory()->clearAll();
-                $player->getArmorInventory()->clearAll();
-                $player->getOffHandInventory()->clearAll();
-                $player->addDeath();
-                $damager->addKill();
-                PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
-                foreach ([$player, $damager] as $p) {
-                    $p->setLastDamagePlayer('Unknown');
-                    $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
-                }
-                $damager->setHealth(20);
             }
         }
     }
