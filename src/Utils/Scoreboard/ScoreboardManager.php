@@ -76,8 +76,8 @@ class ScoreboardManager
                 1 => '§7---------------§0',
                 2 => "§dOnline§f: §a$on",
                 3 => '§c',
-                4 => "§aYour §fPing: §a$ping" . '§fms',
-                5 => "§cTheir §fPing: §c$pingoppo" . '§fms',
+                4 => "§aYour §fPing: §a$ping" . ' §fms',
+                5 => "§cTheir §fPing: §c$pingoppo" . ' §fms',
                 6 => '§7---------------'
             ];
             PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
@@ -105,10 +105,10 @@ class ScoreboardManager
             $lines = [
                 1 => '§7---------------§0',
                 2 => "§aYour§f: §a$boxingp",
-                3 => "§cTheir §f: §c$opponentboxingp",
+                3 => "§cTheir§f: §c$opponentboxingp",
                 4 => '§c',
-                5 => "§aYour §fPing: §a$ping" . '§fms',
-                6 => "§cTheir §fPing: §c$pingoppo" . '§fms',
+                5 => "§aYour §fPing: §a$ping" . ' §fms',
+                6 => "§cTheir §fPing: §c$pingoppo" . ' §fms',
                 7 => '§7---------------'
             ];
             PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
