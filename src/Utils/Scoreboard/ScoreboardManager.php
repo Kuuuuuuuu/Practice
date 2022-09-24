@@ -66,7 +66,7 @@ class ScoreboardManager
             $opponent = $player->getOpponent();
             if ($opponent !== null) {
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
-                $pingoppo = $oppopl->getNetworkSession()->getPing();
+                $pingoppo = $oppopl?->getNetworkSession()->getPing();
             } else {
                 $pingoppo = 0;
             }
@@ -97,7 +97,7 @@ class ScoreboardManager
                 $oppopl = Server::getInstance()->getPlayerByPrefix($opponent);
                 /** @var PracticePlayer $oppopl */
                 $opponentboxingp = $oppopl?->BoxingPoint;
-                $pingoppo = $oppopl->getNetworkSession()->getPing();
+                $pingoppo = $oppopl?->getNetworkSession()->getPing();
             } else {
                 $opponentboxingp = 0;
                 $pingoppo = 0;
