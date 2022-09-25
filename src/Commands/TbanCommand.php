@@ -7,10 +7,10 @@ declare(strict_types=1);
 
 namespace Kuu\Commands;
 
-use Kuu\Lib\FormAPI\CustomForm;
-use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
+use Kuu\Utils\Forms\CustomForm;
+use Kuu\Utils\Forms\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

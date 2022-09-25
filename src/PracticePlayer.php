@@ -27,28 +27,105 @@ use Throwable;
 
 class PracticePlayer extends Player
 {
-    public ?DataManager $DataManager;
     public int $BoxingPoint = 0;
-    public string $PlayerOS = 'Unknown';
-    public string $PlayerControl = 'Unknown';
-    public string $PlayerDevice = 'Unknown';
-    public string $ToolboxStatus = 'Normal';
+    public string $OS = 'Unknown';
+    public string $Input = 'Unknown';
+    public string $Device = 'Unknown';
+    private ?DataManager $DataManager;
     private int $CombatTime = 0;
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
-    private ?KitManager $duelKit = null;
+    private ?KitManager $selectKit = null;
     private bool $isDueling = false;
     private bool $inQueue = false;
-    private bool $Combat = false;
+    private bool $isCombat = false;
     private ?string $Opponent = null;
     private array $savekitcache = [];
-    private array $validstuffs = [];
+    private array $validstuffs = [
+        'Adidas',
+        'AngelWing',
+        'AngelWingV2',
+        'Antler',
+        'Axe',
+        'BackCap',
+        'Backpack',
+        'BackStabKnife',
+        'Bald Headband',
+        'Banana',
+        'BlackAngleSet',
+        'BlazeRod',
+        'BlueWing',
+        'Boxing',
+        'Bubble',
+        'Creeper',
+        'Crown',
+        'CrownV2',
+        'DevilHaloWing',
+        'DevilWing',
+        'Dollar',
+        'DragonWing',
+        'EnderTail',
+        'EnderWing',
+        'Fox',
+        'Glasses',
+        'Goat',
+        'Gudoudame',
+        'Halo',
+        'HeadphoneNote',
+        'Headphones',
+        'Kaqune',
+        'Katana',
+        'Koala',
+        'LightSaber',
+        'LouisVuitton',
+        'MiniAngelWing',
+        'MiniAngelWingV2',
+        'MLG RUSH 1st',
+        'Moustache',
+        'Neckite',
+        'Nike',
+        'PhantomWing',
+        'Questionmark',
+        'Rabbit Costume',
+        'Rabbit',
+        'RedWing',
+        'Rich Bandanna',
+        'Santa',
+        'Sickle',
+        'SP-BananaMan',
+        'Susanno',
+        'SusanooBlue',
+        'SusanooPurple',
+        'SWAT Shield',
+        'ThunderCloud',
+        'UFO',
+        'Viking',
+        'Wave Bandanna',
+        'White Heart',
+        'Witchhat',
+        'Wither Head'
+    ];
 
     public function __construct(Server $server, NetworkSession $session, PlayerInfo $playerInfo, bool $authenticated, Location $spawnLocation, ?CompoundTag $namedtag)
     {
         parent::__construct($server, $session, $playerInfo, $authenticated, $spawnLocation, $namedtag);
         $this->DataManager = new DataManager($this->getName());
+        $this->setInputData();
+    }
+
+    private function setInputData(): void
+    {
+        $data = $this->getPlayerInfo()->getExtraData();
+        if ($data['CurrentInputMode'] !== null) {
+            $this->Input = PracticeConfig::ControlList[$data['CurrentInputMode']];
+        }
+        if ($data['DeviceOS'] !== null) {
+            $this->OS = PracticeConfig::OSList[$data['DeviceOS']];
+        }
+        if ($data['DeviceModel'] !== null) {
+            $this->Device = $data['DeviceModel'];
+        }
     }
 
     public function attack(EntityDamageEvent $source): void
@@ -85,7 +162,7 @@ class PracticePlayer extends Player
         $yKb = 0.4;
         try {
             if ($this->isDueling()) {
-                if ($this->duelKit?->getName() === 'Sumo') {
+                if ($this->selectKit?->getName() === 'Sumo') {
                     $yKb = 0.35;
                     $xzKB = 0.37;
                 } else {
@@ -137,14 +214,6 @@ class PracticePlayer extends Player
         return $this->validstuffs;
     }
 
-    public function setValidStuffs(string $stuff): void
-    {
-        $key = in_array($stuff, $this->validstuffs, true);
-        if ($key === false) {
-            $this->validstuffs[] = $stuff;
-        }
-    }
-
     public function getChatFormat(string $message): string
     {
         if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
@@ -158,77 +227,6 @@ class PracticePlayer extends Player
     public function getData(): DataManager
     {
         return $this->DataManager;
-    }
-
-    public function getAllArtifact(): void
-    {
-        $artifact = [
-            'Adidas',
-            'AngelWing',
-            'AngelWingV2',
-            'Antler',
-            'Axe',
-            'BackCap',
-            'Backpack',
-            'BackStabKnife',
-            'Bald Headband',
-            'Banana',
-            'BlackAngleSet',
-            'BlazeRod',
-            'BlueWing',
-            'Boxing',
-            'Bubble',
-            'Creeper',
-            'Crown',
-            'CrownV2',
-            'DevilHaloWing',
-            'DevilWing',
-            'Dollar',
-            'DragonWing',
-            'EnderTail',
-            'EnderWing',
-            'Fox',
-            'Glasses',
-            'Goat',
-            'Gudoudame',
-            'Halo',
-            'HeadphoneNote',
-            'Headphones',
-            'Kaqune',
-            'Katana',
-            'Koala',
-            'LightSaber',
-            'LouisVuitton',
-            'MiniAngelWing',
-            'MiniAngelWingV2',
-            'MLG RUSH 1st',
-            'Moustache',
-            'Neckite',
-            'Nike',
-            'PhantomWing',
-            'Questionmark',
-            'Rabbit Costume',
-            'Rabbit',
-            'RedWing',
-            'Rich Bandanna',
-            'Santa',
-            'Sickle',
-            'SP-BananaMan',
-            'Susanno',
-            'SusanooBlue',
-            'SusanooPurple',
-            'SWAT Shield',
-            'ThunderCloud',
-            'UFO',
-            'Viking',
-            'Wave Bandanna',
-            'White Heart',
-            'Witchhat',
-            'Wither Head'
-        ];
-        foreach ($artifact as $arti) {
-            $this->setValidStuffs($arti);
-        }
     }
 
     public function onUpdate(int $currentTick): bool
@@ -254,9 +252,9 @@ class PracticePlayer extends Player
         }
         if ($currentTick % 40 === 0) {
             $this->updateNametag();
-            PracticeCore::getPracticeUtils()->DeviceCheck($this);
+            $this->setInputData();
         }
-        return parent::onUpdate($currentTick); // TODO: Change the autogenerated stub
+        return parent::onUpdate($currentTick);
     }
 
     private function updateTag(): void
@@ -270,17 +268,7 @@ class PracticePlayer extends Player
 
     public function isCombat(): bool
     {
-        return $this->Combat;
-    }
-
-    public function setCombat(bool $bool): void
-    {
-        if (!$bool && $this->CombatTime > 0) {
-            $this->CombatTime = 1;
-        } else {
-            $this->Combat = $bool;
-            $this->CombatTime = 10;
-        }
+        return $this->isCombat;
     }
 
     private function setPVPTag(): void
@@ -292,7 +280,7 @@ class PracticePlayer extends Player
 
     private function setUnPVPTag(): void
     {
-        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->PlayerOS . '§f | §f' . $this->PlayerControl)]);
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->OS . '§f | §f' . $this->Input)]);
     }
 
     private function updateScoreboard(): void
@@ -303,6 +291,16 @@ class PracticePlayer extends Player
             PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
         } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
             PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
+        }
+    }
+
+    public function setCombat(bool $bool): void
+    {
+        if (!$bool && $this->CombatTime > 0) {
+            $this->CombatTime = 1;
+        } else {
+            $this->isCombat = $bool;
+            $this->CombatTime = 10;
         }
     }
 
@@ -452,7 +450,7 @@ class PracticePlayer extends Player
 
     public function setCurrentKit(?KitManager $kit): void
     {
-        $this->duelKit = $kit;
+        $this->selectKit = $kit;
     }
 
     /**

@@ -94,37 +94,6 @@ class PracticeUtils
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
-    public function DeviceCheck(Player $player): void
-    {
-        $username = $player->getName();
-        $data = $player->getPlayerInfo()->getExtraData();
-        if ($player instanceof PracticePlayer) {
-            if ($data['CurrentInputMode'] !== null) {
-                $player->PlayerControl = PracticeConfig::ControlList[$data['CurrentInputMode']];
-            }
-            if ($data['DeviceOS'] !== null) {
-                $player->PlayerOS = PracticeConfig::OSList[$data['DeviceOS']];
-            }
-            if ($data['DeviceModel'] !== null) {
-                $player->PlayerDevice = $data['DeviceModel'];
-            }
-            $deviceOS = (int)$data['DeviceOS'];
-            $deviceModel = (string)$data['DeviceModel'];
-            if ($deviceOS !== 1) {
-                return;
-            }
-            $name = explode(' ', $deviceModel);
-            if (!isset($name[0])) {
-                return;
-            }
-            $check = strtoupper($name[0]);
-            if ($check !== $name[0]) {
-                Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§e' . $username . ' §cMight be Using §aToolbox. Please Avoid that Player!');
-                $player->ToolboxStatus = 'Toolbox';
-            }
-        }
-    }
-
     public function initialize(): void
     {
         $this->registerItems();

@@ -34,10 +34,9 @@ class PlayerInfoCommand extends Command
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7IP: §a' . $playerinfo->getNetworkSession()->getIp());
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7UUID: §a' . $playerinfo->getUniqueId());
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Nametag: §a' . $playerinfo->getNameTag());
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Device: §a' . $playerinfo->PlayerDevice);
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7OS: §a' . $playerinfo->PlayerOS);
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Control: §a' . $playerinfo->PlayerControl);
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Toolbox: §a' . $playerinfo->ToolboxStatus);
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Device: §a' . $playerinfo->Device);
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7OS: §a' . $playerinfo->OS);
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Control: §a' . $playerinfo->Input);
             } else {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cPlayer not found.');
             }

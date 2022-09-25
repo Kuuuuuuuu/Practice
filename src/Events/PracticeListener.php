@@ -190,9 +190,7 @@ class PracticeListener extends AbstractListener
                 PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
             }
         } else {
-            $player->getAllArtifact();
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
-            PracticeCore::getInstance()->getPracticeUtils()->DeviceCheck($player);
             PracticeCore::getClickHandler()->initPlayerClickData($player);
             if ($player instanceof PracticePlayer) {
                 $cosmetic = PracticeCore::getCosmeticHandler();
@@ -233,10 +231,8 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if (!$player->getGamemode()->equals(GameMode::CREATIVE())) {
-            if ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT) {
-                $event->cancel();
-            }
+        if (!$player->getGamemode()->equals(GameMode::CREATIVE()) && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
+            $event->cancel();
         }
     }
 
@@ -256,18 +252,8 @@ class PracticeListener extends AbstractListener
     public function onChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         if ($player instanceof PracticePlayer) {
-            $cosmetic = PracticeCore::getCosmeticHandler();
-            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
-                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
-                $cosmetic->resetSkin($player);
-            } else {
-                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
-                $cosmetic->saveSkin($skin->getSkinData(), $name);
-            }
-            $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-            $cosmetic->saveSkin($skin->getSkinData(), $name);
+            PracticeCore::getCosmeticHandler()->setSkin($this, $player->getStuff());
         }
     }
 

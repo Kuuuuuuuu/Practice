@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Lib\FormAPI;
+namespace Kuu\Utils\Forms;
 
 
 use pocketmine\form\FormValidationException;

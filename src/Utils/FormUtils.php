@@ -6,11 +6,11 @@ namespace Kuu\Utils;
 
 use Exception;
 use JsonException;
-use Kuu\Lib\FormAPI\CustomForm;
-use Kuu\Lib\FormAPI\SimpleForm;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
+use Kuu\Utils\Forms\CustomForm;
+use Kuu\Utils\Forms\SimpleForm;
 use Kuu\Utils\Kits\KitRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\Skin;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kuu\Lib\FormAPI;
+namespace Kuu\Utils\Forms;
 
 use pocketmine\form\FormValidationException;
 
