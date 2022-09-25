@@ -427,7 +427,7 @@ class PracticePlayer extends Player
 
     public function getDuelKit(): ?KitManager
     {
-        return $this->duelKit ?? null;
+        return $this->selectKit ?? null;
     }
 
     /**
