@@ -26,7 +26,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerChangeSkinEvent;
@@ -52,6 +51,7 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
+use pocketmine\item\PotionType;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
@@ -88,13 +88,13 @@ class PracticeListener extends AbstractListener
                 }
             } else {
                 switch ($item->getCustomName()) {
-                    case '§r§dPlay':
+                    case '§r§bPlay':
                         PracticeCore::getFormUtils()->Form1($player);
                         break;
-                    case '§r§dSettings':
+                    case '§r§bSettings':
                         PracticeCore::getFormUtils()->settingsForm($player);
                         break;
-                    case '§r§dBot':
+                    case '§r§bBot':
                         PracticeCore::getFormUtils()->botForm($player);
                         break;
                     case '§r§cLeave Queue':
@@ -103,10 +103,10 @@ class PracticeListener extends AbstractListener
                         $player->setInQueue(false);
                         $player->setLobbyItem();
                         break;
-                    case '§r§dDuel':
+                    case '§r§bDuel':
                         PracticeCore::getFormUtils()->duelForm($player);
                         break;
-                    case '§r§dProfile':
+                    case '§r§bProfile':
                         PracticeCore::getFormUtils()->ProfileForm($player, null);
                         break;
                     case '§r§eLeap§r':
@@ -231,7 +231,7 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if (!$player->getGamemode()->equals(GameMode::CREATIVE()) && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
+        if (!$player->getGamemode() === GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
             $event->cancel();
         }
     }
@@ -295,22 +295,13 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    public function potionHitEvent(ProjectileHitEvent $event): void
+    public function onProjectileHitBlock(ProjectileHitBlockEvent $event): void
     {
-        $type = $event->getEntity();
-        $owner = $type->getOwningEntity();
-        $owner?->setHealth($owner->getHealth() + 4);
-        if (($owner instanceof Player) && $type instanceof SplashPotion) {
-            foreach ($type->getWorld()->getNearbyEntities($type->getBoundingBox()->expand(2, 5, 2)) as $entity) {
-                if ($entity instanceof Player) {
-                    if ($entity->getName() === $owner->getName()) {
-                        continue;
-                    }
-                    $entity->setHealth($owner->getHealth() + random_int(2, 4));
-                }
+        $projectile = $event->getEntity();
+        if ($projectile instanceof SplashPotion && $projectile->getPotionType() === PotionType::STRONG_HEALING()) {
+            $player = $projectile->getOwningEntity();
+            if ($player instanceof Player && $player->isAlive() && $projectile->getPosition()->distance($player->getPosition()) <= 3) {
+                $player->setHealth($player->getHealth() + 3.5);
             }
         }
     }
@@ -392,7 +383,7 @@ class PracticeListener extends AbstractListener
         $damager = $event->getDamager();
         if ($damager instanceof PracticePlayer && $player instanceof PracticePlayer) {
             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§dProfile') {
+                if ($damager->getInventory()->getItem($damager->getInventory()->getHeldItemIndex())->getName() === '§r§bProfile') {
                     PracticeCore::getFormUtils()->ProfileForm($damager, $player);
                 }
                 $event->cancel();

@@ -67,7 +67,7 @@ class DuelFactory extends DuelFactoryBase
                             $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                             $player->getInventory()->setContents($this->kit->getInventoryItems());
                             $player->setImmobile();
-                            $player->sendTitle('§d3', '', 1, 3, 1);
+                            $player->sendTitle('§b3', '', 1, 3, 1);
                             PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                             if ($this->kit->getName() === 'Sumo') {
                                 $player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 100000, 255, false));
@@ -84,19 +84,19 @@ class DuelFactory extends DuelFactoryBase
                     break;
                 case 902:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§d2', '', 1, 3, 1);
+                        $player->sendTitle('§b2', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                     break;
                 case 901:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§d1', '', 1, 3, 1);
+                        $player->sendTitle('§b1', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                     break;
                 case 900:
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§dFight!', '', 1, 3, 1);
+                        $player->sendTitle('§bFight!', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
                         $player->setImmobile(false);
                     }

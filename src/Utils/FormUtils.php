@@ -56,13 +56,13 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->addButton("§aBoxing\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
-        $form->addButton("§aFist\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
-        $form->addButton("§aCombo\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
-        $form->addButton("§aKnockback\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
-        $form->addButton("§aResistance\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
-        $form->addButton("§aOITC\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
-        $form->addButton("§aBuild\n§dPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
+        $form->addButton("§aBoxing\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
+        $form->addButton("§aFist\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getFistArena()), 0, 'textures/items/beef_cooked.png');
+        $form->addButton("§aCombo\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getComboArena()), 0, 'textures/items/apple_golden.png');
+        $form->addButton("§aKnockback\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getKnockbackArena()), 0, 'textures/items/stick.png');
+        $form->addButton("§aResistance\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
+        $form->addButton("§aOITC\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
+        $form->addButton("§aBuild\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
     }
 
@@ -117,12 +117,12 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
-        $form->addButton("§aFist\n§dQueue§f: " . $this->getQueue('Fist'), 0, 'textures/items/paper.png');
-        $form->addButton("§aNoDebuff\n§dQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
-        $form->addButton("§aClassic\n§dQueue§f: " . $this->getQueue('Classic'), 0, 'textures/items/paper.png');
-        $form->addButton("§aSG\n§dQueue§f: " . $this->getQueue('SG'), 0, 'textures/items/paper.png');
-        $form->addButton("§aBuildUHC\n§dQueue§f: " . $this->getQueue('BuildUHC'), 0, 'textures/items/paper.png');
-        $form->addButton("§aSumo\n§dQueue§f: " . $this->getQueue('Sumo'), 0, 'textures/items/paper.png');
+        $form->addButton("§aFist\n§bQueue§f: " . $this->getQueue('Fist'), 0, 'textures/items/paper.png');
+        $form->addButton("§aNoDebuff\n§bQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
+        $form->addButton("§aClassic\n§bQueue§f: " . $this->getQueue('Classic'), 0, 'textures/items/paper.png');
+        $form->addButton("§aSG\n§bQueue§f: " . $this->getQueue('SG'), 0, 'textures/items/paper.png');
+        $form->addButton("§aBuildUHC\n§bQueue§f: " . $this->getQueue('BuildUHC'), 0, 'textures/items/paper.png');
+        $form->addButton("§aSumo\n§bQueue§f: " . $this->getQueue('Sumo'), 0, 'textures/items/paper.png');
         $player->sendForm($form);
     }
 
@@ -168,11 +168,11 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->addButton('§aChange §dName', 0, 'textures/ui/dressing_room_skins.png');
-        $form->addButton('§aReport §dPlayers', 0, 'textures/blocks/barrier.png');
-        $form->addButton('§aChange §dCapes', 0, 'textures/items/snowball.png');
+        $form->addButton('§aChange §bName', 0, 'textures/ui/dressing_room_skins.png');
+        $form->addButton('§aReport §bPlayers', 0, 'textures/blocks/barrier.png');
+        $form->addButton('§aChange §bCapes', 0, 'textures/items/snowball.png');
         $form->addButton('§aArtifacts', 0, 'textures/items/diamond_axe.png');
-        $form->addButton('§aEdit §dKit', 0, 'textures/items/diamond_pickaxe.png');
+        $form->addButton('§aEdit §bKit', 0, 'textures/items/diamond_pickaxe.png');
         $player->sendForm($form);
     }
 
@@ -248,7 +248,7 @@ class FormUtils
         $form->setTitle(PracticeConfig::Server_Name . '§cReport');
         $form->addLabel('§aReport');
         $form->addDropdown('§eSelect a player', $list);
-        $form->addInput('§dReason', 'Type a reason');
+        $form->addInput('§bReason', 'Type a reason');
         $player->sendForm($form);
     }
 
@@ -402,9 +402,9 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->setContent('§dPlayers: §e' . $this->getQueueBot());
-        $form->addButton('§aFist §dBot', 0, 'textures/items/diamond.png');
-        $form->addButton('§aNoDebuff §dBot', 1, 'textures/items/diamond.png');
+        $form->setContent('§bPlayers: §e' . $this->getQueueBot());
+        $form->addButton('§aFist §bBot', 0, 'textures/items/diamond.png');
+        $form->addButton('§aNoDebuff §bBot', 1, 'textures/items/diamond.png');
         $player->sendForm($form);
     }
 

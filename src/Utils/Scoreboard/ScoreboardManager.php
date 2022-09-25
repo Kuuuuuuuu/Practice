@@ -22,14 +22,14 @@ class ScoreboardManager
         $on = count(Server::getInstance()->getOnlinePlayers());
         $lines = [
             1 => '§7---------------§7',
-            2 => "§dOnline§f: §a$on",
-            3 => "§dPing§f: §a$ping",
-            4 => '§a',
-            5 => "§dK§f: §a$kills §dD§f: §a$deaths",
-            6 => "§dKDR§f: §a$rate §dElo§f: §a{$data->getElo()}",
-            7 => '§e',
-            8 => "§dIn-Queue §a$queue",
-            9 => "§dIn-Duel §a$duel",
+            2 => " §bOnline§f: §a$on",
+            3 => " §bPing§f: §a$ping",
+            4 => ' §a',
+            5 => " §bK§f: §a$kills §bD§f: §a$deaths",
+            6 => " §bKDR§f: §a$rate §bElo§f: §a{$data->getElo()}",
+            7 => ' §e',
+            8 => " §bIn-Queue§f: §a$queue",
+            9 => " §bIn-Duel§f: §a$duel",
             10 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
@@ -74,10 +74,10 @@ class ScoreboardManager
             $on = count(Server::getInstance()->getOnlinePlayers());
             $lines = [
                 1 => '§7---------------§0',
-                2 => "§dOnline§f: §a$on",
-                3 => '§c',
-                4 => "§aYour §fPing: §a$ping" . '§fms',
-                5 => "§cTheir §fPing: §c$pingoppo" . '§fms',
+                2 => " §bOnline§f: §a$on",
+                3 => ' §c',
+                4 => " §bYour §fPing: §a$ping" . '§fms',
+                5 => " §bTheir §fPing: §c$pingoppo" . '§fms',
                 6 => '§7---------------'
             ];
             PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
@@ -102,14 +102,17 @@ class ScoreboardManager
                 $opponentboxingp = 0;
                 $pingoppo = 0;
             }
+            $diff = abs($boxingp - $opponentboxingp);
+            $check = $boxingp >= $opponentboxingp;
             $lines = [
                 1 => '§7---------------§0',
-                2 => "§aYour§f: §a$boxingp",
-                3 => "§cTheir§f: §c$opponentboxingp",
-                4 => '§c',
-                5 => "§aYour §fPing: §a$ping" . '§fms',
-                6 => "§cTheir §fPing: §c$pingoppo" . '§fms',
-                7 => '§7---------------'
+                2 => ' Hits: ' . ($check ? "§a(+$diff)" : "§c(-$diff)"),
+                3 => "   §bYour§f: §a$boxingp",
+                4 => "   §bThem§f: §c$opponentboxingp",
+                5 => '§c',
+                6 => " §bYour §fPing: §a$ping" . '§fms',
+                7 => " §bTheir §fPing: §c$pingoppo" . '§fms',
+                8 => '§7---------------'
             ];
             PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
             foreach ($lines as $line => $content) {

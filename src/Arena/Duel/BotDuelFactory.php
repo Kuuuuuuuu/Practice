@@ -60,7 +60,7 @@ class BotDuelFactory extends DuelFactoryBase
                     if ($this->player1->isOnline()) {
                         $this->player1->setImmobile();
                         $this->player1->setGamemode(GameMode::SURVIVAL());
-                        $this->player1->sendTitle('§d3', '', 1, 3, 1);
+                        $this->player1->sendTitle('§b3', '', 1, 3, 1);
                         $this->player1->getArmorInventory()->setContents($this->kit->getArmorItems());
                         $this->player1->getInventory()->setContents($this->kit->getInventoryItems());
                         $this->player1->teleport(new Location(24, 101, 40, $this->level, 190, 0));
@@ -69,19 +69,19 @@ class BotDuelFactory extends DuelFactoryBase
                     break;
                 case 902:
                     if ($this->player1->isOnline()) {
-                        $this->player1->sendTitle('§d2', '', 1, 3, 1);
+                        $this->player1->sendTitle('§b2', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                     }
                     break;
                 case 901:
                     if ($this->player1->isOnline()) {
-                        $this->player1->sendTitle('§d1', '', 1, 3, 1);
+                        $this->player1->sendTitle('§b1', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $this->player1);
                     }
                     break;
                 case 900:
                     if ($this->player1->isOnline()) {
-                        $this->player1->sendTitle('§dFight!', '', 1, 3, 1);
+                        $this->player1->sendTitle('§bFight!', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $this->player1);
                         $this->player1->setImmobile(false);
                         $this->player2 = new PracticeBot(new Location(24, 101, 10, Server::getInstance()->getWorldManager()->getWorldByName($this->level->getFolderName()), 0, 0), $this->player1->getSkin(), null, $this->player1->getName(), $this->mode);

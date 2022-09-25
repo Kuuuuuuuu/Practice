@@ -17,14 +17,14 @@ class KillLeaderboard extends BaseLeaderboard
             arsort($tops);
             $i = 1;
             foreach ($tops as $name => $wins) {
-                $subtitle .= ' §7[§d# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e Kills\n";
+                $subtitle .= ' §7[§b# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e Kills\n";
                 if ($i >= 10) {
                     break;
                 }
                 ++$i;
             }
         }
-        $this->setNameTag("§dMost Kills Players\n" . $subtitle);
+        $this->setNameTag("§bMost Kills Players\n" . $subtitle);
         $this->setNameTagAlwaysVisible();
         return parent::onUpdate($currentTick);
     }

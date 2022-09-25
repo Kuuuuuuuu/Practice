@@ -335,15 +335,15 @@ class PracticePlayer extends Player
     public function setLobbyItem(): void
     {
         $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item->setCustomName('§r§dPlay');
+        $item->setCustomName('§r§bPlay');
         $item2 = VanillaItems::CLOCK()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item2->setCustomName('§r§dSettings');
+        $item2->setCustomName('§r§bSettings');
         $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item3->setCustomName('§r§dBot');
+        $item3->setCustomName('§r§bBot');
         $item4 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item4->setCustomName('§r§dDuel');
+        $item4->setCustomName('§r§bDuel');
         $item6 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item6->setCustomName('§r§dProfile');
+        $item6->setCustomName('§r§bProfile');
         $this->getOffHandInventory()->clearAll();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
