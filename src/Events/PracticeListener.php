@@ -246,17 +246,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         if ($player instanceof PracticePlayer) {
-            $cosmetic = PracticeCore::getCosmeticHandler();
-            $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
-            $cosmetic->saveSkin($skin->getSkinData(), $name);
+            PracticeCore::getCosmeticHandler()->reloadSkin($event->getNewSkin(), $player, $player->getStuff());
             $event->cancel();
             $player->sendMessage(PracticeCore::getPrefixCore() . '§aSkin Changed');
         }

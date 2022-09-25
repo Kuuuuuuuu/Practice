@@ -6,8 +6,6 @@ namespace Kuu\Utils;
 
 use Exception;
 use GdImage;
-use InvalidArgumentException;
-use JsonException;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\entity\Skin;
@@ -15,22 +13,14 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use RuntimeException;
 use function ord;
-use function round;
 use function strlen;
 
 class CosmeticManager
 {
-    public const BOUNDS_64_64 = 0;
-    public const BOUNDS_64_32 = self::BOUNDS_64_64;
-    public const BOUNDS_128_128 = 1;
-
     public string $dataFolder;
     public string $resourcesFolder;
     public string $artifactFolder;
-    public string $humanoidFile;
-    public string $stevePng;
     public string $saveSkin;
-    public array $skinBounds = [];
     public array $cosmeticAvailable = [];
     public array $skin_widght_map = [
         64 * 32 * 4 => 64,
@@ -47,9 +37,6 @@ class CosmeticManager
     ];
     private string $capeFolder;
 
-    /**
-     * @throws JsonException
-     */
     public function __construct()
     {
         $this->dataFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
@@ -61,11 +48,6 @@ class CosmeticManager
         $this->resourcesFolder = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/';
         $this->artifactFolder = $this->resourcesFolder . 'artifact/';
         $this->capeFolder = $this->resourcesFolder . 'capes/';
-        $this->stevePng = $this->resourcesFolder . 'steve.png';
-        $this->humanoidFile = $this->resourcesFolder . 'humanoid.json';
-        $cubes = $this->getCubes(json_decode(file_get_contents($this->humanoidFile), true, 512, JSON_THROW_ON_ERROR)['geometry.humanoid']);
-        $this->skinBounds[self::BOUNDS_64_64] = $this->getSkinBounds($cubes);
-        $this->skinBounds[self::BOUNDS_128_128] = $this->getSkinBounds($cubes, 2.0);
         $checkFileAvailable = [];
         $allFiles = scandir($this->artifactFolder);
         foreach ($allFiles as $allFilesName) {
@@ -80,54 +62,6 @@ class CosmeticManager
         }
         $this->cosmeticAvailable = $checkFileAvailable;
         sort($this->cosmeticAvailable);
-    }
-
-    private function getCubes(array $geometryData): ?array
-    {
-        try {
-            $cubes = [];
-            foreach ($geometryData['bones'] as $bone) {
-                if (!isset($bone['cubes'])) {
-                    continue;
-                }
-                if ($bone['mirror'] ?? false) {
-                    throw new InvalidArgumentException('Unsupported geometry data');
-                }
-                foreach ($bone['cubes'] as $cubeData) {
-                    $cube = [];
-                    $cube['x'] = $cubeData['size'][0];
-                    $cube['y'] = $cubeData['size'][1];
-                    $cube['z'] = $cubeData['size'][2];
-                    $cube['uvX'] = $cubeData['uv'][0];
-                    $cube['uvY'] = $cubeData['uv'][1];
-                    $cubes[] = $cube;
-                }
-            }
-            return $cubes;
-        } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
-            return null;
-        }
-    }
-
-    private function getSkinBounds(array $cubes, float $scale = 1.0): ?array
-    {
-        try {
-            $bounds = [];
-            foreach ($cubes as $cube) {
-                $x = (int)($scale * $cube['x']);
-                $y = (int)($scale * $cube['y']);
-                $z = (int)($scale * $cube['z']);
-                $uvX = (int)($scale * $cube['uvX']);
-                $uvY = (int)($scale * $cube['uvY']);
-                $bounds[] = ['min' => ['x' => $uvX + $z, 'y' => $uvY], 'max' => ['x' => $uvX + $z + (2 * $x) - 1, 'y' => $uvY + $z - 1]];
-                $bounds[] = ['min' => ['x' => $uvX, 'y' => $uvY + $z], 'max' => ['x' => $uvX + (2 * ($z + $x)) - 1, 'y' => $uvY + $z + $y - 1]];
-            }
-            return $bounds;
-        } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
-            return null;
-        }
     }
 
     public function getCapes(): array
@@ -336,64 +270,19 @@ class CosmeticManager
         }
     }
 
-    public function resetSkin(Player $player): void
+    public function reloadSkin(Skin $evskin, PracticePlayer $player, string $stuffName): void
     {
         try {
-            $name = $player->getName();
-            $imagePath = $this->getSaveSkin($name);
-            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), 'geometry.humanoid.customSlim');
-            if ($skin !== null) {
-                $skin = new Skin($skin->getSkinId() ?? $player->getSkin()->getSkinId(), $skin->getSkinData() ?? $player->getSkin()->getSkinData(), '', $skin->getGeometryName() ?? $player->getSkin()->getGeometryName(), $player->getSkin()->getGeometryData());
-                $player->setSkin($skin);
-                $player->sendSkin();
-            }
+            $imagePath = $this->getSaveSkin($player->getName());
+            $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $evskin->getSkinId());
+            $cape = $player->getCape();
+            $capeData = ($cape !== '') ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
+            $skin = new Skin($skin?->getSkinId() ?? $evskin->getSkinId(), $skin?->getSkinData() ?? $evskin->getSkinData(), $capeData, $skin?->getGeometryName() ?? $evskin->getGeometryName(), $skin?->getGeometryData() ?? $evskin->getGeometryData());
+            $player->setSkin($skin);
+            $player->sendSkin();
         } catch (Exception $e) {
             Server::getInstance()->getLogger()->error((string)$e);
-        }
-    }
-
-    public function getSkinTransparencyPercentage(string $skinData): ?int
-    {
-        try {
-            switch (strlen($skinData)) {
-                case 8192:
-                    $maxX = 64;
-                    $maxY = 32;
-                    $bounds = $this->skinBounds[self::BOUNDS_64_32];
-                    break;
-                case 16384:
-                    $maxX = 64;
-                    $maxY = 64;
-                    $bounds = $this->skinBounds[self::BOUNDS_64_64];
-                    break;
-                case 65536:
-                    $maxX = 128;
-                    $maxY = 128;
-                    $bounds = $this->skinBounds[self::BOUNDS_128_128];
-                    break;
-                default:
-                    throw new InvalidArgumentException('Inappropriate skin data length: ' . strlen($skinData));
-            }
-            $transparentPixels = $pixels = 0;
-            foreach ($bounds as $bound) {
-                if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
-                    continue;
-                }
-                for ($y = $bound['min']['y']; $y <= $bound['max']['y']; $y++) {
-                    for ($x = $bound['min']['x']; $x <= $bound['max']['x']; $x++) {
-                        $key = (($maxX * $y) + $x) * 4;
-                        $a = ord($skinData[$key + 3]);
-                        if ($a < 127) {
-                            ++$transparentPixels;
-                        }
-                        ++$pixels;
-                    }
-                }
-            }
-            return (int)round($transparentPixels * 100 / max(1, $pixels));
-        } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
-            return null;
+            return;
         }
     }
 }
