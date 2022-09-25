@@ -250,8 +250,8 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         if ($player instanceof PracticePlayer) {
-            PracticeCore::getCosmeticHandler()->reloadSkin($event->getNewSkin(), $player, $player->getStuff());
-            $player->sendMessage(PracticeCore::getPrefixCore() . '§aSkin Changed');
+            $event->cancel();
+            $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cannot change your Skin in this Server!');
         }
     }
 

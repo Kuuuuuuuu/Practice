@@ -269,20 +269,4 @@ class CosmeticManager
             return null;
         }
     }
-
-    public function reloadSkin(Skin $evskin, PracticePlayer $player, string $stuffName): void
-    {
-        try {
-            $imagePath = $this->getSaveSkin($player->getName());
-            $skin = $this->loadSkinAndApplyStuff($stuffName, $imagePath, $evskin->getSkinId());
-            $cape = $player->getCape();
-            $capeData = ($cape !== '') ? $this->createCape($player->getCape()) : $player->getSkin()->getCapeData();
-            $skin = new Skin($skin?->getSkinId() ?? $evskin->getSkinId(), $skin?->getSkinData() ?? $evskin->getSkinData(), $capeData, $skin?->getGeometryName() ?? $evskin->getGeometryName(), $skin?->getGeometryData() ?? $evskin->getGeometryData());
-            $player->setSkin($skin);
-            $player->sendSkin();
-        } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
-            return;
-        }
-    }
 }
