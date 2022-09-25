@@ -246,14 +246,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $player = $event->getPlayer();
         if ($player instanceof PracticePlayer) {
-            PracticeCore::getCosmeticHandler()->setSkin($this, $player->getStuff());
+            PracticeCore::getCosmeticHandler()->setSkin($player, $player->getStuff());
         }
     }
 
