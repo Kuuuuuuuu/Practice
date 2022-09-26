@@ -423,14 +423,13 @@ class PracticeListener extends AbstractListener
                                 $p->setCombat(true);
                             }
                             if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                                if ($damager->BoxingPoint < 100) {
-                                    $damager->BoxingPoint++;
-                                    foreach ([$player, $damager] as $p) {
-                                        /* @var PracticePlayer $p */
-                                        PracticeCore::getScoreboardManager()->Boxing($p);
-                                    }
-                                } else {
+                                if ($damager->BoxingPoint > 99) {
                                     $player->kill();
+                                }
+                                $damager->BoxingPoint++;
+                                foreach ([$player, $damager] as $p) {
+                                    /* @var PracticePlayer $p */
+                                    PracticeCore::getScoreboardManager()->Boxing($p);
                                 }
                             }
                         }
