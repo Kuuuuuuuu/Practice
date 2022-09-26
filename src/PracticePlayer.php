@@ -360,8 +360,8 @@ class PracticePlayer extends Player
      */
     public function LoadData(bool $set): void
     {
-        $this->cape = PracticeCore::getInstance()->CapeData->get($this->getName()) ?? '';
-        $this->artifact = PracticeCore::getInstance()->ArtifactData->get($this->getName()) ?? '';
+        $this->cape = PracticeCore::getInstance()->CapeData->get($this->getName()) ?: '';
+        $this->artifact = PracticeCore::getInstance()->ArtifactData->get($this->getName()) ?: '';
         if ($set) {
             $this->setCosmetic();
         }
