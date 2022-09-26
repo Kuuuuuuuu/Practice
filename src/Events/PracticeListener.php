@@ -231,7 +231,7 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if (!$player->getGamemode() === GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
+        if (!$player->getGamemode() == GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
             $event->cancel();
         }
     }
