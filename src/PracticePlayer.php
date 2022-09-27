@@ -8,7 +8,6 @@ use Exception;
 use JsonException;
 use Kuu\Utils\DataManager;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\network\mcpe\protocol\ToastRequestPacket;
 use pocketmine\{entity\Location,
     entity\Skin,
     item\VanillaItems,
@@ -22,6 +21,7 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\protocol\ToastRequestPacket;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
@@ -331,7 +331,7 @@ class PracticePlayer extends Player
         $this->setLobbyItem();
         $this->LoadData(true);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
-        $this->getNetworkSession()->sendDataPacket(ToastRequestPacket::create('§fWelcome to ' . PracticeConfig::COLOR . 'Neptune §fPractice', '§fLoading Data'));
+        $this->getNetworkSession()->sendDataPacket(ToastRequestPacket::create('§fWelcome to ' . PracticeConfig::COLOR . 'Neptune §fPractice', ''));
     }
 
     public function setLobbyItem(): void
