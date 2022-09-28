@@ -166,16 +166,21 @@ class PracticeUtils
 
     private function registerCommands(): void
     {
-        Server::getInstance()->getCommandMap()->register('hub', new HubCommand());
-        Server::getInstance()->getCommandMap()->register('tban', new TbanCommand());
-        Server::getInstance()->getCommandMap()->register('tcheck', new TcheckCommand());
-        Server::getInstance()->getCommandMap()->register('tps', new TpsCommand());
-        Server::getInstance()->getCommandMap()->register('core', new PracticeCommand());
-        Server::getInstance()->getCommandMap()->register('restart', new RestartCommand());
-        Server::getInstance()->getCommandMap()->register('broadcast', new BroadcastCommand());
-        Server::getInstance()->getCommandMap()->register('pinfo', new PlayerInfoCommand());
-        Server::getInstance()->getCommandMap()->register('settag', new SetTagCommand());
-        Server::getInstance()->getCommandMap()->register('hologram', new HologramCommand());
+        $Command = [
+            'hub' => HubCommand::class,
+            'tban' => TbanCommand::class,
+            'tcheck' => TcheckCommand::class,
+            'tps' => TpsCommand::class,
+            'practice' => PracticeCommand::class,
+            'restart' => RestartCommand::class,
+            'broadcast' => BroadcastCommand::class,
+            'pinfo' => PlayerInfoCommand::class,
+            'settag' => SetTagCommand::class,
+            'hologram' => HologramCommand::class,
+        ];
+        foreach ($Command as $key => $value) {
+            Server::getInstance()->getCommandMap()->register($key, new $value());
+        }
     }
 
     private function registerEvents(): void
@@ -216,8 +221,13 @@ class PracticeUtils
 
     private function registerGenerators(): void
     {
-        GeneratorManager::getInstance()->addGenerator(SumoGenerator::class, 'sumo', fn() => null);
-        GeneratorManager::getInstance()->addGenerator(DuelGenerator::class, 'duel', fn() => null);
+        $generator = [
+            SumoGenerator::class => 'sumo',
+            DuelGenerator::class => 'duel'
+        ];
+        foreach ($generator as $key => $value) {
+            GeneratorManager::getInstance()->addGenerator($key, $value, fn() => null);
+        }
     }
 
     public function handleStreak(PracticePlayer $player, PracticePlayer $death): void
