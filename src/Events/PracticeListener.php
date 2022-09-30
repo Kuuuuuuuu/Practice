@@ -16,6 +16,7 @@ use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\VanillaBlocks;
+use pocketmine\entity\animation\HurtAnimation;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\entity\Skin;
@@ -137,12 +138,24 @@ class PracticeListener extends AbstractListener
     public function onBow(EntityShootBowEvent $event): void
     {
         $entity = $event->getEntity();
-        if (($entity instanceof PracticePlayer) && $entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
-            PracticeCore::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
-                if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) && $entity->isAlive()) {
-                    $entity->getInventory()->setItem(8, VanillaItems::ARROW());
+        $arrow = $event->getProjectile();
+        if ($entity instanceof PracticePlayer) {
+            if ($arrow instanceof Arrow) {
+                if ($entity->getMovementSpeed() !== 0.0) {
+                    $entity->setMotion($entity->getDirectionVector()->multiply(1.15));
+                    $entity->broadcastAnimation(new HurtAnimation($entity));
+                    if ($entity->getHealth() > 1.0) {
+                        $entity->setHealth($entity->getHealth() - 1.0);
+                    }
                 }
-            }), PracticeConfig::OITCBowDelay);
+            }
+            if (($entity instanceof PracticePlayer) && $entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena())) {
+                PracticeCore::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($entity): void {
+                    if ($entity->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) && $entity->isAlive()) {
+                        $entity->getInventory()->setItem(8, VanillaItems::ARROW());
+                    }
+                }), PracticeConfig::OITCBowDelay);
+            }
         }
     }
 
