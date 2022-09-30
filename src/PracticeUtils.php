@@ -22,7 +22,6 @@ use Kuu\Entity\Leaderboard\DeathLeaderboard;
 use Kuu\Entity\Leaderboard\KillLeaderboard;
 use Kuu\Entity\PracticeBot;
 use Kuu\Events\PracticeListener;
-use Kuu\Items\Bow;
 use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
 use Kuu\Task\PracticeTask;
@@ -129,7 +128,6 @@ class PracticeUtils
             ItemFactory::getInstance()->register(new CustomSplashPotion(new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId), $type->getDisplayName() . ' Splash Potion', $type), true);
         }
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
-        ItemFactory::getInstance()->register(new Bow(new ItemIdentifier(ItemIds::BOW, 0), 'Bow'), true);
     }
 
     private function registerConfigs(): void
