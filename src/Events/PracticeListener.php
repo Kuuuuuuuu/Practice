@@ -141,13 +141,13 @@ class PracticeListener extends AbstractListener
         $arrow = $event->getProjectile();
         if ($entity instanceof PracticePlayer) {
             if ($arrow instanceof Arrow) {
-                if (($event->getForce() <= 0.5) and $entity->getMovementSpeed() !== 0.0) {
+                if (($event->getForce() <= 0.8) and $entity->getMovementSpeed() !== 0.0) {
                     $entity->setMotion($entity->getDirectionVector()->multiply(1.2));
                     $entity->broadcastAnimation(new HurtAnimation($entity));
                     if ($entity->getHealth() > 1.0) {
                         $entity->setHealth($entity->getHealth() - 1.0);
                     }
-                } elseif (($event->getForce() <= 0.5) and $entity->getMovementSpeed() !== 0.0) {
+                } elseif (($event->getForce() <= 0.8) and $entity->getMovementSpeed() !== 0.0) {
                     $arrow->kill();
                 }
             }
