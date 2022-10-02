@@ -126,7 +126,7 @@ class PracticeCore extends PluginBase
         return self::$plugin;
     }
 
-    protected function onLoad(): void
+    public function onLoad(): void
     {
         self::$plugin = $this;
         self::$cps = new ClickHandler();
@@ -143,7 +143,7 @@ class PracticeCore extends PluginBase
         self::$caches = new PracticeCaches();
     }
 
-    protected function onEnable(): void
+    public function onEnable(): void
     {
         self::getPracticeUtils()->initialize();
     }
@@ -153,7 +153,7 @@ class PracticeCore extends PluginBase
         return self::$PracticeUtils;
     }
 
-    protected function onDisable(): void
+    public function onDisable(): void
     {
         self::getPracticeUtils()->dispose();
         self::setCoreTask(null);
