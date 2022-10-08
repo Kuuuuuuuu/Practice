@@ -127,7 +127,7 @@ class PracticeBot extends Human
     {
         if ($this->getLocation()->getYaw() < 0) {
             $this->getLocation()->yaw = abs($this->getLocation()->getYaw());
-        } elseif ($this->getLocation()->getYaw() == 0) {
+        } elseif ($this->getLocation()->getYaw() === 0) {
             $this->getLocation()->yaw = -180;
         } else {
             $this->getLocation()->yaw = -$this->getLocation()->getYaw();

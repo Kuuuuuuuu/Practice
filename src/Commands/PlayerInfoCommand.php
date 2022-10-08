@@ -28,11 +28,11 @@ class PlayerInfoCommand extends Command
         } else {
             $playerinfo = Server::getInstance()->getPlayerByPrefix($args[0]);
             if ($playerinfo !== null) {
-                /* @var $playerinfo PracticePlayer */
+                assert($playerinfo instanceof PracticePlayer);
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Player: §a' . $playerinfo->getName());
                 $sender->sendMessage("\n");
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7IP: §a' . $playerinfo->getNetworkSession()->getIp());
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7UUID: §a' . $playerinfo->getUniqueId());
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§7UUID: §a' . $playerinfo->getUniqueId()->__toString());
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Nametag: §a' . $playerinfo->getNameTag());
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7Device: §a' . $playerinfo->Device);
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§7OS: §a' . $playerinfo->OS);

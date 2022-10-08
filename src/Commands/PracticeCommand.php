@@ -42,17 +42,17 @@ class PracticeCommand extends Command
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
                     $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' addkb - removekb - setatkspd - removeatkspd');
-                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                     break;
                 case 'make':
                 case 'create':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                     }
                     if (!isset($args[2])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                     }
                     switch ($args[1]) {
                         case 'fist':
@@ -118,9 +118,18 @@ class PracticeCommand extends Command
                                 PracticeCore::getArenaFactory()->setBuildArena($sender, $args[2]);
                             }
                             break;
+                        case 'Parkour':
+                            if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            } else {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setParkourArena($sender, $args[2]);
+                            }
+                            break;
                         default:
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                             break;
                     }
                     break;
@@ -161,7 +170,7 @@ class PracticeCommand extends Command
                 case 'remove':
                     if (!isset($args[1])) {
                         $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                     } else {
                         switch ($args[1]) {
                             case 'fist':
@@ -185,9 +194,12 @@ class PracticeCommand extends Command
                             case 'Build':
                                 PracticeCore::getArenaFactory()->removeBuild($sender);
                                 break;
+                            case 'Parkour':
+                                PracticeCore::getArenaFactory()->removeParkour($sender);
+                                break;
                             default:
                                 $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC');
+                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'fist, Boxing, Combo, Knockback, Resistance, OITC, Parkour');
                                 break;
                         }
                     }

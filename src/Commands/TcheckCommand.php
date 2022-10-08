@@ -38,7 +38,7 @@ class TcheckCommand extends Command
         }
     }
 
-    public function openTcheckUI($player): bool
+    public function openTcheckUI(Player $player): bool
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             if ($data === null) {
@@ -65,7 +65,7 @@ class TcheckCommand extends Command
         return true;
     }
 
-    public function openInfoUI($player): bool
+    public function openInfoUI(Player $player): bool
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             $result = $data;

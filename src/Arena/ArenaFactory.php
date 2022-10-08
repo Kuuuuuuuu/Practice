@@ -48,6 +48,12 @@ class ArenaFactory
         return $data->get('Build');
     }
 
+    public function getParkourArena(): string
+    {
+        $data = new Config (PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        return $data->get('Parkour');
+    }
+
     public function getBoxingArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -74,6 +80,18 @@ class ArenaFactory
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->set('Fist', $world);
+        $data->save();
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
+    }
+
+    /**
+     * @throws JsonException
+     */
+
+    public function setParkourArena(Player $player, string $world): void
+    {
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data->set('Parkour', $world);
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
@@ -177,6 +195,17 @@ class ArenaFactory
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         $data->remove('Build');
+        $data->save();
+        $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function removeParkour(Player $player): void
+    {
+        $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+        $data->remove('Parkour');
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }

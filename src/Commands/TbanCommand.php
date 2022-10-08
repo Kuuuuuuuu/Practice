@@ -48,7 +48,7 @@ class TbanCommand extends Command
         }
     }
 
-    public function openPlayerListUI($player): bool
+    public function openPlayerListUI(Player $player): bool
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             $target = $data;
@@ -68,7 +68,7 @@ class TbanCommand extends Command
         return true;
     }
 
-    public function openTbanUI($player): bool
+    public function openTbanUI(Player $player): bool
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
             $result = $data;

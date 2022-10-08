@@ -40,7 +40,7 @@ class EnderPearl extends ItemEnderPearl
         return ItemUseResult::SUCCESS();
     }
 
-    protected function createEntity(Location $location, Player $thrower): Throwable
+    public function createEntity(Location $location, Player $thrower): Throwable
     {
         return new EnderPearlEntity($location, $thrower);
     }

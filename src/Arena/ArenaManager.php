@@ -57,6 +57,28 @@ class ArenaManager
         }
     }
 
+    public function onJoinParkour(Player $player): void
+    {
+        if (PracticeCore::getArenaFactory()->getParkourArena() === null) {
+            $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
+        } else {
+            Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getParkourArena());
+            $player->getInventory()->clearAll();
+            $player->getArmorInventory()->clearAll();
+            $player->getEffects()->clear();
+            $player->setHealth($player->getMaxHealth());
+            $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())?->getSafeSpawn());
+            $item1 = VanillaItems::POTATO()->setCustomName('§r§aHide Player');
+            $item2 = VanillaBlocks::CHEST()->asItem()->setCustomName('§r§aStop Timer');
+            $item3 = VanillaItems::APPLE()->setCustomName('§r§aBack to Checkpoint');
+            $player->getInventory()->setItem(4, $item1);
+            $player->getInventory()->setItem(0, $item2);
+            $player->getInventory()->setItem(8, $item3);
+            PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
+            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+        }
+    }
+
     public function onJoinCombo(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getFistArena() === null) {

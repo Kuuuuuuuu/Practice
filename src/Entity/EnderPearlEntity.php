@@ -17,7 +17,7 @@ class EnderPearlEntity extends Throwable
         return EntityIds::ENDER_PEARL;
     }
 
-    protected function onHit(ProjectileHitEvent $event): void
+    public function onHit(ProjectileHitEvent $event): void
     {
         $owner = $this->getOwningEntity();
         if ($owner !== null) {

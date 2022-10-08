@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kuu\Utils;
 
 use Exception;
-use JsonException;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
@@ -24,7 +23,7 @@ use pocketmine\Server;
 class FormUtils
 {
 
-    public function Form1($player): void
+    public function Form1(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
@@ -50,6 +49,9 @@ class FormUtils
                     case 6:
                         PracticeCore::getArenaManager()->onJoinBuild($player);
                         break;
+                    case 7:
+                        PracticeCore::getArenaManager()->onJoinParkour($player);
+                        break;
                     default:
                         print 'Error';
                 }
@@ -63,6 +65,7 @@ class FormUtils
         $form->addButton("§aResistance\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getResistanceArena()), 0, 'textures/ui/resistance_effect.png');
         $form->addButton("§aOITC\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getOITCArena()), 0, 'textures/items/bow_standby.png');
         $form->addButton("§aBuild\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBuildArena()), 0, 'textures/items/diamond_pickaxe.png');
+        $form->addButton("§aParkour\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getParkourArena()), 0, 'textures/items/gold_pickaxe.png');
         $player->sendForm($form);
     }
 
@@ -143,7 +146,7 @@ class FormUtils
         return $kitcount ?? 0;
     }
 
-    public function settingsForm($player): void
+    public function settingsForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
@@ -176,7 +179,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function NickForm($player): void
+    public function NickForm(Player $player): void
     {
         $form = new SimpleForm(function (PracticePlayer $player, int $data = null) {
             if ($data !== null) {
@@ -204,7 +207,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function CustomNickForm($player): void
+    public function CustomNickForm(Player $player): void
     {
         $form = new CustomForm(function (PracticePlayer $player, array $data = null) {
             if ($data !== null) {
@@ -228,7 +231,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function reportForm($player): void
+    public function reportForm(Player $player): void
     {
         $list = [];
         foreach (PracticeCore::getInstance()->getServer()->getOnlinePlayers() as $p) {
@@ -252,7 +255,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function openCapesUI($player): void
+    public function openCapesUI(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             if ($data !== null) {
@@ -265,7 +268,7 @@ class FormUtils
                         if (PracticeCore::getInstance()->CapeData->get($player->getName()) !== null) {
                             PracticeCore::getInstance()->CapeData->remove($player->getName());
                             PracticeCore::getInstance()->CapeData->save();
-                            /* @var $player PracticePlayer */
+                            assert($player instanceof PracticePlayer);
                             $player->LoadData(false);
                         }
                         $player->sendMessage(PracticeCore::getPrefixCore() . '§aCape Removed!');
@@ -282,10 +285,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function openCapeListUI($player): void
+    public function openCapeListUI(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, $data = null) {
             if ($data !== null) {
@@ -302,7 +302,7 @@ class FormUtils
                     $player->sendMessage($msg);
                     PracticeCore::getInstance()->CapeData->set($player->getName(), $data);
                     PracticeCore::getInstance()->CapeData->save();
-                    /* @var $player PracticePlayer */
+                    assert($player instanceof PracticePlayer);
                     $player->LoadData(false);
                 }
             }
@@ -336,7 +336,7 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cArtifact');
-        /* @var PracticePlayer $player */
+        assert($player instanceof PracticePlayer);
         $validstuffs = $player->getValidStuffs();
         if (count($validstuffs) <= 1) {
             $form->addButton('None', -1, '', 'None');
@@ -351,7 +351,7 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function editkitform($player): void
+    public function editkitform(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if (($data !== null) && $player instanceof PracticePlayer) {
@@ -383,18 +383,17 @@ class FormUtils
         $player->sendForm($form);
     }
 
-    public function botForm($player): void
+    public function botForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
+                assert($player instanceof PracticePlayer);
                 switch ($data) {
                     case 0:
-                        /* @var $player PracticePlayer */
                         $player->setCurrentKit(KitRegistry::fromString('Fist'));
                         $player->queueBotDuel('Fist');
                         break;
                     case 1:
-                        /* @var $player PracticePlayer */
                         $player->setCurrentKit(KitRegistry::fromString('NoDebuff'));
                         $player->queueBotDuel('NoDebuff');
                         break;

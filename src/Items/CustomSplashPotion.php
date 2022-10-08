@@ -37,7 +37,7 @@ class CustomSplashPotion extends ProjectileItem
         return PracticeConfig::SplashForce;
     }
 
-    protected function createEntity(Location $location, Player $thrower): Throwable
+    public function createEntity(Location $location, Player $thrower): Throwable
     {
         return new SplashPotionEntity(new Location($thrower->getPosition()->getX(), $thrower->getPosition()->getY(), $thrower->getPosition()->getZ(), $thrower->getLocation()->getWorld(), 0, 0), $thrower, $this->potionType);
     }

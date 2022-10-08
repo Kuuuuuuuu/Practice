@@ -89,7 +89,7 @@ class CosmeticManager
             }
             imagepng($img, $path . 'skin/' . $name . '.png');
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
         }
     }
 
@@ -122,7 +122,7 @@ class CosmeticManager
             imagesavealpha($image, true);
             return $image;
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }
@@ -157,7 +157,7 @@ class CosmeticManager
             imagedestroy($img);
             return new Skin($skinID, $skinBytes, '', $geometryName, file_get_contents($geometryPath));
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }
@@ -175,7 +175,7 @@ class CosmeticManager
                 $player->sendSkin();
             }
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return;
         }
     }
@@ -193,12 +193,12 @@ class CosmeticManager
             $geometryPath = $this->artifactFolder . $stuffName . '.json';
             return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }
 
-    private function exportSkinToImage($skinPath, string $stuffName, array $size): ?string
+    private function exportSkinToImage(string $skinPath, string $stuffName, array $size): ?string
     {
         try {
             $path = $this->artifactFolder;
@@ -215,12 +215,12 @@ class CosmeticManager
             imagepng($down, $this->dataFolder . 'temp.png');
             return $this->dataFolder . 'temp.png';
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }
 
-    private function resizeImage($file, $w, $h): GdImage|bool|null
+    private function resizeImage(string $file, int $w, int $h): GdImage|bool|null
     {
         try {
             [$width, $height] = getimagesize($file);
@@ -240,12 +240,12 @@ class CosmeticManager
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             return $dst;
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }
 
-    public function createCape($capeName): ?string
+    public function createCape(string $capeName): ?string
     {
         try {
             $path = PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . "$capeName.png";
@@ -265,7 +265,7 @@ class CosmeticManager
             imagedestroy($img);
             return $bytes;
         } catch (Exception $e) {
-            Server::getInstance()->getLogger()->error((string)$e);
+            Server::getInstance()->getLogger()->error($e->__toString());
             return null;
         }
     }

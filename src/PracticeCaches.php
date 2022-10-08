@@ -8,6 +8,8 @@ class PracticeCaches
     public array $targetPlayer = [];
     public array $KillLeaderboard = [];
     public array $DeathLeaderboard = [];
+    public array $ParkourLeaderboard = [];
+    public array $HidePlayer = [];
     public array $ClickData = [];
     public array $buildBlocks = [];
     public bool $Restarted = false;

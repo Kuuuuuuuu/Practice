@@ -71,17 +71,17 @@ class DataManager
         return $this->player;
     }
 
-    public function getKills()
+    public function getKills(): int
     {
         return $this->kills;
     }
 
-    public function getStreak()
+    public function getStreak(): int
     {
         return $this->killStreak;
     }
 
-    public function getDeaths()
+    public function getDeaths(): int
     {
         return $this->deaths;
     }

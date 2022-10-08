@@ -21,27 +21,43 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\NetworkSession;
-use pocketmine\network\mcpe\protocol\ToastRequestPacket;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
 
 class PracticePlayer extends Player
 {
-    public int $BoxingPoint = 0;
-    public string $OS = 'Unknown';
+    /* Parkour Data */
+    public bool $HidePlayer = false;
+    public bool $ParkourTimer = false;
+    public int $TimerSec = 0;
+    public array $ParkourCheckPoint = [
+        'x' => 275,
+        'y' => 66,
+        'z' => 212,
+    ];
+
+    /* Client Data */
     public string $Input = 'Unknown';
     public string $Device = 'Unknown';
-    private ?DataManager $DataManager;
-    private int $CombatTime = 0;
-    private string $cape = '';
-    private string $artifact = '';
-    private ?string $EditKit = null;
-    private ?KitManager $selectKit = null;
+    public string $OS = 'Unknown';
+
+    /* Combat Data */
+    public int $CombatTime = 0;
+    public int $BoxingPoint = 0;
+    private ?string $Opponent = null;
+
+    /* Duel Data */
     private bool $isDueling = false;
     private bool $inQueue = false;
     private bool $isCombat = false;
-    private ?string $Opponent = null;
+    private ?KitManager $selectKit = null;
+
+    /* Other Data */
+    private ?DataManager $DataManager;
+    private string $cape = '';
+    private string $artifact = '';
+    private ?string $EditKit = null;
     private array $savekitcache = [];
     private array $validstuffs = [
         'Adidas',
@@ -237,9 +253,14 @@ class PracticePlayer extends Player
             $this->updateScoreboard();
         }
         if ($currentTick % 20 === 0) {
+            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                if ($this->HidePlayer) {
+                    $this->hidePlayer($player);
+                } else {
+                    $this->showPlayer($player);
+                }
+            }
             if ($this->isCombat()) {
-                $percent = (float)($this->CombatTime / 10);
-                $this->getXpManager()->setXpProgress($percent);
                 $this->CombatTime--;
                 if ($this->CombatTime <= 0) {
                     $this->setCombat(false);
@@ -254,6 +275,11 @@ class PracticePlayer extends Player
         if ($currentTick % 40 === 0) {
             $this->updateNametag();
             $this->setInputData();
+        }
+        if ($this->ParkourTimer) {
+            $this->TimerSec += 5;
+        } else {
+            $this->TimerSec = 0;
         }
         return parent::onUpdate($currentTick);
     }
@@ -288,10 +314,12 @@ class PracticePlayer extends Player
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
             PracticeCore::getInstance()->getScoreboardManager()->sb($this);
-        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+        } elseif ($this->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena()) && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
             PracticeCore::getInstance()->getScoreboardManager()->sb2($this);
         } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
             PracticeCore::getInstance()->getScoreboardManager()->Boxing($this);
+        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
+            PracticeCore::getInstance()->getScoreboardManager()->Parkour($this);
         }
     }
 
@@ -331,7 +359,6 @@ class PracticePlayer extends Player
         $this->setLobbyItem();
         $this->LoadData(true);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
-        $this->getNetworkSession()->sendDataPacket(ToastRequestPacket::create('§fWelcome to ' . PracticeConfig::COLOR . 'Neptune §fPractice', ''));
     }
 
     public function setLobbyItem(): void
