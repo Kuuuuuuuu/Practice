@@ -320,7 +320,9 @@ class PracticeListener extends AbstractListener
                 $secs = floor(($player->TimerSec / 100) % 60);
                 $mili = $player->TimerSec % 100;
                 Server::getInstance()->broadcastMessage(PracticeCore::getInstance()->getPrefixCore() . $name . ' §aHas Finished Parkour ' . $mins . ' : ' . $secs . ' : ' . $mili);
-                PracticeCore::getCaches()->ParkourLeaderboard[$name] = $player->TimerSec;
+                if ((isset(PracticeCore::getCaches()->ParkourLeaderboard[$name]) && PracticeCore::getCaches()->ParkourLeaderboard[$name] > $player->TimerSec) || !isset(PracticeCore::getCaches()->ParkourLeaderboard[$name])) {
+                    PracticeCore::getCaches()->ParkourLeaderboard[$name] = $player->TimerSec;
+                }
                 $player->ParkourTimer = false;
                 $player->teleport(new Vector3(275, 66, 212));
                 $player->ParkourCheckPoint = [
