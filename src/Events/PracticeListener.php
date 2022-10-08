@@ -304,6 +304,7 @@ class PracticeListener extends AbstractListener
 
     /**
      * @throws Exception
+     * @priority LOWEST
      */
     public function onMove(PlayerMoveEvent $event): void
     {
