@@ -94,8 +94,8 @@ class ScoreboardManager
         if ($player instanceof PracticePlayer) {
             $ping = $player->getNetworkSession()->getPing();
             $on = count(Server::getInstance()->getOnlinePlayers());
-            $data = PracticeCore::getCaches()->ParkourLeaderboard[$player->getName()];
-            if (isset($data)) {
+            if (isset(PracticeCore::getCaches()->ParkourLeaderboard[$player->getName()])) {
+                $data = PracticeCore::getCaches()->ParkourLeaderboard[$player->getName()];
                 $bestmins = floor($data / 6000);
                 $bestsecs = floor(($data / 100) % 60);
                 $bestmili = $data % 100;
