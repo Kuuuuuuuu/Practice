@@ -75,7 +75,7 @@ class ArenaManager
             $player->getInventory()->setItem(0, $item2);
             $player->getInventory()->setItem(8, $item3);
             PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
-            $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+            $player->teleport(new Vector3(275, 68, 212));
         }
     }
 
