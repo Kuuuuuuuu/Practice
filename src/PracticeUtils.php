@@ -17,7 +17,6 @@ use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\ArrowEntity;
 use Kuu\Entity\EnderPearlEntity;
-use Kuu\Entity\FallingWool;
 use Kuu\Entity\Leaderboard\BaseLeaderboard;
 use Kuu\Entity\Leaderboard\DeathLeaderboard;
 use Kuu\Entity\Leaderboard\KillLeaderboard;

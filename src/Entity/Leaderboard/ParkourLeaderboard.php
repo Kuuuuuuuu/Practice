@@ -17,7 +17,7 @@ class ParkourLeaderboard extends BaseLeaderboard
             arsort($tops);
             $i = 1;
             foreach ($tops as $name => $wins) {
-                $subtitle .= ' §7[§b# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e Secs\n";
+                $subtitle .= ' §7[§b# ' . $i . '§7]. §f' . $name . '§7: §f' . ($wins / 100) . "§e Secs\n";
                 if ($i >= 10) {
                     break;
                 }
