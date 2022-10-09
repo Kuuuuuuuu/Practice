@@ -207,7 +207,7 @@ class PracticeUtils
             return new BaseLeaderboard(EntityDataHelper::parseLocation($nbt, $world), BaseLeaderboard
                 ::parseSkinNBT($nbt), $nbt);
         }, ['BaseLeaderboard']);
-        EntityFactory::getInstance()->register(BaseLeaderboard::class, function (World $world, CompoundTag $nbt): ParkourLeaderboard {
+        EntityFactory::getInstance()->register(ParkourLeaderboard::class, function (World $world, CompoundTag $nbt): ParkourLeaderboard {
             return new ParkourLeaderboard(EntityDataHelper::parseLocation($nbt, $world), ParkourLeaderboard::parseSkinNBT($nbt), $nbt);
         }, ['ParkourLeaderboard']);
         EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {

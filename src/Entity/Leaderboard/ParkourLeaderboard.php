@@ -14,7 +14,7 @@ class ParkourLeaderboard extends BaseLeaderboard
         $subtitle = '';
         $tops = PracticeCore::getCaches()->ParkourLeaderboard;
         if (count($tops) > 0) {
-            sort($tops);
+            arsort($tops);
             $i = 1;
             foreach ($tops as $name => $wins) {
                 $subtitle .= ' §7[§b# ' . $i . '§7]. §f' . $name . '§7: §f' . $wins . "§e Secs\n";
