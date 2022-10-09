@@ -288,8 +288,10 @@ class PracticePlayer extends Player
     {
         if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
             $this->setPVPTag();
-        } elseif (!$this->isCombat()) {
+        } elseif (!$this->isCombat() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
             $this->setUnPVPTag();
+        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
+            $this->setParkourTag();
         }
     }
 
@@ -308,6 +310,15 @@ class PracticePlayer extends Player
     private function setUnPVPTag(): void
     {
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->OS . '§f | §f' . $this->Input)]);
+    }
+
+    private function setParkourTag(): void
+    {
+        $ping = $this->getNetworkSession()->getPing();
+        $mins = floor($this->TimerSec / 6000);
+        $secs = floor(($this->TimerSec / 100) % 60);
+        $mili = $this->TimerSec % 100;
+        $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| §a' . $mins . ' : ' . $secs . ' : ' . $mili)]);
     }
 
     private function updateScoreboard(): void

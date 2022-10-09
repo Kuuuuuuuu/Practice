@@ -30,18 +30,14 @@ use Kuu\Task\PracticeTask;
 use Kuu\Utils\ChunkManager;
 use Kuu\Utils\Generator\DuelGenerator;
 use Kuu\Utils\Generator\SumoGenerator;
-use pocketmine\block\utils\DyeColor;
-use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
-use pocketmine\entity\Location;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
@@ -55,32 +51,6 @@ use ZipArchive;
 
 class PracticeUtils
 {
-
-    /**
-     * @throws Exception
-     */
-    public static function generateFallingWoolBlock(Location $location): FallingWool
-    {
-        $wool = [
-            VanillaBlocks::WOOL()->setColor(DyeColor::RED()),
-            VanillaBlocks::WOOL()->setColor(DyeColor::LIME()),
-            VanillaBlocks::WOOL()->setColor(DyeColor::YELLOW()),
-            VanillaBlocks::WOOL()->setColor(DyeColor::LIGHT_BLUE()),
-            VanillaBlocks::WOOL()->setColor(DyeColor::PINK()),
-            VanillaBlocks::WOOL()->setColor(DyeColor::PURPLE())
-        ];
-        $fallingBlock = new FallingWool(
-            $location,
-            $wool[array_rand($wool)]
-        );
-        $fallingBlock->setMotion(new Vector3(
-                -sin(random_int(1, 360) / 60 * M_PI),
-                0.95,
-                cos(random_int(1, 360) / 60 * M_PI))
-        );
-        $fallingBlock->spawnToAll();
-        return $fallingBlock;
-    }
 
     public static function playSound(string $soundName, Player $player): void
     {
@@ -244,9 +214,6 @@ class PracticeUtils
             return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), PracticeBot
                 ::parseSkinNBT($nbt), $nbt);
         }, ['practicebot']);
-        EntityFactory::getInstance()->register(FallingWool::class, function (World $world, CompoundTag $nbt): FallingWool {
-            return new FallingWool(EntityDataHelper::parseLocation($nbt, $world), VanillaBlocks::WOOL(), $nbt);
-        }, ['CustomFallingWoolBlock', 'minecraft:fallingwool']);
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
         }, ['NThrownEnderpearl', 'neptune:ender_pearl'], EntityLegacyIds::ENDER_PEARL);

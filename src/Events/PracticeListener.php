@@ -316,6 +316,12 @@ class PracticeListener extends AbstractListener
                 $player->ParkourTimer = true;
             } elseif ($block->getId() === VanillaBlocks::GOLD()->getId()) {
                 $player->ParkourTimer = false;
+                $player->TimerSec = 0;
+                $player->ParkourCheckPoint = [
+                    'x' => 275,
+                    'y' => 66,
+                    'z' => 212
+                ];
             } elseif (($block->getId() === VanillaBlocks::Beacon()->getId()) && $player->ParkourTimer) {
                 $mins = floor($player->TimerSec / 6000);
                 $secs = floor(($player->TimerSec / 100) % 60);
@@ -325,13 +331,13 @@ class PracticeListener extends AbstractListener
                     PracticeCore::getCaches()->ParkourLeaderboard[$name] = $player->TimerSec;
                 }
                 $player->ParkourTimer = false;
+                $player->TimerSec = 0;
                 $player->teleport(new Vector3(275, 66, 212));
                 $player->ParkourCheckPoint = [
                     'x' => 275,
                     'y' => 66,
                     'z' => 212
                 ];
-                PracticeCore::getPracticeUtils()::generateFallingWoolBlock($player->getLocation());
             } elseif ($block->getId() === VanillaBlocks::DIAMOND()->getId()) {
                 $player->ParkourCheckPoint = [
                     'x' => $player->getPosition()->getX(),

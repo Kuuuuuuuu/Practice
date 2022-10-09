@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Kuu\Commands;
 
 use JsonException;
+use Kuu\Entity\Leaderboard\BaseLeaderboard;
 use Kuu\Entity\Leaderboard\DeathLeaderboard;
 use Kuu\Entity\Leaderboard\KillLeaderboard;
+use Kuu\Entity\Leaderboard\ParkourLeaderboard;
 use Kuu\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -36,7 +38,7 @@ class HologramCommand extends Command
             } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 switch ($args[0]) {
                     case 'help':
-                        $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' setkillleader - setdeathleader - removeleader');
+                        $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' setkillleader - setdeathleader - removeleader - setparkourleader');
                         break;
                     case 'setkillleader':
                         $npc = new KillLeaderboard($sender->getLocation(), $sender->getSkin());
@@ -46,10 +48,14 @@ class HologramCommand extends Command
                         $npc = new DeathLeaderboard($sender->getLocation(), $sender->getSkin());
                         $npc->spawnToAll();
                         break;
+                    case 'setparkourleader':
+                        $npc = new ParkourLeaderboard($sender->getLocation(), $sender->getSkin());
+                        $npc->spawnToAll();
+                        break;
                     case 'removeleader':
                         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
                             foreach ($world->getEntities() as $entity) {
-                                if ($entity instanceof KillLeaderboard || $entity instanceof DeathLeaderboard) {
+                                if ($entity instanceof BaseLeaderboard) {
                                     $entity->close();
                                 }
                             }
