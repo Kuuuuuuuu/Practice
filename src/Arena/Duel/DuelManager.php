@@ -39,7 +39,7 @@ class DuelManager extends DuelManagerBase
     /**
      * @throws Exception
      */
-    public function createBotMatch(PracticePlayer $player, KitManager $kit, string $mode): void
+    public function createBotMatch(PracticePlayer $player, KitManager $kit, int $mode): void
     {
         $worldName = 'Bot-' . $player->getName() . ' - ' . PracticeCore::getPracticeUtils()->generateUUID();
         $world = new WorldCreationOptions();

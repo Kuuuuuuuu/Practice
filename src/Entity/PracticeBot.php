@@ -3,6 +3,7 @@
 namespace Kuu\Entity;
 
 use Exception;
+use Kuu\PracticeConfig;
 use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -27,12 +28,12 @@ class PracticeBot extends Human
 
     public int $pearlcooldown = 0;
     private string $target;
-    private string $mode;
+    private int $mode;
     private float $speed = 0.85;
     private int $enderpearl = 16;
     private int $pots = 33;
 
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?string $mode = '')
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?int $mode = PracticeConfig::BOT_FIST)
     {
         parent::__construct($location, $skin, $nbt);
         $this->target = $target;
@@ -40,7 +41,7 @@ class PracticeBot extends Human
         $this->gravityEnabled = true;
         $this->gravity = 0.08;
         $this->mode = $mode;
-        if ($mode === 'NoDebuff') {
+        if ($mode === PracticeConfig::BOT_NODEBUFF) {
             $sword = VanillaItems::DIAMOND_SWORD();
             $this->getInventory()->setItem(0, $sword);
             $this->getArmorInventory()->setHelmet(VanillaItems::DIAMOND_HELMET());
@@ -75,7 +76,7 @@ class PracticeBot extends Human
             $this->motion->x = $this->getSpeed() * 0.35 * ($x / (abs($x) + abs($z)));
             $this->motion->z = $this->getSpeed() * 0.35 * ($z / (abs($x) + abs($z)));
         }
-        if ($this->mode === 'NoDebuff') {
+        if ($this->mode === PracticeConfig::BOT_NODEBUFF) {
             if (($this->enderpearl !== 0) && $this->pearlcooldown === 0) {
                 if ($this->getTargetPlayer()->getPosition()->distance($this->getLocation()) > 20) {
                     $this->pearl();

@@ -24,7 +24,7 @@ class PracticeCommand extends Command
         parent::__construct(
             'practice',
             'Practice Command',
-            '/core help'
+            '/practice help'
         );
     }
 
@@ -34,7 +34,7 @@ class PracticeCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if (!isset($args[0])) {
-            $sender->sendMessage(Color::BOLD . Color::WHITE . '>> ' . Color::RESET . Color::RED . 'use /core help');
+            $sender->sendMessage(Color::BOLD . Color::WHITE . '>> ' . Color::RESET . Color::RED . 'use /practice help');
         } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             switch ($args[0]) {
                 case 'help':
@@ -203,24 +203,6 @@ class PracticeCommand extends Command
                                 break;
                         }
                     }
-                    break;
-                case 'setkillleader':
-                    $npc = new KillLeaderboard($sender->getLocation(), $sender->getSkin());
-                    $npc->spawnToAll();
-                    break;
-                case 'setdeathleader':
-                    $npc = new DeathLeaderboard($sender->getLocation(), $sender->getSkin());
-                    $npc->spawnToAll();
-                    break;
-                case 'removeleader':
-                    foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-                        foreach ($world->getEntities() as $entity) {
-                            if ($entity instanceof KillLeaderboard || $entity instanceof DeathLeaderboard) {
-                                $entity->close();
-                            }
-                        }
-                    }
-                    $sender->sendMessage(PracticeCore::getPrefixCore() . 'KillLeaderboard removed!');
                     break;
                 default:
                     $sender->sendMessage(PracticeCore::getPrefixCore() . '§e/core help');

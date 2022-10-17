@@ -20,7 +20,7 @@ class ClickHandler
         if (!isset(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())])) {
             $this->initPlayerClickData($p);
         } else {
-            $p->sendTip('§bCPS: §f' . PracticeCore::getClickHandler()->getClicks($p));
+            $p->sendTip('§bCPS: §f' . $this->getClicks($p));
             array_unshift(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())], microtime(true));
             if (count(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())]) >= 50) {
                 array_pop(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())]);

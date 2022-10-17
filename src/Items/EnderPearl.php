@@ -5,6 +5,9 @@ namespace Kuu\Items;
 use JetBrains\PhpStorm\Pure;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\PracticeConfig;
+use Kuu\PracticeCore;
+use Kuu\PracticePlayer;
+use Kuu\Task\OncePearlTask;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\ProjectileLaunchEvent;
@@ -26,18 +29,22 @@ class EnderPearl extends ItemEnderPearl
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
         $location = $player->getLocation();
-        $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
-        $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
-        $projectileEv = new ProjectileLaunchEvent($projectile);
-        $projectileEv->call();
-        if ($projectileEv->isCancelled()) {
-            $projectile->flagForDespawn();
-            return ItemUseResult::FAIL();
+        if ($player instanceof PracticePlayer && $player->PearlCooldown < 1) {
+            $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
+            $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
+            $projectileEv = new ProjectileLaunchEvent($projectile);
+            $projectileEv->call();
+            if ($projectileEv->isCancelled()) {
+                $projectile->flagForDespawn();
+                return ItemUseResult::FAIL();
+            }
+            $projectile->spawnToAll();
+            $location->getWorld()->addSound($location, new ThrowSound());
+            $this->pop();
+            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
+            return ItemUseResult::SUCCESS();
         }
-        $projectile->spawnToAll();
-        $location->getWorld()->addSound($location, new ThrowSound());
-        $this->pop();
-        return ItemUseResult::SUCCESS();
+        return ItemUseResult::FAIL();
     }
 
     public function createEntity(Location $location, Player $thrower): Throwable

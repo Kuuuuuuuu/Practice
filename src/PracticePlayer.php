@@ -6,21 +6,11 @@ namespace Kuu;
 
 use Exception;
 use JsonException;
-use Kuu\Utils\DataManager;
 use Kuu\Utils\Kits\KitManager;
-use pocketmine\{entity\Location,
-    entity\Skin,
-    item\VanillaItems,
-    player\GameMode,
-    player\Player,
-    player\PlayerInfo,
-    Server
-};
+use pocketmine\{entity\Skin, item\VanillaItems, player\GameMode, player\Player, Server};
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use Throwable;
@@ -45,6 +35,10 @@ class PracticePlayer extends Player
     /* Combat Data */
     public int $CombatTime = 0;
     public int $BoxingPoint = 0;
+    public int $PearlCooldown = 0;
+    private int $kills = 0;
+    private int $deaths = 0;
+    private int $killStreak = 0;
     private ?string $Opponent = null;
 
     /* Duel Data */
@@ -54,7 +48,8 @@ class PracticePlayer extends Player
     private ?KitManager $selectKit = null;
 
     /* Other Data */
-    private ?DataManager $DataManager;
+    private bool $loadedData = false;
+    private string $customTag = '';
     private string $cape = '';
     private string $artifact = '';
     private ?string $EditKit = null;
@@ -124,27 +119,6 @@ class PracticePlayer extends Player
         'Wither Head'
     ];
 
-    public function __construct(Server $server, NetworkSession $session, PlayerInfo $playerInfo, bool $authenticated, Location $spawnLocation, ?CompoundTag $namedtag)
-    {
-        parent::__construct($server, $session, $playerInfo, $authenticated, $spawnLocation, $namedtag);
-        $this->DataManager = new DataManager($this->getName());
-        $this->setInputData();
-    }
-
-    private function setInputData(): void
-    {
-        $data = $this->getPlayerInfo()->getExtraData();
-        if ($data['CurrentInputMode'] !== null) {
-            $this->Input = PracticeConfig::ControlList[$data['CurrentInputMode']];
-        }
-        if ($data['DeviceOS'] !== null) {
-            $this->OS = PracticeConfig::OSList[$data['DeviceOS']];
-        }
-        if ($data['DeviceModel'] !== null) {
-            $this->Device = $data['DeviceModel'];
-        }
-    }
-
     public function attack(EntityDamageEvent $source): void
     {
         $attackSpeed = 10;
@@ -157,7 +131,11 @@ class PracticePlayer extends Player
             if ($damager instanceof Player) {
                 try {
                     if ($this->isDueling()) {
-                        $attackSpeed = 7.5;
+                        if ($this->selectKit?->getName() === 'Sumo') {
+                            $attackSpeed = 9;
+                        } else {
+                            $attackSpeed = 7.5;
+                        }
                     } elseif (PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) !== null) {
                         $attackSpeed = PracticeCore::getKnockbackManager()->getAttackspeed($this->getWorld()->getFolderName()) ?? 10;
                     }
@@ -180,8 +158,8 @@ class PracticePlayer extends Player
         try {
             if ($this->isDueling()) {
                 if ($this->selectKit?->getName() === 'Sumo') {
-                    $yKb = 0.35;
-                    $xzKB = 0.37;
+                    $yKb = 0.388;
+                    $xzKB = 0.42;
                 } else {
                     $yKb = 0.32;
                     $xzKB = 0.34;
@@ -212,18 +190,19 @@ class PracticePlayer extends Player
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function setStuff(string $stuff): void
     {
-        PracticeCore::getInstance()->ArtifactData->set($this->getName(), $stuff);
-        PracticeCore::getInstance()->ArtifactData->save();
+        $this->artifact = $stuff;
     }
 
     public function getCape(): string
     {
         return $this->cape;
+    }
+
+    public function setCape(string $cape): void
+    {
+        $this->cape = $cape;
     }
 
     public function getValidStuffs(): array
@@ -233,17 +212,12 @@ class PracticePlayer extends Player
 
     public function getChatFormat(string $message): string
     {
-        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
+        if ($this->customTag !== '') {
+            $nametag = '§f[' . $this->customTag . '§f] §b' . $this->getDisplayName() . '§r§a > §r' . $message;
         } else {
             $nametag = '§a ' . $this->getDisplayName() . '§r§a > §r' . $message;
         }
         return $nametag;
-    }
-
-    public function getData(): DataManager
-    {
-        return $this->DataManager;
     }
 
     public function onUpdate(int $currentTick): bool
@@ -286,12 +260,14 @@ class PracticePlayer extends Player
 
     private function updateTag(): void
     {
-        if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-            $this->setPVPTag();
-        } elseif (!$this->isCombat() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
-            $this->setUnPVPTag();
-        } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
-            $this->setParkourTag();
+        if ($this->isConnected()) {
+            if ($this->isCombat() || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getOITCArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getKnockbackArena()) || $this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                $this->setPVPTag();
+            } elseif (!$this->isCombat() && $this->getWorld() !== Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
+                $this->setUnPVPTag();
+            } elseif ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
+                $this->setParkourTag();
+            }
         }
     }
 
@@ -346,12 +322,26 @@ class PracticePlayer extends Player
 
     private function updateNametag(): void
     {
-        if ($this->getData()->getTag() !== null && $this->getData()->getTag() !== '') {
-            $nametag = '§f[' . $this->getData()->getTag() . '§f] §b' . $this->getDisplayName();
+        if ($this->customTag !== '') {
+            $nametag = '§f[' . $this->customTag . '§f] §b' . $this->getDisplayName();
         } else {
             $nametag = '§b' . $this->getDisplayName();
         }
         $this->setNameTag($nametag);
+    }
+
+    private function setInputData(): void
+    {
+        $data = $this->getPlayerInfo()->getExtraData();
+        if ($data['CurrentInputMode'] !== null) {
+            $this->Input = PracticeConfig::ControlList[$data['CurrentInputMode']];
+        }
+        if ($data['DeviceOS'] !== null) {
+            $this->OS = PracticeConfig::OSList[$data['DeviceOS']];
+        }
+        if ($data['DeviceModel'] !== null) {
+            $this->Device = $data['DeviceModel'];
+        }
     }
 
     public function setDueling(bool $playing): void
@@ -359,16 +349,14 @@ class PracticePlayer extends Player
         $this->isDueling = $playing;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onJoin(): void
     {
         $this->getEffects()->clear();
         $this->getInventory()->clearAll();
         $this->getArmorInventory()->clearAll();
         $this->setLobbyItem();
-        $this->LoadData(true);
+        $this->setInputData();
+        PracticeCore::getPlayerHandler()->loadPlayerData($this);
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }
 
@@ -398,13 +386,28 @@ class PracticePlayer extends Player
     /**
      * @throws JsonException
      */
-    public function LoadData(bool $set): void
+    public function loadData(array $data = []): void
     {
-        $this->cape = PracticeCore::getInstance()->CapeData->get($this->getName()) ?: '';
-        $this->artifact = PracticeCore::getInstance()->ArtifactData->get($this->getName()) ?: '';
-        if ($set) {
-            $this->setCosmetic();
+        if (isset($data['kills'])) {
+            $this->kills = (int)$data['kills'];
         }
+        if (isset($data['deaths'])) {
+            $this->deaths = (int)$data['deaths'];
+        }
+        if (isset($data['tag'])) {
+            $this->customTag = (string)$data['tag'];
+        }
+        if (isset($data['cape'])) {
+            $this->cape = (string)$data['cape'];
+        }
+        if (isset($data['artifact'])) {
+            $this->artifact = (string)$data['artifact'];
+        }
+        if (isset($data['killStreak'])) {
+            $this->killStreak = (int)$data['killStreak'];
+        }
+        $this->loadedData = true;
+        $this->setCosmetic();
     }
 
     /**
@@ -412,29 +415,42 @@ class PracticePlayer extends Player
      */
     public function setCosmetic(): void
     {
-        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/artifact/' . PracticeCore::getInstance()->ArtifactData->get($this->getName()) . '.png')) {
+        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/artifact/' . $this->artifact . '.png')) {
             if ($this->getStuff() !== '' && $this->getStuff() !== null) {
-                PracticeCore::getCosmeticHandler()->setSkin($this, $this->getStuff());
+                PracticeCore::getCosmeticHandler()->setSkin($this, $this->artifact);
             }
         } else {
-            PracticeCore::getInstance()->ArtifactData->remove($this->getName());
-            PracticeCore::getInstance()->ArtifactData->save();
+            $this->artifact = '';
         }
-        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . PracticeCore::getInstance()->CapeData->get($this->getName()) . '.png')) {
+        if (file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . $this->cape . '.png')) {
             $oldSkin = $this->getSkin();
-            $capeData = PracticeCore::getCosmeticHandler()->createCape(PracticeCore::getInstance()->CapeData->get($this->getName()));
+            $capeData = PracticeCore::getCosmeticHandler()->createCape($this->cape);
             $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
             $this->setSkin($setCape);
             $this->sendSkin();
         } else {
-            PracticeCore::getInstance()->CapeData->remove($this->getName());
-            PracticeCore::getInstance()->CapeData->save();
+            $this->cape = '';
         }
     }
 
     public function getStuff(): string
     {
         return $this->artifact;
+    }
+
+    public function getCustomTag(): string
+    {
+        return $this->customTag;
+    }
+
+    public function setCustomTag(string $tag): void
+    {
+        $this->customTag = $tag;
+    }
+
+    public function getStreak(): int
+    {
+        return $this->killStreak;
     }
 
     /**
@@ -473,7 +489,7 @@ class PracticePlayer extends Player
     /**
      * @throws Exception
      */
-    public function queueBotDuel(string $mode): void
+    public function queueBotDuel(int $mode): void
     {
         PracticeCore::getInstance()->getDuelManager()->createBotMatch($this, $this->getDuelKit(), $mode);
         $this->setInQueue(false);
@@ -485,6 +501,7 @@ class PracticePlayer extends Player
         if ($this->isDueling() || $this->isCombat()) {
             $this->kill();
         }
+        PracticeCore::getPlayerHandler()->savePlayerData($this);
         $this->setGamemode(GameMode::SURVIVAL());
     }
 
@@ -545,7 +562,25 @@ class PracticePlayer extends Player
         } else {
             PracticeCore::getCaches()->DeathLeaderboard[$this->getName()]++;
         }
-        $this->getData()->addDeath();
+        $this->deaths++;
+    }
+
+    public function getKills(): int
+    {
+        return $this->kills;
+    }
+
+    public function getDeaths(): int
+    {
+        return $this->deaths;
+    }
+
+    public function getKdr(): float|int
+    {
+        if ($this->deaths > 0) {
+            return $this->kills / $this->deaths;
+        }
+        return 1;
     }
 
     public function addKill(): void
@@ -555,6 +590,11 @@ class PracticePlayer extends Player
         } else {
             PracticeCore::getCaches()->KillLeaderboard[$this->getName()]++;
         }
-        $this->getData()->addKill();
+        $this->kills++;
+    }
+
+    public function hasLoadedData(): bool
+    {
+        return $this->loadedData;
     }
 }

@@ -6,28 +6,27 @@ namespace Kuu\Task;
 
 use Kuu\Arena\Duel\BotDuelFactory;
 use Kuu\Arena\Duel\DuelFactory;
+use Kuu\Misc\AbstractTask;
 use Kuu\PracticeCore;
-use pocketmine\scheduler\Task;
 
-class PracticeTask extends Task
+class PracticeTask extends AbstractTask
 {
     private static array $DuelTask = [];
-    private static int $tick = 0;
 
     public function __construct()
     {
+        parent::__construct();
         PracticeCore::setCoreTask($this);
     }
 
-    public function onRun(): void
+    public function onUpdate(int $tick): void
     {
-        self::$tick++;
         foreach (self::$DuelTask as $duel) {
             if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
-                $duel->update(self::$tick);
+                $duel->update($tick);
             }
         }
-        if (self::$tick % 20 === 0) {
+        if ($tick % 20 === 0) {
             PracticeCore::getDeleteBlockHandler()->update();
         }
     }

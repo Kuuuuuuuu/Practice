@@ -13,10 +13,9 @@ class ScoreboardManager
     public function sb(PracticePlayer $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
-        $data = $player->getData();
-        $kills = $data->getKills();
-        $rate = round($data->getKdr(), 2);
-        $deaths = $data->getDeaths();
+        $kills = $player->getKills();
+        $rate = round($player->getKdr(), 2);
+        $deaths = $player->getDeaths();
         $queue = $this->getQueuePlayer();
         $duel = $this->getDuelPlayer();
         $on = count(Server::getInstance()->getOnlinePlayers());
@@ -26,7 +25,7 @@ class ScoreboardManager
             3 => " §bPing§f: §a$ping",
             4 => ' §a',
             5 => " §bK§f: §a$kills §bD§f: §a$deaths",
-            6 => " §bKDR§f: §a$rate §bElo§f: §a{$data->getElo()}",
+            6 => " §bKDR§f: §a$rate",
             7 => ' §e',
             8 => " §bIn-Queue§f: §a$queue",
             9 => " §bIn-Duel§f: §a$duel",

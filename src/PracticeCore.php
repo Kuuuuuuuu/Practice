@@ -11,6 +11,7 @@ namespace Kuu;
 use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
 use Kuu\Arena\Duel\DuelManager;
+use Kuu\Players\PlayerHandler;
 use Kuu\Task\PracticeTask;
 use Kuu\Utils\ClickHandler;
 use Kuu\Utils\CosmeticManager;
@@ -39,9 +40,8 @@ class PracticeCore extends PluginBase
     private static DuelManager $duelmanager;
     private static ?PracticeTask $CoreTask;
     private static PracticeCaches $caches;
+    private static PlayerHandler $playerHandler;
     public Config|array $MessageData;
-    public Config $CapeData;
-    public Config $ArtifactData;
     public SQLite3 $BanData;
     public Config $KitData;
 
@@ -115,6 +115,10 @@ class PracticeCore extends PluginBase
         return self::$duelmanager;
     }
 
+    public static function getPlayerHandler(): PlayerHandler
+    {
+        return self::$playerHandler;
+    }
 
     public static function getCaches(): PracticeCaches
     {
@@ -141,6 +145,7 @@ class PracticeCore extends PluginBase
         self::$scoremanager = new ScoreboardManager();
         self::$duelmanager = new DuelManager();
         self::$caches = new PracticeCaches();
+        self::$playerHandler = new PlayerHandler();
     }
 
     public function onEnable(): void
@@ -155,7 +160,6 @@ class PracticeCore extends PluginBase
 
     public function onDisable(): void
     {
-        self::getPracticeUtils()->dispose();
         self::setCoreTask(null);
     }
 }

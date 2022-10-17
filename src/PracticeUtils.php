@@ -39,7 +39,6 @@ use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
-use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
@@ -110,15 +109,6 @@ class PracticeUtils
             }
             Server::getInstance()->getWorldManager()->loadWorld($world, true);
         }
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            $world->setTime(0);
-            $world->stopTime();
-        }
-        foreach (Server::getInstance()->getNetwork()->getInterfaces() as $interface) {
-            if ($interface instanceof RakLibInterface) {
-                $interface->setPacketLimit(9999999999);
-            }
-        }
         Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
     }
 
@@ -134,12 +124,8 @@ class PracticeUtils
     private function registerConfigs(): void
     {
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'players/');
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'Kits/');
         PracticeCore::getInstance()->saveResource('config.yml');
         PracticeCore::getInstance()->KitData = new Config(PracticeCore::getInstance()->getDataFolder() . 'KitData.json', Config::JSON);
-        PracticeCore::getInstance()->ArtifactData = new Config(PracticeCore::getInstance()->getDataFolder() . 'ArtifactData.yml', Config::YAML);
-        PracticeCore::getInstance()->CapeData = new Config(PracticeCore::getInstance()->getDataFolder() . 'CapeData.yml', Config::YAML);
         PracticeCore::getInstance()->MessageData = (new Config(PracticeCore::getInstance()->getDataFolder() . 'messages.yml', Config::YAML, [
             'StartCombat' => '§bNeptune§f » §r§aYou Started combat!',
             'StopCombat' => '§bNeptune§f » §r§aYou Cleared combat!',
@@ -189,7 +175,7 @@ class PracticeUtils
 
     private function registerTasks(): void
     {
-        PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new PracticeTask(), 1);
+        new PracticeTask();
     }
 
     private function registerEntitys(): void
@@ -234,10 +220,8 @@ class PracticeUtils
 
     public function handleStreak(PracticePlayer $player, PracticePlayer $death): void
     {
-        $killer = $player->getData();
-        $loser = $death->getData();
-        $oldStreak = $loser->getStreak();
-        $newStreak = $killer->getStreak();
+        $oldStreak = $death->getStreak();
+        $newStreak = $player->getStreak();
         if ($oldStreak > 10) {
             $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
             $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreaks!');
@@ -262,7 +246,7 @@ class PracticeUtils
         }
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof PracticeBot) {
+                if (!$entity instanceof BaseLeaderboard) {
                     $entity->close();
                 }
             }

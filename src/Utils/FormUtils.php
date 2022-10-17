@@ -189,8 +189,8 @@ class FormUtils
                         break;
                     case 1:
                         $player->setDisplayName($player->getName());
-                        if ($player->getData()->getTag() !== null) {
-                            $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $player->getName());
+                        if ($player->getCustomTag() !== '') {
+                            $player->setNameTag('§f[' . $player->getCustomTag() . '§f] §b' . $player->getName());
                         } else {
                             $player->setNameTag('§b' . $player->getName());
                         }
@@ -217,8 +217,8 @@ class FormUtils
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou cant use this nickname!');
                 } else {
                     $player->setDisplayName($data[0]);
-                    if ($player->getData()->getTag() !== null) {
-                        $player->setNameTag('§f[' . $player->getData()->getTag() . '§f] §b' . $data[0]);
+                    if ($player->getCustomTag() !== '') {
+                        $player->setNameTag('§f[' . $player->getCustomTag() . '§f] §b' . $data[0]);
                     } else {
                         $player->setNameTag('§b' . $data[0]);
                     }
@@ -257,20 +257,15 @@ class FormUtils
 
     public function openCapesUI(Player $player): void
     {
-        $form = new SimpleForm(function (Player $player, $data = null) {
+        $form = new SimpleForm(function (PracticePlayer $player, $data = null) {
             if ($data !== null) {
                 switch ($data) {
                     case 0:
+                        $player->setCape('');
                         $oldSkin = $player->getSkin();
                         $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), '', $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
                         $player->setSkin($setCape);
                         $player->sendSkin();
-                        if (PracticeCore::getInstance()->CapeData->get($player->getName()) !== null) {
-                            PracticeCore::getInstance()->CapeData->remove($player->getName());
-                            PracticeCore::getInstance()->CapeData->save();
-                            assert($player instanceof PracticePlayer);
-                            $player->LoadData(false);
-                        }
                         $player->sendMessage(PracticeCore::getPrefixCore() . '§aCape Removed!');
                         break;
                     case 1:
@@ -287,7 +282,7 @@ class FormUtils
 
     public function openCapeListUI(Player $player): void
     {
-        $form = new SimpleForm(function (Player $player, $data = null) {
+        $form = new SimpleForm(function (PracticePlayer $player, $data = null) {
             if ($data !== null) {
                 if (!file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cCape not found!');
@@ -300,10 +295,9 @@ class FormUtils
                     $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
                     $msg = str_replace('{name}', $data, $msg);
                     $player->sendMessage($msg);
-                    PracticeCore::getInstance()->CapeData->set($player->getName(), $data);
-                    PracticeCore::getInstance()->CapeData->save();
+                    $player->setCape($data);
                     assert($player instanceof PracticePlayer);
-                    $player->LoadData(false);
+                    $player->LoadData();
                 }
             }
         });
@@ -321,7 +315,6 @@ class FormUtils
                 if ($data === 'None') {
                     return;
                 }
-                $event->LoadData(false);
                 $cosmetic = PracticeCore::getCosmeticHandler();
                 if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
                     if (str_contains($data, 'SP-')) {
@@ -391,11 +384,11 @@ class FormUtils
                 switch ($data) {
                     case 0:
                         $player->setCurrentKit(KitRegistry::fromString('Fist'));
-                        $player->queueBotDuel('Fist');
+                        $player->queueBotDuel(PracticeConfig::BOT_FIST);
                         break;
                     case 1:
                         $player->setCurrentKit(KitRegistry::fromString('NoDebuff'));
-                        $player->queueBotDuel('NoDebuff');
+                        $player->queueBotDuel(PracticeConfig::BOT_NODEBUFF);
                         break;
                 }
             }
@@ -423,21 +416,23 @@ class FormUtils
         $form = new CustomForm(static function (Player $player, $data) {
         });
         if ($player2 instanceof PracticePlayer) {
-            $data = $player2->getData();
             $name = $player2->getName();
+            $kill = $player2->getKills();
+            $death = $player2->getDeaths();
+            $kdr = $player2->getkdr();
         } else {
-            $data = $player->getData();
             $name = $player->getName();
+            $kill = $player->getKills();
+            $death = $player->getDeaths();
+            $kdr = $player->getkdr();
         }
         $form->setTitle("$name's §cProfile");
         $form->addLabel(
-            '§aKills§f: §e' . $data->getKills() .
+            '§aKills§f: §e' . $kill .
             "\n§e" .
-            "\n§aDeath§f: §e" . $data->getDeaths() .
+            "\n§aDeath§f: §e" . $death .
             "\n§e" .
-            "\n§aKDR§f: §e" . $data->getKdr() .
-            "\n§e" .
-            "\n§aElo§f: §e" . $data->getElo()
+            "\n§aKDR§f: §e" . $kdr
         );
         $player->sendForm($form);
     }

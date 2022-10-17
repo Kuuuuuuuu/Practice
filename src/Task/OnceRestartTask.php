@@ -2,22 +2,22 @@
 
 namespace Kuu\Task;
 
+use Kuu\Misc\AbstractTask;
 use Kuu\PracticeCore;
-use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
-class OnceRestartTask extends Task
+class OnceRestartTask extends AbstractTask
 {
-
     private int $time;
 
     public function __construct(int $time)
     {
+        parent::__construct(20);
         $this->time = $time;
-        PracticeCore::getCaches()->Restarted = true;
+        PracticeCore::getCaches()->Restarting = true;
     }
 
-    public function onRun(): void
+    public function onUpdate(int $tick): void
     {
         $this->time--;
         if ($this->time % 5 === 0) {

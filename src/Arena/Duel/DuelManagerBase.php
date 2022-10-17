@@ -6,7 +6,7 @@ use Exception;
 use Kuu\PracticeCore;
 use pocketmine\Server;
 
-class DuelManagerBase
+abstract class DuelManagerBase
 {
     public function addMatch(string $name, DuelFactory|BotDuelFactory $task): void
     {

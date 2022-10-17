@@ -22,12 +22,12 @@ class RestartCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof Player) {
-            if (PracticeCore::getCaches()->Restarted) {
+            if (PracticeCore::getCaches()->Restarting) {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cServer is already restarting!');
             } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 if (isset($args[0])) {
                     if (is_numeric($args[0])) {
-                        PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OnceRestartTask((int)$args[0]), 20);
+                        new OnceRestartTask((int)$args[0]);
                         $sender->sendMessage(PracticeCore::getPrefixCore() . '§aServer restarting...');
                     }
                 } else {

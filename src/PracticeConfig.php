@@ -14,7 +14,7 @@ interface PracticeConfig
     public const DeleteBlockTime = 10;
     public const SplashForce = 0.25;
     public const OITCBowDelay = 100;
-    public const COLOR = TextFormat::LIGHT_PURPLE;
+    public const COLOR = TextFormat::AQUA;
     public const RadiusSpawnProtect = 6;
     public const BuildFFASpawns = [
         [
@@ -76,4 +76,7 @@ interface PracticeConfig
         'Switch',
         'Xbox'
     ];
+
+    public const BOT_NODEBUFF = 0;
+    public const BOT_FIST = 1;
 }

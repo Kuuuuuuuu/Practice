@@ -21,9 +21,9 @@ class BotDuelFactory extends DuelFactoryBase
     private World $level;
     private KitManager $kit;
     private bool $ended = false;
-    private string $mode;
+    private int $mode;
 
-    public function __construct(string $name, PracticePlayer $player1, KitManager $kit, string $mode)
+    public function __construct(string $name, PracticePlayer $player1, KitManager $kit, int $mode)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {

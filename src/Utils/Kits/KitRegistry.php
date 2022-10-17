@@ -11,8 +11,8 @@ class KitRegistry
 
     public static function fromString(string $name): KitManager
     {
-        /** @var KitManager $kit */
         $kit = self::_registryFromString(strtolower($name));
+        assert($kit instanceof KitManager);
         return $kit;
     }
 

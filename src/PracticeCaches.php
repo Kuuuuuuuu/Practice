@@ -11,6 +11,6 @@ class PracticeCaches
     public array $ParkourLeaderboard = [];
     public array $ClickData = [];
     public array $buildBlocks = [];
-    public bool $Restarted = false;
+    public bool $Restarting = false;
     public array $LeapCooldown = [];
 }
