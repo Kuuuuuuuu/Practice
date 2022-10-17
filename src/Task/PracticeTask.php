@@ -17,10 +17,12 @@ class PracticeTask extends AbstractTask
     {
         parent::__construct();
         PracticeCore::setCoreTask($this);
+    var_dump("hello");
     }
 
     public function onUpdate(int $tick): void
     {
+        var_dump("hello2");
         foreach (self::$DuelTask as $duel) {
             if ($duel instanceof DuelFactory || $duel instanceof BotDuelFactory) {
                 $duel->update($tick);
