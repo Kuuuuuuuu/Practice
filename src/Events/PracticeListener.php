@@ -253,7 +253,7 @@ class PracticeListener extends AbstractListener
                 PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
             }
         } elseif ($player instanceof PracticePlayer) {
-            PracticeCore::getClickHandler()->initPlayerClickData($this);
+            PracticeCore::getClickHandler()->initPlayerClickData($player);
             $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
             $cosmetic = PracticeCore::getCosmeticHandler();
             $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
