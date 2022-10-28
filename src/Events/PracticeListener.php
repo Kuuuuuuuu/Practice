@@ -289,7 +289,7 @@ class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if (!$player->getGamemode() === GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() === ItemIds::FLOWER_POT)) {
+        if (!$player->getGamemode() == GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() == ItemIds::FLOWER_POT)) {
             $event->cancel();
         }
     }
@@ -303,10 +303,6 @@ class PracticeListener extends AbstractListener
         }
     }
 
-    /**
-     * @throws Exception
-     * @priority LOWEST
-     */
     public function onMove(PlayerMoveEvent $event): void
     {
         $player = $event->getPlayer();
@@ -372,16 +368,18 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-            if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
-                $ev->setDropsVariadic(VanillaItems::AIR());
-                if ($block->getId() === BlockLegacyIds::WOOL) {
-                    $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
-                    PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
+        if ($player instanceof PracticePlayer) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
+                    $ev->setDropsVariadic(VanillaItems::AIR());
+                    if ($block->getId() === BlockLegacyIds::WOOL) {
+                        $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
+                        PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
+                    }
                 }
+            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+                $ev->cancel();
             }
-        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-            $ev->cancel();
         }
     }
 
@@ -389,10 +387,12 @@ class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-            PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
-        } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
-            $ev->cancel();
+        if ($player instanceof PracticePlayer) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
+                PracticeCore::getDeleteBlockHandler()->setBlockBuild($block);
+            } elseif (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && !$player->isDueling()) {
+                $ev->cancel();
+            }
         }
     }
 
@@ -604,7 +604,7 @@ class PracticeListener extends AbstractListener
         if (($cause instanceof EntityDamageByEntityEvent) && $player instanceof PracticePlayer && $player->getOpponent() !== null) {
             $damager = Server::getInstance()->getPlayerByPrefix($player->getOpponent());
             if ($damager instanceof PracticePlayer) {
-                $dname = $damager->getName() ?? 'Unknown';
+                $dname = $damager->getName();
                 if ($damager->isAlive()) {
                     $arena = $damager->getWorld()->getFolderName();
                     if ($arena === PracticeCore::getArenaFactory()->getOITCArena()) {

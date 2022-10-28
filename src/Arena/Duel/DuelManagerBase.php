@@ -5,6 +5,7 @@ namespace Kuu\Arena\Duel;
 use Exception;
 use Kuu\PracticeCore;
 use pocketmine\Server;
+use pocketmine\world\World;
 
 abstract class DuelManagerBase
 {
@@ -16,13 +17,16 @@ abstract class DuelManagerBase
     public function stopMatch(string $name): void
     {
         try {
-            if (Server::getInstance()->getWorldManager()->isWorldLoaded($name)) {
-                Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($name));
-            }
-            PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
-            PracticeCore::getCoreTask()?->removeDuelTask($name);
-            if (isset(PracticeCore::getCaches()->DuelMatch[$name])) {
-                unset(PracticeCore::getCaches()->DuelMatch[$name]);
+            $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
+            if ($world instanceof World) {
+                if ($world->isLoaded()) {
+                    Server::getInstance()->getWorldManager()->unloadWorld($world);
+                }
+                PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
+                PracticeCore::getCoreTask()?->removeDuelTask($name);
+                if (isset(PracticeCore::getCaches()->DuelMatch[$name])) {
+                    unset(PracticeCore::getCaches()->DuelMatch[$name]);
+                }
             }
         } catch (Exception $e) {
             Server::getInstance()->getLogger()->error($e->getMessage());

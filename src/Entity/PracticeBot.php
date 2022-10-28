@@ -40,7 +40,7 @@ class PracticeBot extends Human
         $this->alwaysShowNameTag = true;
         $this->gravityEnabled = true;
         $this->gravity = 0.08;
-        $this->mode = $mode;
+        $this->mode = $mode ??= 1;
         if ($mode === PracticeConfig::BOT_NODEBUFF) {
             $sword = VanillaItems::DIAMOND_SWORD();
             $this->getInventory()->setItem(0, $sword);
@@ -128,7 +128,7 @@ class PracticeBot extends Human
     {
         if ($this->getLocation()->getYaw() < 0) {
             $this->getLocation()->yaw = abs($this->getLocation()->getYaw());
-        } elseif ($this->getLocation()->getYaw() === 0) {
+        } elseif ($this->getLocation()->getYaw() == 0) {
             $this->getLocation()->yaw = -180;
         } else {
             $this->getLocation()->yaw = -$this->getLocation()->getYaw();

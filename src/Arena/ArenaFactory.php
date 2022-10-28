@@ -10,18 +10,20 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
-use Throwable;
+use pocketmine\world\World;
 
 class ArenaFactory
 {
 
     public function getPlayers(mixed $arena): string
     {
-        try {
-            return (string)count(Server::getInstance()->getWorldManager()->getWorldByName($arena)?->getPlayers());
-        } catch (Throwable) {
-            return 'Error';
+        if (is_string($arena)) {
+            $world = Server::getInstance()->getWorldManager()->getWorldByName($arena);
+            if ($world instanceof World) {
+                return (string)count($world->getPlayers());
+            }
         }
+        return 'Error: Unknown arena';
     }
 
     public function getResistanceArena(): string

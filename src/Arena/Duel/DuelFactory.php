@@ -28,11 +28,12 @@ class DuelFactory extends DuelFactoryBase
     public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
+        $task = PracticeCore::getCoreTask();
         if ($world === null) {
             throw new WorldException('World does not exist');
         }
-        if (PracticeCore::getCoreTask() instanceof PracticeTask) {
-            PracticeCore::getCoreTask()?->addDuelTask($name, $this);
+        if ($task instanceof PracticeTask) {
+            $task->addDuelTask($name, $this);
         }
         $this->level = $world;
         $this->kit = $kit;

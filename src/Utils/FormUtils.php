@@ -143,7 +143,7 @@ class FormUtils
                 }
             }
         }
-        return $kitcount ?? 0;
+        return $kitcount;
     }
 
     public function settingsForm(Player $player): void

@@ -66,7 +66,7 @@ class PracticeUtils
     public function ChunkLoader(Player $player): void
     {
         $pos = $player->getPosition();
-        PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->world, (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
+        PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->getWorld(), (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
             $player->teleport($pos);
         });
     }
@@ -102,12 +102,15 @@ class PracticeUtils
         $this->registerTasks();
         $this->registerEntitys();
         $this->registerGenerators();
-        foreach (glob(Server::getInstance()->getDataPath() . 'worlds/*') as $world) {
-            $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
-            if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
-                continue;
+        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
+        if (is_array($check)) {
+            foreach ($check as $world) {
+                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
+                if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
+                    continue;
+                }
+                Server::getInstance()->getWorldManager()->loadWorld($world, true);
             }
-            Server::getInstance()->getWorldManager()->loadWorld($world, true);
         }
         Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
     }
@@ -259,8 +262,11 @@ class PracticeUtils
             return null;
         }
         if (Server::getInstance()->getWorldManager()->isWorldLoaded($folderName)) {
-            Server::getInstance()->getWorldManager()->unloadWorld(Server::getInstance()->getWorldManager()->getWorldByName($folderName));
-            $this->deleteDir(Server::getInstance()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $folderName);
+            $world = Server::getInstance()->getWorldManager()->getWorldByName($folderName);
+            if ($world instanceof World) {
+                Server::getInstance()->getWorldManager()->unloadWorld($world);
+                $this->deleteDir(Server::getInstance()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $folderName);
+            }
         }
         $zipPath = PracticeCore::getInstance()->getDataFolder() . 'Maps' . DIRECTORY_SEPARATOR . $folderName . '.zip';
         if (!file_exists($zipPath)) {
@@ -287,11 +293,13 @@ class PracticeUtils
             $dirPath .= '/';
         }
         $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                $this->deleteDir($file);
-            } else {
-                unlink($file);
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (is_dir($file)) {
+                    $this->deleteDir($file);
+                } else {
+                    unlink($file);
+                }
             }
         }
         rmdir($dirPath);

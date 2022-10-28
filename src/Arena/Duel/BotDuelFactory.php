@@ -26,11 +26,12 @@ class BotDuelFactory extends DuelFactoryBase
     public function __construct(string $name, PracticePlayer $player1, KitManager $kit, int $mode)
     {
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
+        $task = PracticeCore::getCoreTask();
         if ($world === null) {
             throw new WorldException('World does not exist');
         }
-        if (PracticeCore::getCoreTask() instanceof PracticeTask) {
-            PracticeCore::getCoreTask()?->addDuelTask($name, $this);
+        if ($task instanceof PracticeTask) {
+            $task->addDuelTask($name, $this);
         }
         $this->level = $world;
         $this->player1 = $player1;
@@ -50,7 +51,7 @@ class BotDuelFactory extends DuelFactoryBase
                     $this->player2->pearlcooldown--;
                 }
             }
-            if (!$this->player2?->isAlive() || $this->player2?->isClosed()) {
+            if (!$this->player2->isAlive() || $this->player2->isClosed()) {
                 $this->onEnd($this->player1);
             }
         }
@@ -99,11 +100,11 @@ class BotDuelFactory extends DuelFactoryBase
     {
         if (!$this->ended) {
             if ($playerLeft instanceof PracticePlayer) {
-                $winnerMessage = '§aWinner: §f' . ($this->player1->getName() ?? 'None');
+                $winnerMessage = '§aWinner: §f' . $this->player1->getName();
                 $loserMessage = '§cLoser: §fPracticeBot';
             } else {
                 $winnerMessage = '§aWinner: §fPracticeBot';
-                $loserMessage = '§cLoser: §f' . ($this->player1->getName() ?? 'None');
+                $loserMessage = '§cLoser: §f' . $this->player1->getName();
             }
             if ($this->player1->isOnline()) {
                 $this->player1->sendMessage('§f-----------------------');

@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Kuu\Arena;
 
+use Exception;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\block\VanillaBlocks;
@@ -26,7 +27,7 @@ class ArenaManager
 
     public function onJoinBoxing(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getBoxingArena() === null) {
+        if (PracticeCore::getArenaFactory()->getBoxingArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getBoxingArena());
@@ -43,7 +44,7 @@ class ArenaManager
 
     public function onJoinFist(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getFistArena() === null) {
+        if (PracticeCore::getArenaFactory()->getFistArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getFistArena());
@@ -59,7 +60,7 @@ class ArenaManager
 
     public function onJoinParkour(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getParkourArena() === null) {
+        if (PracticeCore::getArenaFactory()->getParkourArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getParkourArena());
@@ -81,7 +82,7 @@ class ArenaManager
 
     public function onJoinCombo(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getFistArena() === null) {
+        if (PracticeCore::getArenaFactory()->getFistArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getComboArena());
@@ -98,7 +99,7 @@ class ArenaManager
 
     public function onJoinKnockback(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getKnockbackArena() === null) {
+        if (PracticeCore::getArenaFactory()->getKnockbackArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getKnockbackArena());
@@ -130,7 +131,7 @@ class ArenaManager
 
     public function onJoinOITC(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getOITCArena() === null) {
+        if (PracticeCore::getArenaFactory()->getOITCArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             $random = PracticeCore::getArenaFactory()->getRandomSpawnOitc();
@@ -149,7 +150,7 @@ class ArenaManager
 
     public function onJoinResistance(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getResistanceArena() === null) {
+        if (PracticeCore::getArenaFactory()->getResistanceArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             Server::getInstance()->getWorldManager()->loadWorld(PracticeCore::getArenaFactory()->getResistanceArena());
@@ -165,7 +166,7 @@ class ArenaManager
 
     public function onJoinBuild(Player $player): void
     {
-        if (PracticeCore::getArenaFactory()->getBuildArena() === null) {
+        if (PracticeCore::getArenaFactory()->getBuildArena() == null) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cArena is not set!');
         } else {
             $random = PracticeCore::getArenaFactory()->getRandomSpawnBuild();
@@ -176,8 +177,13 @@ class ArenaManager
             $player->setHealth($player->getMaxHealth());
             try {
                 if ($player instanceof PracticePlayer) {
-                    foreach (PracticeCore::getInstance()->KitData->get($player->getName()) as $slot => $item) {
-                        $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
+                    $items = PracticeCore::getInstance()->KitData->get($player->getName());
+                    if (is_array($items)) {
+                        foreach ($items as $slot => $item) {
+                            $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
+                        }
+                    } else {
+                        throw new Exception('Not Found Inventory');
                     }
                 }
             } catch (Throwable) {

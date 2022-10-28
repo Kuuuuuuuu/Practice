@@ -45,7 +45,7 @@ class ScoreboardManager
                 $queue++;
             }
         }
-        return $queue ?? 0;
+        return $queue;
     }
 
     private function getDuelPlayer(): int
@@ -56,7 +56,7 @@ class ScoreboardManager
                 $duel++;
             }
         }
-        return $duel ?? 0;
+        return $duel;
     }
 
     public function sb2(Player $player): void
