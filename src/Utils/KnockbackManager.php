@@ -13,6 +13,11 @@ class KnockbackManager
 {
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @param float|int $knockback1
+     * @param float|int $knockback2
+     * @return void
      * @throws JsonException
      */
     public function setKnockback(Player $player, string $world, float|int $knockback1, float|int $knockback2): void
@@ -28,6 +33,10 @@ class KnockbackManager
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @param int $speed
+     * @return void
      * @throws JsonException
      */
     public function setAttackspeed(Player $player, string $world, int $speed): void
@@ -42,12 +51,20 @@ class KnockbackManager
         }
     }
 
+    /**
+     * @param string $world
+     * @return float[]
+     */
     public function getKnockback(string $world): array
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/kb.yml', Config::YAML);
         return $data->get(mb_strtolower($world)) ?? ['hkb' => 0.4, 'ykb' => 0.4];
     }
 
+    /**
+     * @param string $world
+     * @return int
+     */
     public function getAttackspeed(string $world): int
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/speed.yml', Config::YAML);
@@ -55,6 +72,9 @@ class KnockbackManager
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
     public function removeAttackspeed(Player $player, string $world): void
@@ -66,6 +86,9 @@ class KnockbackManager
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
     public function removeKnockback(Player $player, string $world): void
