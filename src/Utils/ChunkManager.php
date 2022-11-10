@@ -13,10 +13,15 @@ use pocketmine\world\World;
 
 class ChunkManager implements ChunkListener, ChunkLoader
 {
+    /** @var Position */
     private Position $position;
+    /** @var int */
     private int $chunkX;
+    /** @var int */
     private int $chunkZ;
+    /** @var World */
     private World $world;
+    /** @var mixed|callable */
     private mixed $callable;
 
     public function __construct(World $level, int $chunkX, int $chunkZ, callable $callable)
@@ -28,25 +33,46 @@ class ChunkManager implements ChunkListener, ChunkLoader
         $this->callable = $callable;
     }
 
+    /**
+     * @return bool
+     */
     public function isLoaderActive(): bool
     {
         return true;
     }
 
+    /**
+     * @return Position
+     */
     public function getPosition(): Position
     {
         return $this->position;
     }
 
+    /**
+     * @return World
+     */
     public function getWorld(): World
     {
         return $this->world;
     }
 
+    /**
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @param Chunk $chunk
+     * @return void
+     */
     public function onChunkChanged(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
     }
 
+    /**
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @param Chunk $chunk
+     * @return void
+     */
     public function onChunkLoaded(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
         if (!$chunk->isPopulated()) {
@@ -57,10 +83,22 @@ class ChunkManager implements ChunkListener, ChunkLoader
         ($this->callable)();
     }
 
+    /**
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @param Chunk $chunk
+     * @return void
+     */
     public function onChunkUnloaded(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
     }
 
+    /**
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @param Chunk $chunk
+     * @return void
+     */
     public function onChunkPopulated(int $chunkX, int $chunkZ, Chunk $chunk): void
     {
         $this->world->unregisterChunkLoader($this, (int)$this->getX(), (int)$this->getZ());
@@ -68,16 +106,26 @@ class ChunkManager implements ChunkListener, ChunkLoader
         ($this->callable)();
     }
 
+    /**
+     * @return float|int
+     */
     public function getX(): float|int
     {
         return $this->chunkX;
     }
 
+    /**
+     * @return float|int
+     */
     public function getZ(): float|int
     {
         return $this->chunkZ;
     }
 
+    /**
+     * @param Vector3 $block
+     * @return void
+     */
     public function onBlockChanged(Vector3 $block): void
     {
     }
