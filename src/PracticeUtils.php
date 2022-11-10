@@ -50,6 +50,11 @@ use ZipArchive;
 class PracticeUtils
 {
 
+    /**
+     * @param string $soundName
+     * @param Player $player
+     * @return void
+     */
     public static function playSound(string $soundName, Player $player): void
     {
         $location = $player->getLocation();
@@ -63,6 +68,10 @@ class PracticeUtils
         $player->getNetworkSession()->sendDataPacket($pk, true);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function ChunkLoader(Player $player): void
     {
         $pos = $player->getPosition();
@@ -71,6 +80,13 @@ class PracticeUtils
         });
     }
 
+    /**
+     * @param World $world
+     * @param int $x
+     * @param int $z
+     * @param callable $callable
+     * @return void
+     */
     public static function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
     {
         if ($world->isChunkPopulated($x, $z)) {
@@ -81,9 +97,9 @@ class PracticeUtils
     }
 
     /**
+     * @return string
      * @throws Exception
      */
-
     public function generateUUID(): string
     {
         $data = random_bytes(16);
@@ -93,6 +109,9 @@ class PracticeUtils
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
         $this->registerItems();
@@ -115,6 +134,9 @@ class PracticeUtils
         Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
     }
 
+    /**
+     * @return void
+     */
     private function registerItems(): void
     {
         foreach (PotionType::getAll() as $type) {
@@ -124,6 +146,9 @@ class PracticeUtils
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
     }
 
+    /**
+     * @return void
+     */
     private function registerConfigs(): void
     {
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
@@ -152,6 +177,9 @@ class PracticeUtils
         PracticeCore::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
 
+    /**
+     * @return void
+     */
     private function registerCommands(): void
     {
         $Command = [
@@ -171,16 +199,25 @@ class PracticeUtils
         }
     }
 
+    /**
+     * @return void
+     */
     private function registerEvents(): void
     {
         new PracticeListener();
     }
 
+    /**
+     * @return void
+     */
     private function registerTasks(): void
     {
         new PracticeTask();
     }
 
+    /**
+     * @return void
+     */
     private function registerEntitys(): void
     {
         EntityFactory::getInstance()->register(KillLeaderboard::class, function (World $world, CompoundTag $nbt): KillLeaderboard {
@@ -210,6 +247,9 @@ class PracticeUtils
         }, ['NArrow', 'neptune:arrow'], EntityLegacyIds::ARROW);
     }
 
+    /**
+     * @return void
+     */
     private function registerGenerators(): void
     {
         $generator = [
@@ -221,6 +261,11 @@ class PracticeUtils
         }
     }
 
+    /**
+     * @param PracticePlayer $player
+     * @param PracticePlayer $death
+     * @return void
+     */
     public function handleStreak(PracticePlayer $player, PracticePlayer $death): void
     {
         $oldStreak = $death->getStreak();
@@ -234,6 +279,9 @@ class PracticeUtils
         }
     }
 
+    /**
+     * @return void
+     */
     public function dispose(): void
     {
         foreach (PracticeCore::getCaches()->DuelMatch as $activeMatch) {
@@ -256,6 +304,11 @@ class PracticeUtils
         }
     }
 
+    /**
+     * @param string $folderName
+     * @param bool $justSave
+     * @return World|null
+     */
     public function loadMap(string $folderName, bool $justSave = false): ?World
     {
         if (!Server::getInstance()->getWorldManager()->isWorldGenerated($folderName)) {
@@ -284,6 +337,10 @@ class PracticeUtils
         return Server::getInstance()->getWorldManager()->getWorldByName($folderName);
     }
 
+    /**
+     * @param string $dirPath
+     * @return void
+     */
     public function deleteDir(string $dirPath): void
     {
         if (!is_dir($dirPath)) {
@@ -305,6 +362,10 @@ class PracticeUtils
         rmdir($dirPath);
     }
 
+    /**
+     * @param string $err
+     * @return void
+     */
     public static function getLogger(string $err): void
     {
         Server::getInstance()->getLogger()->error($err);
