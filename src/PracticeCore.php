@@ -45,86 +45,138 @@ class PracticeCore extends PluginBase
     public SQLite3 $BanData;
     public Config $KitData;
 
+    /**
+     * @return PracticeTask|null
+     */
     public static function getCoreTask(): ?PracticeTask
     {
         return self::$CoreTask;
     }
 
+    /**
+     * @param PracticeTask|null $task
+     * @return void
+     */
     public static function setCoreTask(?PracticeTask $task): void
     {
         self::$CoreTask = $task;
     }
 
+    /**
+     * @return string
+     */
     public static function getScoreboardTitle(): string
     {
         return PracticeConfig::SBPREFIX;
     }
 
+    /**
+     * @return string
+     */
     public static function getPrefixCore(): string
     {
         return PracticeConfig::PREFIX;
     }
 
+    /**
+     * @return DeleteBlocksHandler
+     */
     public static function getDeleteBlockHandler(): DeleteBlocksHandler
     {
         return self::$blockhandle;
     }
 
+    /**
+     * @return FormUtils
+     */
     public static function getFormUtils(): FormUtils
     {
         return self::$form;
     }
 
+    /**
+     * @return ArenaFactory
+     */
     public static function getArenaFactory(): ArenaFactory
     {
         return self::$arenafac;
     }
 
+    /**
+     * @return ArenaManager
+     */
     public static function getArenaManager(): ArenaManager
     {
         return self::$arena;
     }
 
+    /**
+     * @return ScoreboardUtils
+     */
     public static function getScoreboardUtils(): ScoreboardUtils
     {
         return self::$score;
     }
 
+    /**
+     * @return ClickHandler
+     */
     public static function getClickHandler(): ClickHandler
     {
         return self::$cps;
     }
 
+    /**
+     * @return KnockbackManager
+     */
     public static function getKnockbackManager(): KnockbackManager
     {
         return self::$knockback;
     }
 
+    /**
+     * @return CosmeticManager
+     */
     public static function getCosmeticHandler(): CosmeticManager
     {
         return self::$cosmetics;
     }
 
+    /**
+     * @return ScoreboardManager
+     */
     public static function getScoreboardManager(): ScoreboardManager
     {
         return self::$scoremanager;
     }
 
+    /**
+     * @return DuelManager
+     */
     public static function getDuelManager(): DuelManager
     {
         return self::$duelmanager;
     }
 
+    /**
+     * @return PlayerHandler
+     */
     public static function getPlayerHandler(): PlayerHandler
     {
         return self::$playerHandler;
     }
 
+    /**
+     * @return PracticeCaches
+     */
     public static function getCaches(): PracticeCaches
     {
         return self::$caches;
     }
 
+    /**
+     * @return PracticeCore
+     */
     public static function getInstance(): PracticeCore
     {
         return self::$plugin;
@@ -153,6 +205,9 @@ class PracticeCore extends PluginBase
         self::getPracticeUtils()->initialize();
     }
 
+    /**
+     * @return PracticeUtils
+     */
     public static function getPracticeUtils(): PracticeUtils
     {
         return self::$PracticeUtils;

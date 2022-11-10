@@ -18,9 +18,13 @@ use Throwable;
 class PracticePlayer extends Player
 {
     /* Parkour Data */
+    /** @var bool */
     public bool $HidePlayer = false;
+    /** @var bool */
     public bool $ParkourTimer = false;
+    /** @var int */
     public int $TimerSec = 0;
+    /** @var array|int[] */
     public array $ParkourCheckPoint = [
         'x' => 275,
         'y' => 66,
@@ -28,32 +32,53 @@ class PracticePlayer extends Player
     ];
 
     /* Client Data */
+    /** @var string */
     public string $Input = 'Unknown';
+    /** @var string */
     public string $Device = 'Unknown';
+    /** @var string */
     public string $OS = 'Unknown';
 
     /* Combat Data */
+    /** @var int */
     public int $CombatTime = 0;
+    /** @var int */
     public int $BoxingPoint = 0;
+    /** @var int */
     public int $PearlCooldown = 0;
+    /** @var int */
     private int $kills = 0;
+    /** @var int */
     private int $deaths = 0;
+    /** @var int */
     private int $killStreak = 0;
+    /** @var string|null */
     private ?string $Opponent = null;
 
     /* Duel Data */
+    /** @var bool */
     private bool $isDueling = false;
+    /** @var bool */
     private bool $inQueue = false;
+    /** @var bool */
     private bool $isCombat = false;
+    /** @var KitManager|null */
     private ?KitManager $selectKit = null;
 
     /* Other Data */
+    /** @var bool */
     private bool $loadedData = false;
+    /** @var string */
     private string $customTag = '';
+    /** @var string */
     private string $cape = '';
+    /** @var string */
     private string $artifact = '';
+    /** @var string|null */
     private ?string $EditKit = null;
+    /** @var array */
     private array $savekitcache = [];
+    /** @var array|string[] */
     private array $validstuffs = [
         'Adidas',
         'AngelWing',
@@ -146,6 +171,9 @@ class PracticePlayer extends Player
         $this->attackTime = $attackSpeed;
     }
 
+    /**
+     * @return bool
+     */
     public function isDueling(): bool
     {
         return $this->isDueling;
@@ -190,25 +218,44 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @param string $stuff
+     * @return void
+     */
     public function setStuff(string $stuff): void
     {
         $this->artifact = $stuff;
     }
 
+    /**
+     * @return string
+     */
     public function getCape(): string
     {
         return $this->cape;
     }
 
+    /**
+     * @param string $cape
+     * @return void
+     */
     public function setCape(string $cape): void
     {
         $this->cape = $cape;
     }
 
+    /**
+     * @return array|string[]
+     */
     public function getValidStuffs(): array
     {
         return $this->validstuffs;
     }
+
+    /**
+     * @param string $message
+     * @return string
+     */
 
     public function getChatFormat(string $message): string
     {
@@ -258,6 +305,9 @@ class PracticePlayer extends Player
         return parent::onUpdate($currentTick);
     }
 
+    /**
+     * @return void
+     */
     private function updateTag(): void
     {
         if ($this->isConnected()) {
@@ -271,11 +321,17 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isCombat(): bool
     {
         return $this->isCombat;
     }
 
+    /**
+     * @return void
+     */
     private function setPVPTag(): void
     {
         $ping = $this->getNetworkSession()->getPing();
@@ -283,11 +339,18 @@ class PracticePlayer extends Player
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $nowcps . ' §fCPS')]);
     }
 
+    /**
+     * @return void
+     */
+
     private function setUnPVPTag(): void
     {
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $this->OS . '§f | §f' . $this->Input)]);
     }
 
+    /**
+     * @return void
+     */
     private function setParkourTag(): void
     {
         $ping = $this->getNetworkSession()->getPing();
@@ -297,6 +360,9 @@ class PracticePlayer extends Player
         $this->sendData($this->getWorld()->getPlayers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| §a' . $mins . ' : ' . $secs . ' : ' . $mili)]);
     }
 
+    /**
+     * @return void
+     */
     private function updateScoreboard(): void
     {
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
@@ -310,6 +376,10 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @param bool $bool
+     * @return void
+     */
     public function setCombat(bool $bool): void
     {
         if (!$bool && $this->CombatTime > 0) {
@@ -320,6 +390,9 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @return void
+     */
     private function updateNametag(): void
     {
         if ($this->customTag !== '') {
@@ -330,6 +403,9 @@ class PracticePlayer extends Player
         $this->setNameTag($nametag);
     }
 
+    /**
+     * @return void
+     */
     private function setInputData(): void
     {
         $data = $this->getPlayerInfo()->getExtraData();
@@ -344,11 +420,18 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @param bool $playing
+     * @return void
+     */
     public function setDueling(bool $playing): void
     {
         $this->isDueling = $playing;
     }
 
+    /**
+     * @return void
+     */
     public function onJoin(): void
     {
         $this->getEffects()->clear();
@@ -360,6 +443,9 @@ class PracticePlayer extends Player
         $this->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
     }
 
+    /**
+     * @return void
+     */
     public function setLobbyItem(): void
     {
         $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
@@ -384,6 +470,8 @@ class PracticePlayer extends Player
     }
 
     /**
+     * @param array $data
+     * @return void
      * @throws JsonException
      */
     public function loadData(array $data = []): void
@@ -411,6 +499,7 @@ class PracticePlayer extends Player
     }
 
     /**
+     * @return void
      * @throws JsonException
      */
     public function setCosmetic(): void
@@ -433,27 +522,41 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @return string
+     */
     public function getStuff(): string
     {
         return $this->artifact;
     }
 
+    /**
+     * @return string
+     */
     public function getCustomTag(): string
     {
         return $this->customTag;
     }
 
+    /**
+     * @param string $tag
+     * @return void
+     */
     public function setCustomTag(string $tag): void
     {
         $this->customTag = $tag;
     }
 
+    /**
+     * @return int
+     */
     public function getStreak(): int
     {
         return $this->killStreak;
     }
 
     /**
+     * @return void
      * @throws Exception
      */
     public function checkQueue(): void
@@ -471,22 +574,34 @@ class PracticePlayer extends Player
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isInQueue(): bool
     {
         return $this->inQueue;
     }
 
+    /**
+     * @param bool $inQueue
+     * @return void
+     */
     public function setInQueue(bool $inQueue): void
     {
         $this->inQueue = $inQueue;
     }
 
+    /**
+     * @return KitManager|null
+     */
     public function getDuelKit(): ?KitManager
     {
         return $this->selectKit ?? null;
     }
 
     /**
+     * @param int $mode
+     * @return void
      * @throws Exception
      */
     public function queueBotDuel(int $mode): void
@@ -495,6 +610,9 @@ class PracticePlayer extends Player
         $this->setInQueue(false);
     }
 
+    /**
+     * @return void
+     */
     public function onQuit(): void
     {
         PracticeCore::getClickHandler()->removePlayerClickData($this);
@@ -505,12 +623,17 @@ class PracticePlayer extends Player
         $this->setGamemode(GameMode::SURVIVAL());
     }
 
+    /**
+     * @param KitManager|null $kit
+     * @return void
+     */
     public function setCurrentKit(?KitManager $kit): void
     {
         $this->selectKit = $kit;
     }
 
     /**
+     * @return void
      * @throws JsonException
      */
     public function saveKit(): void
@@ -535,26 +658,43 @@ class PracticePlayer extends Player
         $this->setImmobile(false);
     }
 
+    /**
+     * @return string|null
+     */
     public function getOpponent(): ?string
     {
         return $this->Opponent;
     }
 
+    /**
+     * @param string|null $name
+     * @return void
+     */
     public function setOpponent(?string $name): void
     {
         $this->Opponent = $name;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEditKit(): ?string
     {
         return $this->EditKit;
     }
 
+    /**
+     * @param string|null $kit
+     * @return void
+     */
     public function setEditKit(?string $kit): void
     {
         $this->EditKit = $kit;
     }
 
+    /**
+     * @return void
+     */
     public function addDeath(): void
     {
         if (!isset(PracticeCore::getCaches()->DeathLeaderboard[$this->getName()])) {
@@ -565,16 +705,25 @@ class PracticePlayer extends Player
         $this->deaths++;
     }
 
+    /**
+     * @return int
+     */
     public function getKills(): int
     {
         return $this->kills;
     }
 
+    /**
+     * @return int
+     */
     public function getDeaths(): int
     {
         return $this->deaths;
     }
 
+    /**
+     * @return float|int
+     */
     public function getKdr(): float|int
     {
         if ($this->deaths > 0) {
@@ -583,6 +732,9 @@ class PracticePlayer extends Player
         return 1;
     }
 
+    /**
+     * @return void
+     */
     public function addKill(): void
     {
         if (!isset(PracticeCore::getCaches()->KillLeaderboard[$this->getName()])) {
@@ -593,6 +745,9 @@ class PracticePlayer extends Player
         $this->kills++;
     }
 
+    /**
+     * @return bool
+     */
     public function hasLoadedData(): bool
     {
         return $this->loadedData;
