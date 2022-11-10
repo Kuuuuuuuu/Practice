@@ -23,6 +23,10 @@ use pocketmine\Server;
 class FormUtils
 {
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function Form1(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -69,6 +73,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function duelForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -129,6 +137,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param string $kit
+     * @return int
+     */
     private function getQueue(string $kit): int
     {
         $kitcount = 0;
@@ -146,6 +158,10 @@ class FormUtils
         return $kitcount;
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function settingsForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -179,6 +195,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function NickForm(Player $player): void
     {
         $form = new SimpleForm(function (PracticePlayer $player, int $data = null) {
@@ -207,6 +227,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function CustomNickForm(Player $player): void
     {
         $form = new CustomForm(function (PracticePlayer $player, array $data = null) {
@@ -231,6 +255,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function reportForm(Player $player): void
     {
         $list = [];
@@ -255,6 +283,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function openCapesUI(Player $player): void
     {
         $form = new SimpleForm(function (PracticePlayer $player, $data = null) {
@@ -280,6 +312,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function openCapeListUI(Player $player): void
     {
         $form = new SimpleForm(function (PracticePlayer $player, $data = null) {
@@ -308,6 +344,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function getArtifactForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $event, $data = null) {
@@ -344,6 +384,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function editkitform(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -376,6 +420,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function botForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
@@ -400,6 +448,9 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @return int
+     */
     private function getQueueBot(): int
     {
         $count = 0;
@@ -411,6 +462,11 @@ class FormUtils
         return $count;
     }
 
+    /**
+     * @param PracticePlayer $player
+     * @param PracticePlayer|null $player2
+     * @return void
+     */
     public function ProfileForm(PracticePlayer $player, ?PracticePlayer $player2): void
     {
         $form = new CustomForm(static function (Player $player, $data) {
