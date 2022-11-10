@@ -9,11 +9,20 @@ use pocketmine\world\World;
 
 abstract class DuelManagerBase
 {
+    /**
+     * @param string $name
+     * @param DuelFactory|BotDuelFactory $task
+     * @return void
+     */
     public function addMatch(string $name, DuelFactory|BotDuelFactory $task): void
     {
         PracticeCore::getCaches()->DuelMatch[$name] = $task;
     }
 
+    /**
+     * @param string $name
+     * @return void
+     */
     public function stopMatch(string $name): void
     {
         try {

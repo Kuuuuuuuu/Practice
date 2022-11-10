@@ -11,7 +11,9 @@ use pocketmine\scheduler\AsyncTask;
 
 class AsyncLoadPlayerData extends AsyncTask
 {
+    /** @var string */
     private string $path;
+    /** @var string */
     private string $playerName;
 
     public function __construct(PracticePlayer $player, string $path)

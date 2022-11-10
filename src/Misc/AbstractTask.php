@@ -10,7 +10,9 @@ use pocketmine\scheduler\Task;
 abstract class AbstractTask extends Task
 {
 
+    /** @var int */
     private int $currentTick = 0;
+    /** @var int */
     private int $period;
 
     public function __construct(int $period = 1)
@@ -25,5 +27,9 @@ abstract class AbstractTask extends Task
         $this->currentTick += $this->period;
     }
 
+    /**
+     * @param int $tick
+     * @return void
+     */
     abstract protected function onUpdate(int $tick): void;
 }

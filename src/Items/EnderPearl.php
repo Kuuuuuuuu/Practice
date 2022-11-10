@@ -26,6 +26,11 @@ class EnderPearl extends ItemEnderPearl
         parent::__construct($id, $name);
     }
 
+    /**
+     * @param Player $player
+     * @param Vector3 $directionVector
+     * @return ItemUseResult
+     */
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
         $location = $player->getLocation();
@@ -47,11 +52,19 @@ class EnderPearl extends ItemEnderPearl
         return ItemUseResult::FAIL();
     }
 
+    /**
+     * @param Location $location
+     * @param Player $thrower
+     * @return Throwable
+     */
     public function createEntity(Location $location, Player $thrower): Throwable
     {
         return new EnderPearlEntity($location, $thrower);
     }
 
+    /**
+     * @return float
+     */
     #[Pure] public function getThrowForce(): float
     {
         return PracticeConfig::PearlForce;

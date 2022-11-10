@@ -15,6 +15,9 @@ class PlayerHandler
         $this->initFolder();
     }
 
+    /**
+     * @return void
+     */
     private function initFolder(): void
     {
         if (!is_dir($this->path)) {
@@ -22,6 +25,10 @@ class PlayerHandler
         }
     }
 
+    /**
+     * @param PracticePlayer $player
+     * @return void
+     */
     public function loadPlayerData(PracticePlayer $player): void
     {
         $name = $player->getName();
@@ -30,6 +37,10 @@ class PlayerHandler
         PracticeCore::getInstance()->getServer()->getAsyncPool()->submitTask($task);
     }
 
+    /**
+     * @param PracticePlayer $player
+     * @return void
+     */
     public function savePlayerData(PracticePlayer $player): void
     {
         $name = $player->getName();
@@ -40,6 +51,11 @@ class PlayerHandler
         }
     }
 
+    /**
+     * @param PracticePlayer $player
+     * @param array $values
+     * @return void
+     */
     public function updatePlayerData(PracticePlayer $player, array $values = []): void
     {
         $name = $player->getName();

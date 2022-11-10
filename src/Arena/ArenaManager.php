@@ -6,7 +6,6 @@ declare(strict_types=1);
 
 namespace Kuu\Arena;
 
-use Exception;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
 use pocketmine\block\VanillaBlocks;
@@ -20,11 +19,16 @@ use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use RuntimeException;
 use Throwable;
 
 class ArenaManager
 {
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinBoxing(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getBoxingArena() == null) {
@@ -42,6 +46,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinFist(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getFistArena() == null) {
@@ -58,6 +66,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinParkour(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getParkourArena() == null) {
@@ -80,6 +92,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinCombo(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getFistArena() == null) {
@@ -97,6 +113,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinKnockback(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getKnockbackArena() == null) {
@@ -129,6 +149,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinOITC(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getOITCArena() == null) {
@@ -148,6 +172,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinResistance(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getResistanceArena() == null) {
@@ -164,6 +192,10 @@ class ArenaManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function onJoinBuild(Player $player): void
     {
         if (PracticeCore::getArenaFactory()->getBuildArena() == null) {
@@ -183,7 +215,7 @@ class ArenaManager
                             $player->getInventory()->setItem($slot, Item::jsonDeserialize($item));
                         }
                     } else {
-                        throw new Exception('Not Found Inventory');
+                        throw new RuntimeException('Not Found Inventory');
                     }
                 }
             } catch (Throwable) {

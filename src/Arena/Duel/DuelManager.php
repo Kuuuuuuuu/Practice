@@ -15,6 +15,10 @@ use pocketmine\world\WorldCreationOptions;
 class DuelManager extends DuelManagerBase
 {
     /**
+     * @param PracticePlayer $player1
+     * @param PracticePlayer $player2
+     * @param KitManager $kit
+     * @return void
      * @throws Exception
      */
     public function createMatch(PracticePlayer $player1, PracticePlayer $player2, KitManager $kit): void
@@ -37,6 +41,10 @@ class DuelManager extends DuelManagerBase
     }
 
     /**
+     * @param PracticePlayer $player
+     * @param KitManager $kit
+     * @param int $mode
+     * @return void
      * @throws Exception
      */
     public function createBotMatch(PracticePlayer $player, KitManager $kit, int $mode): void

@@ -10,6 +10,11 @@ use pocketmine\player\Player;
 class ArrowEntity extends Arrow
 {
 
+    /**
+     * @param Entity $entityHit
+     * @param RayTraceResult $hitResult
+     * @return void
+     */
     public function onHitEntity(Entity $entityHit, RayTraceResult $hitResult): void
     {
         $owner = $this->getOwningEntity();

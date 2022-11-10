@@ -15,12 +15,19 @@ use pocketmine\world\WorldException;
 
 class BotDuelFactory extends DuelFactoryBase
 {
+    /** @var int */
     private int $time = 903;
+    /** @var PracticePlayer */
     private PracticePlayer $player1;
+    /** @var PracticeBot|null */
     private ?PracticeBot $player2;
+    /** @var World */
     private World $level;
+    /** @var KitManager */
     private KitManager $kit;
+    /** @var bool */
     private bool $ended = false;
+    /** @var int */
     private int $mode;
 
     public function __construct(string $name, PracticePlayer $player1, KitManager $kit, int $mode)
@@ -40,6 +47,10 @@ class BotDuelFactory extends DuelFactoryBase
         $this->mode = $mode;
     }
 
+    /**
+     * @param int $tick
+     * @return void
+     */
     public function update(int $tick): void
     {
         if (!$this->player1->isOnline() || !$this->player1->isDueling()) {
@@ -96,6 +107,10 @@ class BotDuelFactory extends DuelFactoryBase
         }
     }
 
+    /**
+     * @param PracticePlayer|null $playerLeft
+     * @return void
+     */
     public function onEnd(?PracticePlayer $playerLeft = null): void
     {
         if (!$this->ended) {

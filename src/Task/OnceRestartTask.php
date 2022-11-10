@@ -8,6 +8,7 @@ use pocketmine\Server;
 
 class OnceRestartTask extends AbstractTask
 {
+    /** @var int  */
     private int $time;
 
     public function __construct(int $time)
@@ -17,6 +18,10 @@ class OnceRestartTask extends AbstractTask
         PracticeCore::getCaches()->Restarting = true;
     }
 
+    /**
+     * @param int $tick
+     * @return void
+     */
     public function onUpdate(int $tick): void
     {
         $this->time--;

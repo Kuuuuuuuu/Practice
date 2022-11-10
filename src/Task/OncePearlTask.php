@@ -9,6 +9,7 @@ use pocketmine\scheduler\Task;
 
 class OncePearlTask extends Task
 {
+    /** @var PracticePlayer  */
     private PracticePlayer $player;
 
     public function __construct(PracticePlayer $player)
@@ -18,6 +19,10 @@ class OncePearlTask extends Task
         $this->player->sendMessage(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
     }
 
+    /**
+     * @return void
+     * @throws CancelTaskException
+     */
     public function onRun(): void
     {
         if ($this->player->PearlCooldown >= 0) {

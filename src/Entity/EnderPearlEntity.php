@@ -12,11 +12,18 @@ use pocketmine\world\sound\EndermanTeleportSound;
 
 class EnderPearlEntity extends Throwable
 {
+    /**
+     * @return string
+     */
     public static function getNetworkTypeId(): string
     {
         return EntityIds::ENDER_PEARL;
     }
 
+    /**
+     * @param ProjectileHitEvent $event
+     * @return void
+     */
     public function onHit(ProjectileHitEvent $event): void
     {
         $owner = $this->getOwningEntity();

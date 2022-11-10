@@ -15,6 +15,10 @@ use pocketmine\world\World;
 class ArenaFactory
 {
 
+    /**
+     * @param mixed $arena
+     * @return string
+     */
     public function getPlayers(mixed $arena): string
     {
         if (is_string($arena)) {
@@ -26,48 +30,72 @@ class ArenaFactory
         return 'Error: Unknown arena';
     }
 
+    /**
+     * @return string
+     */
     public function getResistanceArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Resistance');
     }
 
+    /**
+     * @return string
+     */
     public function getFistArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Fist');
     }
 
+    /**
+     * @return string
+     */
     public function getOITCArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('OITC');
     }
 
+    /**
+     * @return string
+     */
     public function getBuildArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Build');
     }
 
+    /**
+     * @return string
+     */
     public function getParkourArena(): string
     {
         $data = new Config (PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Parkour');
     }
 
+    /**
+     * @return string
+     */
     public function getBoxingArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Boxing');
     }
 
+    /**
+     * @return string
+     */
     public function getComboArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
         return $data->get('Combo');
     }
 
+    /**
+     * @return string
+     */
     public function getKnockbackArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
@@ -75,6 +103,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
 
@@ -87,6 +118,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
 
@@ -98,12 +132,18 @@ class ArenaFactory
         $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
+    /**
+     * @return array
+     */
     public function getRandomSpawnOitc(): array
     {
         $random = array_rand(PracticeConfig::OITCSpawns);
         return PracticeConfig::OITCSpawns[$random];
     }
 
+    /**
+     * @return array
+     */
     public function getRandomSpawnBuild(): array
     {
         $random = array_rand(PracticeConfig::BuildFFASpawns);
@@ -111,6 +151,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
 
@@ -123,6 +166,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
 
@@ -135,6 +181,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
     public function setResistanceArena(Player $player, string $world): void
@@ -146,6 +195,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
 
@@ -158,6 +210,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
     public function setComboArena(Player $player, string $world): void
@@ -169,6 +224,9 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @param string $world
+     * @return void
      * @throws JsonException
      */
     public function setKnockbackArena(Player $player, string $world): void
@@ -180,6 +238,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeOITC(Player $player): void
@@ -191,6 +251,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeBuild(Player $player): void
@@ -202,6 +264,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeParkour(Player $player): void
@@ -213,6 +277,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeFist(Player $player): void
@@ -224,6 +290,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeKnockback(Player $player): void
@@ -235,6 +303,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeBoxing(Player $player): void
@@ -246,6 +316,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeResistance(Player $player): void
@@ -257,6 +329,8 @@ class ArenaFactory
     }
 
     /**
+     * @param Player $player
+     * @return void
      * @throws JsonException
      */
     public function removeCombo(Player $player): void

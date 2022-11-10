@@ -16,13 +16,21 @@ use pocketmine\world\WorldException;
 
 class DuelFactory extends DuelFactoryBase
 {
+    /** @var int */
     private int $time = 903;
+    /** @var PracticePlayer */
     private PracticePlayer $player1;
+    /** @var PracticePlayer */
     private PracticePlayer $player2;
+    /** @var World */
     private World $level;
+    /** @var PracticePlayer|null */
     private ?PracticePlayer $winner = null;
+    /** @var PracticePlayer|null */
     private ?PracticePlayer $loser = null;
+    /** @var KitManager */
     private KitManager $kit;
+    /** @var bool */
     private bool $ended = false;
 
     public function __construct(string $name, PracticePlayer $player1, PracticePlayer $player2, KitManager $kit)
@@ -41,6 +49,10 @@ class DuelFactory extends DuelFactoryBase
         $this->player2 = $player2;
     }
 
+    /**
+     * @param int $tick
+     * @return void
+     */
     public function update(int $tick): void
     {
         foreach ($this->getPlayers() as $player) {
@@ -110,11 +122,18 @@ class DuelFactory extends DuelFactoryBase
         }
     }
 
+    /**
+     * @return array
+     */
     public function getPlayers(): array
     {
         return [$this->player1, $this->player2];
     }
 
+    /**
+     * @param PracticePlayer|null $playerLeft
+     * @return void
+     */
     public function onEnd(?PracticePlayer $playerLeft = null): void
     {
         if (!$this->ended) {

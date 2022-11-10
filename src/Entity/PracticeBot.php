@@ -2,7 +2,6 @@
 
 namespace Kuu\Entity;
 
-use Exception;
 use Kuu\PracticeConfig;
 use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\effect\EffectInstance;
@@ -25,12 +24,16 @@ use pocketmine\world\sound\EndermanTeleportSound;
 
 class PracticeBot extends Human
 {
-
+    /** @var int */
     public int $pearlcooldown = 0;
     private string $target;
+    /** @var int */
     private int $mode;
+    /** @var float */
     private float $speed = 0.85;
+    /** @var int */
     private int $enderpearl = 16;
+    /** @var int */
     private int $pots = 33;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '', ?int $mode = PracticeConfig::BOT_FIST)
@@ -53,7 +56,8 @@ class PracticeBot extends Human
     }
 
     /**
-     * @throws Exception
+     * @param int $tickDiff
+     * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool
     {
@@ -100,18 +104,24 @@ class PracticeBot extends Human
         return $this->isAlive();
     }
 
+    /**
+     * @return Player|null
+     */
     private function getTargetPlayer(): ?Player
     {
-        return Server::getInstance()->getPlayerByPrefix($this->target);
+        return Server::getInstance()->getPlayerExact($this->target);
     }
 
+    /**
+     * @return float
+     */
     private function getSpeed(): float
     {
         return $this->speed;
     }
 
     /**
-     * @throws Exception
+     * @return void
      */
     private function pearl(): void
     {
@@ -124,6 +134,9 @@ class PracticeBot extends Human
         }
     }
 
+    /**
+     * @return void
+     */
     private function pot(): void
     {
         if ($this->getLocation()->getYaw() < 0) {
@@ -145,6 +158,9 @@ class PracticeBot extends Human
         $this->pots--;
     }
 
+    /**
+     * @return void
+     */
     private function attackTargetPlayer(): void
     {
         if ($this->isLookingAt($this->getTargetPlayer()?->getPosition()->asVector3()) && $this->getLocation()->distance($this->getTargetPlayer()?->getPosition()->asVector3()) <= 3.2) {
@@ -155,6 +171,10 @@ class PracticeBot extends Human
         }
     }
 
+    /**
+     * @param Vector3 $target
+     * @return bool
+     */
     private function isLookingAt(Vector3 $target): bool
     {
         $xDist = $target->getX() - $this->getLocation()->getX();
@@ -166,6 +186,10 @@ class PracticeBot extends Human
         return 5.2 && abs($expectedYaw - $this->getLocation()->getYaw()) <= 10;
     }
 
+    /**
+     * @param EntityDamageEvent $source
+     * @return void
+     */
     public function attack(EntityDamageEvent $source): void
     {
         parent::attack($source);
@@ -181,6 +205,9 @@ class PracticeBot extends Human
         }
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return 'PracticeBot';

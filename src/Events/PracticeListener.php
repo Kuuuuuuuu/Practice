@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Kuu\Events;
 
-use Exception;
 use JsonException;
 use Kuu\Misc\AbstractListener;
 use Kuu\PracticeConfig;
@@ -77,11 +76,20 @@ use Throwable;
 class PracticeListener extends AbstractListener
 {
 
+    /**
+     * @param PlayerCreationEvent $event
+     * @return void
+     */
     public function onCreation(PlayerCreationEvent $event): void
     {
         $event->setPlayerClass(PracticePlayer::class);
     }
 
+    /**
+     * @param PlayerItemUseEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onUse(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
@@ -156,6 +164,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param ProjectileHitBlockEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onProjectile(ProjectileHitBlockEvent $event): void
     {
         $entity = $event->getEntity();
@@ -164,6 +177,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param EntityShootBowEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onBow(EntityShootBowEvent $event): void
     {
         $entity = $event->getEntity();
@@ -192,6 +210,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param EntityTeleportEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onTeleport(EntityTeleportEvent $event): void
     {
         $entity = $event->getEntity();
@@ -209,6 +232,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param QueryRegenerateEvent $ev
+     * @return void
+     * @priority LOWEST
+     */
     public function onQuery(QueryRegenerateEvent $ev): void
     {
         $query = $ev->getQueryInfo();
@@ -217,13 +245,21 @@ class PracticeListener extends AbstractListener
         $query->setMaxPlayerCount($ev->getQueryInfo()->getPlayerCount() + 1);
     }
 
+    /**
+     * @param PlayerDropItemEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onDropItem(PlayerDropItemEvent $event): void
     {
         $event->cancel();
     }
 
     /**
+     * @param PlayerLoginEvent $event
+     * @return void
      * @throws JsonException
+     * @priority LOWEST
      */
     public function onLogin(PlayerLoginEvent $event): void
     {
@@ -261,6 +297,12 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerPreLoginEvent $event
+     * @return void
+     * @priority LOWEST
+     */
+
     public function onPlayerPreLogin(PlayerPreLoginEvent $event): void
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
@@ -270,6 +312,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerJoinEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onJoin(PlayerJoinEvent $event): void
     {
         $player = $event->getPlayer();
@@ -280,20 +327,36 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerExhaustEvent $event
+     * @return void
+     * @priority LOWEST
+     */
+
     public function onExhaust(PlayerExhaustEvent $event): void
     {
         $event->setAmount(0);
     }
 
+    /**
+     * @param PlayerInteractEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onClickBlock(PlayerInteractEvent $event): void
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if (!$player->getGamemode() == GameMode::CREATIVE() && ($block->getId() === ItemIds::ANVIL || $block->getId() == ItemIds::FLOWER_POT)) {
+        if (!$player->getGamemode() == GameMode::CREATIVE() && ($block->getIdInfo()->getBlockId() === ItemIds::ANVIL || $block->getIdInfo()->getBlockId() == ItemIds::FLOWER_POT)) {
             $event->cancel();
         }
     }
 
+    /**
+     * @param PlayerChangeSkinEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $player = $event->getPlayer();
@@ -303,17 +366,22 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerMoveEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onMove(PlayerMoveEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
         if (($player instanceof PracticePlayer) && $player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getParkourArena())) {
             $block = $player->getWorld()->getBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() - 0.5, $player->getPosition()->getZ()), false, false);
-            switch ($block->getId()) {
-                case VanillaBlocks::IRON()->getId():
+            switch ($block->getIdInfo()->getBlockId()) {
+                case VanillaBlocks::IRON()->getIdInfo()->getBlockId():
                     $player->ParkourTimer = true;
                     break;
-                case VanillaBlocks::GOLD()->getId():
+                case VanillaBlocks::GOLD()->getIdInfo()->getBlockId():
                     $player->ParkourTimer = false;
                     $player->TimerSec = 0;
                     $player->ParkourCheckPoint = [
@@ -322,7 +390,7 @@ class PracticeListener extends AbstractListener
                         'z' => 212
                     ];
                     break;
-                case VanillaBlocks::Beacon()->getId():
+                case VanillaBlocks::Beacon()->getIdInfo()->getBlockId():
                     if ($player->ParkourTimer) {
                         $mins = floor($player->TimerSec / 6000);
                         $secs = floor(($player->TimerSec / 100) % 60);
@@ -341,7 +409,7 @@ class PracticeListener extends AbstractListener
                         ];
                     }
                     break;
-                case VanillaBlocks::DIAMOND()->getId():
+                case VanillaBlocks::DIAMOND()->getIdInfo()->getBlockId():
                     $player->ParkourCheckPoint = [
                         'x' => $player->getPosition()->getX(),
                         'y' => $player->getPosition()->getY() + 1,
@@ -352,11 +420,21 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param CraftItemEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onCraft(CraftItemEvent $event): void
     {
         $event->cancel();
     }
 
+    /**
+     * @param WorldLoadEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onLevelLoadEvent(WorldLoadEvent $event): void
     {
         $world = $event->getWorld();
@@ -364,15 +442,20 @@ class PracticeListener extends AbstractListener
         $world->stopTime();
     }
 
+    /**
+     * @param BlockBreakEvent $ev
+     * @return void
+     * @priority LOWEST
+     */
     public function onBreak(BlockBreakEvent $ev): void
     {
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
         if ($player instanceof PracticePlayer) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBuildArena())) {
-                if ($block->getId() === BlockLegacyIds::WOOL || $block->getId() === BlockLegacyIds::COBWEB) {
+                if ($block->getIdInfo()->getBlockId() === BlockLegacyIds::WOOL || $block->getIdInfo()->getBlockId() === BlockLegacyIds::COBWEB) {
                     $ev->setDropsVariadic(VanillaItems::AIR());
-                    if ($block->getId() === BlockLegacyIds::WOOL) {
+                    if ($block->getIdInfo()->getBlockId() === BlockLegacyIds::WOOL) {
                         $player->getInventory()->addItem(VanillaBlocks::WOOL()->asItem());
                         PracticeCore::getDeleteBlockHandler()->setBlockBuild($block, true);
                     }
@@ -383,6 +466,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param BlockPlaceEvent $ev
+     * @return void
+     * @priority LOWEST
+     */
     public function onPlace(BlockPlaceEvent $ev): void
     {
         $player = $ev->getPlayer();
@@ -396,6 +484,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param ProjectileHitBlockEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onProjectileHitBlock(ProjectileHitBlockEvent $event): void
     {
         $projectile = $event->getEntity();
@@ -407,6 +500,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param DataPacketSendEvent $ev
+     * @return void
+     * @priority LOWEST
+     */
     public function onDataPacketSend(DataPacketSendEvent $ev): void
     {
         foreach ($ev->getPackets() as $packet) {
@@ -419,6 +517,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param DataPacketReceiveEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void
     {
         $player = $event->getOrigin()->getPlayer();
@@ -435,6 +538,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param InventoryTransactionEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onItemMoved(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
@@ -445,7 +553,10 @@ class PracticeListener extends AbstractListener
     }
 
     /**
+     * @param PlayerChatEvent $event
+     * @return void
      * @throws JsonException
+     * @priority LOWEST
      */
     public function onChat(PlayerChatEvent $event): void
     {
@@ -465,6 +576,10 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerQuitEvent $event
+     * @return void
+     */
     public function onQuit(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
@@ -475,11 +590,21 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerKickEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onKick(PlayerKickEvent $event): void
     {
         PracticeCore::getPlayerHandler()->savePLayerData($event->getPlayer());
     }
 
+    /**
+     * @param PluginDisableEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onPluginDisabled(PluginDisableEvent $event): void
     {
         $plugin = $event->getPlugin();
@@ -494,7 +619,9 @@ class PracticeListener extends AbstractListener
     }
 
     /**
-     * @throws Exception
+     * @param EntityDamageByEntityEvent $event
+     * @return void
+     * @priority LOWEST
      */
     public function onInterrupt(EntityDamageByEntityEvent $event): void
     {
@@ -564,8 +691,9 @@ class PracticeListener extends AbstractListener
     }
 
     /**
-     *
-     * @throws Exception
+     * @param EntityDamageEvent $event
+     * @return void
+     * @priority LOWEST
      */
     public function onDamage(EntityDamageEvent $event): void
     {
@@ -592,7 +720,9 @@ class PracticeListener extends AbstractListener
     }
 
     /**
-     * @throws Exception
+     * @param PlayerDeathEvent $event
+     * @return void
+     * @priority LOWEST
      */
     public function onDeath(PlayerDeathEvent $event): void
     {
@@ -670,6 +800,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param PlayerRespawnEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onRespawn(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
@@ -688,6 +823,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param CommandEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onCommandEvent(CommandEvent $event): void
     {
         $player = Server::getInstance()->getPlayerByPrefix($event->getSender()->getName());
@@ -703,6 +843,11 @@ class PracticeListener extends AbstractListener
         }
     }
 
+    /**
+     * @param NetworkInterfaceRegisterEvent $event
+     * @return void
+     * @priority LOWEST
+     */
     public function onNetworkRegister(NetworkInterfaceRegisterEvent $event): void
     {
         $interface = $event->getInterface();

@@ -11,6 +11,7 @@ use Kuu\PracticeCore;
 
 class PracticeTask extends AbstractTask
 {
+    /** @var array */
     private static array $DuelTask = [];
 
     public function __construct()
@@ -19,6 +20,10 @@ class PracticeTask extends AbstractTask
         PracticeCore::setCoreTask($this);
     }
 
+    /**
+     * @param int $tick
+     * @return void
+     */
     public function onUpdate(int $tick): void
     {
         foreach (self::$DuelTask as $duel) {
@@ -31,11 +36,20 @@ class PracticeTask extends AbstractTask
         }
     }
 
+    /**
+     * @param string $name
+     * @return void
+     */
     public function removeDuelTask(string $name): void
     {
         unset(self::$DuelTask[$name]);
     }
 
+    /**
+     * @param string $name
+     * @param DuelFactory|BotDuelFactory $duel
+     * @return void
+     */
     public function addDuelTask(string $name, DuelFactory|BotDuelFactory $duel): void
     {
         self::$DuelTask[$name] = $duel;

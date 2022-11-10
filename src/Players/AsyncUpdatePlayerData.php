@@ -8,8 +8,11 @@ use pocketmine\scheduler\AsyncTask;
 
 class AsyncUpdatePlayerData extends AsyncTask
 {
+    /** @var array */
     private array $data;
-    private $name;
+    /** @var string */
+    private string $name;
+    /** @var string */
     private string $path;
 
     public function __construct(string $name, string $path, array $values = [])
