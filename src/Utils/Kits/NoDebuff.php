@@ -8,6 +8,9 @@ use pocketmine\item\VanillaItems;
 class NoDebuff extends KitManager
 {
 
+    /**
+     * @return array
+     */
     public function getArmorItems(): array
     {
         return [
@@ -18,6 +21,9 @@ class NoDebuff extends KitManager
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getInventoryItems(): array
     {
         $contents = [];
