@@ -15,6 +15,10 @@ use function round;
 class ClickHandler
 {
 
+    /**
+     * @param Player $p
+     * @return void
+     */
     public function addClick(Player $p): void
     {
         if (!isset(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())])) {
@@ -28,11 +32,19 @@ class ClickHandler
         }
     }
 
+    /**
+     * @param Player $p
+     * @return void
+     */
     public function initPlayerClickData(Player $p): void
     {
         PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())] = [];
     }
 
+    /**
+     * @param Player $player
+     * @return float
+     */
     public function getClicks(Player $player): float
     {
         if (!isset(PracticeCore::getCaches()->ClickData[mb_strtolower($player->getName())]) || empty(PracticeCore::getCaches()->ClickData[mb_strtolower($player->getName())])) {
@@ -44,6 +56,10 @@ class ClickHandler
             })) / 1.0, 1);
     }
 
+    /**
+     * @param Player $p
+     * @return void
+     */
     public function removePlayerClickData(Player $p): void
     {
         unset(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())]);
