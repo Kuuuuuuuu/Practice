@@ -15,6 +15,11 @@ use pocketmine\world\World;
 
 class DeleteBlocksHandler
 {
+    /**
+     * @param Block $block
+     * @param bool $break
+     * @return void
+     */
     public function setBlockBuild(Block $block, bool $break = false): void
     {
         $pos = $block->getPosition()->getX() . ':' . $block->getPosition()->getY() . ':' . $block->getPosition()->getZ() . ':' . $block->getPosition()->getWorld()->getFolderName();
@@ -25,6 +30,9 @@ class DeleteBlocksHandler
         }
     }
 
+    /**
+     * @return void
+     */
     public function update(): void
     {
         foreach (PracticeCore::getCaches()->buildBlocks as $pos => $sec) {

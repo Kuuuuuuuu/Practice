@@ -17,11 +17,17 @@ use function strlen;
 
 class CosmeticManager
 {
+    /** @var string */
     public string $dataFolder;
+    /** @var string */
     public string $resourcesFolder;
+    /** @var string */
     public string $artifactFolder;
+    /** @var string */
     public string $saveSkin;
+    /** @var array */
     public array $cosmeticAvailable = [];
+    /** @var array|int[] */
     public array $skin_widght_map = [
         64 * 32 * 4 => 64,
         64 * 64 * 4 => 64,
@@ -29,12 +35,14 @@ class CosmeticManager
         128 * 256 * 4 => 256
 
     ];
+    /** @var array|int[] */
     public array $skin_height_map = [
         64 * 32 * 4 => 32,
         64 * 64 * 4 => 64,
         128 * 128 * 4 => 128,
         128 * 256 * 4 => 128
     ];
+    /** @var string */
     private string $capeFolder;
 
     public function __construct()
@@ -64,6 +72,9 @@ class CosmeticManager
         sort($this->cosmeticAvailable);
     }
 
+    /**
+     * @return array
+     */
     public function getCapes(): array
     {
         $list = [];
@@ -76,6 +87,11 @@ class CosmeticManager
         return $list;
     }
 
+    /**
+     * @param string $skin
+     * @param string $name
+     * @return void
+     */
     public function saveSkin(string $skin, string $name): void
     {
         try {
@@ -93,6 +109,10 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $skinData
+     * @return GdImage|null
+     */
     public function skinDataToImage(string $skinData): ?GdImage
     {
         try {
@@ -127,6 +147,11 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @param string $stuffName
+     * @return void
+     */
     public function setCostume(Player $player, string $stuffName): void
     {
         $imagePath = $this->artifactFolder . $stuffName . '.png';
@@ -138,6 +163,13 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $imagePath
+     * @param string $geometryPath
+     * @param string $skinID
+     * @param string $geometryName
+     * @return Skin|null
+     */
     public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
         try {
@@ -162,6 +194,11 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @param string $stuffName
+     * @return void
+     */
     public function setSkin(Player $player, string $stuffName): void
     {
         try {
@@ -180,11 +217,21 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public function getSaveSkin(string $name): string
     {
         return $this->saveSkin . $name . '.png';
     }
 
+    /**
+     * @param string $stuffName
+     * @param string $imagePath
+     * @param string $skinID
+     * @return Skin|null
+     */
     private function loadSkinAndApplyStuff(string $stuffName, string $imagePath, string $skinID): ?Skin
     {
         try {
@@ -198,6 +245,12 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $skinPath
+     * @param string $stuffName
+     * @param array $size
+     * @return string|null
+     */
     private function exportSkinToImage(string $skinPath, string $stuffName, array $size): ?string
     {
         try {
@@ -220,6 +273,12 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $file
+     * @param int $w
+     * @param int $h
+     * @return GdImage|bool|null
+     */
     private function resizeImage(string $file, int $w, int $h): GdImage|bool|null
     {
         try {
@@ -245,6 +304,10 @@ class CosmeticManager
         }
     }
 
+    /**
+     * @param string $capeName
+     * @return string|null
+     */
     public function createCape(string $capeName): ?string
     {
         try {
