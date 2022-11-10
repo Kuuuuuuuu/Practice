@@ -9,6 +9,9 @@ use pocketmine\item\VanillaItems;
 class BuildUHC extends KitManager
 {
 
+    /**
+     * @return array
+     */
     public function getArmorItems(): array
     {
         return [
@@ -19,6 +22,9 @@ class BuildUHC extends KitManager
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getInventoryItems(): array
     {
         return [
