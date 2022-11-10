@@ -12,6 +12,12 @@ use pocketmine\world\generator\Generator;
 class VoidGenerator extends Generator
 {
 
+    /**
+     * @param ChunkManager $world
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @return void
+     */
     public function generateChunk(ChunkManager $world, int $chunkX, int $chunkZ): void
     {
         $chunk = $world->getChunk($chunkX, $chunkZ);
@@ -21,6 +27,12 @@ class VoidGenerator extends Generator
         }
     }
 
+    /**
+     * @param ChunkManager $world
+     * @param int $chunkX
+     * @param int $chunkZ
+     * @return void
+     */
     public function populateChunk(ChunkManager $world, int $chunkX, int $chunkZ): void
     {
     }
