@@ -10,6 +10,10 @@ use pocketmine\Server;
 class ScoreboardManager
 {
 
+    /**
+     * @param PracticePlayer $player
+     * @return void
+     */
     public function sb(PracticePlayer $player): void
     {
         $ping = $player->getNetworkSession()->getPing();
@@ -37,6 +41,9 @@ class ScoreboardManager
         }
     }
 
+    /**
+     * @return int
+     */
     private function getQueuePlayer(): int
     {
         $queue = 0;
@@ -48,6 +55,9 @@ class ScoreboardManager
         return $queue;
     }
 
+    /**
+     * @return int
+     */
     private function getDuelPlayer(): int
     {
         $duel = 0;
@@ -59,6 +69,10 @@ class ScoreboardManager
         return $duel;
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function sb2(Player $player): void
     {
         if ($player instanceof PracticePlayer) {
@@ -88,6 +102,10 @@ class ScoreboardManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function Parkour(Player $player): void
     {
         if ($player instanceof PracticePlayer) {
@@ -124,6 +142,10 @@ class ScoreboardManager
         }
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function Boxing(Player $player): void
     {
         if ($player instanceof PracticePlayer) {

@@ -12,10 +12,15 @@ use pocketmine\player\Player;
 
 class ScoreboardUtils
 {
-
-    public static $instance;
+    /** @var array */
     private array $scoreboards = [];
 
+    /**
+     * @param Player $player
+     * @param string $objectiveName
+     * @param string $displayName
+     * @return void
+     */
     public function new(Player $player, string $objectiveName, string $displayName): void
     {
         if (isset($this->scoreboards[$player->getName()])) {
@@ -31,6 +36,10 @@ class ScoreboardUtils
         $this->scoreboards[$player->getName()] = $objectiveName;
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function remove(Player $player): void
     {
         $objectiveName = $this->scoreboards[$player->getName()] ?? null;
@@ -40,6 +49,12 @@ class ScoreboardUtils
         unset($this->scoreboards[$player->getName()]);
     }
 
+    /**
+     * @param Player $player
+     * @param int $score
+     * @param string $message
+     * @return void
+     */
     public function setLine(Player $player, int $score, string $message): void
     {
         $objectiveName = $this->scoreboards[$player->getName()] ?? null;
