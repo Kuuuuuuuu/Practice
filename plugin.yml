@@ -4,3 +4,14 @@ version: 1.0.0
 src-namespace-prefix: Kuu
 main: Kuu\PracticeCore
 author: Nayuki/IsKohakuChan
+permissions:
+  practice.command:
+    default: op
+  restart.command:
+    default: op
+  settag.command:
+    default: op
+  tban.command:
+    default: op
+  tcheck.command:
+    default: op
