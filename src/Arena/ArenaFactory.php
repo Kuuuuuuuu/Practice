@@ -34,7 +34,7 @@ class ArenaFactory
     public function getBoxingArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Boxing') ?? 'no';
+        return $data->get('Boxing', 'no');
     }
 
     /**
@@ -43,7 +43,7 @@ class ArenaFactory
     public function getNodebuffArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Nodebuff') ?? 'no';
+        return $data->get('Nodebuff', 'no');
     }
 
     /**
