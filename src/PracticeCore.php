@@ -53,7 +53,6 @@ class PracticeCore extends PluginBase
     private static PlayerHandler $playerHandler;
     private static PlayerSession $playerSession;
     public SQLite3 $BanData;
-    public Config $KitData;
 
     /**
      * @return string
@@ -213,7 +212,6 @@ class PracticeCore extends PluginBase
     private function registerConfigs(): void
     {
         @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
-        self::getInstance()->KitData = new Config($this->getDataFolder() . 'KitData.json', Config::JSON);
         self::getInstance()->BanData = new SQLite3($this->getDataFolder() . 'Ban.db');
         self::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
