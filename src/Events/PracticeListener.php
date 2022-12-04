@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Kuu\Events;
 
-use JsonException;
 use Kuu\Misc\AbstractListener;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
@@ -297,6 +296,20 @@ class PracticeListener extends AbstractListener
                 Server::getInstance()->broadcastPackets($player->getViewers(), [$packet]);
                 $event->cancel();
             }
+        }
+    }
+
+    /**
+     * @param InventoryTransactionEvent $event
+     * @return void
+     * @priority LOWEST
+     */
+    public function onItemMoved(InventoryTransactionEvent $event): void
+    {
+        $transaction = $event->getTransaction();
+        $player = $transaction->getSource();
+        if ($player->getGamemode() !== GameMode::CREATIVE() && $player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            $event->cancel();
         }
     }
 
