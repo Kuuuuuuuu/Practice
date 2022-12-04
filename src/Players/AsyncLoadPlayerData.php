@@ -72,7 +72,7 @@ class AsyncLoadPlayerData extends AsyncTask
             $player = $server->getPlayerExact($playerName);
             if ($player instanceof Player && $player->isOnline()) {
                 $session = PracticeCore::getPlayerSession()::getSession($player);
-                PracticeCore::getCaches()->PlayerInSession[spl_object_hash($player)] = $player;
+                PracticeCore::getCaches()->PlayerInSession[$player->getName()] = $player;
                 $session->loadData($data);
             }
         }

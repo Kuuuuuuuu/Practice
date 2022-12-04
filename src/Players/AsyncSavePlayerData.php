@@ -25,7 +25,8 @@ class AsyncSavePlayerData extends AsyncTask
             'tag' => $session->getCustomTag(),
             'killStreak' => $session->getStreak()
         ];
-        unset(PracticeCore::getCaches()->PlayerInSession[spl_object_hash($player)]);
+        PracticeCore::getPlayerSession()::removeSession($player);
+        unset(PracticeCore::getCaches()->PlayerInSession[$player->getName()]);
     }
 
     public function onRun(): void

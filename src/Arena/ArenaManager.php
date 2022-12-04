@@ -91,7 +91,7 @@ class ArenaManager
         $armorInventory->setChestplate($chestplate);
         $armorInventory->setLeggings($leggings);
         $sword = VanillaItems::DIAMOND_SWORD();
-        $sword->addEnchantment(new EnchantmentInstance($unbreaking, 2));
+        $sword->addEnchantment(new EnchantmentInstance($unbreaking, 3))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 2));
         $inventory->addItem($sword);
         $inventory->addItem(VanillaItems::ENDER_PEARL()->setCount(16));
         $inventory->addItem(VanillaItems::STRONG_HEALING_SPLASH_POTION()->setCount(34));

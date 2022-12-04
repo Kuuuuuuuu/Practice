@@ -40,7 +40,7 @@ class PlayerSession
      */
     public static function getSession(Player $player): PlayerSession
     {
-        return PracticeCore::getCaches()->PlayerSession[spl_object_hash($player)] ??= new self();
+        return PracticeCore::getCaches()->PlayerSession[$player->getName()] ??= new self();
     }
 
     /**
@@ -49,7 +49,7 @@ class PlayerSession
      */
     public static function removeSession(Player $player): void
     {
-        unset(PracticeCore::getCaches()->PlayerSession[spl_object_hash($player)]);
+        unset(PracticeCore::getCaches()->PlayerSession[$player->getName()]);
     }
 
     /**

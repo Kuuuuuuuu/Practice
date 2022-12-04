@@ -53,11 +53,11 @@ class PracticeUtils
         $DeathSession = PracticeCore::getPlayerSession()::getSession($death);
         $oldStreak = $DeathSession->getStreak();
         $newStreak = $KillSession->getStreak();
-        if ($oldStreak > 5) {
+        if ($oldStreak > 10) {
             $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
             $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreaks!');
         }
-        if ($newStreak % 5 === 0) {
+        if ($newStreak / 5 === 1) {
             Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreaks!');
         }
     }
