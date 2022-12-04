@@ -15,7 +15,6 @@ use pocketmine\utils\TextFormat;
 
 class TcheckCommand extends Command
 {
-
     public function __construct()
     {
         parent::__construct(
@@ -23,6 +22,7 @@ class TcheckCommand extends Command
             'Unban a player',
             '/tcheck'
         );
+        $this->setPermission('tcheck.command');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
@@ -49,6 +49,7 @@ class TcheckCommand extends Command
             return true;
         });
         $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (empty($array)) {
             $player->sendMessage(PracticeCore::getPrefixCore() . '§aNo ban players');
@@ -57,6 +58,7 @@ class TcheckCommand extends Command
         $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
         $form->setContent('§c§lChoose player');
         $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        /** @phpstan-ignore-next-line */
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
             $form->addButton(TextFormat::BOLD . $banPlayer, -1, '', $banPlayer);
@@ -75,6 +77,7 @@ class TcheckCommand extends Command
             if ($result === 0) {
                 $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
                 $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
                     PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
@@ -86,6 +89,7 @@ class TcheckCommand extends Command
         });
         $banPlayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
         $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
+        /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (!empty($array)) {
             $banTime = $array['banTime'];
@@ -95,6 +99,7 @@ class TcheckCommand extends Command
             if ($banTime < $now) {
                 $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
                 $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
                     PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
@@ -113,6 +118,7 @@ class TcheckCommand extends Command
             $second = ceil($remainingSec);
         }
         $form->setTitle(TextFormat::BOLD . $banPlayer);
+        /** @phpstan-ignore-next-line */
         $form->setContent(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], "§bInformation: \nDay: §a{day} \n§bHour: §a{hour} \n§bMinute: §a{minute} \n§bSecond: §a{second} \n§bReason: §a{reason}"));
         $form->addButton('§aUnban');
         $player->sendForm($form);

@@ -1,20 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Kuu\Utils\Forms;
 
-use pocketmine\form\FormValidationException;
+use function count;
+use function is_array;
 
 class CustomForm extends Form
 {
-
+    /** @var array */
     private array $labelMap = [];
-    private array $validationMethods = [];
 
-    /**
-     * @param callable|null $callable
-     */
     public function __construct(?callable $callable)
     {
         parent::__construct($callable);
@@ -23,24 +18,16 @@ class CustomForm extends Form
         $this->data['content'] = [];
     }
 
+    /**
+     * @param $data
+     * @return void
+     * @phpstan-ignore-next-line
+     */
     public function processData(&$data): void
     {
-        if ($data !== null && !is_array($data)) {
-            throw new FormValidationException('Expected an array response, got ' . gettype($data));
-        }
         if (is_array($data)) {
-            if (count($data) !== count($this->validationMethods)) {
-                throw new FormValidationException('Expected an array response with the size ' . count($this->validationMethods) . ', got ' . count($data));
-            }
             $new = [];
             foreach ($data as $i => $v) {
-                $validationMethod = $this->validationMethods[$i] ?? null;
-                if ($validationMethod === null) {
-                    throw new FormValidationException('Invalid element ' . $i);
-                }
-                if (!$validationMethod($v)) {
-                    throw new FormValidationException('Invalid type given for element ' . $this->labelMap[$i]);
-                }
                 $new[$this->labelMap[$i]] = $v;
             }
             $data = $new;
@@ -49,6 +36,7 @@ class CustomForm extends Form
 
     /**
      * @param string $title
+     * @return void
      */
     public function setTitle(string $title): void
     {
@@ -66,16 +54,17 @@ class CustomForm extends Form
     /**
      * @param string $text
      * @param string|null $label
+     * @return void
      */
     public function addLabel(string $text, ?string $label = null): void
     {
         $this->addContent(['type' => 'label', 'text' => $text]);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => $v === null;
     }
 
     /**
      * @param array $content
+     * @return void
      */
     private function addContent(array $content): void
     {
@@ -86,6 +75,7 @@ class CustomForm extends Form
      * @param string $text
      * @param bool|null $default
      * @param string|null $label
+     * @return void
      */
     public function addToggle(string $text, bool $default = null, ?string $label = null): void
     {
@@ -95,7 +85,6 @@ class CustomForm extends Form
         }
         $this->addContent($content);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => is_bool($v);
     }
 
     /**
@@ -105,6 +94,7 @@ class CustomForm extends Form
      * @param int $step
      * @param int $default
      * @param string|null $label
+     * @return void
      */
     public function addSlider(string $text, int $min, int $max, int $step = -1, int $default = -1, ?string $label = null): void
     {
@@ -117,7 +107,6 @@ class CustomForm extends Form
         }
         $this->addContent($content);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => (is_float($v) || is_int($v)) && $v >= $min && $v <= $max;
     }
 
     /**
@@ -125,6 +114,7 @@ class CustomForm extends Form
      * @param array $steps
      * @param int $defaultIndex
      * @param string|null $label
+     * @return void
      */
     public function addStepSlider(string $text, array $steps, int $defaultIndex = -1, ?string $label = null): void
     {
@@ -134,7 +124,6 @@ class CustomForm extends Form
         }
         $this->addContent($content);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => is_int($v) && isset($steps[$v]);
     }
 
     /**
@@ -142,12 +131,12 @@ class CustomForm extends Form
      * @param array $options
      * @param int|null $default
      * @param string|null $label
+     * @return void
      */
     public function addDropdown(string $text, array $options, int $default = null, ?string $label = null): void
     {
         $this->addContent(['type' => 'dropdown', 'text' => $text, 'options' => $options, 'default' => $default]);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => is_int($v) && isset($options[$v]);
     }
 
     /**
@@ -155,11 +144,11 @@ class CustomForm extends Form
      * @param string $placeholder
      * @param string|null $default
      * @param string|null $label
+     * @return void
      */
     public function addInput(string $text, string $placeholder = '', string $default = null, ?string $label = null): void
     {
         $this->addContent(['type' => 'input', 'text' => $text, 'placeholder' => $placeholder, 'default' => $default]);
         $this->labelMap[] = $label ?? count($this->labelMap);
-        $this->validationMethods[] = static fn($v) => is_string($v);
     }
 }

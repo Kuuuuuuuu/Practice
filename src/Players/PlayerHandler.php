@@ -3,7 +3,7 @@
 namespace Kuu\Players;
 
 use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
+use pocketmine\player\Player;
 
 class PlayerHandler
 {
@@ -26,10 +26,10 @@ class PlayerHandler
     }
 
     /**
-     * @param PracticePlayer $player
+     * @param Player $player
      * @return void
      */
-    public function loadPlayerData(PracticePlayer $player): void
+    public function loadPlayerData(Player $player): void
     {
         $name = $player->getName();
         $filePath = $this->path . "$name.yml";
@@ -38,29 +38,17 @@ class PlayerHandler
     }
 
     /**
-     * @param PracticePlayer $player
+     * @param Player $player
      * @return void
      */
-    public function savePlayerData(PracticePlayer $player): void
+    public function savePlayerData(Player $player): void
     {
+        $session = PracticeCore::getPlayerSession()::getSession($player);
         $name = $player->getName();
         $filePath = $this->path . "$name.yml";
-        if ($player->hasLoadedData()) {
+        if ($session->loadedData) {
             $task = new AsyncSavePlayerData($player, $filePath);
             PracticeCore::getInstance()->getServer()->getAsyncPool()->submitTask($task);
         }
-    }
-
-    /**
-     * @param PracticePlayer $player
-     * @param array $values
-     * @return void
-     */
-    public function updatePlayerData(PracticePlayer $player, array $values = []): void
-    {
-        $name = $player->getName();
-        $filePath = $this->path . "$name.yml";
-        $task = new AsyncUpdatePlayerData($name, $filePath, $values);
-        PracticeCore::getInstance()->getServer()->getAsyncPool()->submitTask($task);
     }
 }

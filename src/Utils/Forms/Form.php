@@ -1,9 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Kuu\Utils\Forms;
-
 
 use pocketmine\form\Form as IForm;
 use pocketmine\player\Player;
@@ -11,15 +8,11 @@ use ReturnTypeWillChange;
 
 abstract class Form implements IForm
 {
-
     /** @var array */
     protected array $data = [];
     /** @var callable|null */
     private $callable;
 
-    /**
-     * @param callable|null $callable
-     */
     public function __construct(?callable $callable)
     {
         $this->callable = $callable;
@@ -27,15 +20,9 @@ abstract class Form implements IForm
 
     /**
      * @param Player $player
-     * @see Player::sendForm()
-     *
-     * @deprecated
+     * @param $data
+     * @return void
      */
-    public function sendToPlayer(Player $player): void
-    {
-        $player->sendForm($this);
-    }
-
     public function handleResponse(Player $player, $data): void
     {
         $this->processData($data);
@@ -45,21 +32,36 @@ abstract class Form implements IForm
         }
     }
 
+    /**
+     * @param $data
+     * @return void
+     * @phpstan-ignore-next-line
+     */
     public function processData(&$data): void
     {
     }
 
+    /**
+     * @return callable|null
+     */
     public function getCallable(): ?callable
     {
         return $this->callable;
     }
 
-    public function setCallable(?callable $callable)
+    /**
+     * @param callable|null $callable
+     * @return void
+     */
+    public function setCallable(?callable $callable): void
     {
         $this->callable = $callable;
     }
 
-    #[ReturnTypeWillChange] public function jsonSerialize()
+    /**
+     * @return array
+     */
+    #[ReturnTypeWillChange] public function jsonSerialize(): array
     {
         return $this->data;
     }

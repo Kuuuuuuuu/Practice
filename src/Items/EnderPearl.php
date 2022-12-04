@@ -2,11 +2,9 @@
 
 namespace Kuu\Items;
 
-use JetBrains\PhpStorm\Pure;
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
 use Kuu\Task\OncePearlTask;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
@@ -20,7 +18,6 @@ use pocketmine\world\sound\ThrowSound;
 
 class EnderPearl extends ItemEnderPearl
 {
-
     public function __construct(ItemIdentifier $id, string $name)
     {
         parent::__construct($id, $name);
@@ -34,7 +31,8 @@ class EnderPearl extends ItemEnderPearl
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
         $location = $player->getLocation();
-        if ($player instanceof PracticePlayer && $player->PearlCooldown < 1) {
+        $session = PracticeCore::getPlayerSession()::getSession($player);
+        if ($session->PearlCooldown < 1) {
             $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
             $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
             $projectileEv = new ProjectileLaunchEvent($projectile);
@@ -65,7 +63,7 @@ class EnderPearl extends ItemEnderPearl
     /**
      * @return float
      */
-    #[Pure] public function getThrowForce(): float
+    public function getThrowForce(): float
     {
         return PracticeConfig::PearlForce;
     }

@@ -1,7 +1,4 @@
-<?php /** @noinspection PhpParamsInspection */
-/** @noinspection PhpArrayToStringConversionInspection */
-
-/** @noinspection PhpPropertyOnlyWrittenInspection */
+<?php
 
 declare(strict_types=1);
 
@@ -19,7 +16,6 @@ use pocketmine\Server;
 
 class TbanCommand extends Command
 {
-
     public function __construct()
     {
         parent::__construct(
@@ -28,6 +24,7 @@ class TbanCommand extends Command
             '/tban <player> || /tban',
             ['tempban', 'tb']
         );
+        $this->setPermission('tban.command');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
@@ -81,8 +78,11 @@ class TbanCommand extends Command
                     return true;
                 }
                 $now = time();
+                /** @phpstan-ignore-next-line */
                 $day = ($data[1] * 86400);
+                /** @phpstan-ignore-next-line */
                 $hour = ($data[2] * 3600);
+                /** @phpstan-ignore-next-line */
                 if ($data[3] > 1) {
                     $min = ($data[3] * 60);
                 } else {
@@ -90,10 +90,15 @@ class TbanCommand extends Command
                 }
                 $banTime = $now + $day + $hour + $min;
                 $banInfo = PracticeCore::getInstance()->BanData->prepare('INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);');
+                /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':player', PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':banTime', $banTime);
+                /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':reason', $data[4]);
+                /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':staff', $player->getName());
+                /** @phpstan-ignore-next-line */
                 $banInfo->execute();
                 $target = Server::getInstance()->getPlayerExact(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
                 if ($target instanceof Player) {
@@ -101,7 +106,6 @@ class TbanCommand extends Command
                 }
                 Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f"));
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
-
             }
             return true;
         });

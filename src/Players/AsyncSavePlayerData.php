@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Kuu\Players;
 
-use Kuu\PracticePlayer;
+use Kuu\PracticeCore;
+use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
 
 class AsyncSavePlayerData extends AsyncTask
@@ -14,17 +15,17 @@ class AsyncSavePlayerData extends AsyncTask
     /** @var array */
     private array $playerdata;
 
-    public function __construct(PracticePlayer $player, string $path)
+    public function __construct(Player $player, string $path)
     {
+        $session = PracticeCore::getPlayerSession()::getSession($player);
         $this->path = $path;
         $this->playerdata = [
-            'kills' => $player->getKills(),
-            'deaths' => $player->getDeaths(),
-            'tag' => $player->getCustomTag(),
-            'killStreak' => $player->getStreak(),
-            'artifact' => $player->getStuff(),
-            'cape' => $player->getCape(),
+            'kills' => $session->getKills(),
+            'deaths' => $session->getDeaths(),
+            'tag' => $session->getCustomTag(),
+            'killStreak' => $session->getStreak()
         ];
+        unset(PracticeCore::getCaches()->PlayerInSession[spl_object_hash($player)]);
     }
 
     public function onRun(): void

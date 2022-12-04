@@ -10,7 +10,6 @@ use pocketmine\Server;
 
 class TpsCommand extends Command
 {
-
     public function __construct()
     {
         parent::__construct(

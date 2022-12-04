@@ -1,9 +1,10 @@
-<?php /** @noinspection PhpMissingFieldTypeInspection */
+<?php
 
 declare(strict_types=1);
 
 namespace Kuu\Utils\Scoreboard;
 
+use Kuu\PracticeCore;
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;
@@ -12,9 +13,6 @@ use pocketmine\player\Player;
 
 class ScoreboardUtils
 {
-    /** @var array */
-    private array $scoreboards = [];
-
     /**
      * @param Player $player
      * @param string $objectiveName
@@ -23,7 +21,8 @@ class ScoreboardUtils
      */
     public function new(Player $player, string $objectiveName, string $displayName): void
     {
-        if (isset($this->scoreboards[$player->getName()])) {
+        $session = PracticeCore::getPlayerSession()::getSession($player);
+        if ($session->Scoreboard !== null) {
             $this->remove($player);
         }
         $pk = new SetDisplayObjectivePacket();
@@ -33,7 +32,7 @@ class ScoreboardUtils
         $pk->criteriaName = 'dummy';
         $pk->sortOrder = 0;
         $player->getNetworkSession()->sendDataPacket($pk);
-        $this->scoreboards[$player->getName()] = $objectiveName;
+        $session->Scoreboard = $objectiveName;
     }
 
     /**
@@ -42,11 +41,14 @@ class ScoreboardUtils
      */
     public function remove(Player $player): void
     {
-        $objectiveName = $this->scoreboards[$player->getName()] ?? null;
-        $pk = new RemoveObjectivePacket();
-        $pk->objectiveName = $objectiveName ?? 'Unknown';
-        $player->getNetworkSession()->sendDataPacket($pk);
-        unset($this->scoreboards[$player->getName()]);
+        $session = PracticeCore::getPlayerSession()::getSession($player);
+        if ($session->Scoreboard !== null) {
+            $objectiveName = $session->Scoreboard;
+            $pk = new RemoveObjectivePacket();
+            $pk->objectiveName = $objectiveName;
+            $player->getNetworkSession()->sendDataPacket($pk);
+            $session->Scoreboard = null;
+        }
     }
 
     /**
@@ -57,16 +59,19 @@ class ScoreboardUtils
      */
     public function setLine(Player $player, int $score, string $message): void
     {
-        $objectiveName = $this->scoreboards[$player->getName()] ?? null;
-        $entry = new ScorePacketEntry();
-        $entry->objectiveName = $objectiveName;
-        $entry->type = $entry::TYPE_FAKE_PLAYER;
-        $entry->customName = $message;
-        $entry->score = $score;
-        $entry->scoreboardId = $score;
-        $pk = new SetScorePacket();
-        $pk->type = $pk::TYPE_CHANGE;
-        $pk->entries[] = $entry;
-        $player->getNetworkSession()->sendDataPacket($pk);
+        $session = PracticeCore::getPlayerSession()::getSession($player);
+        if ($session->Scoreboard !== null) {
+            $objectiveName = $session->Scoreboard;
+            $entry = new ScorePacketEntry();
+            $entry->objectiveName = $objectiveName;
+            $entry->type = $entry::TYPE_FAKE_PLAYER;
+            $entry->customName = $message;
+            $entry->score = $score;
+            $entry->scoreboardId = $score;
+            $pk = new SetScorePacket();
+            $pk->type = $pk::TYPE_CHANGE;
+            $pk->entries[] = $entry;
+            $player->getNetworkSession()->sendDataPacket($pk);
+        }
     }
 }

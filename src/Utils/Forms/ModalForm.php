@@ -1,21 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Kuu\Utils\Forms;
-
-
-use pocketmine\form\FormValidationException;
 
 class ModalForm extends Form
 {
-
     /** @var string */
     private string $content = '';
 
-    /**
-     * @param callable|null $callable
-     */
     public function __construct(?callable $callable)
     {
         parent::__construct($callable);
@@ -26,15 +17,9 @@ class ModalForm extends Form
         $this->data['button2'] = '';
     }
 
-    public function processData(&$data): void
-    {
-        if (!is_bool($data)) {
-            throw new FormValidationException('Expected a boolean response, got ' . gettype($data));
-        }
-    }
-
     /**
      * @param string $title
+     * @return void
      */
     public function setTitle(string $title): void
     {
@@ -59,6 +44,7 @@ class ModalForm extends Form
 
     /**
      * @param string $content
+     * @return void
      */
     public function setContent(string $content): void
     {
@@ -67,6 +53,7 @@ class ModalForm extends Form
 
     /**
      * @param string $text
+     * @return void
      */
     public function setButton1(string $text): void
     {
@@ -83,6 +70,7 @@ class ModalForm extends Form
 
     /**
      * @param string $text
+     * @return void
      */
     public function setButton2(string $text): void
     {

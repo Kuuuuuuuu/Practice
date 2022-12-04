@@ -13,7 +13,6 @@ use pocketmine\player\Player;
 
 class CustomSplashPotion extends ProjectileItem
 {
-
     /** @var PotionType */
     private PotionType $potionType;
 

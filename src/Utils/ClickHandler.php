@@ -6,6 +6,7 @@ namespace Kuu\Utils;
 
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
+
 use function array_filter;
 use function array_unshift;
 use function count;
@@ -14,7 +15,6 @@ use function round;
 
 class ClickHandler
 {
-
     /**
      * @param Player $p
      * @return void
@@ -52,8 +52,8 @@ class ClickHandler
         }
         $ct = microtime(true);
         return round(count(array_filter(PracticeCore::getCaches()->ClickData[mb_strtolower($player->getName())], static function (float $t) use ($ct): bool {
-                return ($ct - $t) <= 1.0;
-            })) / 1.0, 1);
+            return ($ct - $t) <= 1.0;
+        })) / 1.0, 1);
     }
 
     /**

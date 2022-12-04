@@ -9,7 +9,6 @@ use pocketmine\scheduler\Task;
 
 abstract class AbstractTask extends Task
 {
-
     /** @var int */
     private int $currentTick = 0;
     /** @var int */

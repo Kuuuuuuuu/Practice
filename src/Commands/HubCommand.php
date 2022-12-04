@@ -6,14 +6,14 @@ namespace Kuu\Commands;
 
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
-use pocketmine\Command\Command;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\GameMode;
 use pocketmine\Server;
+use pocketmine\world\World;
 
 class HubCommand extends Command
 {
-
     public function __construct()
     {
         parent::__construct(
@@ -26,20 +26,16 @@ class HubCommand extends Command
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
         if ($sender instanceof PracticePlayer) {
-            if ($sender->getEditKit() !== null) {
-                $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't use this command while editing a kit!");
-            } else {
-                $sender->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()?->getSafeSpawn());
+            $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
+            if ($world instanceof World) {
+                $sender->teleport($world->getSafeSpawn());
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
                 $sender->setGamemode(GameMode::ADVENTURE());
                 $sender->getInventory()->clearAll();
                 $sender->getArmorInventory()->clearAll();
                 $sender->getEffects()->clear();
-                PracticeCore::getInstance()->getScoreboardManager()->sb($sender);
-                $sender->setLobbyItem();
-                if ($sender->isImmobile()) {
-                    $sender->setImmobile(false);
-                }
+                PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($sender);
+                PracticeCore::getPracticeUtils()->setLobbyItem($sender);
             }
         } else {
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');

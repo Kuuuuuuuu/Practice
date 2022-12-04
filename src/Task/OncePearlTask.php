@@ -2,21 +2,25 @@
 
 namespace Kuu\Task;
 
+use Kuu\Players\PlayerSession;
 use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
+use pocketmine\player\Player;
 use pocketmine\scheduler\CancelTaskException;
 use pocketmine\scheduler\Task;
 
 class OncePearlTask extends Task
 {
-    /** @var PracticePlayer  */
-    private PracticePlayer $player;
+    /** @var Player */
+    private Player $player;
+    /** @var PlayerSession */
+    private PlayerSession $session;
 
-    public function __construct(PracticePlayer $player)
+    public function __construct(Player $player)
     {
+        $this->session = PracticeCore::getPlayerSession()::getSession($player);
         $this->player = $player;
-        $player->PearlCooldown = 10;
-        $this->player->sendMessage(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
+        $this->session->PearlCooldown = 10;
+        $this->player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
     }
 
     /**
@@ -25,12 +29,12 @@ class OncePearlTask extends Task
      */
     public function onRun(): void
     {
-        if ($this->player->PearlCooldown >= 0) {
-            $percent = (float)($this->player->PearlCooldown / 10);
+        if ($this->session->PearlCooldown >= 0) {
+            $percent = (float)($this->session->PearlCooldown / 10);
             $this->player->getXpManager()->setXpProgress($percent);
-            $this->player->PearlCooldown--;
+            $this->session->PearlCooldown--;
         } else {
-            $this->player->sendMessage(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Reduced');
+            $this->player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Reduced');
             throw new CancelTaskException();
         }
     }

@@ -13,10 +13,13 @@ use pocketmine\player\Player;
 
 class RestartCommand extends Command
 {
-
     public function __construct()
     {
-        parent::__construct('restart', 'Restart Server Command', null, ['restart']);
+        parent::__construct(
+            'restart',
+            'Restart Server Command'
+        );
+        $this->setPermission('restart.command');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
