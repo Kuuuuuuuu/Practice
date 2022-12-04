@@ -60,7 +60,6 @@ class ArenaManager
                 $player->teleport($world->getSafeSpawn());
                 $this->getKitNodebuff($player);
                 PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
-                $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
             }
         }
     }
