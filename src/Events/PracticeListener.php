@@ -78,10 +78,8 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
-        switch ($item->getCustomName()) {
-            case '§r§bPlay':
-                PracticeCore::getFormUtils()->Form1($player);
-                break;
+        if ($item->getCustomName() == '§r§bPlay') {
+            PracticeCore::getFormUtils()->Form1($player);
         }
     }
 
@@ -111,7 +109,6 @@ class PracticeListener extends AbstractListener
     /**
      * @param PlayerLoginEvent $event
      * @return void
-     * @throws JsonException
      * @priority LOWEST
      */
     public function onLogin(PlayerLoginEvent $event): void
@@ -300,20 +297,6 @@ class PracticeListener extends AbstractListener
                 Server::getInstance()->broadcastPackets($player->getViewers(), [$packet]);
                 $event->cancel();
             }
-        }
-    }
-
-    /**
-     * @param InventoryTransactionEvent $event
-     * @return void
-     * @priority LOWEST
-     */
-    public function onItemMoved(InventoryTransactionEvent $event): void
-    {
-        $transaction = $event->getTransaction();
-        $player = $transaction->getSource();
-        if ($player->getGamemode() !== GameMode::CREATIVE()) {
-            $event->cancel();
         }
     }
 
