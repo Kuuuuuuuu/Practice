@@ -44,7 +44,6 @@ class EnderPearl extends ItemEnderPearl
             $projectile->spawnToAll();
             $location->getWorld()->addSound($location, new ThrowSound());
             $this->pop();
-            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
             return ItemUseResult::SUCCESS();
         }
         return ItemUseResult::FAIL();

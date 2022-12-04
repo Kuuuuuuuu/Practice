@@ -13,6 +13,7 @@ use Kuu\Misc\AbstractListener;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use Kuu\PracticePlayer;
+use Kuu\Task\OncePearlTask;
 use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -43,6 +44,7 @@ use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
@@ -77,7 +79,9 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
-        if ($item->getCustomName() == '§r§bPlay') {
+        if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
+            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
+        } elseif ($item->getCustomName() === '§r§bPlay') {
             PracticeCore::getFormUtils()->Form1($player);
         }
     }

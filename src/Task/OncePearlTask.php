@@ -20,7 +20,7 @@ class OncePearlTask extends Task
         $this->session = PracticeCore::getPlayerSession()::getSession($player);
         $this->player = $player;
         $this->session->PearlCooldown = 10;
-        $this->player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
+        $player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
     }
 
     /**
