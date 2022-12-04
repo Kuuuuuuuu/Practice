@@ -95,7 +95,7 @@ class ArenaManager
         $sword->addEnchantment(new EnchantmentInstance($unbreaking, 2));
         $inventory->addItem($sword);
         $inventory->addItem(VanillaItems::ENDER_PEARL()->setCount(16));
-        $inventory->addItem(VanillaItems::STRONG_HEALING_SPLASH_POTION()->setCount(31));
-        $inventory->addItem(VanillaItems::SWIFTNESS_SPLASH_POTION()->setCount(1));
+        $inventory->addItem(VanillaItems::STRONG_HEALING_SPLASH_POTION()->setCount(34));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 99999, 1, false));
     }
 }
