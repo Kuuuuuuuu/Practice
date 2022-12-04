@@ -467,6 +467,7 @@ class PracticeListener extends AbstractListener
         if (($cause instanceof EntityDamageByEntityEvent) && $session->getOpponent() !== null) {
             $damager = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($session->getOpponent());
             if ($damager instanceof Player) {
+                $damagerSession = PracticeCore::getPlayerSession()::getSession($damager);
                 $dname = $damager->getName();
                 if ($damager->isAlive()) {
                     $arena = $damager->getWorld()->getFolderName();
@@ -486,6 +487,10 @@ class PracticeListener extends AbstractListener
                     $session->setCombat(false);
                     $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
                 }
+                $damagerSession->killStreak = 0;
+                $damagerSession->deaths++;
+                $session->kills++;
+                $session->killStreak++;
                 $damager->setHealth(20);
                 $player->getInventory()->clearAll();
                 $player->getArmorInventory()->clearAll();

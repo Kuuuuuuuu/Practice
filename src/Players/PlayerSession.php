@@ -22,11 +22,11 @@ class PlayerSession
     /** @var bool */
     public bool $loadedData = false;
     /** @var int */
-    private int $kills = 0;
+    public int $kills = 0;
     /** @var int */
-    private int $deaths = 0;
+    public int $deaths = 0;
     /** @var int */
-    private int $killStreak = 0;
+    public int $killStreak = 0;
     /** @var string|null */
     private ?string $Opponent = null;
     /** @var bool */
