@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kuu\Arena;
 
 use JsonException;
-use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -35,7 +34,7 @@ class ArenaFactory
     public function getBoxingArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Boxing');
+        return $data->get('Boxing') ?? 'no';
     }
 
     /**
@@ -44,7 +43,7 @@ class ArenaFactory
     public function getNodebuffArena(): string
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Nodebuff');
+        return $data->get('Nodebuff') ?? 'no';
     }
 
     /**

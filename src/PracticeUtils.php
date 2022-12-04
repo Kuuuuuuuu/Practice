@@ -130,16 +130,10 @@ class PracticeUtils
     {
         $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName('§r§bPlay');
-        $item2 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item2->setCustomName('§r§bSettings');
-        $item3 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
-        $item3->setCustomName('§r§bDuel');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
-        $player->getInventory()->setItem(0, $item);
-        $player->getInventory()->setItem(8, $item2);
-        $player->getInventory()->setItem(1, $item3);
+        $player->getInventory()->setItem(4, $item);
     }
 }
