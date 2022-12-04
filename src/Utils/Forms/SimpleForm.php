@@ -6,8 +6,6 @@ use function count;
 
 class SimpleForm extends Form
 {
-    public const IMAGE_TYPE_PATH = 0;
-    public const IMAGE_TYPE_URL = 1;
     /** @var string */
     private string $content = '';
     /** @var array */
@@ -76,7 +74,7 @@ class SimpleForm extends Form
     {
         $content = ['text' => $text];
         if ($imageType !== -1) {
-            $content['image']['type'] = $imageType === 0 ? 'PathFinder' : 'url';
+            $content['image']['type'] = 'PathFinder';
             $content['image']['data'] = $imagePath;
         }
         $this->data['buttons'][] = $content;
