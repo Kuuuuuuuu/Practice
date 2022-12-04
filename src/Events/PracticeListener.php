@@ -419,6 +419,8 @@ class PracticeListener extends AbstractListener
                 $event->cancel();
                 $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
             }
+        } else {
+            $event->cancel();
         }
     }
 
@@ -487,16 +489,16 @@ class PracticeListener extends AbstractListener
                     $session->setCombat(false);
                     $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
                 }
-                $damagerSession->killStreak = 0;
-                $damagerSession->deaths++;
-                $session->kills++;
-                $session->killStreak++;
+                PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
+                $damagerSession->killStreak++;
+                $damagerSession->kills++;
+                $session->deaths++;
+                $session->killStreak = 0;
                 $damager->setHealth(20);
                 $player->getInventory()->clearAll();
                 $player->getArmorInventory()->clearAll();
                 $player->getOffHandInventory()->clearAll();
                 PracticeCore::getPracticeUtils()->setLobbyItem($player);
-                PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
             }
         }
     }
