@@ -4,8 +4,6 @@ namespace Kuu\Items;
 
 use Kuu\Entity\EnderPearlEntity;
 use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\Task\OncePearlTask;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\ProjectileLaunchEvent;
@@ -31,22 +29,18 @@ class EnderPearl extends ItemEnderPearl
     public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
     {
         $location = $player->getLocation();
-        $session = PracticeCore::getPlayerSession()::getSession($player);
-        if ($session->PearlCooldown < 1) {
-            $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
-            $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
-            $projectileEv = new ProjectileLaunchEvent($projectile);
-            $projectileEv->call();
-            if ($projectileEv->isCancelled()) {
-                $projectile->flagForDespawn();
-                return ItemUseResult::FAIL();
-            }
-            $projectile->spawnToAll();
-            $location->getWorld()->addSound($location, new ThrowSound());
-            $this->pop();
-            return ItemUseResult::SUCCESS();
+        $projectile = $this->createEntity(Location::fromObject($player->getEyePos(), $player->getWorld(), $location->yaw, $location->pitch), $player);
+        $projectile->setMotion($directionVector->multiply($this->getThrowForce()));
+        $projectileEv = new ProjectileLaunchEvent($projectile);
+        $projectileEv->call();
+        if ($projectileEv->isCancelled()) {
+            $projectile->flagForDespawn();
+            return ItemUseResult::FAIL();
         }
-        return ItemUseResult::FAIL();
+        $projectile->spawnToAll();
+        $location->getWorld()->addSound($location, new ThrowSound());
+        $this->pop();
+        return ItemUseResult::SUCCESS();
     }
 
     /**

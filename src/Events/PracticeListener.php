@@ -80,7 +80,12 @@ class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $item = $event->getItem();
         if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
-            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
+            $session = PracticeCore::getPlayerSession()::getSession($player);
+            if ($session->PearlCooldown < 1) {
+                PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
+            } else {
+                $event->cancel();
+            }
         } elseif ($item->getCustomName() === '§r§bPlay') {
             PracticeCore::getFormUtils()->Form1($player);
         }
