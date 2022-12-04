@@ -74,7 +74,7 @@ class SimpleForm extends Form
     {
         $content = ['text' => $text];
         if ($imageType !== -1) {
-            $content['image']['type'] = 'PathFinder';
+            $content['image']['type'] = $imageType === 0 ? 'path' : 'url';
             $content['image']['data'] = $imagePath;
         }
         $this->data['buttons'][] = $content;
