@@ -37,6 +37,7 @@ class ArenaManager
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
                 $player->teleport($world->getSafeSpawn());
                 $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
+                PracticeCore::getScoreboardManager()->setBoxingScoreboard($player);
             }
         }
     }
@@ -58,6 +59,7 @@ class ArenaManager
                 $player->getEffects()->clear();
                 $player->teleport($world->getSafeSpawn());
                 $this->getKitNodebuff($player);
+                PracticeCore::getScoreboardManager()->setArenaScoreboard($player);
             }
         }
     }

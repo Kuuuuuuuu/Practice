@@ -521,6 +521,7 @@ class PracticeListener extends AbstractListener
         $session = PracticeCore::getPlayerSession()::getSession($player);
         $session->setCombat(false);
         $session->setOpponent(null);
+        PracticeCore::getScoreboardManager()->setLobbyScoreboard($player);
         PracticeCore::getPracticeUtils()->setLobbyItem($player);
     }
 
