@@ -69,7 +69,7 @@ class PlayerSession
             $this->CpsCounterEnabled = (bool)$data['cps'];
         }
         if (isset($data['smoothpearl'])) {
-            $this->SmoothPearlEnabled = (bool)$data['pearl'];
+            $this->SmoothPearlEnabled = (bool)$data['smoothpearl'];
         }
         if (isset($data['kills'])) {
             $this->kills = (int)$data['kills'];
