@@ -37,7 +37,6 @@ class ArenaManager
                 $player->getEffects()->add(new EffectInstance(VanillaEffects::REGENERATION(), 99999, 10, false));
                 $player->teleport($world->getSafeSpawn());
                 $player->teleport(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()));
-                PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
             }
         }
     }
@@ -59,7 +58,6 @@ class ArenaManager
                 $player->getEffects()->clear();
                 $player->teleport($world->getSafeSpawn());
                 $this->getKitNodebuff($player);
-                PracticeCore::getInstance()->getPracticeUtils()->ChunkLoader($player);
             }
         }
     }

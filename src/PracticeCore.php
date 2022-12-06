@@ -35,7 +35,6 @@ use pocketmine\item\PotionType;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
-use pocketmine\utils\Config;
 use pocketmine\world\World;
 use SQLite3;
 

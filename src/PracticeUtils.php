@@ -4,44 +4,14 @@ declare(strict_types=1);
 
 namespace Kuu;
 
-use Kuu\Utils\ChunkManager;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use pocketmine\world\World;
 
 class PracticeUtils
 {
-    /**
-     * @param Player $player
-     * @return void
-     */
-    public function ChunkLoader(Player $player): void
-    {
-        $pos = $player->getPosition();
-        PracticeCore::getInstance()->getPracticeUtils()->onChunkGenerated($pos->getWorld(), (int)$player->getPosition()->getX() >> 4, (int)$player->getPosition()->getZ() >> 4, function () use ($player, $pos) {
-            $player->teleport($pos);
-        });
-    }
-
-    /**
-     * @param World $world
-     * @param int $x
-     * @param int $z
-     * @param callable $callable
-     * @return void
-     */
-    public static function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
-    {
-        if ($world->isChunkPopulated($x, $z)) {
-            ($callable)();
-        } else {
-            $world->registerChunkLoader(new ChunkManager($world, $x, $z, $callable), $x, $z);
-        }
-    }
-
     /**
      * @param Player $player
      * @param Player $death
@@ -117,7 +87,7 @@ class PracticeUtils
         if ($session->getCustomTag() !== '') {
             $NameTag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
         } else {
-            $NameTag = '§a ' . $player->getDisplayName() . '§r§a > §r' . $message;
+            $NameTag = '§a' . $player->getDisplayName() . '§r§a > §r' . $message;
         }
         return $NameTag;
     }

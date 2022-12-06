@@ -29,11 +29,11 @@ class PracticeTask extends AbstractTask
     {
         foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
+            $this->updateScoreTag($player);
             if ($session->loadedData && $player->isConnected()) {
-                if ($tick % 60 === 0) {
+                if ($tick % 40 === 0) {
                     $this->updateNameTag($player, $session);
                     $this->updateScoreboard($player, $session);
-                    $this->updateScoreTag($player);
                 }
                 if (($tick % 20 === 0) && $session->isCombat()) {
                     $session->CombatTime--;

@@ -38,6 +38,10 @@ class FormUtils
         $player->sendForm($form);
     }
 
+    /**
+     * @param Player $player
+     * @return void
+     */
     public function settingsForm(Player $player): void
     {
         $form = new CustomForm(function (Player $player, array $data = null) {

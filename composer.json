@@ -8,7 +8,7 @@
     "ext-zip": "*",
     "ext-pthreads": "*",
     "ext-igbinary": "*",
-    "pocketmine/pocketmine-mp": "^4.12.0",
+    "pocketmine/pocketmine-mp": "^4.12.1",
     "ext-sockets": "*"
 
   },
