@@ -22,8 +22,8 @@ class PracticePlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        $xzKB = 0.412;
-        $yKb = 0.388;
+        $xzKB = 0.392;
+        $yKb = 0.392;
         if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
             $xzKB = 0.378;
             $yKb = 0.422;

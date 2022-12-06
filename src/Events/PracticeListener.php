@@ -124,7 +124,6 @@ class PracticeListener extends AbstractListener
     public function onLogin(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
-        $name = $player->getName();
         $banplayer = $player->getName();
         $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
         /** @phpstan-ignore-next-line */
