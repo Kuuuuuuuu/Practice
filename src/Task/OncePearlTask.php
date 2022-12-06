@@ -37,6 +37,8 @@ class OncePearlTask extends Task
                 $this->player->getXpManager()->setXpProgress($percent);
                 $this->session->PearlCooldown--;
             } else {
+                $this->player->getXpManager()->setXpProgress(0.0);
+                $this->session->PearlCooldown = 0;
                 $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
                 throw new CancelTaskException();
             }
