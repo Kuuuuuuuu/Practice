@@ -29,9 +29,11 @@ class PracticeTask extends AbstractTask
     {
         foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
-            $this->updateScoreTag($player);
             if ($session->loadedData && $player->isConnected()) {
-                if ($tick % 40 === 0) {
+                if ($tick % 10 === 0) {
+                    $this->updateScoreTag($player);
+                }
+                if ($tick % 60 === 0) {
                     $this->updateNameTag($player, $session);
                     $this->updateScoreboard($player, $session);
                 }
@@ -46,6 +48,17 @@ class PracticeTask extends AbstractTask
                 }
             }
         }
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    private function updateScoreTag(Player $player): void
+    {
+        $ping = $player->getNetworkSession()->getPing();
+        $cps = PracticeCore::getClickHandler()->getClicks($player);
+        $player->sendData($player->getViewers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS')]);
     }
 
     /**
@@ -81,16 +94,5 @@ class PracticeTask extends AbstractTask
         } else {
             PracticeCore::getScoreboardUtils()->remove($player);
         }
-    }
-
-    /**
-     * @param Player $player
-     * @return void
-     */
-    private function updateScoreTag(Player $player): void
-    {
-        $ping = $player->getNetworkSession()->getPing();
-        $cps = PracticeCore::getClickHandler()->getClicks($player);
-        $player->sendData($player->getViewers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS')]);
     }
 }
