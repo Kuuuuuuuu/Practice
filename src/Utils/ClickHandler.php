@@ -6,6 +6,7 @@ namespace Kuu\Utils;
 
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
+
 use function array_filter;
 use function array_unshift;
 use function count;
