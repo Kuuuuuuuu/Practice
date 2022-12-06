@@ -7,6 +7,7 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\CancelTaskException;
 use pocketmine\scheduler\Task;
+use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
 class OncePearlTask extends Task
@@ -30,12 +31,16 @@ class OncePearlTask extends Task
      */
     public function onRun(): void
     {
-        if ($this->session->PearlCooldown >= 0) {
-            $percent = (float)($this->session->PearlCooldown / 10);
-            $this->player->getXpManager()->setXpProgress($percent);
-            $this->session->PearlCooldown--;
+        if ($this->player->isConnected()) {
+            if ($this->session->PearlCooldown >= 0 || $this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                $percent = (float)($this->session->PearlCooldown / 10);
+                $this->player->getXpManager()->setXpProgress($percent);
+                $this->session->PearlCooldown--;
+            } else {
+                $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
+                throw new CancelTaskException();
+            }
         } else {
-            $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
             throw new CancelTaskException();
         }
     }
