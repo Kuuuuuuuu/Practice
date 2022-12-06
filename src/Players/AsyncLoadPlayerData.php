@@ -30,6 +30,7 @@ class AsyncLoadPlayerData extends AsyncTask
             'killStreak' => 0,
             'scoreboard' => true,
             'cps' => true,
+            'smoothpearl' => true,
         ];
         $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);

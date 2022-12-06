@@ -49,11 +49,15 @@ class FormUtils
                 if (isset($data['Scoreboard'])) {
                     $session->ScoreboardEnabled = (bool)$data['Scoreboard'];
                 }
+                if (isset($data['SmoothPearl'])) {
+                    $session->SmoothPearlEnabled = (bool)$data['SmoothPearl'];
+                }
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addToggle('Cps Counter', PracticeCore::getPlayerSession()::getSession($player)->CpsCounterEnabled, 'CPS');
         $form->addToggle('Scoreboard', PracticeCore::getPlayerSession()::getSession($player)->ScoreboardEnabled, 'Scoreboard');
+        $form->addToggle('Smooth Pearl', PracticeCore::getPlayerSession()::getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
         $player->sendForm($form);
     }
 }

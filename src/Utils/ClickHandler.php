@@ -6,7 +6,6 @@ namespace Kuu\Utils;
 
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
-
 use function array_filter;
 use function array_unshift;
 use function count;
@@ -21,10 +20,13 @@ class ClickHandler
      */
     public function addClick(Player $p): void
     {
+        $session = PracticeCore::getPlayerSession()::getSession($p);
         if (!isset(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())])) {
             $this->initPlayerClickData($p);
         } else {
-            $p->sendTip('§bCPS: §f' . $this->getClicks($p));
+            if ($session->CpsCounterEnabled) {
+                $p->sendTip('§bCPS: §f' . $this->getClicks($p));
+            }
             array_unshift(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())], microtime(true));
             if (count(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())]) >= 50) {
                 array_pop(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())]);

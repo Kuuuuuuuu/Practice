@@ -13,6 +13,8 @@ class PlayerSession
     public bool $ScoreboardEnabled = true;
     /** @var bool */
     public bool $CpsCounterEnabled = true;
+    /** @var bool */
+    public bool $SmoothPearlEnabled = true;
     /** @var string|null */
     public ?string $Scoreboard = null;
     /** @var int */
@@ -65,6 +67,9 @@ class PlayerSession
         }
         if (isset($data['cps'])) {
             $this->CpsCounterEnabled = (bool)$data['cps'];
+        }
+        if (isset($data['smoothpearl'])) {
+            $this->SmoothPearlEnabled = (bool)$data['pearl'];
         }
         if (isset($data['kills'])) {
             $this->kills = (int)$data['kills'];

@@ -32,7 +32,7 @@ class PracticeTask extends AbstractTask
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 60 === 0) {
                     $this->updateNameTag($player, $session);
-                    $this->updateScoreboard($player);
+                    $this->updateScoreboard($player, $session);
                     $this->updateScoreTag($player);
                 }
                 if (($tick % 20 === 0) && $session->isCombat()) {
@@ -65,16 +65,21 @@ class PracticeTask extends AbstractTask
 
     /**
      * @param Player $player
+     * @param PlayerSession $session
      * @return void
      */
-    private function updateScoreboard(Player $player): void
+    private function updateScoreboard(Player $player, PlayerSession $session): void
     {
-        if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($player);
-        } elseif ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-            PracticeCore::getInstance()->getScoreboardManager()->setBoxingScoreboard($player);
+        if ($session->ScoreboardEnabled) {
+            if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($player);
+            } elseif ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+                PracticeCore::getInstance()->getScoreboardManager()->setBoxingScoreboard($player);
+            } else {
+                PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($player);
+            }
         } else {
-            PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($player);
+            PracticeCore::getScoreboardUtils()->remove($player);
         }
     }
 

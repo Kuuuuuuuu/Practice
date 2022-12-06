@@ -88,6 +88,8 @@ class PracticeListener extends AbstractListener
             }
         } elseif ($item->getCustomName() === '§r§bPlay') {
             PracticeCore::getFormUtils()->Form1($player);
+        } elseif ($item->getCustomName() === '§r§bSettings') {
+            PracticeCore::getFormUtils()->settingsForm($player);
         }
     }
 

@@ -130,10 +130,13 @@ class PracticeUtils
     {
         $item = VanillaItems::DIAMOND_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item->setCustomName('§r§bPlay');
+        $item2 = VanillaItems::COMPASS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item2->setCustomName('§r§bSettings');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->getEffects()->clear();
         $player->getInventory()->setItem(4, $item);
+        $player->getInventory()->setItem(8, $item2);
     }
 }

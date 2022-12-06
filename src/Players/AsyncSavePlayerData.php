@@ -26,6 +26,7 @@ class AsyncSavePlayerData extends AsyncTask
             'killStreak' => $session->getStreak(),
             'scoreboard' => $session->ScoreboardEnabled,
             'cps' => $session->CpsCounterEnabled,
+            'smoothpearl' => $session->SmoothPearlEnabled,
         ];
         PracticeCore::getPlayerSession()::removeSession($player);
         unset(PracticeCore::getCaches()->PlayerInSession[$player->getName()]);
