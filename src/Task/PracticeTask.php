@@ -8,8 +8,6 @@ use Kuu\Misc\AbstractTask;
 use Kuu\Players\PlayerSession;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
-use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
@@ -27,10 +25,10 @@ class PracticeTask extends AbstractTask
      */
     public function onUpdate(int $tick): void
     {
-        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
+        foreach (array_filter(PracticeCore::getPracticeUtils()->getPlayerInSession(), static fn (Player $player): bool => $player->isConnected() && $player->spawned) as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
-            if ($session->loadedData && $player->isConnected()) {
-                if ($tick % 10 === 0) {
+            if ($session->loadedData) {
+                if ($tick % 5 === 0) {
                     $this->updateScoreTag($player);
                 }
                 if ($tick % 60 === 0) {
@@ -58,7 +56,7 @@ class PracticeTask extends AbstractTask
     {
         $ping = $player->getNetworkSession()->getPing();
         $cps = PracticeCore::getClickHandler()->getClicks($player);
-        $player->sendData($player->getViewers(), [EntityMetadataProperties::SCORE_TAG => new StringMetadataProperty(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS')]);
+        $player->setScoreTag(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS');
     }
 
     /**
@@ -68,10 +66,9 @@ class PracticeTask extends AbstractTask
      */
     private function updateNameTag(Player $player, PlayerSession $session): void
     {
+        $Tag = '§b' . $player->getDisplayName();
         if ($session->getCustomTag() !== '') {
             $Tag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName();
-        } else {
-            $Tag = '§b' . $player->getDisplayName();
         }
         $player->setNameTag($Tag);
     }

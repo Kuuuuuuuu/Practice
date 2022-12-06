@@ -58,7 +58,7 @@ class TbanCommand extends Command
         });
         $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
         $form->setContent('§c§lChoose Player');
-        foreach (Server::getInstance()->getOnlinePlayers() as $online) {
+        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $online) {
             $form->addButton($online->getName(), -1, '', $online->getName());
         }
         $player->sendForm($form);

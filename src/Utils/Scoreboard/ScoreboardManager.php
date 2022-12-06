@@ -4,7 +4,6 @@ namespace Kuu\Utils\Scoreboard;
 
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
-use pocketmine\Server;
 
 final class ScoreboardManager
 {
@@ -19,7 +18,7 @@ final class ScoreboardManager
         $kills = $session->getKills();
         $rate = round($session->getKdr(), 2);
         $deaths = $session->getDeaths();
-        $on = count(Server::getInstance()->getOnlinePlayers());
+        $on = count(PracticeCore::getPracticeUtils()->getPlayerInSession());
         $lines = [
             1 => '§7---------------§7',
             2 => " §bOnline§f: §a$on",
