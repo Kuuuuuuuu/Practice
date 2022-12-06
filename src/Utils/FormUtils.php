@@ -6,6 +6,7 @@ namespace Kuu\Utils;
 
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
+use Kuu\Utils\Forms\CustomForm;
 use Kuu\Utils\Forms\SimpleForm;
 use pocketmine\player\Player;
 
@@ -34,6 +35,25 @@ class FormUtils
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addButton("§aBoxing\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getBoxingArena()), 0, 'textures/items/diamond_sword.png');
         $form->addButton("§aNodebuff\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getNodebuffArena()), 0, 'textures/items/potion_bottle_splash_heal.png');
+        $player->sendForm($form);
+    }
+
+    public function settingsForm(Player $player): void
+    {
+        $form = new CustomForm(function (Player $player, array $data = null) {
+            if ($data !== null) {
+                $session = PracticeCore::getPlayerSession()::getSession($player);
+                if (isset($data['CPS'])) {
+                    $session->CpsCounterEnabled = (bool)$data['CPS'];
+                }
+                if (isset($data['Scoreboard'])) {
+                    $session->ScoreboardEnabled = (bool)$data['Scoreboard'];
+                }
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
+        $form->addToggle('Cps Counter', PracticeCore::getPlayerSession()::getSession($player)->CpsCounterEnabled, 'CPS');
+        $form->addToggle('Scoreboard', PracticeCore::getPlayerSession()::getSession($player)->ScoreboardEnabled, 'Scoreboard');
         $player->sendForm($form);
     }
 }

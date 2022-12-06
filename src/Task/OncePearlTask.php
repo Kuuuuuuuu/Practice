@@ -7,6 +7,7 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\CancelTaskException;
 use pocketmine\scheduler\Task;
+use pocketmine\utils\TextFormat;
 
 class OncePearlTask extends Task
 {
@@ -20,7 +21,7 @@ class OncePearlTask extends Task
         $this->session = PracticeCore::getPlayerSession()::getSession($player);
         $this->player = $player;
         $this->session->PearlCooldown = 10;
-        $player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Increased');
+        $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . "You can't use pearl for 10 seconds.");
     }
 
     /**
@@ -34,7 +35,7 @@ class OncePearlTask extends Task
             $this->player->getXpManager()->setXpProgress($percent);
             $this->session->PearlCooldown--;
         } else {
-            $this->player->sendTip(PracticeCore::getPrefixCore() . 'EnderPearl Cooldown Reduced');
+            $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
             throw new CancelTaskException();
         }
     }

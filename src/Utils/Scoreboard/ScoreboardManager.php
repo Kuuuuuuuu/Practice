@@ -25,9 +25,10 @@ final class ScoreboardManager
             2 => " §bOnline§f: §a$on",
             3 => " §bPing§f: §a$ping",
             4 => ' §a',
-            5 => " §bK§f: §a$kills §bD§f: §a$deaths",
-            6 => " §bKDR§f: §a$rate",
-            10 => '§7---------------'
+            5 => " §bKills§f: §a$kills",
+            6 => " §bDeaths§f: §a$deaths",
+            7 => " §bKDR§f: §a$rate",
+            8 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
@@ -55,10 +56,11 @@ final class ScoreboardManager
         $lines = [
             1 => '§7---------------§0',
             2 => " §bCombat§f: §a$CombatSecond",
-            3 => ' §d',
-            4 => " §bYour §fPing: §a$ping" . '§fms',
-            5 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
-            6 => '§7---------------'
+            3 => ' §bKillStreak§f: §a' . $session->getStreak(),
+            4 => ' §d',
+            5 => " §bYour §fPing: §a$ping" . '§fms',
+            6 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
+            7 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
@@ -96,10 +98,11 @@ final class ScoreboardManager
             4 => "   §bThem§f: §c$OpponentBoxingPoint",
             5 => ' §c',
             6 => " §bCombat§f: §a$combat",
-            7 => ' §d',
-            8 => " §bYour §fPing: §a$ping" . '§fms',
-            9 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
-            10 => '§7---------------'
+            7 => ' §bKillStreak§f: §a' . $session->getStreak(),
+            8 => ' §d',
+            9 => " §bYour §fPing: §a$ping" . '§fms',
+            10 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
+            11 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {

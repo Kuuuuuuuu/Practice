@@ -11,6 +11,8 @@ class PlayerSession
 {
     /** @var bool */
     public bool $ScoreboardEnabled = true;
+    /** @var bool */
+    public bool $CpsCounterEnabled = true;
     /** @var string|null */
     public ?string $Scoreboard = null;
     /** @var int */
@@ -60,6 +62,9 @@ class PlayerSession
     {
         if (isset($data['scoreboard'])) {
             $this->ScoreboardEnabled = (bool)$data['scoreboard'];
+        }
+        if (isset($data['cps'])) {
+            $this->CpsCounterEnabled = (bool)$data['cps'];
         }
         if (isset($data['kills'])) {
             $this->kills = (int)$data['kills'];

@@ -6,6 +6,7 @@ namespace Kuu;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
+use pocketmine\Server;
 
 class PracticePlayer extends Player
 {
@@ -21,8 +22,12 @@ class PracticePlayer extends Player
 
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        $xzKB = 0.412;
-        $yKb = 0.388;
+        $xzKB = 0.388;
+        $yKb = 0.411;
+        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            $xzKB = 0.377;
+            $yKb = 0.384;
+        }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {
             return;

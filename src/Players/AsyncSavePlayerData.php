@@ -23,7 +23,9 @@ class AsyncSavePlayerData extends AsyncTask
             'kills' => $session->getKills(),
             'deaths' => $session->getDeaths(),
             'tag' => $session->getCustomTag(),
-            'killStreak' => $session->getStreak()
+            'killStreak' => $session->getStreak(),
+            'scoreboard' => $session->ScoreboardEnabled,
+            'cps' => $session->CpsCounterEnabled,
         ];
         PracticeCore::getPlayerSession()::removeSession($player);
         unset(PracticeCore::getCaches()->PlayerInSession[$player->getName()]);

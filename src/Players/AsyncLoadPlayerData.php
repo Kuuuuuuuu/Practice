@@ -27,7 +27,9 @@ class AsyncLoadPlayerData extends AsyncTask
             'kills' => 0,
             'deaths' => 0,
             'tag' => '',
-            'killStreak' => 0
+            'killStreak' => 0,
+            'scoreboard' => true,
+            'cps' => true,
         ];
         $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);

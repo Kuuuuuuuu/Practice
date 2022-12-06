@@ -12,6 +12,7 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class PracticeTask extends AbstractTask
 {
@@ -26,18 +27,19 @@ class PracticeTask extends AbstractTask
      */
     public function onUpdate(int $tick): void
     {
-        if ($tick % 20 === 0) {
-            foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
-                $session = PracticeCore::getPlayerSession()::getSession($player);
-                $this->updateNameTag($player, $session);
-                $this->updateScoreboard($player);
-                $this->updateScoreTag($player);
-                if ($session->isCombat()) {
+        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
+            $session = PracticeCore::getPlayerSession()::getSession($player);
+            if ($session->loadedData && $player->isConnected()) {
+                if ($tick % 60 === 0) {
+                    $this->updateNameTag($player, $session);
+                    $this->updateScoreboard($player);
+                    $this->updateScoreTag($player);
+                }
+                if (($tick % 20 === 0) && $session->isCombat()) {
                     $session->CombatTime--;
                     if ($session->CombatTime <= 0) {
                         $session->setCombat(false);
-                        $player->getXpManager()->setXpProgress(0.0);
-                        $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou are no longer in combat.');
+                        $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
                         $session->BoxingPoint = 0;
                         $session->setOpponent(null);
                     }
