@@ -32,7 +32,7 @@ class OncePearlTask extends Task
     public function onRun(): void
     {
         if ($this->player->isConnected()) {
-            if ($this->session->PearlCooldown >= 0 || $this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            if ($this->session->PearlCooldown >= 0 && $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $percent = (float)($this->session->PearlCooldown / 10);
                 $this->player->getXpManager()->setXpProgress($percent);
                 $this->session->PearlCooldown--;
