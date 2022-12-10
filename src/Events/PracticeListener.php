@@ -37,7 +37,6 @@ use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\plugin\PluginDisableEvent;
-use pocketmine\event\server\CommandEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\server\NetworkInterfaceRegisterEvent;
@@ -491,10 +490,11 @@ class PracticeListener extends AbstractListener
                     }
                 }
                 foreach ([$damager, $player] as $p) {
-                    $session = PracticeCore::getPlayerSession()::getSession($p);
-                    $session->setCombat(false);
-                    $session->setOpponent(null);
-                    $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
+                    if ($p instanceof Player) {
+                        $session = PracticeCore::getPlayerSession()::getSession($p);
+                        $session->CombatTime = 1;
+                        $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
+                    }
                 }
                 PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
