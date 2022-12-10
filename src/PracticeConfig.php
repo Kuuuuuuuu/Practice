@@ -13,8 +13,4 @@ interface PracticeConfig
     public const PearlForce = 3;
     public const SplashForce = 0.45;
     public const COLOR = TextFormat::AQUA;
-    public const BanCommand = [
-        'hub',
-        'kill'
-    ];
 }

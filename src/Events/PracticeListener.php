@@ -404,11 +404,11 @@ class PracticeListener extends AbstractListener
                             if ($DamagerSession->BoxingPoint > 99) {
                                 $player->kill();
                             }
-                            foreach ([$player, $damager] as $p) {
-                                PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
-                            }
                         }
                         foreach ([$player, $damager] as $p) {
+                            if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+                                PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
+                            }
                             $session = PracticeCore::getPlayerSession()::getSession($p);
                             $session->setCombat(true);
                         }
@@ -489,13 +489,6 @@ class PracticeListener extends AbstractListener
                         }
                     }
                 }
-                foreach ([$damager, $player] as $p) {
-                    if ($p instanceof Player) {
-                        $session = PracticeCore::getPlayerSession()::getSession($p);
-                        $session->CombatTime = 1;
-                        $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
-                    }
-                }
                 PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
                 $damagerSession->kills++;
@@ -506,6 +499,13 @@ class PracticeListener extends AbstractListener
                 $player->getArmorInventory()->clearAll();
                 $player->getOffHandInventory()->clearAll();
                 PracticeCore::getPracticeUtils()->setLobbyItem($player);
+                foreach ([$damager, $player] as $p) {
+                    if ($p instanceof Player) {
+                        $session = PracticeCore::getPlayerSession()::getSession($p);
+                        $session->setCombat(false);
+                        $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
+                    }
+                }
             }
         }
     }
