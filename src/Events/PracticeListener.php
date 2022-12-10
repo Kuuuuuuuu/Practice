@@ -371,7 +371,7 @@ class PracticeListener extends AbstractListener
         $plugin = $event->getPlugin();
         if ($plugin instanceof PracticeCore) {
             PracticeCore::getPracticeUtils()->dispose();
-            foreach ($plugin->getServer()->getOnlinePlayers() as $player) {
+            foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
                 PracticeCore::getPlayerHandler()->savePlayerData($player);
             }
         }
@@ -541,24 +541,6 @@ class PracticeListener extends AbstractListener
     }
 
     /**
-     * @param CommandEvent $event
-     * @return void
-     * @priority LOWEST
-     */
-    public function onCommandEvent(CommandEvent $event): void
-    {
-        $player = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($event->getSender()->getName());
-        if ($player instanceof Player) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
-            $cmd = $event->getCommand();
-            if (isset(PracticeConfig::BanCommand[$cmd]) && $session->isCombat()) {
-                $event->cancel();
-                $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou can not use this command while in combat!');
-            }
-        }
-    }
-
-    /**
      * @param NetworkInterfaceRegisterEvent $event
      * @return void
      * @priority LOWEST
@@ -567,7 +549,7 @@ class PracticeListener extends AbstractListener
     {
         $interface = $event->getInterface();
         if ($interface instanceof RakLibInterface) {
-            $interface->setPacketLimit(900000);
+            $interface->setPacketLimit(PHP_INT_MAX);
         } elseif ($interface instanceof DedicatedQueryNetworkInterface) {
             $event->cancel();
         }

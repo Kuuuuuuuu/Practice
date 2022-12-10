@@ -28,20 +28,18 @@ class PracticeTask extends AbstractTask
         foreach (array_filter(PracticeCore::getPracticeUtils()->getPlayerInSession(), static fn (Player $player): bool => $player->isConnected() && $player->spawned) as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
             if ($session->loadedData) {
-                if ($tick % 5 === 0) {
-                    $this->updateScoreTag($player);
-                }
-                if ($tick % 60 === 0) {
+                $this->updateScoreTag($player);
+                if ($tick % 20 === 0) {
                     $this->updateNameTag($player, $session);
                     $this->updateScoreboard($player, $session);
-                }
-                if (($tick % 20 === 0) && $session->isCombat()) {
-                    $session->CombatTime--;
-                    if ($session->CombatTime <= 0) {
-                        $session->setCombat(false);
-                        $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
-                        $session->BoxingPoint = 0;
-                        $session->setOpponent(null);
+                    if ($session->isCombat()) {
+                        $session->CombatTime--;
+                        if ($session->CombatTime <= 0) {
+                            $session->setCombat(false);
+                            $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
+                            $session->BoxingPoint = 0;
+                            $session->setOpponent(null);
+                        }
                     }
                 }
             }
