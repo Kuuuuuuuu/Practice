@@ -1,10 +1,5 @@
 <?php
 
-/** @noinspection PhpIllegalStringOffsetInspection */
-/** @noinspection PhpInconsistentReturnPointsInspection */
-/** @noinspection PhpParamsInspection */
-/** @noinspection PhpPossiblePolymorphicInvocationInspection */
-
 declare(strict_types=1);
 
 namespace Kuu\Events;
