@@ -6,6 +6,7 @@ namespace Kuu;
 
 use Kuu\Arena\ArenaFactory;
 use Kuu\Arena\ArenaManager;
+use Kuu\Commands\HologramCommand;
 use Kuu\Commands\HubCommand;
 use Kuu\Commands\PracticeCommand;
 use Kuu\Commands\RestartCommand;
@@ -14,6 +15,7 @@ use Kuu\Commands\TbanCommand;
 use Kuu\Commands\TcheckCommand;
 use Kuu\Commands\TpsCommand;
 use Kuu\Entity\EnderPearlEntity;
+use Kuu\Entity\Hologram;
 use Kuu\Events\PracticeListener;
 use Kuu\Items\CustomSplashPotion;
 use Kuu\Items\EnderPearl;
@@ -251,6 +253,7 @@ class PracticeCore extends PluginBase
             'practice' => PracticeCommand::class,
             'restart' => RestartCommand::class,
             'settag' => SetTagCommand::class,
+            'hologram' => HologramCommand::class,
         ];
         foreach ($Command as $key => $value) {
             Server::getInstance()->getCommandMap()->register($key, new $value());
@@ -281,6 +284,9 @@ class PracticeCore extends PluginBase
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
         }, ['ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+        EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
+            return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['Hologram']);
     }
 
     /**
