@@ -72,25 +72,20 @@ class ArenaManager
     {
         $inventory = $player->getInventory();
         $armorInventory = $player->getArmorInventory();
-        $protection = VanillaEnchantments::PROTECTION();
         $unbreaking = VanillaEnchantments::UNBREAKING();
         $helmet = VanillaItems::DIAMOND_HELMET();
-        $helmet->addEnchantment(new EnchantmentInstance($protection));
-        $helmet->addEnchantment(new EnchantmentInstance($unbreaking));
         $chestplate = VanillaItems::DIAMOND_CHESTPLATE();
-        $chestplate->addEnchantment(new EnchantmentInstance($protection));
-        $chestplate->addEnchantment(new EnchantmentInstance($unbreaking));
         $leggings = VanillaItems::DIAMOND_LEGGINGS();
-        $leggings->addEnchantment(new EnchantmentInstance($protection));
-        $leggings->addEnchantment(new EnchantmentInstance($unbreaking));
         $boots = VanillaItems::DIAMOND_BOOTS();
-        $boots->addEnchantment(new EnchantmentInstance($protection));
-        $boots->addEnchantment(new EnchantmentInstance($unbreaking));
+        $sword = VanillaItems::DIAMOND_SWORD();
+        foreach ([$helmet, $chestplate, $leggings, $boots] as $item) {
+            $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 2));
+            $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 3));
+        }
         $armorInventory->setHelmet($helmet);
         $armorInventory->setBoots($boots);
         $armorInventory->setChestplate($chestplate);
         $armorInventory->setLeggings($leggings);
-        $sword = VanillaItems::DIAMOND_SWORD();
         $sword->addEnchantment(new EnchantmentInstance($unbreaking, 3))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 2));
         $inventory->addItem($sword);
         $inventory->addItem(VanillaItems::ENDER_PEARL()->setCount(16));
