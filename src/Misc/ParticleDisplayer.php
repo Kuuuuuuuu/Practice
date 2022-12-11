@@ -17,10 +17,10 @@ class ParticleDisplayer
     public static function display(Player $player, PMParticle $particle): void
     {
         $slice = 2 * M_PI / 16;
-        $radius = 0.65;
+        $radius = 0.75;
         $playerOffset = -2;
         for ($i = 0; $i < 16; $i++) {
-            $playerOffset += 0.5;
+            $playerOffset += 0.25;
             $angle = $slice * $i;
             $dx = $radius * cos($angle);
             $dz = $radius * sin($angle);

@@ -77,7 +77,7 @@ class PracticeListener extends AbstractListener
         $item = $event->getItem();
         if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
-            if ($session->PearlCooldown < 1) {
+            if ($session->PearlCooldown === 0) {
                 PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
             } else {
                 $event->cancel();
