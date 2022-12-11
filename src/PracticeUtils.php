@@ -11,6 +11,8 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 
 use function strlen;
+use function strtolower;
+use function stripos;
 
 class PracticeUtils
 {

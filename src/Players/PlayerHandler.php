@@ -5,6 +5,9 @@ namespace Kuu\Players;
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
 
+use function is_dir;
+use function mkdir;
+
 class PlayerHandler
 {
     private string $path;

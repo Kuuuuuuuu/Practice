@@ -12,6 +12,8 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
+use function array_filter;
+
 class PracticeTask extends AbstractTask
 {
     public function __construct()

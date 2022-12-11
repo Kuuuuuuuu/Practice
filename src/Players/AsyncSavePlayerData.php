@@ -8,6 +8,10 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
 
+use function yaml_parse_file;
+use function yaml_emit_file;
+use function array_keys;
+
 class AsyncSavePlayerData extends AsyncTask
 {
     /** @var string */

@@ -8,6 +8,10 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
+use function sqrt;
+use function mt_rand;
+use function mt_getrandmax;
+
 class PracticePlayer extends Player
 {
     public function attack(EntityDamageEvent $source): void

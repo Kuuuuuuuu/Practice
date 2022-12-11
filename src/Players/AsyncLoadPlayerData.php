@@ -8,7 +8,11 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
 
+use function array_keys;
+use function fclose;
 use function is_array;
+use function yaml_emit_file;
+use function yaml_parse_file;
 
 class AsyncLoadPlayerData extends AsyncTask
 {

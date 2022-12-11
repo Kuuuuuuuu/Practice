@@ -2,6 +2,8 @@
 
 namespace Kuu\Misc;
 
+use function gmdate;
+
 class Time
 {
     /**

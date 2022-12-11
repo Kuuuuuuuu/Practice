@@ -5,6 +5,9 @@ namespace Kuu\Utils\Scoreboard;
 use Kuu\PracticeCore;
 use pocketmine\player\Player;
 
+use function count;
+use function round;
+
 final class ScoreboardManager
 {
     /**
@@ -24,10 +27,9 @@ final class ScoreboardManager
             2 => " §bOnline§f: §a$on",
             3 => " §bPing§f: §a$ping",
             4 => ' §a',
-            5 => " §bKills§f: §a$kills",
-            6 => " §bDeaths§f: §a$deaths",
-            7 => " §bKDR§f: §a$rate",
-            8 => '§7---------------'
+            5 => " §bK§f: §a$kills §f| §bD§f: §a$deaths",
+            6 => " §bKDR§f: §a$rate",
+            7 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
