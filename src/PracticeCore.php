@@ -194,8 +194,6 @@ class PracticeCore extends PluginBase
             'me',
             'tell',
             'whitelist',
-            'ver',
-            'about',
             'checkperm',
             'pardon-ip',
             'pardon',
