@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Kuu\Commands;
 
 use Kuu\PracticeCore;
-use pocketmine\command\{Command, CommandSender};
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\Server;
 
 class TpsCommand extends Command

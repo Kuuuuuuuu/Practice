@@ -64,8 +64,9 @@ class PracticeListener extends AbstractListener
     /**
      * @param PlayerCreationEvent $event
      * @return void
+     * @priority MONITOR
      */
-    public function onCreation(PlayerCreationEvent $event): void
+    public function onPlayerCreationEvent(PlayerCreationEvent $event): void
     {
         $event->setPlayerClass(PracticePlayer::class);
     }
@@ -75,7 +76,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onUse(PlayerItemUseEvent $event): void
+    public function onPlayerItemUseEvent(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
@@ -87,9 +88,9 @@ class PracticeListener extends AbstractListener
                 $event->cancel();
             }
         } elseif ($item->getCustomName() === '§r§bPlay') {
-            PracticeCore::getFormUtils()->Form1($player);
+            PracticeCore::getFormUtils()->ArenaForm($player);
         } elseif ($item->getCustomName() === '§r§bSettings') {
-            PracticeCore::getFormUtils()->settingsForm($player);
+            PracticeCore::getFormUtils()->SettingsForm($player);
         }
     }
 
@@ -98,7 +99,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onQuery(QueryRegenerateEvent $ev): void
+    public function onQueryRegenerateEvent(QueryRegenerateEvent $ev): void
     {
         $query = $ev->getQueryInfo();
         $query->setWorld('PracticeLobby');
@@ -111,7 +112,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onDropItem(PlayerDropItemEvent $event): void
+    public function onPlayerDropItemEvent(PlayerDropItemEvent $event): void
     {
         $event->cancel();
     }
@@ -121,7 +122,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onLogin(PlayerLoginEvent $event): void
+    public function onPlayerLoginEvent(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
         $banplayer = $player->getName();
@@ -131,7 +132,6 @@ class PracticeListener extends AbstractListener
         if (!empty($array)) {
             $banTime = $array['banTime'];
             $reason = $array['reason'];
-            $staff = $array['staff'];
             $now = time();
             if ($banTime > $now) {
                 $remainingTime = $banTime - $now;
@@ -142,7 +142,7 @@ class PracticeListener extends AbstractListener
                 $minute = floor($minuteSec / 60);
                 $remainingSec = $minuteSec % 60;
                 $second = ceil($remainingSec);
-                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}', '{staff}'], [$day, $hour, $minute, $second, $reason, $staff], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
+                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}'], [$day, $hour, $minute, $second, $reason], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
                 $event->cancel();
                 $player->close();
             } else {
@@ -157,7 +157,7 @@ class PracticeListener extends AbstractListener
      * @priority LOWEST
      */
 
-    public function onPlayerPreLogin(PlayerPreLoginEvent $event): void
+    public function onPlayerPreLoginEvent(PlayerPreLoginEvent $event): void
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() && strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
@@ -171,12 +171,12 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onJoin(PlayerJoinEvent $event): void
+    public function onPlayerJoinEvent(PlayerJoinEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
         $event->setJoinMessage('§f[§a+§f] §a' . $name);
-        $player->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Data...');
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Player Data...');
         PracticeCore::getPracticeUtils()->setLobbyItem($player);
         PracticeCore::getPlayerHandler()->loadPlayerData($player);
     }
@@ -187,7 +187,7 @@ class PracticeListener extends AbstractListener
      * @priority LOWEST
      */
 
-    public function onExhaust(PlayerExhaustEvent $event): void
+    public function onPlayerExhaustEvent(PlayerExhaustEvent $event): void
     {
         $event->setAmount(0);
     }
@@ -197,7 +197,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onClickBlock(PlayerInteractEvent $event): void
+    public function onPlayerInteractEvent(PlayerInteractEvent $event): void
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
@@ -211,9 +211,11 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onCraft(CraftItemEvent $event): void
+    public function onCraftItemEvent(CraftItemEvent $event): void
     {
-        $event->cancel();
+        if (!$event->isCancelled()) {
+            $event->cancel();
+        }
     }
 
     /**
@@ -221,7 +223,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onLevelLoadEvent(WorldLoadEvent $event): void
+    public function onWorldLoadEvent(WorldLoadEvent $event): void
     {
         $world = $event->getWorld();
         $world->setTime(World::TIME_DAY);
@@ -233,7 +235,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onBreak(BlockBreakEvent $ev): void
+    public function onBlockBreakEvent(BlockBreakEvent $ev): void
     {
         $player = $ev->getPlayer();
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
@@ -246,7 +248,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onPlace(BlockPlaceEvent $ev): void
+    public function onBlockPlaceEvent(BlockPlaceEvent $ev): void
     {
         $player = $ev->getPlayer();
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
@@ -259,7 +261,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onProjectileHitBlock(ProjectileHitBlockEvent $event): void
+    public function onProjectileHitBlockEvent(ProjectileHitBlockEvent $event): void
     {
         $projectile = $event->getEntity();
         if ($projectile instanceof SplashPotion && $projectile->getPotionType() === PotionType::STRONG_HEALING()) {
@@ -275,7 +277,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onDataPacketSend(DataPacketSendEvent $ev): void
+    public function onDataPacketSendEvent(DataPacketSendEvent $ev): void
     {
         foreach ($ev->getPackets() as $packet) {
             if (($packet instanceof LevelSoundEventPacket) && $packet->pid() === LevelSoundEventPacket::NETWORK_ID) {
@@ -292,7 +294,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onDataPacketReceive(DataPacketReceiveEvent $event): void
+    public function onDataPacketReceiveEvent(DataPacketReceiveEvent $event): void
     {
         $player = $event->getOrigin()->getPlayer();
         $packet = $event->getPacket();
@@ -311,7 +313,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onItemMoved(InventoryTransactionEvent $event): void
+    public function onInventoryTransactionEvent(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
         $player = $transaction->getSource();
@@ -325,7 +327,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onChat(PlayerChatEvent $event): void
+    public function onPlayerChatEvent(PlayerChatEvent $event): void
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
@@ -335,8 +337,9 @@ class PracticeListener extends AbstractListener
     /**
      * @param PlayerQuitEvent $event
      * @return void
+     * @priority LOWEST
      */
-    public function onQuit(PlayerQuitEvent $event): void
+    public function onPlayerQuitEvent(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
         $session = PracticeCore::getPlayerSession()::getSession($player);
@@ -344,7 +347,6 @@ class PracticeListener extends AbstractListener
         $event->setQuitMessage('§f[§c-§f] §c' . $name);
         PracticeCore::getClickHandler()->removePlayerClickData($player);
         PracticeCore::getPlayerHandler()->savePlayerData($player);
-        $player->setGamemode(GameMode::SURVIVAL());
         if ($session->isCombat()) {
             $player->kill();
         }
@@ -355,7 +357,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onKick(PlayerKickEvent $event): void
+    public function onPlayerKickEvent(PlayerKickEvent $event): void
     {
         PracticeCore::getPlayerHandler()->savePlayerData($event->getPlayer());
     }
@@ -365,7 +367,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onPluginDisabled(PluginDisableEvent $event): void
+    public function onPluginDisableEvent(PluginDisableEvent $event): void
     {
         $plugin = $event->getPlugin();
         if ($plugin instanceof PracticeCore) {
@@ -381,23 +383,23 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onInterrupt(EntityDamageByEntityEvent $event): void
+    public function onEntityDamageByEntityEvent(EntityDamageByEntityEvent $event): void
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if (!$event->isCancelled()) {
             if ($damager instanceof Player && $player instanceof Player && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                $DamagerSession = PracticeCore::getPlayerSession()::getSession($damager);
-                $PlayerSession = PracticeCore::getPlayerSession()::getSession($player);
-                if ($PlayerSession->getOpponent() === null && $DamagerSession->getOpponent() === null) {
-                    $PlayerSession->setOpponent($damager->getName());
-                    $DamagerSession->setOpponent($player->getName());
+                $DSession = PracticeCore::getPlayerSession()::getSession($damager);
+                $PSession = PracticeCore::getPlayerSession()::getSession($player);
+                if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
+                    $PSession->setOpponent($damager->getName());
+                    $DSession->setOpponent($player->getName());
                     foreach ([$player, $damager] as $p) {
                         $session = PracticeCore::getPlayerSession()::getSession($player);
                         $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
                         $session->setCombat(true);
                     }
-                } elseif ($PlayerSession->getOpponent() !== null && $DamagerSession->getOpponent() !== null) {
+                } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
                     foreach ([$player, $damager] as $p) {
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
                             PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
@@ -405,10 +407,10 @@ class PracticeListener extends AbstractListener
                         $session = PracticeCore::getPlayerSession()::getSession($p);
                         $session->setCombat(true);
                     }
-                    if ($PlayerSession->getOpponent() === $damager->getName() && $DamagerSession->getOpponent() === $player->getName()) {
+                    if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            $DamagerSession->BoxingPoint++;
-                            if ($DamagerSession->BoxingPoint > 99) {
+                            $DSession->BoxingPoint++;
+                            if ($DSession->BoxingPoint > 99) {
                                 $player->kill();
                             }
                         }
@@ -416,10 +418,10 @@ class PracticeListener extends AbstractListener
                         $event->cancel();
                         $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                     }
-                } elseif ($PlayerSession->getOpponent() !== null && $DamagerSession->getOpponent() === null) {
+                } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
                     $event->cancel();
                     $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                } elseif ($PlayerSession->getOpponent() === null && $DamagerSession->getOpponent() !== null) {
+                } elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
                     $event->cancel();
                     $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                 }
@@ -434,7 +436,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onDamage(EntityDamageEvent $event): void
+    public function onEntityDamageEvent(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
         if ($entity instanceof Player) {
@@ -463,7 +465,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onDeath(PlayerDeathEvent $event): void
+    public function onPlayerDeathEvent(PlayerDeathEvent $event): void
     {
         $event->setDeathMessage('');
         $event->setDrops([]);
@@ -499,9 +501,6 @@ class PracticeListener extends AbstractListener
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);
-                $player->getInventory()->clearAll();
-                $player->getArmorInventory()->clearAll();
-                $player->getOffHandInventory()->clearAll();
                 PracticeCore::getPracticeUtils()->setLobbyItem($player);
                 foreach ([$damager, $player] as $p) {
                     $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
@@ -515,7 +514,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onRespawn(PlayerRespawnEvent $event): void
+    public function onPlayerRespawnEvent(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
         $session = PracticeCore::getPlayerSession()::getSession($player);
@@ -530,7 +529,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onChangeWorld(EntityTeleportEvent $event): void
+    public function onEntityTeleportEvent(EntityTeleportEvent $event): void
     {
         $player = $event->getEntity();
         if ($player instanceof Player && $event->getFrom()->getWorld() !== $event->getTo()->getWorld()) {
@@ -545,7 +544,7 @@ class PracticeListener extends AbstractListener
      * @return void
      * @priority LOWEST
      */
-    public function onNetworkRegister(NetworkInterfaceRegisterEvent $event): void
+    public function onNetworkInterfaceRegisterEvent(NetworkInterfaceRegisterEvent $event): void
     {
         $interface = $event->getInterface();
         if ($interface instanceof RakLibInterface) {

@@ -53,23 +53,23 @@ class PracticeCommand extends Command
                         }
                         switch ($args[1]) {
                             case 'Boxing':
-                                if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                                } else {
+                                if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                     Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                     /** @phpstan-ignore-next-line */
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                     PracticeCore::getArenaFactory()->setBoxingArena($sender, $args[2]);
+                                } else {
+                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                                 }
                                 break;
                             case 'Nodebuff':
-                                if (!file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                                } else {
+                                if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                     Server::getInstance()->getWorldManager()->loadWorld($args[2]);
                                     /** @phpstan-ignore-next-line */
                                     $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
                                     PracticeCore::getArenaFactory()->setNodebuffArena($sender, $args[2]);
+                                } else {
+                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                                 }
                                 break;
                             default:
@@ -79,10 +79,7 @@ class PracticeCommand extends Command
                         }
                         break;
                     case 'remove':
-                        if (!isset($args[1])) {
-                            $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
-                        } else {
+                        if (isset($args[1])) {
                             switch ($args[1]) {
                                 case 'Boxing':
                                     PracticeCore::getArenaFactory()->removeBoxing($sender);
@@ -95,6 +92,9 @@ class PracticeCommand extends Command
                                     $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
                                     break;
                             }
+                        } else {
+                            $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
                         }
                         break;
                     default:

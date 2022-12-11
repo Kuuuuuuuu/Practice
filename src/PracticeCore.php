@@ -38,6 +38,8 @@ use pocketmine\Server;
 use pocketmine\world\World;
 use SQLite3;
 
+use function is_array;
+
 class PracticeCore extends PluginBase
 {
     private static self $plugin;
@@ -166,23 +168,46 @@ class PracticeCore extends PluginBase
 
     public function onEnable(): void
     {
+        $this->unregisterCommands();
         $this->registerItems();
         $this->registerConfigs();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
         $this->registerEntities();
-        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
-        if (is_array($check)) {
-            foreach ($check as $world) {
-                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
-                if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
-                    continue;
-                }
-                Server::getInstance()->getWorldManager()->loadWorld($world, true);
+        $this->loadWorlds();
+        Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
+    }
+
+    /**
+     * @return void
+     */
+    private function unregisterCommands(): void
+    {
+        $commands = [
+            'seed',
+            'gamerule',
+            'title',
+            'mixer',
+            'suicide',
+            'particle',
+            'me',
+            'tell',
+            'whitelist',
+            'ver',
+            'about',
+            'checkperm',
+            'pardon-ip',
+            'pardon',
+            'ban',
+            'ban-ip'
+        ];
+        foreach ($commands as $name) {
+            $map = $this->getServer()->getCommandMap();
+            if (($cmd = $map->getCommand($name)) !== null) {
+                $map->unregister($cmd);
             }
         }
-        Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
     }
 
     /**
@@ -210,7 +235,7 @@ class PracticeCore extends PluginBase
      */
     private function registerConfigs(): void
     {
-        @mkdir(PracticeCore::getInstance()->getDataFolder() . 'data/');
+        @mkdir($this->getDataFolder() . 'data/');
         self::getInstance()->BanData = new SQLite3($this->getDataFolder() . 'Ban.db');
         self::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
@@ -257,6 +282,23 @@ class PracticeCore extends PluginBase
     {
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
-        }, ['NThrownEnderpearl', 'neptune:ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+        }, ['ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+    }
+
+    /**
+     * @return void
+     */
+    private function loadWorlds(): void
+    {
+        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
+        if (is_array($check)) {
+            foreach ($check as $world) {
+                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
+                if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
+                    continue;
+                }
+                Server::getInstance()->getWorldManager()->loadWorld($world, true);
+            }
+        }
     }
 }

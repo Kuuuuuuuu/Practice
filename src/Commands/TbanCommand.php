@@ -31,11 +31,11 @@ class TbanCommand extends Command
     {
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if (!isset($args[0])) {
-                    $this->openPlayerListUI($sender);
-                } else {
+                if (isset($args[0])) {
                     PracticeCore::getCaches()->targetPlayer[$sender->getName()] = $args[0];
                     $this->openTbanUI($sender);
+                } else {
+                    $this->openPlayerListUI($sender);
                 }
             } else {
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou cannot execute this command.');

@@ -8,6 +8,8 @@ use Kuu\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
 
+use function is_array;
+
 class AsyncLoadPlayerData extends AsyncTask
 {
     /** @var string */
@@ -75,6 +77,7 @@ class AsyncLoadPlayerData extends AsyncTask
             $player = $server->getPlayerExact($playerName);
             if ($player instanceof Player && $player->isOnline()) {
                 $session = PracticeCore::getPlayerSession()::getSession($player);
+                $player->sendMessage(PracticeCore::getPrefixCore() . 'Your data has been loaded.');
                 PracticeCore::getCaches()->PlayerInSession[$player->getName()] = $player;
                 $session->loadData($data);
             }

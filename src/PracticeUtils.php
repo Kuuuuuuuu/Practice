@@ -10,6 +10,8 @@ use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
+use function strlen;
+
 class PracticeUtils
 {
     /**

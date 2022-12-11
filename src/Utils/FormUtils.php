@@ -16,7 +16,7 @@ class FormUtils
      * @param Player $player
      * @return void
      */
-    public function Form1(Player $player): void
+    public function ArenaForm(Player $player): void
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
@@ -42,7 +42,7 @@ class FormUtils
      * @param Player $player
      * @return void
      */
-    public function settingsForm(Player $player): void
+    public function SettingsForm(Player $player): void
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {

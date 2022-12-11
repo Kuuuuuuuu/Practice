@@ -11,6 +11,9 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
 
+use function count;
+use function is_string;
+
 class ArenaFactory
 {
     /**
