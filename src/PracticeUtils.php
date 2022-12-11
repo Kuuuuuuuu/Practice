@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kuu;
 
+use Kuu\Entity\Hologram;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -14,7 +15,6 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use function is_array;
 use function stripos;
 use function strlen;
 use function strtolower;
@@ -48,6 +48,9 @@ class PracticeUtils
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof Hologram) {
+                    continue;
+                }
                 $entity->close();
             }
         }
