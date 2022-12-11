@@ -18,13 +18,13 @@ class ParticleDisplayer
     {
         $slice = 2 * M_PI / 16;
         $radius = 0.65;
-        $playerOffset = 2;
+        $playerOffset = -2;
         for ($i = 0; $i < 16; $i++) {
+            $playerOffset += 0.5;
             $angle = $slice * $i;
             $dx = $radius * cos($angle);
-            $dy = $playerOffset;
             $dz = $radius * sin($angle);
-            $player->getWorld()->addParticle($player->getPosition()->add($dx, $dy, $dz), $particle);
+            $player->getWorld()->addParticle($player->getPosition()->add($dx, $playerOffset, $dz), $particle);
         }
     }
 }
