@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kuu\Task;
 
 use Kuu\Misc\AbstractTask;
+use Kuu\Misc\ParticleDisplayer;
 use Kuu\Players\PlayerSession;
 use Kuu\PracticeConfig;
 use Kuu\PracticeCore;
@@ -12,6 +13,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
+use pocketmine\world\particle\FlameParticle;
 use function array_filter;
 
 class PracticeTask extends AbstractTask
@@ -32,6 +34,9 @@ class PracticeTask extends AbstractTask
             if ($session->loadedData) {
                 $this->updateScoreTag($player);
                 if ($tick % 20 === 0) {
+                    if ($player->getWorld()  === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                        ParticleDisplayer::display($player, new FlameParticle());
+                    }
                     $this->updateNameTag($player, $session);
                     $this->updateScoreboard($player, $session);
                     if ($session->isCombat()) {

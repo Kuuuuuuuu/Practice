@@ -130,9 +130,9 @@ class Hologram extends Entity
                 break;
             }
             if ($pos < 3) {
-                $subtitle .= '§6[' . ($pos + 1) . '] §r§7' . $name . ' §e' . $kills . "\n";
+                $subtitle .= '§6[' . ($pos + 1) . '] §r§a' . $name . ' §e' . $kills . "\n";
             } else {
-                $subtitle .= '§7[' . ($pos + 1) . '] §r§7' . $name . ' §8' . $kills . "\n";
+                $subtitle .= '§7[' . ($pos + 1) . '] §r§a' . $name . ' §f' . $kills . "\n";
             }
             $pos++;
         }
