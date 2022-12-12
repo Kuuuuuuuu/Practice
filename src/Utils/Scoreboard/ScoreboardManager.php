@@ -131,7 +131,7 @@ final class ScoreboardManager
                 7 => ' §a',
                 8 => " §f§l{$player2->getName()}",
                 9 => "   §aPoint: §b$player2BoxingPoint",
-                10 => "  §aPing: §b$player2ping" . '§fms',
+                10 => "   §aPing: §b$player2ping" . '§fms',
                 11 => '§7---------------'
             ];
         } else {
@@ -147,8 +147,9 @@ final class ScoreboardManager
                 9 => '§7---------------'
             ];
         }
+        PracticeCore::getScoreboardUtils()->new($player1, 'ObjectiveName', PracticeCore::getScoreboardTitle());
+        PracticeCore::getScoreboardUtils()->new($player2, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ([$player1, $player2] as $player) {
-            PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
             foreach ($lines as $line => $content) {
                 PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
             }
