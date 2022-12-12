@@ -2,6 +2,7 @@
 
 namespace Nayuki\Utils\Scoreboard;
 
+use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 
@@ -103,44 +104,52 @@ final class ScoreboardManager
     }
 
     /**
-     * @param Player $player
+     * @param Player $player1
+     * @param Player $player2
+     * @param Kit $kit
+     * @param int $sec
      * @return void
      */
-    public function setBoxingScoreboard(Player $player): void
+    public function setDuelScoreboard(Player $player1, Player $player2, Kit $kit, int $sec): void
     {
-        $session = PracticeCore::getPlayerSession()::getSession($player);
-        $ping = $player->getNetworkSession()->getPing();
-        $combat = $session->CombatTime;
-        $BoxingPoint = $session->BoxingPoint;
-        $OpponentBoxingPoint = 0;
-        $OpponentPing = 0;
-        $opponent = $session->getOpponent();
-        if ($opponent !== null) {
-            $OpponentPlayer = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($opponent);
-            if ($OpponentPlayer instanceof Player) {
-                $OpponentSession = PracticeCore::getPlayerSession()::getSession($OpponentPlayer);
-                $OpponentBoxingPoint = $OpponentSession->BoxingPoint;
-                $OpponentPing = $OpponentPlayer->getNetworkSession()->getPing();
-            }
+        $player1Session = PracticeCore::getPlayerSession()::getSession($player1);
+        $player2Session = PracticeCore::getPlayerSession()::getSession($player2);
+        $player1ping = $player1->getNetworkSession()->getPing();
+        $player2ping = $player2->getNetworkSession()->getPing();
+        if ($kit->getName() === 'Boxing') {
+            $player1BoxingPoint = $player1Session->BoxingPoint;
+            $player2BoxingPoint = $player2Session->BoxingPoint;
+            $lines = [
+                1 => '§7---------------§0',
+                2 => " §f§l{$player1->getName()}",
+                3 => "   §fPoint: §b$player1BoxingPoint",
+                4 => "   §fPing: §b$player1ping" . '§fms',
+                5 => ' §d',
+                6 => ' §bSeconds§f: §a' . $sec,
+                7 => ' §a',
+                8 => " §f§l{$player2->getName()}",
+                9 => "   §fPoint: §b$player2BoxingPoint",
+                10 => "  §fPing: §b$player2ping" . '§fms',
+                11 => '§7---------------'
+            ];
+        } else {
+            $lines = [
+                1 => '§7---------------§0',
+                2 => " §f§l{$player1->getName()}",
+                3 => "   §fPing: §b$player1ping" . '§fms',
+                4 => ' §d',
+                5 => ' §bSeconds§f: §a' . $sec,
+                6 => ' §a',
+                7 => " §f§l{$player2->getName()}",
+                8 => "   §fPing: §b$player2ping" . '§fms',
+                9 => '§7---------------'
+            ];
         }
-        $diff = abs($BoxingPoint - $OpponentBoxingPoint);
-        $check = $BoxingPoint >= $OpponentBoxingPoint;
-        $lines = [
-            1 => '§7---------------§0',
-            2 => ' Hits: ' . ($check ? "§a(+$diff)" : "§c(-$diff)"),
-            3 => "   §bYour§f: §a$BoxingPoint",
-            4 => "   §bThem§f: §c$OpponentBoxingPoint",
-            5 => ' §c',
-            6 => " §bCombat§f: §a$combat",
-            7 => ' §bKillStreak§f: §a' . $session->getStreak(),
-            8 => ' §d',
-            9 => " §bYour §fPing: §a$ping" . '§fms',
-            10 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
-            11 => '§7---------------'
-        ];
-        PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
-        foreach ($lines as $line => $content) {
-            PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+        foreach ([$player1, $player2] as $player) {
+            PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
+            foreach ($lines as $line => $content) {
+                PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+            }
         }
     }
 }

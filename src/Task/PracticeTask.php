@@ -86,11 +86,9 @@ class PracticeTask extends AbstractTask
      */
     private function updateScoreboard(Player $player, PlayerSession $session): void
     {
-        if ($session->ScoreboardEnabled) {
+        if ($session->ScoreboardEnabled && !$session->isDueling) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($player);
-            } elseif ($session->isDueling && $session->DuelKit?->getName() === 'Boxing') {
-                PracticeCore::getInstance()->getScoreboardManager()->setBoxingScoreboard($player);
             } else {
                 PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($player);
             }

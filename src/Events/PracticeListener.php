@@ -390,10 +390,10 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if (!$event->isCancelled()) {
-            if ($damager instanceof Player && $player instanceof Player && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                $DSession = PracticeCore::getPlayerSession()::getSession($damager);
-                $PSession = PracticeCore::getPlayerSession()::getSession($player);
+        if ($damager instanceof Player && $player instanceof Player && !$event->isCancelled() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+            $DSession = PracticeCore::getPlayerSession()::getSession($damager);
+            $PSession = PracticeCore::getPlayerSession()::getSession($player);
+            if (!$DSession->isDueling) {
                 if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
                     $PSession->setOpponent($damager->getName());
                     $DSession->setOpponent($player->getName());
@@ -403,7 +403,14 @@ class PracticeListener extends AbstractListener
                         $session->setCombat(true);
                     }
                 } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
-                    if ($PSession->getOpponent() !== $damager->getName() && $DSession->getOpponent() !== $player->getName()) {
+                    if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
+                        $PSession->setOpponent($damager->getName());
+                        $DSession->setOpponent($player->getName());
+                        foreach ([$player, $damager] as $p) {
+                            $session = PracticeCore::getPlayerSession()::getSession($p);
+                            $session->setCombat(true);
+                        }
+                    } else {
                         $event->cancel();
                         $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                     }
@@ -414,9 +421,9 @@ class PracticeListener extends AbstractListener
                     $event->cancel();
                     $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                 }
-            } else {
-                $event->cancel();
             }
+        } else {
+            $event->cancel();
         }
     }
 

@@ -60,9 +60,6 @@ class Duel extends AbstractListener
             if ($session->BoxingPoint > 99) {
                 $player->kill();
             }
-            foreach ([$player, $damager] as $p) {
-                PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
-            }
         }
     }
 
@@ -72,6 +69,7 @@ class Duel extends AbstractListener
      */
     public function update(int $tick): void
     {
+        PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
         foreach ($this->getPlayers() as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
             if ($player->isOnline()) {
@@ -165,6 +163,7 @@ class Duel extends AbstractListener
                         PracticeCore::getScoreboardManager()->setLobbyScoreboard($online);
                         $session->isDueling = false;
                         $session->DuelKit = null;
+                        $session->BoxingPoint = 0;
                         $online->setHealth(20);
                         $online->setImmobile(false);
                         if ($world instanceof World) {
