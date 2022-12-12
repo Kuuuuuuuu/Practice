@@ -69,7 +69,6 @@ class Duel extends AbstractListener
      */
     public function update(int $tick): void
     {
-        PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
         foreach ($this->getPlayers() as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
             if ($player->isOnline()) {
@@ -86,6 +85,9 @@ class Duel extends AbstractListener
                 $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
                 $this->onEnd($player);
             }
+        }
+        if ($tick % 10 === 0) {
+            PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
         }
         if ($tick % 20 === 0) {
             switch ($this->time) {

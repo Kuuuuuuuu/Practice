@@ -124,26 +124,26 @@ final class ScoreboardManager
             $lines = [
                 1 => '§7---------------§0',
                 2 => " §f§l{$player1->getName()}",
-                3 => "   §fPoint: §b$player1BoxingPoint",
-                4 => "   §fPing: §b$player1ping" . '§fms',
+                3 => "   §f§aPoint: §b$player1BoxingPoint",
+                4 => "   §f§aPing: §b$player1ping" . '§fms',
                 5 => ' §d',
                 6 => ' §bSeconds§f: §a' . $time,
                 7 => ' §a',
                 8 => " §f§l{$player2->getName()}",
-                9 => "   §fPoint: §b$player2BoxingPoint",
-                10 => "  §fPing: §b$player2ping" . '§fms',
+                9 => "   §aPoint: §b$player2BoxingPoint",
+                10 => "  §aPing: §b$player2ping" . '§fms',
                 11 => '§7---------------'
             ];
         } else {
             $lines = [
                 1 => '§7---------------§0',
                 2 => " §f§l{$player1->getName()}",
-                3 => "   §fPing: §b$player1ping" . '§fms',
+                3 => "   §f§aPing: §b$player1ping" . '§fms',
                 4 => ' §d',
                 5 => ' §bSeconds§f: §a' . $time,
                 6 => ' §a',
                 7 => " §f§l{$player2->getName()}",
-                8 => "   §fPing: §b$player2ping" . '§fms',
+                8 => "   §aPing: §b$player2ping" . '§fms',
                 9 => '§7---------------'
             ];
         }
