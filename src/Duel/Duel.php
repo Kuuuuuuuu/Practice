@@ -166,6 +166,7 @@ class Duel extends AbstractListener
                         $session->isDueling = false;
                         $session->DuelKit = null;
                         $online->setHealth(20);
+                        $online->setImmobile(false);
                         if ($world instanceof World) {
                             $online->teleport($world->getSafeSpawn(), 0, 0);
                         }

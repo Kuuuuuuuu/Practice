@@ -524,9 +524,6 @@ class PracticeListener extends AbstractListener
             $session = PracticeCore::getPlayerSession()::getSession($player);
             $session->setCombat(false);
             $session->setOpponent(null);
-            $session->isDueling = false;
-            $session->isQueueing = false;
-            $session->DuelKit = null;
         }
     }
 
