@@ -148,9 +148,12 @@ final class ScoreboardManager
             ];
         }
         foreach ([$player1, $player2] as $player) {
-            PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
-            foreach ($lines as $line => $content) {
-                PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+            $session = PracticeCore::getPlayerSession()::getSession($player);
+            if ($session->ScoreboardEnabled) {
+                PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
+                foreach ($lines as $line => $content) {
+                    PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
+                }
             }
         }
     }
