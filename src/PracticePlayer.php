@@ -31,7 +31,8 @@ class PracticePlayer extends Player
     {
         $xzKB = 0.393;
         $yKb = 0.398;
-        if ($this->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+        $session = PracticeCore::getPlayerSession()::getSession($this);
+        if ($session->isDueling && $session->DuelKit?->getName() === 'Boxing') {
             $xzKB = 0.378;
             $yKb = 0.422;
         }

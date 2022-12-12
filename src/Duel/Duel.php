@@ -3,15 +3,17 @@
 namespace Nayuki\Duel;
 
 use Nayuki\Game\Kits\Kit;
+use Nayuki\Misc\AbstractListener;
 use Nayuki\PracticeCore;
 use pocketmine\entity\Location;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-class Duel
+class Duel extends AbstractListener
 {
     /** @var int */
     private int $time = 903;
@@ -32,6 +34,7 @@ class Duel
 
     public function __construct(string $name, Player $player1, Player $player2, Kit $kit)
     {
+        parent::__construct();
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
             throw new WorldException('World does not exist');
@@ -40,6 +43,27 @@ class Duel
         $this->kit = $kit;
         $this->player1 = $player1;
         $this->player2 = $player2;
+    }
+
+    /**
+     * @param EntityDamageByEntityEvent $event
+     * @return void
+     * @priority LOWEST
+     */
+    public function onEntityDamageByEntityEvent(EntityDamageByEntityEvent $event): void
+    {
+        $player = $event->getEntity();
+        $damager = $event->getDamager();
+        if ($damager instanceof Player && $player instanceof Player && $this->kit->getName() === 'Boxing' && $damager->getWorld() === $this->world) {
+            $session = PracticeCore::getPlayerSession()::getSession($damager);
+            $session->BoxingPoint++;
+            if ($session->BoxingPoint > 99) {
+                $player->kill();
+            }
+            foreach ([$player, $damager] as $p) {
+                PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
+            }
+        }
     }
 
     /**

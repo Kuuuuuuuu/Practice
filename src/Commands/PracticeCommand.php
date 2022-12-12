@@ -39,29 +39,19 @@ class PracticeCommand extends Command
                         $sender->sendMessage(Color::BOLD . Color::GREEN . PracticeCore::getPrefixCore());
                         $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                         $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                         break;
                     case 'make':
                     case 'create':
                         if (!isset($args[1])) {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                         }
                         switch ($args[1]) {
-                            case 'Boxing':
-                                if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                    Server::getInstance()->getWorldManager()->loadWorld($args[2]);
-                                    /** @phpstan-ignore-next-line */
-                                    $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
-                                    PracticeCore::getArenaFactory()->setBoxingArena($sender, $args[2]);
-                                } else {
-                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                                }
-                                break;
                             case 'Nodebuff':
                                 if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
                                     Server::getInstance()->getWorldManager()->loadWorld($args[2]);
@@ -74,27 +64,24 @@ class PracticeCommand extends Command
                                 break;
                             default:
                                 $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                                 break;
                         }
                         break;
                     case 'remove':
                         if (isset($args[1])) {
                             switch ($args[1]) {
-                                case 'Boxing':
-                                    PracticeCore::getArenaFactory()->removeBoxing($sender);
-                                    break;
                                 case 'Nodebuff':
                                     PracticeCore::getArenaFactory()->removeNodebuff($sender);
                                     break;
                                 default:
                                     $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                                     break;
                             }
                         } else {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Boxing, Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
                         }
                         break;
                     default:

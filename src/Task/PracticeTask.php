@@ -89,7 +89,7 @@ class PracticeTask extends AbstractTask
         if ($session->ScoreboardEnabled) {
             if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($player);
-            } elseif ($player->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
+            } elseif ($session->isDueling && $session->DuelKit?->getName() === 'Boxing') {
                 PracticeCore::getInstance()->getScoreboardManager()->setBoxingScoreboard($player);
             } else {
                 PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($player);

@@ -350,7 +350,7 @@ class PracticeListener extends AbstractListener
         $event->setQuitMessage('§f[§c-§f] §c' . $name);
         PracticeCore::getClickHandler()->removePlayerClickData($player);
         PracticeCore::getPlayerHandler()->savePlayerData($player);
-        if ($session->isCombat()) {
+        if ($session->isDueling || $session->isCombat()) {
             $player->kill();
         }
     }
@@ -403,21 +403,7 @@ class PracticeListener extends AbstractListener
                         $session->setCombat(true);
                     }
                 } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
-                    foreach ([$player, $damager] as $p) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            PracticeCore::getScoreboardManager()->setBoxingScoreboard($p);
-                        }
-                        $session = PracticeCore::getPlayerSession()::getSession($p);
-                        $session->setCombat(true);
-                    }
-                    if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            $DSession->BoxingPoint++;
-                            if ($DSession->BoxingPoint > 99) {
-                                $player->kill();
-                            }
-                        }
-                    } else {
+                    if ($PSession->getOpponent() !== $damager->getName() && $DSession->getOpponent() !== $player->getName()) {
                         $event->cancel();
                         $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                     }
@@ -483,11 +469,7 @@ class PracticeListener extends AbstractListener
                 $dname = $damager->getName();
                 if ($damager->isAlive() && $damager->isConnected()) {
                     $arena = $damager->getWorld()->getFolderName();
-                    if ($arena === PracticeCore::getArenaFactory()->getBoxingArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getBoxingArena())) {
-                            $damager->setHealth(20);
-                        }
-                    } elseif ($arena === PracticeCore::getArenaFactory()->getNodebuffArena()) {
+                    if ($arena === PracticeCore::getArenaFactory()->getNodebuffArena()) {
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getNodebuffArena())) {
                             $damager->getInventory()->clearAll();
                             PracticeCore::getArenaManager()->getKitNodebuff($damager);
@@ -523,6 +505,9 @@ class PracticeListener extends AbstractListener
         $session = PracticeCore::getPlayerSession()::getSession($player);
         $session->setCombat(false);
         $session->setOpponent(null);
+        $session->isDueling = false;
+        $session->isQueueing = false;
+        $session->DuelKit = null;
         PracticeCore::getScoreboardManager()->setLobbyScoreboard($player);
         PracticeCore::getPracticeUtils()->setLobbyItem($player);
     }
@@ -539,6 +524,9 @@ class PracticeListener extends AbstractListener
             $session = PracticeCore::getPlayerSession()::getSession($player);
             $session->setCombat(false);
             $session->setOpponent(null);
+            $session->isDueling = false;
+            $session->isQueueing = false;
+            $session->DuelKit = null;
         }
     }
 

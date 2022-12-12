@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki;
 
 use Nayuki\Entity\Hologram;
+use Nayuki\Players\PlayerSession;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -112,6 +113,14 @@ final class PracticeUtils
     public function getPlayerInSession(): array
     {
         return PracticeCore::getCaches()->PlayerInSession;
+    }
+
+    /**
+     * @return array<PlayerSession>
+     */
+    public function getPlayerSession(): array
+    {
+        return PracticeCore::getCaches()->PlayerSession;
     }
 
     /**

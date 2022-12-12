@@ -21,6 +21,8 @@ final class ScoreboardManager
         $kills = $session->getKills();
         $rate = round($session->getKdr(), 2);
         $deaths = $session->getDeaths();
+        $queue = $this->getQueuePlayer();
+        $duel = $this->getDuelPlayer();
         $on = count(PracticeCore::getPracticeUtils()->getPlayerInSession());
         $lines = [
             1 => '§7---------------§7',
@@ -29,12 +31,43 @@ final class ScoreboardManager
             4 => ' §a',
             5 => " §bK§f: §a$kills §f| §bD§f: §a$deaths",
             6 => " §bKDR§f: §a$rate",
-            7 => '§7---------------'
+            7 => ' §e',
+            8 => " §bIn-Queue§f: §a$queue",
+            9 => " §bIn-Duel§f: §a$duel",
+            10 => '§7---------------'
         ];
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
         }
+    }
+
+    /**
+     * @return int
+     */
+    private function getQueuePlayer(): int
+    {
+        $queue = 0;
+        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+            if ($session->isQueueing) {
+                $queue++;
+            }
+        }
+        return $queue;
+    }
+
+    /**
+     * @return int
+     */
+    private function getDuelPlayer(): int
+    {
+        $duel = 0;
+        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+            if ($session->isDueling) {
+                $duel++;
+            }
+        }
+        return $duel;
     }
 
     /**
