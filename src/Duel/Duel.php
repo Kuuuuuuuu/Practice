@@ -15,6 +15,8 @@ use pocketmine\world\WorldException;
 
 class Duel extends AbstractListener
 {
+    /** @var string */
+    public string $name;
     /** @var int */
     private int $time = 903;
     /** @var Player */
@@ -31,8 +33,6 @@ class Duel extends AbstractListener
     private Kit $kit;
     /** @var bool */
     private bool $ended = false;
-    /** @var string */
-    public string $name;
 
     public function __construct(string $name, Player $player1, Player $player2, Kit $kit)
     {
@@ -152,8 +152,11 @@ class Duel extends AbstractListener
             foreach ($this->getPlayers() as $online) {
                 if ($playerLeft === null || $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof Player) {
+                        PracticeCore::getPracticeUtils()->handleStreak($this->winner, $this->loser);
                         $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
                         $session = PracticeCore::getPlayerSession()::getSession($online);
+                        $WinnerSession = PracticeCore::getPlayerSession()::getSession($this->winner);
+                        $LoserSession = PracticeCore::getPlayerSession()::getSession($this->loser);
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
                         $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
@@ -167,6 +170,10 @@ class Duel extends AbstractListener
                         $session->isDueling = false;
                         $session->DuelKit = null;
                         $session->BoxingPoint = 0;
+                        $WinnerSession->kills++;
+                        $WinnerSession->killStreak++;
+                        $LoserSession->deaths++;
+                        $LoserSession->killStreak = 0;
                         $online->setHealth(20);
                         $online->setImmobile(false);
                         if ($world instanceof World) {
