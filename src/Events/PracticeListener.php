@@ -368,7 +368,7 @@ class PracticeListener extends AbstractListener
     /**
      * @param PluginDisableEvent $event
      * @return void
-     * @priority LOWEST
+     * @priority MONITOR
      */
     public function onPluginDisableEvent(PluginDisableEvent $event): void
     {
@@ -377,6 +377,9 @@ class PracticeListener extends AbstractListener
             PracticeCore::getPracticeUtils()->dispose();
             foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
                 PracticeCore::getPlayerHandler()->savePlayerData($player);
+            }
+            foreach (PracticeCore::getCaches()->RunningDuel as $duel) {
+                PracticeCore::getDuelManager()->stopMatch($duel->name);
             }
         }
     }

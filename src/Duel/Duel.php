@@ -31,6 +31,8 @@ class Duel extends AbstractListener
     private Kit $kit;
     /** @var bool */
     private bool $ended = false;
+    /** @var string */
+    public string $name;
 
     public function __construct(string $name, Player $player1, Player $player2, Kit $kit)
     {
@@ -41,6 +43,7 @@ class Duel extends AbstractListener
         }
         $this->world = $world;
         $this->kit = $kit;
+        $this->name = $name;
         $this->player1 = $player1;
         $this->player2 = $player2;
     }
@@ -69,6 +72,7 @@ class Duel extends AbstractListener
      */
     public function update(int $tick): void
     {
+        PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
         foreach ($this->getPlayers() as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
             if ($player->isOnline()) {
@@ -87,7 +91,6 @@ class Duel extends AbstractListener
             }
         }
         if ($tick % 20 === 0) {
-            PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
             switch ($this->time) {
                 case 903:
                     $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));

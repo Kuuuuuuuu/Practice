@@ -28,6 +28,7 @@ class HubCommand extends BaseCommand
             if ($this->isPlayerCanUseCommand($sender)) {
                 $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
                 if ($world instanceof World) {
+                    $session = PracticeCore::getPlayerSession()::getSession($sender);
                     $sender->teleport($world->getSafeSpawn());
                     $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
                     $sender->setGamemode(GameMode::ADVENTURE());
@@ -36,6 +37,9 @@ class HubCommand extends BaseCommand
                     $sender->getEffects()->clear();
                     PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($sender);
                     PracticeCore::getPracticeUtils()->setLobbyItem($sender);
+                    $session->isDueling = false;
+                    $session->DuelKit = null;
+                    $session->BoxingPoint = 0;
                 }
             }
         } else {
