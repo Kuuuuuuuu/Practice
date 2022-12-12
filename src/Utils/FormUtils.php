@@ -82,18 +82,18 @@ class FormUtils
                 $session = PracticeCore::getPlayerSession()::getSession($player);
                 switch ($data) {
                     case 0:
-                        PracticeCore::getPracticeUtils()->checkQueue($player);
                         $session->DuelKit = KitRegistry::fromString('NoDebuff');
                         $session->isQueueing = true;
                         $player->getInventory()->clearAll();
                         $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        PracticeCore::getPracticeUtils()->checkQueue($player);
                         break;
                     case 1:
-                        PracticeCore::getPracticeUtils()->checkQueue($player);
                         $session->DuelKit = KitRegistry::fromString('Boxing');
                         $session->isQueueing = true;
                         $player->getInventory()->clearAll();
                         $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                        PracticeCore::getPracticeUtils()->checkQueue($player);
                         break;
                 }
             }

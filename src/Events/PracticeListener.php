@@ -74,6 +74,7 @@ class PracticeListener extends AbstractListener
     public function onPlayerItemUseEvent(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
+        $session = PracticeCore::getPlayerSession()::getSession($player);
         $item = $event->getItem();
         if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
@@ -88,6 +89,11 @@ class PracticeListener extends AbstractListener
             PracticeCore::getFormUtils()->SettingsForm($player);
         } elseif ($item->getCustomName() === '§r§bDuels') {
             PracticeCore::getFormUtils()->duelForm($player);
+        } elseif ($item->getCustomName() === '§r§cLeave Queue') {
+            $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
+            $session->isQueueing = false;
+            $session->DuelKit = null;
+            PracticeCore::getPracticeUtils()->setLobbyItem($player);
         }
     }
 
