@@ -86,10 +86,8 @@ class Duel extends AbstractListener
                 $this->onEnd($player);
             }
         }
-        if ($tick % 10 === 0) {
-            PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
-        }
         if ($tick % 20 === 0) {
+            PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
             switch ($this->time) {
                 case 903:
                     $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
