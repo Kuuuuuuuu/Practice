@@ -63,7 +63,7 @@ class HologramCommand extends Command
                     }
                 }
             } else {
-                $sender->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You can only use this command in-game!');
+                $sender->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You can only use this command in-Game!');
             }
         }
     }

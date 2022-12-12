@@ -86,6 +86,8 @@ class PracticeListener extends AbstractListener
             PracticeCore::getFormUtils()->ArenaForm($player);
         } elseif ($item->getCustomName() === '§r§bSettings') {
             PracticeCore::getFormUtils()->SettingsForm($player);
+        } elseif ($item->getCustomName() === '§r§bDuels') {
+            PracticeCore::getFormUtils()->duelForm($player);
         }
     }
 

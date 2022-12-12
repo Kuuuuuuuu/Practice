@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Players;
 
+use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 
@@ -31,6 +32,12 @@ class PlayerSession
     public int $deaths = 0;
     /** @var int */
     public int $killStreak = 0;
+    /** @var bool */
+    public bool $isDueling = false;
+    /** @var Kit|null */
+    public ?Kit $DuelKit = null;
+    /** @var bool */
+    public bool $isQueueing = false;
     /** @var string|null */
     private ?string $Opponent = null;
     /** @var bool */

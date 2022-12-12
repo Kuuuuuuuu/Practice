@@ -34,7 +34,7 @@ class TcheckCommand extends Command
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou cannot execute this command.');
             }
         } else {
-            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-Game!');
         }
     }
 

@@ -39,7 +39,7 @@ class HubCommand extends BaseCommand
                 }
             }
         } else {
-            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-Game!');
         }
     }
 }

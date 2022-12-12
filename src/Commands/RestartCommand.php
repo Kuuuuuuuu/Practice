@@ -40,7 +40,7 @@ class RestartCommand extends Command
                 $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
             }
         } else {
-            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-game!');
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-Game!');
         }
     }
 }

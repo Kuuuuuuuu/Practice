@@ -14,9 +14,11 @@ use Nayuki\Commands\SetTagCommand;
 use Nayuki\Commands\TbanCommand;
 use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
+use Nayuki\Duel\DuelManager;
 use Nayuki\Entity\EnderPearlEntity;
 use Nayuki\Entity\Hologram;
 use Nayuki\Events\PracticeListener;
+use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
@@ -37,6 +39,7 @@ use pocketmine\item\PotionType;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
+use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
 
@@ -55,6 +58,7 @@ class PracticeCore extends PluginBase
     private static PracticeCaches $caches;
     private static PlayerHandler $playerHandler;
     private static PlayerSession $playerSession;
+    private static DuelManager $duelManager;
     public SQLite3 $BanDatabase;
 
     /**
@@ -153,6 +157,11 @@ class PracticeCore extends PluginBase
         return self::$PracticeUtils;
     }
 
+    public static function getDuelManager(): DuelManager
+    {
+        return self::$duelManager;
+    }
+
     public function onLoad(): void
     {
         self::$plugin = $this;
@@ -166,6 +175,21 @@ class PracticeCore extends PluginBase
         self::$caches = new PracticeCaches();
         self::$playerHandler = new PlayerHandler();
         self::$playerSession = new PlayerSession();
+        self::$duelManager = new DuelManager();
+    }
+
+    public function onEnable(): void
+    {
+        $this->registerConfigs();
+        $this->registerGenerators();
+        $this->unregisterCommands();
+        $this->registerItems();
+        $this->registerCommands();
+        $this->registerEvents();
+        $this->registerTasks();
+        $this->registerEntities();
+        $this->loadWorlds();
+        Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
     }
 
     /**
@@ -192,17 +216,17 @@ class PracticeCore extends PluginBase
         return self::$plugin;
     }
 
-    public function onEnable(): void
+    /**
+     * @return void
+     */
+    private function registerGenerators(): void
     {
-        $this->registerConfigs();
-        $this->unregisterCommands();
-        $this->registerItems();
-        $this->registerCommands();
-        $this->registerEvents();
-        $this->registerTasks();
-        $this->registerEntities();
-        $this->loadWorlds();
-        Server::getInstance()->getNetwork()->setName(PracticeConfig::MOTD);
+        $generator = [
+            DuelGenerator::class => 'duel'
+        ];
+        foreach ($generator as $key => $value) {
+            GeneratorManager::getInstance()->addGenerator($key, $value, fn () => null);
+        }
     }
 
     /**

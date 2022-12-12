@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Task;
 
+use Nayuki\Duel\Duel;
 use Nayuki\Misc\AbstractTask;
 use Nayuki\Misc\ParticleDisplayer;
 use Nayuki\Players\PlayerSession;
@@ -12,30 +13,29 @@ use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
-
 use pocketmine\world\particle\FlameParticle;
 
 use function array_filter;
 
 class PracticeTask extends AbstractTask
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @param int $tick
      * @return void
      */
     public function onUpdate(int $tick): void
     {
+        foreach (PracticeCore::getCaches()->RunningDuel as $duel) {
+            if ($duel instanceof Duel) {
+                $duel->update($tick);
+            }
+        }
         foreach (array_filter(PracticeCore::getPracticeUtils()->getPlayerInSession(), static fn (Player $player): bool => $player->isConnected() && $player->spawned) as $player) {
             $session = PracticeCore::getPlayerSession()::getSession($player);
             if ($session->loadedData) {
                 $this->updateScoreTag($player);
                 if ($tick % 20 === 0) {
-                    if ($player->getWorld()  === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         ParticleDisplayer::display($player, new FlameParticle());
                     }
                     $this->updateNameTag($player, $session);

@@ -2,6 +2,7 @@
 
 namespace Nayuki;
 
+use Nayuki\Duel\Duel;
 use Nayuki\Players\PlayerSession;
 use pocketmine\player\Player;
 
@@ -17,4 +18,6 @@ class PracticeCaches
     public array $PlayerSession = [];
     /** @var array<Player> */
     public array $PlayerInSession = [];
+    /** @var array<Duel> */
+    public array $RunningDuel = [];
 }
