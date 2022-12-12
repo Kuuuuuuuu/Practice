@@ -8,6 +8,10 @@ use pocketmine\player\Player;
 
 abstract class BaseCommand extends Command
 {
+    /**
+     * @param Player $sender
+     * @return bool
+     */
     public function isPlayerCanUseCommand(Player $sender): bool
     {
         $session = PracticeCore::getPlayerSession()::getSession($sender);
