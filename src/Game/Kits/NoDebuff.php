@@ -18,10 +18,10 @@ class NoDebuff extends Kit
     public function getArmorItems(): array
     {
         return [
-            VanillaItems::DIAMOND_HELMET(),
-            VanillaItems::DIAMOND_CHESTPLATE(),
-            VanillaItems::DIAMOND_LEGGINGS(),
-            VanillaItems::DIAMOND_BOOTS()
+            VanillaItems::DIAMOND_HELMET()->setUnbreakable(),
+            VanillaItems::DIAMOND_CHESTPLATE()->setUnbreakable(),
+            VanillaItems::DIAMOND_LEGGINGS()->setUnbreakable(),
+            VanillaItems::DIAMOND_BOOTS()->setUnbreakable()
         ];
     }
 
@@ -31,7 +31,7 @@ class NoDebuff extends Kit
     public function getInventoryItems(): array
     {
         $contents = [];
-        $contents[] = VanillaItems::DIAMOND_SWORD();
+        $contents[] = VanillaItems::DIAMOND_SWORD()->setUnbreakable();
         $contents[] = VanillaItems::ENDER_PEARL()->setCount(16);
         for ($i = 0; $i < 34; $i++) {
             $contents[] = VanillaItems::STRONG_HEALING_SPLASH_POTION();
