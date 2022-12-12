@@ -152,11 +152,8 @@ class Duel extends AbstractListener
             foreach ($this->getPlayers() as $online) {
                 if ($playerLeft === null || $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof Player) {
-                        PracticeCore::getPracticeUtils()->handleStreak($this->winner, $this->loser);
                         $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
                         $session = PracticeCore::getPlayerSession()::getSession($online);
-                        $WinnerSession = PracticeCore::getPlayerSession()::getSession($this->winner);
-                        $LoserSession = PracticeCore::getPlayerSession()::getSession($this->loser);
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
                         $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
@@ -170,10 +167,16 @@ class Duel extends AbstractListener
                         $session->isDueling = false;
                         $session->DuelKit = null;
                         $session->BoxingPoint = 0;
-                        $WinnerSession->kills++;
-                        $WinnerSession->killStreak++;
-                        $LoserSession->deaths++;
-                        $LoserSession->killStreak = 0;
+                        if ($this->winner instanceof Player) {
+                            $WinnerSession = PracticeCore::getPlayerSession()::getSession($this->winner);
+                            $WinnerSession->kills++;
+                            $WinnerSession->killStreak++;
+                        }
+                        if ($this->loser instanceof Player) {
+                            $LoserSession = PracticeCore::getPlayerSession()::getSession($this->loser);
+                            $LoserSession->deaths++;
+                            $LoserSession->killStreak = 0;
+                        }
                         $online->setHealth(20);
                         $online->setImmobile(false);
                         if ($world instanceof World) {
