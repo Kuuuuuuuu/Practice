@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\PracticeCore;
-use Kuu\Task\OnceRestartTask;
+use Nayuki\PracticeCore;
+use Nayuki\Task\OnceRestartTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

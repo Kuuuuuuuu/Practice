@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace Kuu;
+namespace Nayuki;
 
-use Kuu\Arena\ArenaFactory;
-use Kuu\Arena\ArenaManager;
-use Kuu\Commands\HologramCommand;
-use Kuu\Commands\HubCommand;
-use Kuu\Commands\PracticeCommand;
-use Kuu\Commands\RestartCommand;
-use Kuu\Commands\SetTagCommand;
-use Kuu\Commands\TbanCommand;
-use Kuu\Commands\TcheckCommand;
-use Kuu\Commands\TpsCommand;
-use Kuu\Entity\EnderPearlEntity;
-use Kuu\Entity\Hologram;
-use Kuu\Events\PracticeListener;
-use Kuu\Items\CustomSplashPotion;
-use Kuu\Items\EnderPearl;
-use Kuu\Players\PlayerHandler;
-use Kuu\Players\PlayerSession;
-use Kuu\Task\PracticeTask;
-use Kuu\Utils\ClickHandler;
-use Kuu\Utils\FormUtils;
-use Kuu\Utils\Scoreboard\ScoreboardManager;
-use Kuu\Utils\Scoreboard\ScoreboardUtils;
+use Nayuki\Arena\ArenaFactory;
+use Nayuki\Arena\ArenaManager;
+use Nayuki\Commands\HologramCommand;
+use Nayuki\Commands\HubCommand;
+use Nayuki\Commands\PracticeCommand;
+use Nayuki\Commands\RestartCommand;
+use Nayuki\Commands\SetTagCommand;
+use Nayuki\Commands\TbanCommand;
+use Nayuki\Commands\TcheckCommand;
+use Nayuki\Commands\TpsCommand;
+use Nayuki\Entity\EnderPearlEntity;
+use Nayuki\Entity\Hologram;
+use Nayuki\Events\PracticeListener;
+use Nayuki\Items\CustomSplashPotion;
+use Nayuki\Items\EnderPearl;
+use Nayuki\Players\PlayerHandler;
+use Nayuki\Players\PlayerSession;
+use Nayuki\Task\PracticeTask;
+use Nayuki\Utils\ClickHandler;
+use Nayuki\Utils\FormUtils;
+use Nayuki\Utils\Scoreboard\ScoreboardManager;
+use Nayuki\Utils\Scoreboard\ScoreboardUtils;
 use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
@@ -55,7 +55,7 @@ class PracticeCore extends PluginBase
     private static PracticeCaches $caches;
     private static PlayerHandler $playerHandler;
     private static PlayerSession $playerSession;
-    public SQLite3 $BanData;
+    public SQLite3 $BanDatabase;
 
     /**
      * @return string
@@ -168,11 +168,35 @@ class PracticeCore extends PluginBase
         self::$playerSession = new PlayerSession();
     }
 
+    /**
+     * @return void
+     */
+    private function registerConfigs(): void
+    {
+        @mkdir(self::getPlayerDataPath());
+        @mkdir($this->getDataFolder() . 'data/');
+        self::getInstance()->BanDatabase = new SQLite3($this->getDataFolder() . 'Ban.db');
+        self::getInstance()->BanDatabase->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
+    }
+
+    public static function getPlayerDataPath(): string
+    {
+        return self::getInstance()->getDataFolder() . 'player/';
+    }
+
+    /**
+     * @return PracticeCore
+     */
+    public static function getInstance(): PracticeCore
+    {
+        return self::$plugin;
+    }
+
     public function onEnable(): void
     {
+        $this->registerConfigs();
         $this->unregisterCommands();
         $this->registerItems();
-        $this->registerConfigs();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
@@ -220,24 +244,6 @@ class PracticeCore extends PluginBase
             ItemFactory::getInstance()->register(new CustomSplashPotion(new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId), $type->getDisplayName() . ' Splash Potion', $type), true);
         }
         ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
-    }
-
-    /**
-     * @return PracticeCore
-     */
-    public static function getInstance(): PracticeCore
-    {
-        return self::$plugin;
-    }
-
-    /**
-     * @return void
-     */
-    private function registerConfigs(): void
-    {
-        @mkdir($this->getDataFolder() . 'data/');
-        self::getInstance()->BanData = new SQLite3($this->getDataFolder() . 'Ban.db');
-        self::getInstance()->BanData->exec('CREATE TABLE IF NOT EXISTS banPlayers(player TEXT PRIMARY KEY, banTime INT, reason TEXT, staff TEXT);');
     }
 
     /**

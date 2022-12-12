@@ -1,10 +1,10 @@
 <?php
 
-namespace Kuu\Misc;
+namespace Nayuki\Misc;
 
 use function gmdate;
 
-class Time
+final class Time
 {
     /**
      * @param int $time

@@ -1,10 +1,10 @@
 <?php
 
-namespace Kuu\Items;
+namespace Nayuki\Items;
 
-use Kuu\Entity\EnderPearlEntity;
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
+use Nayuki\Entity\EnderPearlEntity;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\EnderPearl as PMEnderPearlProjectile;
 use pocketmine\entity\projectile\Throwable;

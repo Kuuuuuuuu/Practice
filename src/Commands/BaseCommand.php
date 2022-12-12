@@ -1,8 +1,8 @@
 <?php
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\player\Player;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Utils;
+namespace Nayuki\Utils;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 
 use function array_filter;

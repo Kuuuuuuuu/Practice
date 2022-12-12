@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Events;
+namespace Nayuki\Events;
 
-use Kuu\Misc\AbstractListener;
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\PracticePlayer;
-use Kuu\Task\OncePearlTask;
+use Nayuki\Misc\AbstractListener;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
+use Nayuki\PracticePlayer;
+use Nayuki\Task\OncePearlTask;
 use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -121,7 +121,7 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $banplayer = $player->getName();
-        $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+        $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
         /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (!empty($array)) {
@@ -141,7 +141,7 @@ class PracticeListener extends AbstractListener
                 $event->cancel();
                 $player->close();
             } else {
-                PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
             }
         }
     }

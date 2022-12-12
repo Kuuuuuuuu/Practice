@@ -1,8 +1,8 @@
 <?php
 
-namespace Kuu\Misc;
+namespace Nayuki\Misc;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\event\Listener;
 use pocketmine\Server;
 

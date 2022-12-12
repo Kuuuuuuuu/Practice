@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\Utils\Forms\SimpleForm;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
+use Nayuki\Utils\Forms\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -48,7 +48,7 @@ class TcheckCommand extends Command
             $this->openInfoUI($player);
             return true;
         });
-        $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        $banInfo = PracticeCore::getInstance()->BanDatabase->query('SELECT * FROM banPlayers;');
         /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (empty($array)) {
@@ -57,7 +57,7 @@ class TcheckCommand extends Command
         }
         $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
         $form->setContent('§c§lChoose player');
-        $banInfo = PracticeCore::getInstance()->BanData->query('SELECT * FROM banPlayers;');
+        $banInfo = PracticeCore::getInstance()->BanDatabase->query('SELECT * FROM banPlayers;');
         /** @phpstan-ignore-next-line */
         while ($resultArr = $banInfo->fetchArray(SQLITE3_ASSOC)) {
             $banPlayer = $resultArr['player'];
@@ -76,11 +76,11 @@ class TcheckCommand extends Command
             }
             if ($result === 0) {
                 $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
-                $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
-                    PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                    PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§b{player} §ahas been unban'));
                 }
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
@@ -88,7 +88,7 @@ class TcheckCommand extends Command
             return true;
         });
         $banPlayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
-        $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
+        $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
         /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
         if (!empty($array)) {
@@ -98,11 +98,11 @@ class TcheckCommand extends Command
             $now = time();
             if ($banTime < $now) {
                 $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
-                $banInfo = PracticeCore::getInstance()->BanData->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
+                $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
                 if (!empty($array)) {
-                    PracticeCore::getInstance()->BanData->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                    PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§a{player} Has Auto Unban Already'));
                 }
                 unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);

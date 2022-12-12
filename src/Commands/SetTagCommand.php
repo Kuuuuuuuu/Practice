@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;

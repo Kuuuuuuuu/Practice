@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Utils;
+namespace Nayuki\Utils;
 
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\Utils\Forms\CustomForm;
-use Kuu\Utils\Forms\SimpleForm;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
+use Nayuki\Utils\Forms\CustomForm;
+use Nayuki\Utils\Forms\SimpleForm;
 use pocketmine\player\Player;
 
 class FormUtils

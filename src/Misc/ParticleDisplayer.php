@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Misc;
+namespace Nayuki\Misc;
 
 use pocketmine\player\Player;
 use pocketmine\world\particle\Particle as PMParticle;
 
-class ParticleDisplayer
+final class ParticleDisplayer
 {
     /**
      * @param Player $player

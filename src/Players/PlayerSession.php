@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Players;
+namespace Nayuki\Players;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 
 class PlayerSession

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu;
+namespace Nayuki;
 
-use Kuu\Entity\Hologram;
+use Nayuki\Entity\Hologram;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -15,11 +15,12 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\player\Player;
 use pocketmine\Server;
+
 use function stripos;
 use function strlen;
 use function strtolower;
 
-class PracticeUtils
+final class PracticeUtils
 {
     /**
      * @param Player $player

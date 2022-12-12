@@ -1,8 +1,8 @@
 <?php
 
-namespace Kuu\Items;
+namespace Nayuki\Items;
 
-use Kuu\PracticeConfig;
+use Nayuki\PracticeConfig;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\SplashPotion as SplashPotionEntity;
 use pocketmine\entity\projectile\Throwable;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kuu\Utils\Forms;
+namespace Nayuki\Utils\Forms;
 
 use pocketmine\form\Form as IForm;
 use pocketmine\player\Player;

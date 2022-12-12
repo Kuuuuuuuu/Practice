@@ -2,18 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Task;
+namespace Nayuki\Task;
 
-use Kuu\Misc\AbstractTask;
-use Kuu\Misc\ParticleDisplayer;
-use Kuu\Players\PlayerSession;
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
+use Nayuki\Misc\AbstractTask;
+use Nayuki\Misc\ParticleDisplayer;
+use Nayuki\Players\PlayerSession;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
 use pocketmine\world\particle\FlameParticle;
+
 use function array_filter;
 
 class PracticeTask extends AbstractTask

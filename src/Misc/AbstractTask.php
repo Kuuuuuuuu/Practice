@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Misc;
+namespace Nayuki\Misc;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\scheduler\Task;
 
 abstract class AbstractTask extends Task

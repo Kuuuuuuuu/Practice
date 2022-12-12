@@ -1,9 +1,9 @@
 <?php
 
-namespace Kuu\Task;
+namespace Nayuki\Task;
 
-use Kuu\Players\PlayerSession;
-use Kuu\PracticeCore;
+use Nayuki\Players\PlayerSession;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\CancelTaskException;
 use pocketmine\scheduler\Task;

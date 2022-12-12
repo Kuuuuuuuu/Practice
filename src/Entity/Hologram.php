@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Entity;
+namespace Nayuki\Entity;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\Server;
+
 use function is_array;
 
 class Hologram extends Entity
@@ -29,7 +31,6 @@ class Hologram extends Entity
 
     public function __construct(Location $location, CompoundTag $nbt)
     {
-        $this->initFolder();
         parent::__construct($location, $nbt);
         $this->forceMovementUpdate = false;
         $this->gravity = 0;
@@ -38,24 +39,6 @@ class Hologram extends Entity
         $this->loadFromNBT($nbt);
         $this->getNetworkProperties()->setFloat(EntityMetadataProperties::BOUNDING_BOX_HEIGHT, 0);
         $this->getNetworkProperties()->setFloat(EntityMetadataProperties::BOUNDING_BOX_HEIGHT, 0);
-    }
-
-    /**
-     * @return void
-     */
-    private function initFolder(): void
-    {
-        if (!is_dir($this->getPath())) {
-            mkdir($this->getPath(), 0777, true);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    private function getPath(): string
-    {
-        return PracticeCore::getInstance()->getDataFolder() . 'player/';
     }
 
     /**
@@ -101,28 +84,29 @@ class Hologram extends Entity
         $subtitle = '';
         $array = [];
         $pos = 0;
-        $files = scandir($this->getPath());
+        $files = scandir(PracticeCore::getPlayerDataPath());
         if (is_array($files)) {
             foreach ($files as $file) {
                 if (str_contains($file, '.yml')) {
-                    $locale = str_replace('.yml', '', $file);
-                    $parsed = yaml_parse_file($this->getPath() . $locale . '.yml');
+                    $name = str_replace('.yml', '', $file);
+                    if (Server::getInstance()->getPlayerExact($name) !== null) {
+                        continue;
+                    }
+                    $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
                     if (is_array($parsed)) {
-                        $array[$locale] = $parsed[$this->type];
+                        $array[$name] = $parsed[$this->type];
                     }
                 }
             }
         }
-        if ($this->type === 'kills') {
-            foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
+        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
+            if ($this->type === 'kills') {
                 $array[$player->getName()] = PracticeCore::getPlayerSession()::getSession($player)->getKills();
-            }
-            $subtitle .= "§b§lTop Kills\n";
-        } elseif ($this->type === 'deaths') {
-            foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
+                $subtitle .= "§b§lTop Kills\n";
+            } elseif ($this->type === 'deaths') {
                 $array[$player->getName()] = PracticeCore::getPlayerSession()::getSession($player)->getDeaths();
+                $subtitle .= "§b§lTop Deaths\n";
             }
-            $subtitle .= "§b§lTop Deaths\n";
         }
         arsort($array);
         foreach ($array as $name => $kills) {

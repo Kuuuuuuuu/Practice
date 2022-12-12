@@ -1,6 +1,6 @@
 <?php
 
-namespace Kuu\Entity;
+namespace Nayuki\Entity;
 
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\EntityDamageEvent;

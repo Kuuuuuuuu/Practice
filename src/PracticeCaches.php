@@ -1,8 +1,8 @@
 <?php
 
-namespace Kuu;
+namespace Nayuki;
 
-use Kuu\Players\PlayerSession;
+use Nayuki\Players\PlayerSession;
 use pocketmine\player\Player;
 
 class PracticeCaches

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Utils\Scoreboard;
+namespace Nayuki\Utils\Scoreboard;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;

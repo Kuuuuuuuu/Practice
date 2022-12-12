@@ -1,6 +1,6 @@
 <?php
 
-namespace Kuu\Utils\Forms;
+namespace Nayuki\Utils\Forms;
 
 use function count;
 use function is_array;

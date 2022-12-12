@@ -1,8 +1,8 @@
 <?php
 
-namespace Kuu\Utils\Scoreboard;
+namespace Nayuki\Utils\Scoreboard;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 
 use function count;

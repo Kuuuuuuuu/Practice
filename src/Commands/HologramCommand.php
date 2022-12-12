@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\Entity\Hologram;
-use Kuu\PracticeCore;
+use Nayuki\Entity\Hologram;
+use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;

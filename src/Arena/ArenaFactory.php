@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Arena;
+namespace Nayuki\Arena;
 
 use JsonException;
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;

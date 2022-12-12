@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Commands;
+namespace Nayuki\Commands;
 
-use Kuu\PracticeConfig;
-use Kuu\PracticeCore;
-use Kuu\Utils\Forms\CustomForm;
-use Kuu\Utils\Forms\SimpleForm;
+use Nayuki\PracticeConfig;
+use Nayuki\PracticeCore;
+use Nayuki\Utils\Forms\CustomForm;
+use Nayuki\Utils\Forms\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
@@ -89,7 +89,7 @@ class TbanCommand extends Command
                     $min = 60;
                 }
                 $banTime = $now + $day + $hour + $min;
-                $banInfo = PracticeCore::getInstance()->BanData->prepare('INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);');
+                $banInfo = PracticeCore::getInstance()->BanDatabase->prepare('INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);');
                 /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':player', PracticeCore::getCaches()->targetPlayer[$player->getName()]);
                 /** @phpstan-ignore-next-line */

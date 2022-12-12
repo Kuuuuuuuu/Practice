@@ -1,6 +1,6 @@
 <?php
 
-namespace Kuu;
+namespace Nayuki;
 
 use pocketmine\utils\TextFormat;
 

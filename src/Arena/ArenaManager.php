@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kuu\Arena;
+namespace Nayuki\Arena;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\enchantment\EnchantmentInstance;

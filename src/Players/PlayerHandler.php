@@ -1,12 +1,9 @@
 <?php
 
-namespace Kuu\Players;
+namespace Nayuki\Players;
 
-use Kuu\PracticeCore;
+use Nayuki\PracticeCore;
 use pocketmine\player\Player;
-
-use function is_dir;
-use function mkdir;
 
 class PlayerHandler
 {
@@ -14,18 +11,7 @@ class PlayerHandler
 
     public function __construct()
     {
-        $this->path = PracticeCore::getInstance()->getDataFolder() . 'player/';
-        $this->initFolder();
-    }
-
-    /**
-     * @return void
-     */
-    private function initFolder(): void
-    {
-        if (!is_dir($this->path)) {
-            mkdir($this->path);
-        }
+        $this->path = PracticeCore::getPlayerDataPath();
     }
 
     /**

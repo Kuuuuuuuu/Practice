@@ -1,9 +1,9 @@
 <?php
 
-namespace Kuu\Task;
+namespace Nayuki\Task;
 
-use Kuu\Misc\AbstractTask;
-use Kuu\PracticeCore;
+use Nayuki\Misc\AbstractTask;
+use Nayuki\PracticeCore;
 use pocketmine\Server;
 
 class OnceRestartTask extends AbstractTask

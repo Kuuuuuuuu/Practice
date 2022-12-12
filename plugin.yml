@@ -1,9 +1,9 @@
 name: Practice
 api: 4.0.0
 version: 1.0.0
-src-namespace-prefix: Kuu
-main: Kuu\PracticeCore
-author: Nayuki/IsKohakuChan
+src-namespace-prefix: Nayuki
+main: Nayuki\PracticeCore
+author: https://github.com/Kuuuuuuuu
 permissions:
   practice.command:
     default: op
