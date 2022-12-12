@@ -95,8 +95,8 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
-        $form->addButton("§aNodebuff\n§bQueue§f: " . $this->getQueue('Fist'), 0, 'textures/items/paper.png');
-        $form->addButton("§aBoxing\n§bQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
+        $form->addButton("§aNodebuff\n§bQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
+        $form->addButton("§aBoxing\n§bQueue§f: " . $this->getQueue('Boxing'), 0, 'textures/items/paper.png');
         $player->sendForm($form);
     }
 
