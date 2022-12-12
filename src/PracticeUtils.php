@@ -15,7 +15,6 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function stripos;
 use function strlen;
 use function strtolower;
@@ -33,11 +32,11 @@ final class PracticeUtils
         $DeathSession = PracticeCore::getPlayerSession()::getSession($death);
         $oldStreak = $DeathSession->getStreak();
         $newStreak = $KillSession->getStreak();
-        if ($oldStreak > 10) {
+        if ($oldStreak > 5) {
             $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
             $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreaks!');
         }
-        if ($newStreak / 5 === 0) {
+        if ($newStreak % 5 === 0) {
             Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreaks!');
         }
     }
