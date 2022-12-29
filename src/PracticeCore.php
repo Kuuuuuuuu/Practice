@@ -45,7 +45,7 @@ use SQLite3;
 
 use function is_array;
 
-class PracticeCore extends PluginBase
+final class PracticeCore extends PluginBase
 {
     private static self $plugin;
     private static ClickHandler $cps;
