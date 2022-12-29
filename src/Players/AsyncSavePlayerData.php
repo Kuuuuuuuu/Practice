@@ -21,7 +21,7 @@ class AsyncSavePlayerData extends AsyncTask
 
     public function __construct(Player $player, string $path)
     {
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $this->path = $path;
         $this->playerdata = [
             'kills' => $session->getKills(),
@@ -32,7 +32,7 @@ class AsyncSavePlayerData extends AsyncTask
             'cps' => $session->CpsCounterEnabled,
             'smoothpearl' => $session->SmoothPearlEnabled,
         ];
-        PracticeCore::getPlayerSession()::removeSession($player);
+        PracticeCore::getSessionManager()::removeSession($player);
         unset(PracticeCore::getCaches()->PlayerInSession[$player->getName()]);
     }
 

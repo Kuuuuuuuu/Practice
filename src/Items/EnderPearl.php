@@ -52,7 +52,7 @@ class EnderPearl extends ItemEnderPearl
      */
     public function createEntity(Location $location, Player $thrower): Throwable
     {
-        $session = PracticeCore::getPlayerSession()::getSession($thrower);
+        $session = PracticeCore::getSessionManager()::getSession($thrower);
         if ($session->SmoothPearlEnabled) {
             return new EnderPearlEntity($location, $thrower);
         }

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Nayuki\Players;
 
 use Nayuki\Game\Kits\Kit;
+use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
+use pocketmine\Server;
 
-class PlayerSession
+final class PlayerSession
 {
     /** @var bool */
     public bool $ScoreboardEnabled = true;
@@ -44,23 +46,20 @@ class PlayerSession
     private bool $isCombat = false;
     /** @var string */
     private string $customTag = '';
+    /** @var Player */
+    private Player $player;
 
-    /**
-     * @param Player $player
-     * @return PlayerSession
-     */
-    public static function getSession(Player $player): PlayerSession
+    public function __construct(Player $player)
     {
-        return PracticeCore::getCaches()->PlayerSession[$player->getName()] ??= new self();
+        $this->player = $player;
     }
 
     /**
-     * @param Player $player
-     * @return void
+     * @return Player
      */
-    public static function removeSession(Player $player): void
+    public function getPlayer(): Player
     {
-        unset(PracticeCore::getCaches()->PlayerSession[$player->getName()]);
+        return $this->player;
     }
 
     /**
@@ -105,23 +104,6 @@ class PlayerSession
             $this->isCombat = $bool;
             $this->CombatTime = 10;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomTag(): string
-    {
-        return $this->customTag;
-    }
-
-    /**
-     * @param string $tag
-     * @return void
-     */
-    public function setCustomTag(string $tag): void
-    {
-        $this->customTag = $tag;
     }
 
     /**
@@ -182,5 +164,62 @@ class PlayerSession
             return $this->kills / $this->deaths;
         }
         return 1;
+    }
+
+    /**
+     * @return void
+     */
+    public function updateScoreTag(): void
+    {
+        $ping = $this->player->getNetworkSession()->getPing();
+        $cps = PracticeCore::getClickHandler()->getClicks($this->player);
+        $this->player->setScoreTag(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS');
+    }
+
+    /**
+     * @return void
+     */
+    public function updateNameTag(): void
+    {
+        $Tag = '§b' . $this->player->getDisplayName();
+        if ($this->getCustomTag() !== '') {
+            $Tag = '§f[' . $this->getCustomTag() . '§f] §b' . $this->player->getDisplayName();
+        }
+        $this->player->setNameTag($Tag);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomTag(): string
+    {
+        return $this->customTag;
+    }
+
+    /**
+     * @param string $tag
+     * @return void
+     */
+    public function setCustomTag(string $tag): void
+    {
+        $this->customTag = $tag;
+    }
+
+    /**
+     * @return void
+     */
+    public function updateScoreboard(): void
+    {
+        if ($this->ScoreboardEnabled) {
+            if (!$this->isDueling) {
+                if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($this->player);
+                } else {
+                    PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player);
+                }
+            }
+        } else {
+            PracticeCore::getScoreboardUtils()->remove($this->player);
+        }
     }
 }

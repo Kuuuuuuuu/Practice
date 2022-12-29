@@ -101,10 +101,10 @@ class Hologram extends Entity
         }
         foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
             if ($this->type === 'kills') {
-                $array[$player->getName()] = PracticeCore::getPlayerSession()::getSession($player)->getKills();
+                $array[$player->getName()] = PracticeCore::getSessionManager()::getSession($player)->getKills();
                 $subtitle .= "§b§lTop Kills\n";
             } elseif ($this->type === 'deaths') {
-                $array[$player->getName()] = PracticeCore::getPlayerSession()::getSession($player)->getDeaths();
+                $array[$player->getName()] = PracticeCore::getSessionManager()::getSession($player)->getDeaths();
                 $subtitle .= "§b§lTop Deaths\n";
             }
         }

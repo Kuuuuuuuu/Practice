@@ -32,7 +32,7 @@ class SetTagCommand extends Command
         } elseif (isset($args[1])) {
             $player = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($args[0]);
             if ($player instanceof Player) {
-                $session = PracticeCore::getPlayerSession()::getSession($player);
+                $session = PracticeCore::getSessionManager()::getSession($player);
                 $session->setCustomTag($args[1]);
                 $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTag set to §e' . $args[1]);
             } else {

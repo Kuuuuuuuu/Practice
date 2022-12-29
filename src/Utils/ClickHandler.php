@@ -21,7 +21,7 @@ class ClickHandler
      */
     public function addClick(Player $p): void
     {
-        $session = PracticeCore::getPlayerSession()::getSession($p);
+        $session = PracticeCore::getSessionManager()::getSession($p);
         if (isset(PracticeCore::getCaches()->ClickData[mb_strtolower($p->getName())])) {
             if ($session->CpsCounterEnabled) {
                 $p->sendTip('§bCPS: §f' . $this->getClicks($p));

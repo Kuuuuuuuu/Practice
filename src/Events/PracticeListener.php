@@ -74,10 +74,10 @@ class PracticeListener extends AbstractListener
     public function onPlayerItemUseEvent(PlayerItemUseEvent $event): void
     {
         $player = $event->getPlayer();
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $item = $event->getItem();
         if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
+            $session = PracticeCore::getSessionManager()::getSession($player);
             if ($session->PearlCooldown === 0) {
                 PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
             } else {
@@ -345,7 +345,7 @@ class PracticeListener extends AbstractListener
     public function onPlayerQuitEvent(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $name = $player->getName();
         $event->setQuitMessage('§f[§c-§f] §c' . $name);
         PracticeCore::getClickHandler()->removePlayerClickData($player);
@@ -394,14 +394,14 @@ class PracticeListener extends AbstractListener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($damager instanceof Player && $player instanceof Player && !$event->isCancelled() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            $DSession = PracticeCore::getPlayerSession()::getSession($damager);
-            $PSession = PracticeCore::getPlayerSession()::getSession($player);
+            $DSession = PracticeCore::getSessionManager()::getSession($damager);
+            $PSession = PracticeCore::getSessionManager()::getSession($player);
             if (!$DSession->isDueling) {
                 if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
                     $PSession->setOpponent($damager->getName());
                     $DSession->setOpponent($player->getName());
                     foreach ([$player, $damager] as $p) {
-                        $session = PracticeCore::getPlayerSession()::getSession($player);
+                        $session = PracticeCore::getSessionManager()::getSession($player);
                         $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
                         $session->setCombat(true);
                     }
@@ -410,7 +410,7 @@ class PracticeListener extends AbstractListener
                         $PSession->setOpponent($damager->getName());
                         $DSession->setOpponent($player->getName());
                         foreach ([$player, $damager] as $p) {
-                            $session = PracticeCore::getPlayerSession()::getSession($p);
+                            $session = PracticeCore::getSessionManager()::getSession($p);
                             $session->setCombat(true);
                         }
                     } else {
@@ -471,11 +471,11 @@ class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $name = $player->getName();
         $cause = $player->getLastDamageCause();
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         if (($cause instanceof EntityDamageByEntityEvent) && $session->getOpponent() !== null) {
             $damager = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($session->getOpponent());
             if ($damager instanceof Player) {
-                $damagerSession = PracticeCore::getPlayerSession()::getSession($damager);
+                $damagerSession = PracticeCore::getSessionManager()::getSession($damager);
                 $dname = $damager->getName();
                 if ($damager->isAlive() && $damager->isConnected()) {
                     $arena = $damager->getWorld()->getFolderName();
@@ -487,7 +487,7 @@ class PracticeListener extends AbstractListener
                     }
                 }
                 foreach ([$damager, $player] as $p) {
-                    $session = PracticeCore::getPlayerSession()::getSession($p);
+                    $session = PracticeCore::getSessionManager()::getSession($p);
                     $session->setCombat(false);
                 }
                 PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
@@ -512,7 +512,7 @@ class PracticeListener extends AbstractListener
     public function onPlayerRespawnEvent(PlayerRespawnEvent $event): void
     {
         $player = $event->getPlayer();
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $session->setCombat(false);
         $session->setOpponent(null);
         $session->isDueling = false;
@@ -531,7 +531,7 @@ class PracticeListener extends AbstractListener
     {
         $player = $event->getEntity();
         if ($player instanceof Player && $event->getFrom()->getWorld() !== $event->getTo()->getWorld()) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
+            $session = PracticeCore::getSessionManager()::getSession($player);
             $session->setCombat(false);
             $session->setOpponent(null);
         }

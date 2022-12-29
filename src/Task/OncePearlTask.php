@@ -19,7 +19,7 @@ class OncePearlTask extends Task
 
     public function __construct(Player $player)
     {
-        $this->session = PracticeCore::getPlayerSession()::getSession($player);
+        $this->session = PracticeCore::getSessionManager()::getSession($player);
         $this->player = $player;
         $this->session->PearlCooldown = 10;
         $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . "You can't use pearl for 10 seconds.");

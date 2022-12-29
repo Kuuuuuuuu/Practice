@@ -7,7 +7,7 @@ namespace Nayuki\Misc;
 use pocketmine\player\Player;
 use pocketmine\world\particle\Particle as PMParticle;
 
-final class ParticleDisplayer
+final class ParticleOffsetDisplayer
 {
     /**
      * @param Player $player
@@ -18,13 +18,11 @@ final class ParticleDisplayer
     {
         $slice = 2 * M_PI / 16;
         $radius = 0.75;
-        $playerOffset = -2;
         for ($i = 0; $i < 16; $i++) {
-            $playerOffset += 0.25;
             $angle = $slice * $i;
             $dx = $radius * cos($angle);
             $dz = $radius * sin($angle);
-            $player->getWorld()->addParticle($player->getPosition()->add($dx, $playerOffset, $dz), $particle);
+            $player->getWorld()->addParticle($player->getPosition()->add($dx, 0.5, $dz), $particle);
         }
     }
 }

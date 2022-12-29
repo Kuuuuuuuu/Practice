@@ -22,7 +22,7 @@ use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
-use Nayuki\Players\PlayerSession;
+use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
 use Nayuki\Utils\ClickHandler;
 use Nayuki\Utils\FormUtils;
@@ -57,7 +57,7 @@ class PracticeCore extends PluginBase
     private static ScoreboardManager $scoremanager;
     private static PracticeCaches $caches;
     private static PlayerHandler $playerHandler;
-    private static PlayerSession $playerSession;
+    private static SessionManager $playerSession;
     private static DuelManager $duelManager;
     public SQLite3 $BanDatabase;
 
@@ -70,9 +70,9 @@ class PracticeCore extends PluginBase
     }
 
     /**
-     * @return PlayerSession
+     * @return SessionManager
      */
-    public static function getPlayerSession(): PlayerSession
+    public static function getSessionManager(): SessionManager
     {
         return self::$playerSession;
     }
@@ -174,7 +174,7 @@ class PracticeCore extends PluginBase
         self::$scoremanager = new ScoreboardManager();
         self::$caches = new PracticeCaches();
         self::$playerHandler = new PlayerHandler();
-        self::$playerSession = new PlayerSession();
+        self::$playerSession = new SessionManager();
         self::$duelManager = new DuelManager();
     }
 

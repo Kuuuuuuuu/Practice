@@ -18,7 +18,7 @@ final class ScoreboardManager
      */
     public function setLobbyScoreboard(Player $player): void
     {
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $ping = $player->getNetworkSession()->getPing();
         $kills = $session->getKills();
         $rate = round($session->getKdr(), 2);
@@ -79,7 +79,7 @@ final class ScoreboardManager
     public function setArenaScoreboard(Player $player): void
     {
         $OpponentPing = 0;
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         $ping = $player->getNetworkSession()->getPing();
         $CombatSecond = $session->CombatTime;
         $OpponentName = $session->getOpponent();
@@ -113,8 +113,8 @@ final class ScoreboardManager
      */
     public function setDuelScoreboard(Player $player1, Player $player2, Kit $kit, int $sec): void
     {
-        $player1Session = PracticeCore::getPlayerSession()::getSession($player1);
-        $player2Session = PracticeCore::getPlayerSession()::getSession($player2);
+        $player1Session = PracticeCore::getSessionManager()::getSession($player1);
+        $player2Session = PracticeCore::getSessionManager()::getSession($player2);
         $player1ping = $player1->getNetworkSession()->getPing();
         $player2ping = $player2->getNetworkSession()->getPing();
         $time = Time::calculateTime($sec);
@@ -148,7 +148,7 @@ final class ScoreboardManager
             ];
         }
         foreach ([$player1, $player2] as $player) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
+            $session = PracticeCore::getSessionManager()::getSession($player);
             if ($session->ScoreboardEnabled) {
                 PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
                 foreach ($lines as $line => $content) {

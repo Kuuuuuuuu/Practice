@@ -6,16 +6,11 @@ namespace Nayuki\Task;
 
 use Nayuki\Duel\Duel;
 use Nayuki\Misc\AbstractTask;
-use Nayuki\Misc\ParticleDisplayer;
-use Nayuki\Players\PlayerSession;
-use Nayuki\PracticeConfig;
+use Nayuki\Misc\ParticleOffsetDisplayer;
 use Nayuki\PracticeCore;
-use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\FlameParticle;
-
-use function array_filter;
 
 class PracticeTask extends AbstractTask
 {
@@ -30,16 +25,16 @@ class PracticeTask extends AbstractTask
                 $duel->update($tick);
             }
         }
-        foreach (array_filter(PracticeCore::getPracticeUtils()->getPlayerInSession(), static fn (Player $player): bool => $player->isConnected() && $player->spawned) as $player) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
-            if ($session->loadedData) {
-                $this->updateScoreTag($player);
+        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+            $player = $session->getPlayer();
+            if ($session->loadedData && $player->isConnected()) {
+                $session->updateScoreTag();
+                $session->updateNameTag();
+                $session->updateScoreboard();
                 if ($tick % 20 === 0) {
                     if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                        ParticleDisplayer::display($player, new FlameParticle());
+                        ParticleOffsetDisplayer::display($player, new FlameParticle());
                     }
-                    $this->updateNameTag($player, $session);
-                    $this->updateScoreboard($player, $session);
                     if ($session->isCombat()) {
                         $session->CombatTime--;
                         if ($session->CombatTime <= 0) {
@@ -51,51 +46,6 @@ class PracticeTask extends AbstractTask
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * @param Player $player
-     * @return void
-     */
-    private function updateScoreTag(Player $player): void
-    {
-        $ping = $player->getNetworkSession()->getPing();
-        $cps = PracticeCore::getClickHandler()->getClicks($player);
-        $player->setScoreTag(PracticeConfig::COLOR . $ping . ' §fMS §f| ' . PracticeConfig::COLOR . $cps . ' §fCPS');
-    }
-
-    /**
-     * @param Player $player
-     * @param PlayerSession $session
-     * @return void
-     */
-    private function updateNameTag(Player $player, PlayerSession $session): void
-    {
-        $Tag = '§b' . $player->getDisplayName();
-        if ($session->getCustomTag() !== '') {
-            $Tag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName();
-        }
-        $player->setNameTag($Tag);
-    }
-
-    /**
-     * @param Player $player
-     * @param PlayerSession $session
-     * @return void
-     */
-    private function updateScoreboard(Player $player, PlayerSession $session): void
-    {
-        if ($session->ScoreboardEnabled) {
-            if (!$session->isDueling) {
-                if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($player);
-                } else {
-                    PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($player);
-                }
-            }
-        } else {
-            PracticeCore::getScoreboardUtils()->remove($player);
         }
     }
 }

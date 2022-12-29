@@ -6,7 +6,6 @@ namespace Nayuki;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
-use pocketmine\Server;
 
 use function mt_getrandmax;
 use function mt_rand;
@@ -31,7 +30,7 @@ class PracticePlayer extends Player
     {
         $xzKB = 0.393;
         $yKb = 0.398;
-        $session = PracticeCore::getPlayerSession()::getSession($this);
+        $session = PracticeCore::getSessionManager()::getSession($this);
         if ($session->isDueling && $session->DuelKit?->getName() === 'Boxing') {
             $xzKB = 0.378;
             $yKb = 0.422;

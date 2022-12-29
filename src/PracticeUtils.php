@@ -55,8 +55,8 @@ final class PracticeUtils
      */
     public function handleStreak(Player $player, Player $death): void
     {
-        $KillSession = PracticeCore::getPlayerSession()::getSession($player);
-        $DeathSession = PracticeCore::getPlayerSession()::getSession($death);
+        $KillSession = PracticeCore::getSessionManager()::getSession($player);
+        $DeathSession = PracticeCore::getSessionManager()::getSession($death);
         $oldStreak = $DeathSession->getStreak();
         $newStreak = $KillSession->getStreak();
         if ($oldStreak > 5) {
@@ -130,7 +130,7 @@ final class PracticeUtils
      */
     public function getChatFormat(Player $player, string $message): string
     {
-        $session = PracticeCore::getPlayerSession()::getSession($player);
+        $session = PracticeCore::getSessionManager()::getSession($player);
         if ($session->getCustomTag() !== '') {
             $NameTag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
         } else {
@@ -193,12 +193,12 @@ final class PracticeUtils
     public function checkQueue(Player $player): void
     {
         $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have been entered into the queue!');
-        $PSession = PracticeCore::getPlayerSession()::getSession($player);
+        $PSession = PracticeCore::getSessionManager()::getSession($player);
         foreach ($this->getPlayerInSession() as $players) {
             if ($players->getId() === $player->getId()) {
                 continue;
             }
-            $Qsession = PracticeCore::getPlayerSession()::getSession($players);
+            $Qsession = PracticeCore::getSessionManager()::getSession($players);
             if ($PSession->isQueueing && $Qsession->isQueueing && $PSession->DuelKit === $Qsession->DuelKit) {
                 $kit = $PSession->DuelKit;
                 if ($kit !== null) {

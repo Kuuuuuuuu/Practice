@@ -48,7 +48,7 @@ class FormUtils
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
-                $session = PracticeCore::getPlayerSession()::getSession($player);
+                $session = PracticeCore::getSessionManager()::getSession($player);
                 if (isset($data['CPS'])) {
                     $session->CpsCounterEnabled = (bool)$data['CPS'];
                 }
@@ -61,9 +61,9 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->addToggle('Cps Counter', PracticeCore::getPlayerSession()::getSession($player)->CpsCounterEnabled, 'CPS');
-        $form->addToggle('Scoreboard', PracticeCore::getPlayerSession()::getSession($player)->ScoreboardEnabled, 'Scoreboard');
-        $form->addToggle('Smooth Pearl', PracticeCore::getPlayerSession()::getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
+        $form->addToggle('Cps Counter', PracticeCore::getSessionManager()::getSession($player)->CpsCounterEnabled, 'CPS');
+        $form->addToggle('Scoreboard', PracticeCore::getSessionManager()::getSession($player)->ScoreboardEnabled, 'Scoreboard');
+        $form->addToggle('Smooth Pearl', PracticeCore::getSessionManager()::getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
         $player->sendForm($form);
     }
 
@@ -75,7 +75,7 @@ class FormUtils
     {
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
-                $session = PracticeCore::getPlayerSession()::getSession($player);
+                $session = PracticeCore::getSessionManager()::getSession($player);
                 switch ($data) {
                     case 0:
                         $session->DuelKit = KitRegistry::fromString('NoDebuff');
@@ -109,7 +109,7 @@ class FormUtils
         $Count = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p instanceof Player) {
-                $session = PracticeCore::getPlayerSession()::getSession($p);
+                $session = PracticeCore::getSessionManager()::getSession($p);
                 $Qkit = $session->DuelKit;
                 if (($Qkit instanceof Kit) && !$session->isDueling && $Qkit->getName() === $kit) {
                     $Count++;

@@ -58,7 +58,7 @@ class Duel extends AbstractListener
         $player = $event->getEntity();
         $damager = $event->getDamager();
         if ($damager instanceof Player && $player instanceof Player && $this->kit->getName() === 'Boxing' && $damager->getWorld() === $this->world) {
-            $session = PracticeCore::getPlayerSession()::getSession($damager);
+            $session = PracticeCore::getSessionManager()::getSession($damager);
             $session->BoxingPoint++;
             if ($session->BoxingPoint > 99) {
                 $player->kill();
@@ -74,7 +74,7 @@ class Duel extends AbstractListener
     {
         PracticeCore::getInstance()->getScoreboardManager()->setDuelScoreboard($this->player1, $this->player2, $this->kit, $this->time);
         foreach ($this->getPlayers() as $player) {
-            $session = PracticeCore::getPlayerSession()::getSession($player);
+            $session = PracticeCore::getSessionManager()::getSession($player);
             if ($player->isOnline()) {
                 if ($player->getWorld() === $this->world && ($player->getPosition()->getY() < 98)) {
                     $player->kill();
@@ -153,7 +153,7 @@ class Duel extends AbstractListener
                 if ($playerLeft === null || $online->getName() !== $playerLeft->getName()) {
                     if ($online instanceof Player) {
                         $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
-                        $session = PracticeCore::getPlayerSession()::getSession($online);
+                        $session = PracticeCore::getSessionManager()::getSession($online);
                         $online->sendMessage('§f-----------------------');
                         $winnerMessage = '§aWinner: §f';
                         $winnerMessage .= $this->winner !== null ? $this->winner->getName() : 'None';
@@ -168,12 +168,12 @@ class Duel extends AbstractListener
                         $session->DuelKit = null;
                         $session->BoxingPoint = 0;
                         if ($this->winner instanceof Player) {
-                            $WinnerSession = PracticeCore::getPlayerSession()::getSession($this->winner);
+                            $WinnerSession = PracticeCore::getSessionManager()::getSession($this->winner);
                             $WinnerSession->kills++;
                             $WinnerSession->killStreak++;
                         }
                         if ($this->loser instanceof Player) {
-                            $LoserSession = PracticeCore::getPlayerSession()::getSession($this->loser);
+                            $LoserSession = PracticeCore::getSessionManager()::getSession($this->loser);
                             $LoserSession->deaths++;
                             $LoserSession->killStreak = 0;
                         }
