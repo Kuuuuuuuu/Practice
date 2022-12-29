@@ -8,14 +8,14 @@
     "ext-zip": "*",
     "ext-pthreads": "*",
     "ext-igbinary": "*",
-    "pocketmine/pocketmine-mp": "^4.12.1",
+    "pocketmine/pocketmine-mp": "^4.12.3",
     "ext-sockets": "*"
 
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "phpstan/phpstan": "^1.9.2",
-    "friendsofphp/php-cs-fixer": "*"
+    "phpstan/phpstan": "^1.9.4",
+    "friendsofphp/php-cs-fixer": "3.13.1"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
