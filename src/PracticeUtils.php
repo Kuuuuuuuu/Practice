@@ -112,7 +112,11 @@ final class PracticeUtils
      */
     public function getPlayerInSession(): array
     {
-        return PracticeCore::getCaches()->PlayerInSession;
+        $array = [];
+        foreach ($this->getPlayerSession() as $session) {
+            $array[] = $session->getPlayer();
+        }
+        return $array;
     }
 
     /**

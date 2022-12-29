@@ -45,6 +45,8 @@ class PracticeTask extends AbstractTask
                         }
                     }
                 }
+            } elseif (!$session->loadedData && !$player->isOnline()) {
+                PracticeCore::getSessionManager()::removeSession($player);
             }
         }
     }

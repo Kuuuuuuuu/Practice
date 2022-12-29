@@ -33,7 +33,6 @@ class AsyncSavePlayerData extends AsyncTask
             'smoothpearl' => $session->SmoothPearlEnabled,
         ];
         PracticeCore::getSessionManager()::removeSession($player);
-        unset(PracticeCore::getCaches()->PlayerInSession[$player->getName()]);
     }
 
     public function onRun(): void

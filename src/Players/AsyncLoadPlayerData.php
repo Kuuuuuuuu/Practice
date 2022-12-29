@@ -82,7 +82,6 @@ class AsyncLoadPlayerData extends AsyncTask
             if ($player instanceof Player && $player->isOnline()) {
                 $session = PracticeCore::getSessionManager()::getSession($player);
                 $player->sendMessage(PracticeCore::getPrefixCore() . 'Your data has been loaded.');
-                PracticeCore::getCaches()->PlayerInSession[$player->getName()] = $player;
                 $session->loadData($data);
             }
         }

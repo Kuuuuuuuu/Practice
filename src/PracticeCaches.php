@@ -16,8 +16,6 @@ class PracticeCaches
     public bool $Restarting = false;
     /** @var array<PlayerSession> */
     public array $PlayerSession = [];
-    /** @var array<Player> */
-    public array $PlayerInSession = [];
     /** @var array<Duel> */
     public array $RunningDuel = [];
 }
