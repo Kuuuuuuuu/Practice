@@ -13,7 +13,7 @@ use pocketmine\Server;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-class Duel extends AbstractListener
+final class Duel extends AbstractListener
 {
     /** @var string */
     public string $name;

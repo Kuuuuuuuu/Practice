@@ -54,7 +54,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
 
-class PracticeListener extends AbstractListener
+final class PracticeListener extends AbstractListener
 {
     /**
      * @param PlayerCreationEvent $event

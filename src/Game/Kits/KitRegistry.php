@@ -8,7 +8,7 @@ use pocketmine\utils\RegistryTrait;
 
 use function assert;
 
-class KitRegistry
+final class KitRegistry
 {
     use RegistryTrait;
 
@@ -21,6 +21,14 @@ class KitRegistry
         $kit = self::_registryFromString(strtolower($name));
         assert($kit instanceof Kit);
         return $kit;
+    }
+
+    /**
+     * @return array<string, object>
+     */
+    public static function getKits(): array
+    {
+        return self::_registryGetAll();
     }
 
     /**

@@ -10,7 +10,7 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
-class NoDebuff extends Kit
+final class NoDebuff extends Kit
 {
     /**
      * @return array<Item>

@@ -7,7 +7,7 @@ use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\generator\Generator;
 
-class DuelGenerator extends Generator
+final class DuelGenerator extends Generator
 {
     public function generateChunk(ChunkManager $world, int $chunkX, int $chunkZ): void
     {

@@ -29,9 +29,9 @@ class PracticeTask extends AbstractTask
             $player = $session->getPlayer();
             if ($session->loadedData && $player->isConnected()) {
                 $session->updateScoreTag();
-                $session->updateNameTag();
-                $session->updateScoreboard();
                 if ($tick % 20 === 0) {
+                    $session->updateNameTag();
+                    $session->updateScoreboard();
                     if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         ParticleOffsetDisplayer::display($player, new FlameParticle());
                     }

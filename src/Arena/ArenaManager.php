@@ -13,7 +13,7 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
 
-class ArenaManager
+final class ArenaManager
 {
     /**
      * @param Player $player

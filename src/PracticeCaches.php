@@ -6,7 +6,7 @@ use Nayuki\Duel\Duel;
 use Nayuki\Players\PlayerSession;
 use pocketmine\player\Player;
 
-class PracticeCaches
+final class PracticeCaches
 {
     /** @var array */
     public array $targetPlayer = [];

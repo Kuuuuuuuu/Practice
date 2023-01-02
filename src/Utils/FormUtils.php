@@ -73,30 +73,21 @@ class FormUtils
      */
     public function duelForm(Player $player): void
     {
-        $form = new SimpleForm(function (Player $player, int $data = null) {
+        $form = new SimpleForm(function (Player $player, string $data = null) {
             if ($data !== null) {
                 $session = PracticeCore::getSessionManager()::getSession($player);
-                switch ($data) {
-                    case 0:
-                        $session->DuelKit = KitRegistry::fromString('NoDebuff');
-                        $session->isQueueing = true;
-                        $player->getInventory()->clearAll();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        PracticeCore::getPracticeUtils()->checkQueue($player);
-                        break;
-                    case 1:
-                        $session->DuelKit = KitRegistry::fromString('Boxing');
-                        $session->isQueueing = true;
-                        $player->getInventory()->clearAll();
-                        $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                        PracticeCore::getPracticeUtils()->checkQueue($player);
-                        break;
-                }
+                $session->DuelKit = KitRegistry::fromString($data);
+                $session->isQueueing = true;
+                $player->getInventory()->clearAll();
+                $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                PracticeCore::getPracticeUtils()->checkQueue($player);
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
-        $form->addButton("§aNodebuff\n§bQueue§f: " . $this->getQueue('NoDebuff'), 0, 'textures/items/paper.png');
-        $form->addButton("§aBoxing\n§bQueue§f: " . $this->getQueue('Boxing'), 0, 'textures/items/paper.png');
+        foreach (KitRegistry::getKits() as $kit) {
+            /** @var Kit $kit */
+            $form->addButton("§a{$kit->getName()}\n§bQueue§f: " . $this->getQueue($kit->getName()), 0, 'textures/items/paper.png', $kit->getName());
+        }
         $player->sendForm($form);
     }
 

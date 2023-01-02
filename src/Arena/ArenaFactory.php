@@ -14,7 +14,7 @@ use pocketmine\world\World;
 use function count;
 use function is_string;
 
-class ArenaFactory
+final class ArenaFactory
 {
     /**
      * @param mixed $arena

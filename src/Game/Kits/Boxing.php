@@ -10,7 +10,7 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
-class Boxing extends Kit
+final class Boxing extends Kit
 {
     /**
      * @return array<Item>
