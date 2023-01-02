@@ -11,7 +11,6 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-use pocketmine\Server;
 
 use function is_array;
 
@@ -81,7 +80,7 @@ class Hologram extends Entity
      */
     private function getSubtitleType(): string
     {
-        $subtitle = '';
+        $subtitle = ($this->type === 'kills') ? "§b§lTop Kills\n" : "§b§lTop Deaths\n";
         $array = [];
         $pos = 0;
         $files = scandir(PracticeCore::getPlayerDataPath());
@@ -89,9 +88,6 @@ class Hologram extends Entity
             foreach ($files as $file) {
                 if (str_contains($file, '.yml')) {
                     $name = str_replace('.yml', '', $file);
-                    if (Server::getInstance()->getPlayerExact($name) !== null) {
-                        continue;
-                    }
                     $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
                     if (is_array($parsed)) {
                         $array[$name] = $parsed[$this->type];
@@ -99,14 +95,9 @@ class Hologram extends Entity
                 }
             }
         }
-        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $player) {
-            if ($this->type === 'kills') {
-                $array[$player->getName()] = PracticeCore::getSessionManager()::getSession($player)->getKills();
-                $subtitle .= "§b§lTop Kills\n";
-            } elseif ($this->type === 'deaths') {
-                $array[$player->getName()] = PracticeCore::getSessionManager()::getSession($player)->getDeaths();
-                $subtitle .= "§b§lTop Deaths\n";
-            }
+        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+            $player = $session->getPlayer();
+            $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
         }
         arsort($array);
         foreach ($array as $name => $kills) {
