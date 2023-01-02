@@ -37,6 +37,7 @@ use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\server\NetworkInterfaceRegisterEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
 use pocketmine\item\VanillaItems;
@@ -53,6 +54,8 @@ use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
+
+use function count;
 
 final class PracticeListener extends AbstractListener
 {
@@ -483,6 +486,11 @@ final class PracticeListener extends AbstractListener
                         if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getNodebuffArena())) {
                             $damager->getInventory()->clearAll();
                             PracticeCore::getArenaManager()->getKitNodebuff($damager);
+                            foreach ([$damager, $player] as $p) {
+                                $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
+                                $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
+                                $p->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
+                            }
                         }
                     }
                 }
@@ -497,9 +505,6 @@ final class PracticeListener extends AbstractListener
                 $session->killStreak = 0;
                 $damager->setHealth(20);
                 PracticeCore::getPracticeUtils()->setLobbyItem($player);
-                foreach ([$damager, $player] as $p) {
-                    $p->sendMessage(PracticeCore::getPrefixCore() . '§a' . $name . ' §fhas been killed by §c' . $dname);
-                }
             }
         }
     }
