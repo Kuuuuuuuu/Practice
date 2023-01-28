@@ -24,6 +24,7 @@ use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
+use Nayuki\Task\BroadcastTask;
 use Nayuki\Task\PracticeTask;
 use Nayuki\Utils\ClickHandler;
 use Nayuki\Utils\FormUtils;
@@ -307,6 +308,7 @@ final class PracticeCore extends PluginBase
     private function registerTasks(): void
     {
         new PracticeTask();
+        $this->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 9000);
     }
 
     /**
