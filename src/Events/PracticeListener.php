@@ -57,7 +57,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
-
 use function count;
 
 final class PracticeListener extends AbstractListener
@@ -554,8 +553,10 @@ final class PracticeListener extends AbstractListener
         $player = $event->getEntity();
         if ($player instanceof Player && $event->getFrom()->getWorld() !== $event->getTo()->getWorld()) {
             $session = PracticeCore::getSessionManager()::getSession($player);
-            $session->setCombat(false);
-            $session->setOpponent(null);
+            if (!$session->isDueling && !$session->isQueueing) {
+                $session->setCombat(false);
+                $session->setOpponent(null);
+            }
         }
     }
 
