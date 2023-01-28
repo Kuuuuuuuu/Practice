@@ -4,34 +4,27 @@ declare(strict_types=1);
 
 namespace Nayuki\Entities;
 
-use pocketmine\data\bedrock\EntityLegacyIds;
-use pocketmine\data\bedrock\LegacyEntityIdToStringIdMap;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Living;
 use pocketmine\entity\Location;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 
 final class JoinEntity extends Living
 {
-    /** @var int */
-    public const TYPE_ID = EntityLegacyIds::ZOMBIE;
 
     public function __construct(Location $location, ?CompoundTag $nbt = null)
     {
         parent::__construct($location, $nbt);
         $this->setNameTagAlwaysVisible();
-        $this->setCanSaveWithChunk(false);
-        $this->setImmobile();
         $this->setScale(1.5);
         $this->setNameTag("§ePractice\n§7Click to Play");
     }
 
-    /**
-     * @return string
-     */
     public static function getNetworkTypeId(): string
     {
-        return LegacyEntityIdToStringIdMap::getInstance()->legacyToString(self::TYPE_ID) ?? '0';
+        return EntityIds::ZOMBIE;
     }
 
     /**
@@ -45,6 +38,11 @@ final class JoinEntity extends Living
         parent::initEntity($nbt);
     }
 
+    public function attack(EntityDamageEvent $source): void
+    {
+        $source->cancel();
+    }
+
     /**
      * @return string
      */
@@ -53,11 +51,8 @@ final class JoinEntity extends Living
         return '';
     }
 
-    /**
-     * @return EntitySizeInfo
-     */
-    public function getInitialSizeInfo(): EntitySizeInfo
+    protected function getInitialSizeInfo(): EntitySizeInfo
     {
-        return new EntitySizeInfo(1.8, 0.6);
+        return new EntitySizeInfo(1.8, 0.6); //TODO: eye height ??
     }
 }
