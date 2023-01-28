@@ -6,7 +6,6 @@ use Nayuki\Misc\Time;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function count;
 use function round;
 
@@ -92,9 +91,6 @@ final class ScoreboardManager
                 $OpponentPing = $OpponentPlayer->getNetworkSession()->getPing();
             }
         }
-        if ($duel && $duelClass !== null) {
-            $duelTime = Time::calculateTime($duelClass->getSeconds());
-        }
         $lines = [
             1 => '§7---------------§0',
             ($duel) ?: 2 => " §bCombat§f: §a$CombatSecond",
@@ -105,6 +101,16 @@ final class ScoreboardManager
             7 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
             8 => '§7---------------'
         ];
+        if ($duel) {
+            if ($duelClass !== null) {
+                $duelTime = Time::calculateTime($duelClass->getSeconds());
+            }
+            $lines[5] = " §bDuration: §a$duelTime";
+        } else {
+            $lines[2] = " §bCombat§f: §a$CombatSecond";
+            $lines[3] = ' §bKillStreak§f: §a' . $session->getStreak();
+            $lines[4] = ' §d';
+        }
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
             PracticeCore::getScoreboardUtils()->setLine($player, $line, $content);
