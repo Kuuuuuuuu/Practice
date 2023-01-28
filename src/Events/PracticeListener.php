@@ -53,6 +53,8 @@ use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
 
 use function count;
@@ -481,15 +483,22 @@ final class PracticeListener extends AbstractListener
                 $damagerSession = PracticeCore::getSessionManager()::getSession($damager);
                 $dname = $damager->getName();
                 if ($damager->isAlive() && $damager->isConnected()) {
-                    $arena = $damager->getWorld()->getFolderName();
-                    if ($arena === PracticeCore::getArenaFactory()->getNodebuffArena()) {
-                        if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getWorldByName(PracticeCore::getArenaFactory()->getNodebuffArena())) {
+                    $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
+                    foreach ($data->getAll() as $key => $value) {
+                        if ((PracticeCore::getArenaFactory()->getArenas((string)$key) !== null) && $damager->getWorld()->getFolderName() === (string)$value) {
                             $damager->getInventory()->clearAll();
-                            PracticeCore::getArenaManager()->getKitNodebuff($damager);
-                            foreach ([$damager, $player] as $p) {
+                            PracticeCore::getArenaManager()->getKits($damager, (string)$key);
+                            if ($key === 'Nodebuff') {
                                 $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
                                 $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
-                                $p->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
+                                foreach ($damager->getWorld()->getPlayers() as $players) {
+                                    $players->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
+                                }
+                            } else {
+                                $health = round($damager->getHealth(), 1);
+                                foreach ($damager->getWorld()->getPlayers() as $players) {
+                                    $players->sendMessage(PracticeCore::getInstance()->getPrefixCore() . TextFormat::RED . $player->getName() . TextFormat::GRAY . ' was killed by ' . TextFormat::GREEN . $damager->getName() . ' §f[§b' . $health . '§f]');
+                                }
                             }
                         }
                     }

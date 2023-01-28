@@ -15,8 +15,9 @@ use Nayuki\Commands\TbanCommand;
 use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
 use Nayuki\Duel\DuelManager;
-use Nayuki\Entity\EnderPearlEntity;
-use Nayuki\Entity\Hologram;
+use Nayuki\Entities\EnderPearlEntity;
+use Nayuki\Entities\Hologram;
+use Nayuki\Entities\JoinEntity;
 use Nayuki\Events\PracticeListener;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Items\CustomSplashPotion;
@@ -317,6 +318,9 @@ final class PracticeCore extends PluginBase
         EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
         }, ['Hologram']);
+        EntityFactory::getInstance()->register(JoinEntity::class, function (World $world, CompoundTag $nbt): JoinEntity {
+            return new JoinEntity(EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['joinentity']);
     }
 
     /**

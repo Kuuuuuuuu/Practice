@@ -28,7 +28,16 @@ class FormUtils
             if ($data !== null) {
                 switch ($data) {
                     case 0:
-                        PracticeCore::getArenaManager()->onJoinNodebuff($player);
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Nodebuff');
+                        break;
+                    case 1:
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Fist');
+                        break;
+                    case 2:
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Resistance');
+                        break;
+                    case 3:
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Combo');
                         break;
                     default:
                         print 'Error';
@@ -36,7 +45,10 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->addButton("§aNodebuff\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getNodebuffArena()), 0, 'textures/items/potion_bottle_splash_heal.png');
+        $form->addButton("§aNodebuff\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Nodebuff')), 0, 'textures/items/potion_bottle_splash_heal.png');
+        $form->addButton("§aFist\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Fist')), 0, 'textures/items/beef_cooked.png');
+        $form->addButton("§aResistance\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Resistance')), 0, 'textures/items/snowball.png');
+        $form->addButton("§aCombo\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Combo')), 0, 'textures/items/golden_apple.png');
         $player->sendForm($form);
     }
 

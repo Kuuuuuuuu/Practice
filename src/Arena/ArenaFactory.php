@@ -28,41 +28,44 @@ final class ArenaFactory
                 return (string)count($world->getPlayers());
             }
         }
-        return 'Error: Unknown arena';
+        return 'Unknown';
     }
 
     /**
-     * @return string
+     * @param string $mode
+     * @return string|null
      */
-    public function getNodebuffArena(): string
+    public function getArenas(string $mode): string|null
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        return $data->get('Nodebuff', 'no');
+        return $data->get($mode, null);
     }
 
     /**
      * @param Player $player
+     * @param string $mode
      * @param string $world
      * @return void
      * @throws JsonException
      */
-    public function setNodebuffArena(Player $player, string $world): void
+    public function setArenas(Player $player, string $mode, string $world): void
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->set('Nodebuff', $world);
+        $data->set($mode, $world);
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . '§aThe Arena was saved');
     }
 
     /**
      * @param Player $player
+     * @param string $mode
      * @return void
      * @throws JsonException
      */
-    public function removeNodebuff(Player $player): void
+    public function removeArenas(Player $player, string $mode): void
     {
         $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-        $data->remove('Nodebuff');
+        $data->remove($mode);
         $data->save();
         $player->sendMessage(PracticeCore::getPrefixCore() . 'Removed arena');
     }

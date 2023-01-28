@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
-use Nayuki\Entity\Hologram;
+use Nayuki\Entities\Hologram;
 use Nayuki\Players\PlayerSession;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;

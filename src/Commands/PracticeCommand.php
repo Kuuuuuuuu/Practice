@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki\Commands;
 
 use JsonException;
+use Nayuki\Entities\JoinEntity;
 use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -39,49 +40,99 @@ class PracticeCommand extends Command
                         $sender->sendMessage(Color::BOLD . Color::GREEN . PracticeCore::getPrefixCore());
                         $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' make <mode> <world>' . Color::AQUA . ' - create new Arena for FFA');
                         $sender->sendMessage(Color::GREEN . '/' . $commandLabel . Color::AQUA . ' remove <mode>' . Color::AQUA . ' - delete Arena for FFA');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                         break;
                     case 'make':
                     case 'create':
                         if (!isset($args[1])) {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                         }
                         if (!isset($args[2])) {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                         }
-                        switch ($args[1]) {
-                            case 'Nodebuff':
-                                if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
-                                    Server::getInstance()->getWorldManager()->loadWorld($args[2]);
-                                    /** @phpstan-ignore-next-line */
-                                    $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
-                                    PracticeCore::getArenaFactory()->setNodebuffArena($sender, $args[2]);
-                                } else {
-                                    $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
-                                }
-                                break;
-                            default:
-                                $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                                $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
-                                break;
-                        }
+                    switch ($args[1]) {
+                        case 'Nodebuff':
+                            if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                /** @phpstan-ignore-next-line */
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setArenas($sender, 'Nodebuff', $args[2]);
+                            } else {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            }
+                            break;
+                        case 'Fist':
+                            if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                /** @phpstan-ignore-next-line */
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setArenas($sender, 'Fist', $args[2]);
+                            } else {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            }
+                            break;
+                        case 'Resistance':
+                            if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                /** @phpstan-ignore-next-line */
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setArenas($sender, 'Resistance', $args[2]);
+                            } else {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            }
+                            break;
+                        case 'Combo':
+                            if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                /** @phpstan-ignore-next-line */
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setArenas($sender, 'Combo', $args[2]);
+                            } else {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            }
+                            break;
+                        default:
+                            $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
+                            break;
+                    }
                         break;
                     case 'remove':
                         if (isset($args[1])) {
                             switch ($args[1]) {
                                 case 'Nodebuff':
-                                    PracticeCore::getArenaFactory()->removeNodebuff($sender);
+                                    PracticeCore::getArenaFactory()->removeArenas($sender, 'Nodebuff');
+                                    break;
+                                case 'Fist':
+                                    PracticeCore::getArenaFactory()->removeArenas($sender, 'Fist');
+                                    break;
+                                case 'Resistance':
+                                    PracticeCore::getArenaFactory()->removeArenas($sender, 'Resistance');
+                                    break;
+                                case 'Combo':
+                                    PracticeCore::getArenaFactory()->removeArenas($sender, 'Combo');
                                     break;
                                 default:
                                     $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
+                                    $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                                     break;
                             }
                         } else {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff');
+                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
+                        }
+                        break;
+                    case 'set-npcffa':
+                        new JoinEntity($sender->getLocation());
+                        break;
+                    case 'remove-npc':
+                        $npc = $sender->getWorld()->getEntities();
+                        foreach ($npc as $entity) {
+                            if ($entity instanceof JoinEntity) {
+                                $entity->close();
+                            }
                         }
                         break;
                     default:

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Commands;
 
-use Nayuki\Entity\Hologram;
+use Nayuki\Entities\Hologram;
 use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;

@@ -2,7 +2,7 @@
 
 namespace Nayuki\Items;
 
-use Nayuki\Entity\EnderPearlEntity;
+use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
 use pocketmine\entity\Location;

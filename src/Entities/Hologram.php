@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nayuki\Entity;
+namespace Nayuki\Entities;
 
 use Nayuki\PracticeCore;
 use pocketmine\entity\Entity;
@@ -13,8 +13,9 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 use function is_array;
+use function str_contains;
 
-class Hologram extends Entity
+final class Hologram extends Entity
 {
     /** @var int */
     private int $CountdownSeconds = 1;

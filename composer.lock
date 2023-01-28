@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "d0d1c1b43678c4a0fe4dba1f0200fba6",
-    "packages": [
-        {
-            "name": "adhocore/json-comment",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/adhocore/php-json-comment.git",
-                "reference": "651023f9fe52e9efa2198cbaf6e481d1968e2377"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "aee30c3741ce8d6e48636cdd9b4c9657",
+  "packages": [
+    {
+      "name": "adhocore/json-comment",
+      "version": "1.2.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/adhocore/php-json-comment.git",
+        "reference": "651023f9fe52e9efa2198cbaf6e481d1968e2377"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/adhocore/php-json-comment/zipball/651023f9fe52e9efa2198cbaf6e481d1968e2377",
                 "reference": "651023f9fe52e9efa2198cbaf6e481d1968e2377",
@@ -2138,20 +2138,20 @@
             ],
             "time": "2022-12-18T00:47:22+00:00"
         },
-        {
-            "name": "phpstan/phpstan",
-            "version": "1.9.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "d03bccee595e2146b7c9d174486b84f4dc61b0f2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d03bccee595e2146b7c9d174486b84f4dc61b0f2",
-                "reference": "d03bccee595e2146b7c9d174486b84f4dc61b0f2",
-                "shasum": ""
-            },
+      {
+        "name": "phpstan/phpstan",
+        "version": "1.9.14",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/phpstan/phpstan.git",
+          "reference": "e5fcc96289cf737304286a9b505fbed091f02e58"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e5fcc96289cf737304286a9b505fbed091f02e58",
+          "reference": "e5fcc96289cf737304286a9b505fbed091f02e58",
+          "shasum": ""
+        },
             "require": {
                 "php": "^7.2|^8.0"
             },
@@ -2179,7 +2179,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.4"
+              "source": "https://github.com/phpstan/phpstan/tree/1.9.14"
             },
             "funding": [
                 {
@@ -2195,7 +2195,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-12-17T13:33:52+00:00"
+        "time": "2023-01-19T10:47:09+00:00"
         },
         {
             "name": "psr/cache",
