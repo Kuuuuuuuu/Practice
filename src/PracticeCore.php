@@ -245,6 +245,7 @@ final class PracticeCore extends PluginBase
             'particle',
             'me',
             'tell',
+            'clear',
             'whitelist',
             'checkperm',
             'pardon-ip',

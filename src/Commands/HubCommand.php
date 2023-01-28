@@ -18,7 +18,8 @@ class HubCommand extends BaseCommand
         parent::__construct(
             'hub',
             'Teleport to the hub',
-            '/hub'
+            '/hub',
+            ['lobby', 'spawn'],
         );
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki;
 
 use Nayuki\Entities\Hologram;
+use Nayuki\Entities\JoinEntity;
 use Nayuki\Players\PlayerSession;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -75,7 +76,7 @@ final class PracticeUtils
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof Hologram) {
+                if ($entity instanceof Hologram || $entity instanceof JoinEntity) {
                     continue;
                 }
                 $entity->close();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Events;
 
+use Nayuki\Entities\JoinEntity;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
@@ -56,7 +57,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
-
 use function count;
 
 final class PracticeListener extends AbstractListener
@@ -398,40 +398,47 @@ final class PracticeListener extends AbstractListener
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if ($damager instanceof Player && $player instanceof Player && !$event->isCancelled() && $damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-            $DSession = PracticeCore::getSessionManager()::getSession($damager);
-            $PSession = PracticeCore::getSessionManager()::getSession($player);
-            if (!$DSession->isDueling) {
-                if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
-                    $PSession->setOpponent($damager->getName());
-                    $DSession->setOpponent($player->getName());
-                    foreach ([$player, $damager] as $p) {
-                        $session = PracticeCore::getSessionManager()::getSession($player);
-                        $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
-                        $session->setCombat(true);
-                    }
-                } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
-                    if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
-                        $PSession->setOpponent($damager->getName());
-                        $DSession->setOpponent($player->getName());
-                        foreach ([$player, $damager] as $p) {
-                            $session = PracticeCore::getSessionManager()::getSession($p);
-                            $session->setCombat(true);
+        if ($damager instanceof Player && !$event->isCancelled()) {
+            if ($player instanceof Player) {
+                if ($damager->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    $DSession = PracticeCore::getSessionManager()::getSession($damager);
+                    $PSession = PracticeCore::getSessionManager()::getSession($player);
+                    if (!$DSession->isDueling) {
+                        if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
+                            $PSession->setOpponent($damager->getName());
+                            $DSession->setOpponent($player->getName());
+                            foreach ([$player, $damager] as $p) {
+                                $session = PracticeCore::getSessionManager()::getSession($player);
+                                $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
+                                $session->setCombat(true);
+                            }
+                        } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
+                            if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
+                                $PSession->setOpponent($damager->getName());
+                                $DSession->setOpponent($player->getName());
+                                foreach ([$player, $damager] as $p) {
+                                    $session = PracticeCore::getSessionManager()::getSession($p);
+                                    $session->setCombat(true);
+                                }
+                            } else {
+                                $event->cancel();
+                                $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                            }
+                        } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
+                            $event->cancel();
+                            $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                        } elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
+                            $event->cancel();
+                            $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                         }
-                    } else {
-                        $event->cancel();
-                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                     }
-                } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
+                } else {
                     $event->cancel();
-                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                } elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
-                    $event->cancel();
-                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
                 }
+            } elseif ($player instanceof JoinEntity) {
+                PracticeCore::getFormUtils()->ArenaForm($damager);
+                $event->cancel();
             }
-        } else {
-            $event->cancel();
         }
     }
 
