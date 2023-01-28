@@ -19,6 +19,27 @@ class PracticePlayer extends Player
     public function attack(EntityDamageEvent $source): void
     {
         $attackSpeed = 10;
+        $session = PracticeCore::getSessionManager()::getSession($this);
+        if ($session->isDueling) {
+            switch ($session->DuelKit?->getName()) {
+                case 'Fist':
+                    $attackSpeed = 8;
+                    break;
+                case 'Combo':
+                    $attackSpeed = 1;
+                    break;
+            }
+        } else {
+            switch ($this->getWorld()->getFolderName()) {
+                case PracticeCore::getArenaFactory()->getArenas('Resistance'):
+                case PracticeCore::getArenaFactory()->getArenas('Fist'):
+                    $attackSpeed = 8;
+                    break;
+                case PracticeCore::getArenaFactory()->getArenas('Combo'):
+                    $attackSpeed = 1;
+                    break;
+            }
+        }
         parent::attack($source);
         if ($source->isCancelled()) {
             return;
@@ -31,9 +52,33 @@ class PracticePlayer extends Player
         $xzKB = 0.393;
         $yKb = 0.398;
         $session = PracticeCore::getSessionManager()::getSession($this);
-        if ($session->isDueling && $session->DuelKit?->getName() === 'Boxing') {
-            $xzKB = 0.378;
-            $yKb = 0.422;
+        if ($session->isDueling) {
+            switch ($session->DuelKit?->getName()) {
+                case 'Boxing':
+                    $xzKB = 0.378;
+                    $yKb = 0.422;
+                    break;
+                case 'Fist':
+                    $xzKB = 0.402;
+                    $yKb = 0.395;
+                    break;
+                case 'Combo':
+                    $xzKB = 0.310;
+                    $yKb = 0.220;
+                    break;
+            }
+        } else {
+            switch ($this->getWorld()->getFolderName()) {
+                case PracticeCore::getArenaFactory()->getArenas('Resistance'):
+                case PracticeCore::getArenaFactory()->getArenas('Fist'):
+                    $xzKB = 0.402;
+                    $yKb = 0.395;
+                    break;
+                case PracticeCore::getArenaFactory()->getArenas('Combo'):
+                    $xzKB = 0.310;
+                    $yKb = 0.220;
+                    break;
+            }
         }
         $f = sqrt($x * $x + $z * $z);
         if ($f <= 0) {

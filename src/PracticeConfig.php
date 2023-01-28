@@ -10,7 +10,7 @@ interface PracticeConfig
     public const Server_Name = '§bNeptune§f ';
     public const SBPREFIX = '§f» §bNeptune §f«';
     public const MOTD = '§b§lNeptune';
-    public const PearlForce = 3;
+    public const PearlForce = 4.0;
     public const SplashForce = 0.45;
     public const COLOR = TextFormat::AQUA;
 }

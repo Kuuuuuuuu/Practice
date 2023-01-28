@@ -46,6 +46,10 @@ final class Duel extends AbstractListener
         $this->name = $name;
         $this->player1 = $player1;
         $this->player2 = $player2;
+        foreach ([$player1, $player2] as $players) {
+            $session = PracticeCore::getSessionManager()::getSession($players);
+            $session->DuelClass = $this;
+        }
     }
 
     /**
@@ -136,7 +140,7 @@ final class Duel extends AbstractListener
     /**
      * @return array<Player>
      */
-    public function getPlayers(): array
+    private function getPlayers(): array
     {
         return [$this->player1, $this->player2];
     }
@@ -166,6 +170,7 @@ final class Duel extends AbstractListener
                         $session->isDueling = false;
                         $session->DuelKit = null;
                         $session->BoxingPoint = 0;
+                        $session->DuelClass = null;
                         $session->setOpponent(null);
                         if ($this->winner instanceof Player) {
                             $WinnerSession = PracticeCore::getSessionManager()::getSession($this->winner);
@@ -188,5 +193,13 @@ final class Duel extends AbstractListener
             $this->ended = true;
         }
         PracticeCore::getDuelManager()->stopMatch($this->world->getFolderName());
+    }
+
+    /**
+     * @return int
+     */
+    public function getSeconds(): int
+    {
+        return $this->time;
     }
 }

@@ -98,6 +98,9 @@ class FormUtils
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
         foreach (KitRegistry::getKits() as $kit) {
             /** @var Kit $kit */
+            if ($kit->getName() === 'Resistance') {
+                continue;
+            }
             $form->addButton("§a{$kit->getName()}\n§bQueue§f: " . $this->getQueue($kit->getName()), 0, 'textures/items/paper.png', $kit->getName());
         }
         $player->sendForm($form);

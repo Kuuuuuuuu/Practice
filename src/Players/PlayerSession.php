@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Players;
 
+use Nayuki\Duel\Duel;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
@@ -38,6 +39,8 @@ final class PlayerSession
     public bool $isDueling = false;
     /** @var Kit|null */
     public ?Kit $DuelKit = null;
+    /** @var Duel|null */
+    public ?Duel $DuelClass = null;
     /** @var bool */
     public bool $isQueueing = false;
     /** @var string|null */
@@ -201,50 +204,12 @@ final class PlayerSession
                     PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, false);
                 }
             } elseif ($this->DuelKit?->getName() === 'Boxing') {
-                $this->Boxing();
+                PracticeCore::getInstance()->getScoreboardManager()->Boxing($this->player);
             } else {
                 PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);
             }
         } else {
             PracticeCore::getScoreboardUtils()->remove($this->player);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function Boxing(): void
-    {
-        $combat = $this->CombatTime;
-        $opponent = $this->getOpponent();
-        $ping = $this->player->getNetworkSession()->getPing();
-        $PlayerPoint = $this->BoxingPoint;
-        $OpponentPoint = 0;
-        $PingOpponent = 0;
-        if ($opponent !== null) {
-            $OpponentPlayer = Server::getInstance()->getPlayerExact($opponent);
-            if ($OpponentPlayer !== null) {
-                $OpponentPoint = PracticeCore::getSessionManager()::getSession($OpponentPlayer)->BoxingPoint;
-                $PingOpponent = $OpponentPlayer->getNetworkSession()->getPing();
-            }
-        }
-        $diff = abs($PlayerPoint - $OpponentPoint);
-        $check = $PlayerPoint >= $OpponentPoint;
-        $lines = [
-            1 => '§7---------------§0',
-            2 => ' Hits: ' . ($check ? "§a(+$diff)" : "§c(-$diff)"),
-            3 => "   §bYour§f: §a$PlayerPoint",
-            4 => "   §bThem§f: §c$OpponentPoint",
-            5 => ' §c',
-            6 => " §bCombat§f: §a$combat",
-            7 => ' §d',
-            8 => " §bYour §fPing: §a$ping" . '§fms',
-            9 => " §bTheir §fPing: §c$PingOpponent" . '§fms',
-            10 => '§7---------------'
-        ];
-        PracticeCore::getScoreboardUtils()->new($this->player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
-        foreach ($lines as $line => $content) {
-            PracticeCore::getScoreboardUtils()->setLine($this->player, $line, $content);
         }
     }
 
