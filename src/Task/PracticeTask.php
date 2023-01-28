@@ -28,10 +28,12 @@ class PracticeTask extends AbstractTask
         foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
             $player = $session->getPlayer();
             if ($session->loadedData && $player->isConnected()) {
-                $session->updateScoreTag();
-                if ($tick % 20 === 0) {
+                if ($tick % 5 === 0) {
+                    $session->updateScoreTag();
                     $session->updateNameTag();
                     $session->updateScoreboard();
+                }
+                if ($tick % 20 === 0) {
                     if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         ParticleOffsetDisplayer::display($player, new FlameParticle());
                     }
