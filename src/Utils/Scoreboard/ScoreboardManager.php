@@ -93,10 +93,6 @@ final class ScoreboardManager
         }
         $lines = [
             1 => '§7---------------§0',
-            ($duel) ?: 2 => " §bCombat§f: §a$CombatSecond",
-            ($duel) ?: 3 => ' §bKillStreak§f: §a' . $session->getStreak(),
-            ($duel) ?: 4 => ' §d',
-            (!$duel) ?: 5 => " §bDuration: §a$duelTime",
             6 => " §bYour §fPing: §a$ping" . '§fms',
             7 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
             8 => '§7---------------'
