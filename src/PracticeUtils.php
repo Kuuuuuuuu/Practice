@@ -210,6 +210,8 @@ final class PracticeUtils
                     PracticeCore::getInstance()->getDuelManager()->createMatch($player, $players, $kit);
                     $player->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $players->getName());
                     $players->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $player->getName());
+                    $PSession->setOpponent($players->getName());
+                    $Qsession->setOpponent($player->getName());
                     foreach ([$Qsession, $PSession] as $session) {
                         $session->isQueueing = false;
                     }

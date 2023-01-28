@@ -123,23 +123,6 @@ final class PlayerSession
     }
 
     /**
-     * @return string|null
-     */
-    public function getOpponent(): ?string
-    {
-        return $this->Opponent;
-    }
-
-    /**
-     * @param string|null $name
-     * @return void
-     */
-    public function setOpponent(?string $name): void
-    {
-        $this->Opponent = $name;
-    }
-
-    /**
      * @return int
      */
     public function getKills(): int
@@ -215,11 +198,70 @@ final class PlayerSession
                 if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                     PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($this->player);
                 } else {
-                    PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player);
+                    PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, false);
                 }
+            } elseif ($this->DuelKit?->getName() === 'Boxing') {
+                $this->Boxing();
+            } else {
+                PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);
             }
         } else {
             PracticeCore::getScoreboardUtils()->remove($this->player);
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function Boxing(): void
+    {
+        $combat = $this->CombatTime;
+        $opponent = $this->getOpponent();
+        $ping = $this->player->getNetworkSession()->getPing();
+        $PlayerPoint = $this->BoxingPoint;
+        $OpponentPoint = 0;
+        $PingOpponent = 0;
+        if ($opponent !== null) {
+            $OpponentPlayer = Server::getInstance()->getPlayerExact($opponent);
+            if ($OpponentPlayer !== null) {
+                $OpponentPoint = PracticeCore::getSessionManager()::getSession($OpponentPlayer)->BoxingPoint;
+                $PingOpponent = $OpponentPlayer->getNetworkSession()->getPing();
+            }
+        }
+        $diff = abs($PlayerPoint - $OpponentPoint);
+        $check = $PlayerPoint >= $OpponentPoint;
+        $lines = [
+            1 => '§7---------------§0',
+            2 => ' Hits: ' . ($check ? "§a(+$diff)" : "§c(-$diff)"),
+            3 => "   §bYour§f: §a$PlayerPoint",
+            4 => "   §bThem§f: §c$OpponentPoint",
+            5 => ' §c',
+            6 => " §bCombat§f: §a$combat",
+            7 => ' §d',
+            8 => " §bYour §fPing: §a$ping" . '§fms',
+            9 => " §bTheir §fPing: §c$PingOpponent" . '§fms',
+            10 => '§7---------------'
+        ];
+        PracticeCore::getScoreboardUtils()->new($this->player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
+        foreach ($lines as $line => $content) {
+            PracticeCore::getScoreboardUtils()->setLine($this->player, $line, $content);
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOpponent(): ?string
+    {
+        return $this->Opponent;
+    }
+
+    /**
+     * @param string|null $name
+     * @return void
+     */
+    public function setOpponent(?string $name): void
+    {
+        $this->Opponent = $name;
     }
 }
