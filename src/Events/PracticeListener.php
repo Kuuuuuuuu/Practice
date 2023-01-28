@@ -57,6 +57,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
+
 use function count;
 
 final class PracticeListener extends AbstractListener
