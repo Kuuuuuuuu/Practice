@@ -239,7 +239,6 @@ final class PracticeCore extends PluginBase
     {
         $commands = [
             'seed',
-            'gamerule',
             'title',
             'mixer',
             'suicide',
