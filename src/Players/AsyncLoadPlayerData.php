@@ -7,7 +7,6 @@ namespace Nayuki\Players;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
-
 use function array_keys;
 use function fclose;
 use function is_array;
@@ -32,7 +31,7 @@ class AsyncLoadPlayerData extends AsyncTask
         $playerData = [
             'kills' => 0,
             'deaths' => 0,
-            'tag' => '',
+            'tag' => '§aMember',
             'killStreak' => 0,
             'scoreboard' => true,
             'cps' => true,

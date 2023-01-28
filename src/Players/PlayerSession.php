@@ -45,7 +45,7 @@ final class PlayerSession
     /** @var bool */
     private bool $isCombat = false;
     /** @var string */
-    private string $customTag = '';
+    private string $customTag = '§aMember';
     /** @var Player */
     private Player $player;
 
