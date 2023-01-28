@@ -48,10 +48,10 @@ class PracticeCommand extends Command
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
                             $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                         }
-                        if (!isset($args[2])) {
-                            $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                            $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
-                        }
+                    if (!isset($args[2])) {
+                        $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
+                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
+                    }
                     switch ($args[1]) {
                         case 'Nodebuff':
                             if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
@@ -98,7 +98,7 @@ class PracticeCommand extends Command
                             $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
                             break;
                     }
-                        break;
+                    break;
                     case 'remove':
                         if (isset($args[1])) {
                             switch ($args[1]) {
@@ -125,7 +125,7 @@ class PracticeCommand extends Command
                         }
                         break;
                     case 'set-npcffa':
-                        new JoinEntity($sender->getLocation());
+                        new JoinEntity($sender->getLocation(), $sender->getSkin());
                         break;
                     case 'remove-npc':
                         $npc = $sender->getWorld()->getEntities();

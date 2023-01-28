@@ -33,6 +33,7 @@ use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
+use pocketmine\entity\Human;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIdentifier;
 use pocketmine\item\ItemIds;
@@ -319,7 +320,7 @@ final class PracticeCore extends PluginBase
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
         }, ['Hologram']);
         EntityFactory::getInstance()->register(JoinEntity::class, function (World $world, CompoundTag $nbt): JoinEntity {
-            return new JoinEntity(EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            return new JoinEntity(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
         }, ['joinentity']);
     }
 

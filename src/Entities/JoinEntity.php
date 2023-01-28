@@ -5,31 +5,22 @@ declare(strict_types=1);
 namespace Nayuki\Entities;
 
 use Nayuki\PracticeCore;
-use pocketmine\entity\Location;
-use pocketmine\entity\Zombie;
+use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 
-final class JoinEntity extends Zombie
+final class JoinEntity extends Human
 {
-
-    public function __construct(Location $location, ?CompoundTag $nbt = null)
-    {
-        parent::__construct($location, $nbt);
-        $this->setNameTagAlwaysVisible();
-    }
-
     /**
      * @param CompoundTag $nbt
      * @return void
      */
     public function initEntity(CompoundTag $nbt): void
     {
-        $this->setHealth(20);
-        $this->setMaxHealth(20);
-        $this->setScale(1.5);
+        $this->setNameTagAlwaysVisible();
         $this->setNameTag("§ePractice\n§7Click to Play");
+        $this->setScale(1.5);
         parent::initEntity($nbt);
     }
 
