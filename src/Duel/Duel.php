@@ -18,7 +18,7 @@ final class Duel extends AbstractListener
     /** @var string */
     public string $name;
     /** @var int */
-    private int $time = 903;
+    private int $time = 303;
     /** @var Player */
     private Player $player1;
     /** @var Player */
@@ -95,7 +95,7 @@ final class Duel extends AbstractListener
         }
         if ($tick % 20 === 0) {
             switch ($this->time) {
-                case 903:
+                case 303:
                     $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
                     $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));
                     foreach ($this->getPlayers() as $player) {
@@ -110,19 +110,19 @@ final class Duel extends AbstractListener
                         }
                     }
                     break;
-                case 902:
+                case 302:
                     foreach ($this->getPlayers() as $player) {
                         $player->sendTitle('§b2', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                     break;
-                case 901:
+                case 301:
                     foreach ($this->getPlayers() as $player) {
                         $player->sendTitle('§b1', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                     break;
-                case 900:
+                case 300:
                     foreach ($this->getPlayers() as $player) {
                         $player->sendTitle('§bFight!', '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
