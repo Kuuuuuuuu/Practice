@@ -20,7 +20,7 @@ final class Duel extends AbstractListener
     /** @var int */
     private int $time = 300;
     /** @var int */
-    private int $startSec = 5;
+    private int $startSec = 3;
     /** @var Player */
     private Player $player1;
     /** @var Player */
@@ -82,10 +82,11 @@ final class Duel extends AbstractListener
             foreach ($this->getPlayers() as $player) {
                 $session = PracticeCore::getSessionManager()::getSession($player);
                 if ($player->isOnline()) {
-                    if ($player->getWorld() === $this->world && ($player->getPosition()->getY() < 98)) {
-                        $player->kill();
-                    }
-                    if (!$session->isDueling) {
+                    if ($session->isDueling) {
+                        if ($player->getWorld() === $this->world && ($player->getPosition()->getY() < 98)) {
+                            $player->kill();
+                        }
+                    } else {
                         $this->loser = $player;
                         $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
                         $this->onEnd();
@@ -105,7 +106,7 @@ final class Duel extends AbstractListener
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
                 }
-                if ($this->startSec === 5) {
+                if ($this->startSec === 3) {
                     foreach ($this->getPlayers() as $player) {
                         $player->setGamemode(GameMode::ADVENTURE());
                         $this->kit->setEffect($player);

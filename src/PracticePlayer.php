@@ -22,6 +22,9 @@ class PracticePlayer extends Player
         $session = PracticeCore::getSessionManager()::getSession($this);
         if ($session->isDueling) {
             switch ($session->DuelKit?->getName()) {
+                case 'Sumo':
+                    $attackSpeed = 9;
+                    break;
                 case 'Fist':
                     $attackSpeed = 8;
                     break;
@@ -58,9 +61,13 @@ class PracticePlayer extends Player
                     $xzKB = 0.378;
                     $yKb = 0.422;
                     break;
+                case 'Sumo':
+                    $xzKB = 0.405;
+                    $yKb = 0.320;
+                    break;
                 case 'Fist':
                     $xzKB = 0.402;
-                    $yKb = 0.395;
+                    $yKb = 0.345;
                     break;
                 case 'Combo':
                     $xzKB = 0.310;

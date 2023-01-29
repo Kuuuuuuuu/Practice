@@ -44,14 +44,11 @@ class PracticeCommand extends Command
                         break;
                     case 'make':
                     case 'create':
-                        if (!isset($args[1])) {
+                        if (!isset($args[1], $args[2])) {
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
                             $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
+                            return;
                         }
-                    if (!isset($args[2])) {
-                        $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
-                        $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
-                    }
                     switch ($args[1]) {
                         case 'Nodebuff':
                             if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {

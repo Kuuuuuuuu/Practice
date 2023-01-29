@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki\Game\Kits;
 
 use pocketmine\utils\RegistryTrait;
+
 use function assert;
 
 final class KitRegistry
