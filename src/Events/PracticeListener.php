@@ -505,7 +505,7 @@ final class PracticeListener extends AbstractListener
                             } else {
                                 $health = round($damager->getHealth(), 1);
                                 foreach ($damager->getWorld()->getPlayers() as $players) {
-                                    $players->sendMessage(PracticeCore::getInstance()->getPrefixCore() . TextFormat::RED . $player->getName() . TextFormat::GRAY . ' was killed by ' . TextFormat::GREEN . $damager->getName() . ' §f[§b' . $health . '§f]');
+                                    $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' was killed by ' . TextFormat::GREEN . $damager->getName() . ' §f[§b' . $health . '§f]');
                                 }
                             }
                         }
