@@ -17,7 +17,7 @@ final class SumoGenerator extends Generator
             for ($x = 0; $x < 16; $x++) {
                 for ($z = 0; $z < 16; $z++) {
                     if ($x !== 0 && $z !== 0) {
-                        $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GLASS()->getFullId());
+                        $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
                     }
                 }
             }
