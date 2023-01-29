@@ -103,7 +103,7 @@ final class ScoreboardManager
             if ($duelClass !== null) {
                 $duelTime = Time::calculateTime($duelClass->getSeconds());
             }
-            $lines[5] = " §bDuration: §a$duelTime";
+            $lines[3] = " §bDuration: §a$duelTime";
         } else {
             $lines[2] = " §bCombat§f: §a$CombatSecond";
             $lines[3] = ' §bKillStreak§f: §a' . $session->getStreak();
