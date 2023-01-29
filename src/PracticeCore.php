@@ -335,7 +335,7 @@ final class PracticeCore extends PluginBase
         $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
         if (is_array($check)) {
             foreach ($check as $world) {
-                if (str_contains($world, 'duel')) {
+                if (str_contains(strtolower($world), 'duel')) {
                     unlink(Server::getInstance()->getDataPath() . 'worlds/' . $world);
                     continue;
                 }
