@@ -62,8 +62,8 @@ class PracticePlayer extends Player
                     $yKb = 0.422;
                     break;
                 case 'Sumo':
-                    $xzKB = 0.405;
-                    $yKb = 0.320;
+                    $xzKB = 0.425;
+                    $yKb = 0.385;
                     break;
                 case 'Fist':
                     $xzKB = 0.402;
