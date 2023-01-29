@@ -20,6 +20,7 @@ use Nayuki\Entities\JoinEntity;
 use Nayuki\Events\PracticeListener;
 use Nayuki\Game\Duel\DuelManager;
 use Nayuki\Game\Generator\DuelGenerator;
+use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
@@ -224,7 +225,8 @@ final class PracticeCore extends PluginBase
     private function registerGenerators(): void
     {
         $generator = [
-            DuelGenerator::class => 'duel'
+            DuelGenerator::class => 'duel',
+            SumoGenerator::class => 'sumo'
         ];
         foreach ($generator as $key => $value) {
             GeneratorManager::getInstance()->addGenerator($key, $value, fn () => null);
