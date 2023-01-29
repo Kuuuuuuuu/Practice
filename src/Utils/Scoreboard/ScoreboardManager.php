@@ -6,7 +6,6 @@ use Nayuki\Misc\Time;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function count;
 use function round;
 
@@ -94,6 +93,7 @@ final class ScoreboardManager
         }
         $lines = [
             1 => '§7---------------§0',
+            4 => ' §d',
             6 => " §bYour §fPing: §a$ping" . '§fms',
             7 => " §bTheir §fPing: §c$OpponentPing" . '§fms',
             8 => '§7---------------'
@@ -106,7 +106,6 @@ final class ScoreboardManager
         } else {
             $lines[2] = " §bCombat§f: §a$CombatSecond";
             $lines[3] = ' §bKillStreak§f: §a' . $session->getStreak();
-            $lines[4] = ' §d';
         }
         PracticeCore::getScoreboardUtils()->new($player, 'ObjectiveName', PracticeCore::getScoreboardTitle());
         foreach ($lines as $line => $content) {
