@@ -23,7 +23,7 @@ final class DuelGenerator extends Generator
                                 $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
                             }
                         } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GLASS()->getFullId());
+                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
                         }
                     }
                 }
