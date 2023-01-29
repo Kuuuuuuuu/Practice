@@ -46,6 +46,7 @@ use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
+
 use function is_array;
 
 final class PracticeCore extends PluginBase
