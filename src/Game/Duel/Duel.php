@@ -116,7 +116,7 @@ final class Duel extends AbstractListener
                     }
                     if ($this->kit->getName() === 'Sumo') {
                         $this->player1->teleport(new Location(6, 101, 0, $this->world, 0, 0));
-                        $this->player2->teleport(new Location(6, 101, 9, $this->world, 180, 0));
+                        $this->player2->teleport(new Location(6, 101, 7, $this->world, 180, 0));
                     } else {
                         $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
                         $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));

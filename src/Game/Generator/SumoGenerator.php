@@ -14,8 +14,8 @@ final class SumoGenerator extends Generator
     {
         $chunk = $world->getChunk($chunkX, $chunkZ);
         if (($chunk !== null) && $chunkX % 20 === 0 && $chunkZ % 20 === 0) {
-            for ($x = 0; $x < 18; $x++) {
-                for ($z = 0; $z < 18; $z++) {
+            for ($x = 0; $x < 16; $x++) {
+                for ($z = 0; $z < 16; $z++) {
                     if ($x !== 0 && $z !== 0) {
                         $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GLASS()->getFullId());
                     }
