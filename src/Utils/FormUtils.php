@@ -48,7 +48,7 @@ class FormUtils
         $form->addButton("§aNodebuff\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Nodebuff')), 0, 'textures/items/potion_bottle_splash_heal.png');
         $form->addButton("§aFist\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Fist')), 0, 'textures/items/beef_cooked.png');
         $form->addButton("§aResistance\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Resistance')), 0, 'textures/items/snowball.png');
-        $form->addButton("§aCombo\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Combo')), 0, 'textures/items/golden_apple.png');
+        $form->addButton("§aCombo\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Combo')), 0, 'textures/items/diamond_sword.png');
         $player->sendForm($form);
     }
 
