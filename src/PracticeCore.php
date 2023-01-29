@@ -336,12 +336,7 @@ final class PracticeCore extends PluginBase
         if (is_array($check)) {
             foreach ($check as $world) {
                 if (str_contains(strtolower($world), 'duel')) {
-                    $bool = @rmdir($world);
-                    if ($bool) {
-                        $this->getLogger()->info('§aDeleted ' . $world);
-                    } else {
-                        $this->getLogger()->info('§cFailed to delete ' . $world);
-                    }
+                    self::getPracticeUtils()->deleteDir($world);
                     continue;
                 }
                 $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
