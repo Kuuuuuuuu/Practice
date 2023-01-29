@@ -20,10 +20,10 @@ final class Combo extends Kit
     public function getArmorItems(): array
     {
         return [
-            VanillaItems::DIAMOND_HELMET()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)),
-            VanillaItems::DIAMOND_CHESTPLATE()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)),
-            VanillaItems::DIAMOND_LEGGINGS()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1)),
-            VanillaItems::DIAMOND_BOOTS()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1))
+            VanillaItems::DIAMOND_HELMET()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 3)),
+            VanillaItems::DIAMOND_CHESTPLATE()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 3)),
+            VanillaItems::DIAMOND_LEGGINGS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 3)),
+            VanillaItems::DIAMOND_BOOTS()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::PROTECTION(), 1))->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 3))
         ];
     }
 
@@ -33,7 +33,7 @@ final class Combo extends Kit
     public function getInventoryItems(): array
     {
         $contents = [];
-        $contents[] = VanillaItems::DIAMOND_SWORD()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 2));
+        $contents[] = VanillaItems::DIAMOND_SWORD()->setUnbreakable()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1));
         $contents[] = VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(16);
         return $contents;
     }
