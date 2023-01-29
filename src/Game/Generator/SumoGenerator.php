@@ -13,8 +13,8 @@ final class SumoGenerator extends Generator
     public function generateChunk(ChunkManager $world, int $chunkX, int $chunkZ): void
     {
         $chunk = $world->getChunk($chunkX, $chunkZ);
-        if (($chunk !== null) && $chunkX === 0 && $chunkZ === 0) {
-            for ($x = -5; $x < 12; $x++) {
+        if (($chunk !== null) && $chunkX === 5 && $chunkZ === 5) {
+            for ($x = -10; $x < 12; $x++) {
                 for ($z = 0; $z < 12; $z++) {
                     $chunk->setFullBlock($x, 100, $z, BlockLegacyIds::GRASS << 4);
                 }
