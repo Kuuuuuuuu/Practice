@@ -10,7 +10,7 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
-final class Resistance extends Kit
+final class Sumo extends Kit
 {
     /**
      * @return array<Item>

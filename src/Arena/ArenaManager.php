@@ -33,6 +33,8 @@ final class ArenaManager
                 $this->getKits($player, $modes);
                 PracticeCore::getPracticeUtils()->playSound('jump.slime', $player);
                 $player->teleport($world->getSpawnLocation());
+            } else {
+                $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'Something went wrong');
             }
         }
     }

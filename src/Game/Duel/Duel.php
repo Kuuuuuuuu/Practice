@@ -1,6 +1,6 @@
 <?php
 
-namespace Nayuki\Duel;
+namespace Nayuki\Game\Duel;
 
 use Nayuki\Game\Kits\Kit;
 use Nayuki\Misc\AbstractListener;
@@ -18,7 +18,9 @@ final class Duel extends AbstractListener
     /** @var string */
     public string $name;
     /** @var int */
-    private int $time = 303;
+    private int $time = 300;
+    /** @var int */
+    private int $startSec = 5;
     /** @var Player */
     private Player $player1;
     /** @var Player */
@@ -76,64 +78,62 @@ final class Duel extends AbstractListener
      */
     public function update(int $tick): void
     {
-        foreach ($this->getPlayers() as $player) {
-            $session = PracticeCore::getSessionManager()::getSession($player);
-            if ($player->isOnline()) {
-                if ($player->getWorld() === $this->world && ($player->getPosition()->getY() < 98)) {
-                    $player->kill();
-                }
-                if (!$session->isDueling) {
+        if ($tick % 5 === 0) {
+            foreach ($this->getPlayers() as $player) {
+                $session = PracticeCore::getSessionManager()::getSession($player);
+                if ($player->isOnline()) {
+                    if ($player->getWorld() === $this->world && ($player->getPosition()->getY() < 98)) {
+                        $player->kill();
+                    }
+                    if (!$session->isDueling) {
+                        $this->loser = $player;
+                        $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
+                        $this->onEnd();
+                    }
+                } else {
                     $this->loser = $player;
                     $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                    $this->onEnd();
+                    $this->onEnd($player);
                 }
-            } else {
-                $this->loser = $player;
-                $this->winner = $player->getName() !== $this->player1->getName() ? $this->player1 : $this->player2;
-                $this->onEnd($player);
             }
         }
         if ($tick % 20 === 0) {
-            switch ($this->time) {
-                case 303:
-                    $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
-                    $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));
+            if ($this->startSec >= 0) {
+                if ($this->startSec > 0) {
                     foreach ($this->getPlayers() as $player) {
-                        if ($player instanceof Player) {
-                            $player->setGamemode(GameMode::ADVENTURE());
-                            $this->kit->setEffect($player);
-                            $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                            $player->getInventory()->setContents($this->kit->getInventoryItems());
-                            $player->setImmobile();
-                            $player->sendTitle('§b3', '', 1, 3, 1);
-                            PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
-                        }
-                    }
-                    break;
-                case 302:
-                    foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§b2', '', 1, 3, 1);
+                        $player->sendTitle('§bStarting in ' . $this->startSec, '', 1, 3, 1);
                         PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
                     }
-                    break;
-                case 301:
+                }
+                if ($this->startSec === 5) {
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§b1', '', 1, 3, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                        $player->setGamemode(GameMode::ADVENTURE());
+                        $this->kit->setEffect($player);
+                        $player->getArmorInventory()->setContents($this->kit->getArmorItems());
+                        $player->getInventory()->setContents($this->kit->getInventoryItems());
+                        $player->setImmobile();
                     }
-                    break;
-                case 300:
+                    if ($this->kit->getName() === 'Sumo') {
+                        $this->player1->teleport(new Location(6, 101, 0, $this->world, 0, 0));
+                        $this->player2->teleport(new Location(6, 101, 9, $this->world, 180, 0));
+                    } else {
+                        $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
+                        $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));
+                    }
+                } elseif ($this->startSec === 0) {
                     foreach ($this->getPlayers() as $player) {
-                        $player->sendTitle('§bFight!', '', 1, 3, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.anvil_use', $player);
                         $player->setImmobile(false);
+                        $player->sendTitle('§bFight!', '', 1, 5, 1);
+                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.levelup', $player);
                     }
-                    break;
-                case 0:
+                }
+                $this->startSec--;
+            } else {
+                if ($this->time <= 0) {
                     $this->onEnd();
-                    break;
+                }
+                $this->time--;
             }
-            $this->time--;
         }
     }
 
@@ -172,12 +172,12 @@ final class Duel extends AbstractListener
                         $session->BoxingPoint = 0;
                         $session->DuelClass = null;
                         $session->setOpponent(null);
-                        if ($this->winner instanceof Player) {
+                        if ($this->winner !== null) {
                             $WinnerSession = PracticeCore::getSessionManager()::getSession($this->winner);
                             $WinnerSession->kills++;
                             $WinnerSession->killStreak++;
                         }
-                        if ($this->loser instanceof Player) {
+                        if ($this->loser !== null) {
                             $LoserSession = PracticeCore::getSessionManager()::getSession($this->loser);
                             $LoserSession->deaths++;
                             $LoserSession->killStreak = 0;

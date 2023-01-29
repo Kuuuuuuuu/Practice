@@ -1,8 +1,9 @@
 <?php
 
-namespace Nayuki\Duel;
+namespace Nayuki\Game\Duel;
 
 use Nayuki\Game\Generator\DuelGenerator;
+use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeCore;
 use pocketmine\math\Vector3;
@@ -24,7 +25,11 @@ final class DuelManager
     {
         $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . Uuid::uuid4();
         $world = new WorldCreationOptions();
-        $world->setGeneratorClass(DuelGenerator::class);
+        if ($kit->getName() === 'Sumo') {
+            $world->setGeneratorClass(SumoGenerator::class);
+        } else {
+            $world->setGeneratorClass(DuelGenerator::class);
+        }
         $world->setSeed(0);
         $world->setSpawnPosition(new Vector3(0, 100, 0));
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);

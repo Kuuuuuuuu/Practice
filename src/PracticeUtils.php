@@ -7,6 +7,7 @@ namespace Nayuki;
 use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Players\PlayerSession;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -18,7 +19,6 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function glob;
 use function is_array;
 use function is_dir;
@@ -242,5 +242,11 @@ final class PracticeUtils
                 rmdir($dirPath);
             }
         }
+    }
+
+    public function isPlayerInWater(Player $player): bool
+    {
+        $id = $player->getWorld()->getBlock($player->getPosition()->floor())->getIdInfo()->getBlockId();
+        return $id === VanillaBlocks::WATER()->getIdInfo()->getBlockId();
     }
 }

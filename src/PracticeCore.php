@@ -14,11 +14,11 @@ use Nayuki\Commands\SetTagCommand;
 use Nayuki\Commands\TbanCommand;
 use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
-use Nayuki\Duel\DuelManager;
 use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Events\PracticeListener;
+use Nayuki\Game\Duel\DuelManager;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
@@ -45,7 +45,6 @@ use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase

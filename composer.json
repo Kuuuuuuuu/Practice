@@ -9,7 +9,8 @@
     "ext-pthreads": "*",
     "ext-igbinary": "*",
     "pocketmine/pocketmine-mp": "^4.12.11",
-    "ext-sockets": "*"
+    "ext-sockets": "*",
+    "ext-gmp": "*"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

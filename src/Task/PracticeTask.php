@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Task;
 
-use Nayuki\Duel\Duel;
+use Nayuki\Game\Duel\Duel;
 use Nayuki\Misc\AbstractTask;
 use Nayuki\Misc\ParticleOffsetDisplayer;
 use Nayuki\PracticeCore;

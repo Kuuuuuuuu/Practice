@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nayuki\Entities;
 
 use pocketmine\entity\projectile\Throwable;

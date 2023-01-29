@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Players;
 
-use Nayuki\Duel\Duel;
+use Nayuki\Game\Duel\Duel;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
@@ -39,7 +39,7 @@ final class PlayerSession
     public bool $isDueling = false;
     /** @var Kit|null */
     public ?Kit $DuelKit = null;
-    /** @var Duel|null */
+    /** @var \Nayuki\Game\Duel\Duel|null */
     public ?Duel $DuelClass = null;
     /** @var bool */
     public bool $isQueueing = false;

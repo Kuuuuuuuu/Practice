@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Nayuki\Game\Kits;
 
 use pocketmine\utils\RegistryTrait;
-
 use function assert;
 
 final class KitRegistry
@@ -41,6 +40,7 @@ final class KitRegistry
         self::register(new Fist('Fist'));
         self::register(new Nodebuff('Nodebuff'));
         self::register(new Combo('Combo'));
+        self::register(new Sumo('Sumo'));
     }
 
     /**
