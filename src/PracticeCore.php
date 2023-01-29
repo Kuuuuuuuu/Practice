@@ -332,11 +332,16 @@ final class PracticeCore extends PluginBase
      */
     private function loadWorlds(): void
     {
-        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
+        $check = glob(Server::getInstance()->getDataPath() . 'worlds\*');
         if (is_array($check)) {
             foreach ($check as $world) {
                 if (str_contains(strtolower($world), 'duel')) {
-                    @unlink($world);
+                    $bool = @rmdir($world);
+                    if ($bool) {
+                        $this->getLogger()->info('§aDeleted ' . $world);
+                    } else {
+                        $this->getLogger()->info('§cFailed to delete ' . $world);
+                    }
                     continue;
                 }
                 $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
