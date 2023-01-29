@@ -46,7 +46,6 @@ use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -230,7 +229,7 @@ final class PracticeCore extends PluginBase
             SumoGenerator::class => 'sumo'
         ];
         foreach ($generator as $key => $value) {
-            GeneratorManager::getInstance()->addGenerator($key, $value, fn () => null);
+            GeneratorManager::getInstance()->addGenerator($key, $value, fn() => null);
         }
     }
 
@@ -336,6 +335,10 @@ final class PracticeCore extends PluginBase
         $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
         if (is_array($check)) {
             foreach ($check as $world) {
+                if (str_contains($world, 'duel')) {
+                    unlink(Server::getInstance()->getDataPath() . 'worlds/' . $world);
+                    continue;
+                }
                 $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
                 if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
                     continue;
