@@ -332,14 +332,14 @@ final class PracticeCore extends PluginBase
      */
     private function loadWorlds(): void
     {
-        $check = glob(Server::getInstance()->getDataPath() . 'worlds\*');
+        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
         if (is_array($check)) {
             foreach ($check as $world) {
-                if (str_contains(strtolower($world), 'duel')) {
+                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
+                if (str_contains($world, 'duel')) {
                     self::getPracticeUtils()->deleteDir($world);
                     continue;
                 }
-                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
                 if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
                     continue;
                 }
