@@ -11,6 +11,7 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use Throwable;
 use function is_array;
 use function str_contains;
 
@@ -92,7 +93,10 @@ final class Hologram extends Entity
                         $name = str_replace('.yml', '', $file);
                         $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
                         if (is_array($parsed)) {
-                            $array[$name] = $parsed[$this->type];
+                            try {
+                                $array[$name] = $parsed[$this->type];
+                            } catch (Throwable) {
+                            }
                         }
                     }
                 }
