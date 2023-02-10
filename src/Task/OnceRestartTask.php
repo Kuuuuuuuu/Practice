@@ -8,7 +8,7 @@ use pocketmine\Server;
 
 class OnceRestartTask extends AbstractTask
 {
-    /** @var int  */
+    /** @var int */
     private int $time;
 
     public function __construct(int $time)
@@ -25,14 +25,13 @@ class OnceRestartTask extends AbstractTask
     public function onUpdate(int $tick): void
     {
         $this->time--;
-        if ($this->time % 5 === 0) {
-            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
-        }
         if ($this->time <= 1) {
             foreach (Server::getInstance()->getOnlinePlayers() as $player) {
                 $player->kick('§cServer restarted');
             }
             PracticeCore::getInstance()->getServer()->shutdown();
+        } elseif ($this->time % 5 === 0) {
+            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§cServer will restart in §e' . $this->time . '§c seconds');
         }
     }
 }

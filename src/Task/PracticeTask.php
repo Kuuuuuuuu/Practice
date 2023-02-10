@@ -30,14 +30,13 @@ class PracticeTask extends AbstractTask
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 5 === 0) {
                     $session->updateScoreTag();
-                    $session->updateNameTag();
                     $session->updateScoreboard();
                 }
                 if ($tick % 20 === 0) {
+                    $session->updateNameTag();
                     if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                         ParticleOffsetDisplayer::display($player, new FlameParticle());
-                    }
-                    if ($session->isCombat()) {
+                    } elseif ($session->isCombat()) {
                         $session->CombatTime--;
                         if ($session->CombatTime <= 0) {
                             $session->setCombat(false);

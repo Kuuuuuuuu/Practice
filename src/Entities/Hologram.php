@@ -11,7 +11,6 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-
 use function is_array;
 use function str_contains;
 
@@ -19,14 +18,15 @@ final class Hologram extends Entity
 {
     /** @var int */
     private int $CountdownSeconds = 1;
-    /** @var string */
-    private string $type = 'Unknown';
+    /** @var string|null */
+    private ?string $type = null;
     /** @var float */
     private float $height = 0.1;
     /** @var float */
     private float $width = 0.1;
     /** @var int */
     private int $tick = 0;
+    /** @var string */
     private string $subtitle = '';
 
     public function __construct(Location $location, CompoundTag $nbt)
@@ -81,38 +81,41 @@ final class Hologram extends Entity
      */
     private function getSubtitleType(): string
     {
-        $subtitle = ($this->type === 'kills') ? "§b§lTop Kills\n" : "§b§lTop Deaths\n";
-        $array = [];
-        $pos = 0;
-        $files = scandir(PracticeCore::getPlayerDataPath());
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                if (str_contains($file, '.yml')) {
-                    $name = str_replace('.yml', '', $file);
-                    $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
-                    if (is_array($parsed)) {
-                        $array[$name] = $parsed[$this->type];
+        if ($this->type !== null) {
+            $subtitle = ($this->type === 'kills') ? "§b§lTop Kills\n" : "§b§lTop Deaths\n";
+            $array = [];
+            $pos = 0;
+            $files = scandir(PracticeCore::getPlayerDataPath());
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    if (str_contains($file, '.yml')) {
+                        $name = str_replace('.yml', '', $file);
+                        $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
+                        if (is_array($parsed)) {
+                            $array[$name] = $parsed[$this->type];
+                        }
                     }
                 }
             }
-        }
-        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
-            $player = $session->getPlayer();
-            $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
-        }
-        arsort($array);
-        foreach ($array as $name => $kills) {
-            if ($pos > 9) {
-                break;
+            foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+                $player = $session->getPlayer();
+                $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
             }
-            if ($pos < 3) {
-                $subtitle .= '§6[' . ($pos + 1) . '] §r§a' . $name . ' §e' . $kills . "\n";
-            } else {
-                $subtitle .= '§7[' . ($pos + 1) . '] §r§a' . $name . ' §f' . $kills . "\n";
+            arsort($array);
+            foreach ($array as $name => $kills) {
+                if ($pos > 9) {
+                    break;
+                }
+                if ($pos < 3) {
+                    $subtitle .= '§6[' . ($pos + 1) . '] §r§a' . $name . ' §e' . $kills . "\n";
+                } else {
+                    $subtitle .= '§7[' . ($pos + 1) . '] §r§a' . $name . ' §f' . $kills . "\n";
+                }
+                $pos++;
             }
-            $pos++;
+            return $subtitle;
         }
-        return $subtitle;
+        return '';
     }
 
     /**
