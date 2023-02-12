@@ -39,7 +39,7 @@ final class PlayerSession
     public bool $isDueling = false;
     /** @var Kit|null */
     public ?Kit $DuelKit = null;
-    /** @var \Nayuki\Game\Duel\Duel|null */
+    /** @var Duel|null */
     public ?Duel $DuelClass = null;
     /** @var bool */
     public bool $isQueueing = false;

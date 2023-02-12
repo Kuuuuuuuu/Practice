@@ -17,7 +17,6 @@ use Nayuki\Commands\TpsCommand;
 use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
-use Nayuki\Events\PracticeListener;
 use Nayuki\Game\Duel\DuelManager;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;

@@ -12,6 +12,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use Throwable;
+
 use function is_array;
 use function str_contains;
 
@@ -92,11 +93,12 @@ final class Hologram extends Entity
                     if (str_contains($file, '.yml')) {
                         $name = str_replace('.yml', '', $file);
                         $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
-                        if (is_array($parsed)) {
-                            try {
+                        try {
+                            if (is_array($parsed)) {
                                 $array[$name] = $parsed[$this->type];
-                            } catch (Throwable) {
                             }
+                        } catch (Throwable $e) {
+                            return 'Error Loading Data' . $e->getMessage();
                         }
                     }
                 }
@@ -136,6 +138,9 @@ final class Hologram extends Entity
     public function saveNBT(): CompoundTag
     {
         $nbt = parent::saveNBT();
+        if ($this->type === null) {
+            return $nbt;
+        }
         $nbt->setString('type', $this->type);
         return $nbt;
     }

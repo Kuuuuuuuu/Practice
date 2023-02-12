@@ -27,7 +27,7 @@ final class DuelGenerator extends Generator
                         }
                     }
                 }
-            } elseif ($chunkX % 20 == 1 && $chunkZ % 20 === 0) {
+            } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 0) {
                 for ($x = 0; $x < 16; $x++) {
                     for ($z = 0; $z < 16; $z++) {
                         if ($z === 0) {
@@ -51,7 +51,7 @@ final class DuelGenerator extends Generator
                         }
                     }
                 }
-            } elseif ($chunkX % 20 == 2 && $chunkZ % 20 === 1) {
+            } elseif ($chunkX % 20 === 2 && $chunkZ % 20 === 1) {
                 for ($x = 0; $x < 16; $x++) {
                     for ($z = 0; $z < 16; $z++) {
                         if ($x === 15) {
@@ -63,10 +63,10 @@ final class DuelGenerator extends Generator
                         }
                     }
                 }
-            } elseif ($chunkX % 20 == 2 && $chunkZ % 20 === 2) {
+            } elseif ($chunkX % 20 === 2 && $chunkZ % 20 === 2) {
                 for ($x = 0; $x < 16; $x++) {
                     for ($z = 0; $z < 16; $z++) {
-                        if ($x == 15 || $z == 15) {
+                        if ($x === 15 || $z === 15) {
                             for ($y = 99; $y < 256; $y++) {
                                 $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
                             }
@@ -108,7 +108,7 @@ final class DuelGenerator extends Generator
             } elseif ($chunkX % 20 === 0 && $chunkZ % 20 === 2) {
                 for ($x = 0; $x < 16; $x++) {
                     for ($z = 0; $z < 16; $z++) {
-                        if ($x === 0 || $z == 15) {
+                        if ($x === 0 || $z === 15) {
                             for ($y = 99; $y < 256; $y++) {
                                 $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
                             }

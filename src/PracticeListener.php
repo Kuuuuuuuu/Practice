@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Nayuki\Events;
+namespace Nayuki;
 
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Misc\AbstractListener;
-use Nayuki\PracticeConfig;
-use Nayuki\PracticeCore;
-use Nayuki\PracticePlayer;
 use Nayuki\Task\OncePearlTask;
 use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\event\block\BlockBreakEvent;

@@ -107,19 +107,14 @@ final class Duel extends AbstractListener
                     }
                 }
                 if ($this->startSec === 3) {
+                    $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
+                    $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));
                     foreach ($this->getPlayers() as $player) {
                         $player->setGamemode(GameMode::ADVENTURE());
                         $this->kit->setEffect($player);
                         $player->getArmorInventory()->setContents($this->kit->getArmorItems());
                         $player->getInventory()->setContents($this->kit->getInventoryItems());
                         $player->setImmobile();
-                    }
-                    if ($this->kit->getName() === 'Sumo') {
-                        $this->player1->teleport(new Location(8, 101, 2, $this->world, 0, 0));
-                        $this->player2->teleport(new Location(8, 101, 14, $this->world, 180, 0));
-                    } else {
-                        $this->player1->teleport(new Location(24, 101, 40, $this->world, 180, 0));
-                        $this->player2->teleport(new Location(24, 101, 10, $this->world, 0, 0));
                     }
                 } elseif ($this->startSec === 0) {
                     foreach ($this->getPlayers() as $player) {

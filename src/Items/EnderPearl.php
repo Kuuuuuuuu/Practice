@@ -4,9 +4,7 @@ namespace Nayuki\Items;
 
 use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\PracticeConfig;
-use Nayuki\PracticeCore;
 use pocketmine\entity\Location;
-use pocketmine\entity\projectile\EnderPearl as PMEnderPearlProjectile;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\EnderPearl as ItemEnderPearl;
@@ -52,11 +50,7 @@ class EnderPearl extends ItemEnderPearl
      */
     public function createEntity(Location $location, Player $thrower): Throwable
     {
-        $session = PracticeCore::getSessionManager()::getSession($thrower);
-        if ($session->SmoothPearlEnabled) {
-            return new EnderPearlEntity($location, $thrower);
-        }
-        return new PMEnderPearlProjectile($location, $thrower);
+        return new EnderPearlEntity($location, $thrower);
     }
 
     /**
