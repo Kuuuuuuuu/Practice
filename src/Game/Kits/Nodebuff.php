@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Nayuki\Game\Kits;
 
+use Nayuki\Items\EnderPearl;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIdentifier;
+use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
@@ -32,7 +36,7 @@ final class Nodebuff extends Kit
     {
         $contents = [];
         $contents[] = VanillaItems::DIAMOND_SWORD()->setUnbreakable();
-        $contents[] = VanillaItems::ENDER_PEARL()->setCount(16);
+        $contents[] = ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 16);
         for ($i = 0; $i < 34; $i++) {
             $contents[] = VanillaItems::STRONG_HEALING_SPLASH_POTION();
         }
