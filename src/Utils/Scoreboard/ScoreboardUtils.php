@@ -21,7 +21,7 @@ class ScoreboardUtils
      */
     public function new(Player $player, string $objectiveName, string $displayName): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         if ($session->Scoreboard !== null) {
             $this->remove($player);
         }
@@ -41,7 +41,7 @@ class ScoreboardUtils
      */
     public function remove(Player $player): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         if ($session->Scoreboard !== null) {
             $objectiveName = $session->Scoreboard;
             $pk = new RemoveObjectivePacket();
@@ -59,7 +59,7 @@ class ScoreboardUtils
      */
     public function setLine(Player $player, int $score, string $message): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         if ($session->Scoreboard !== null) {
             $objectiveName = $session->Scoreboard;
             $entry = new ScorePacketEntry();

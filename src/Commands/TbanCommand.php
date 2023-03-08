@@ -45,26 +45,6 @@ class TbanCommand extends Command
         }
     }
 
-    public function openPlayerListUI(Player $player): bool
-    {
-        $form = new SimpleForm(function (Player $player, $data = null) {
-            $target = $data;
-            if ($target === null) {
-                return true;
-            }
-            PracticeCore::getCaches()->targetPlayer[$player->getName()] = $target;
-            $this->openTbanUI($player);
-            return true;
-        });
-        $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
-        $form->setContent('§c§lChoose Player');
-        foreach (PracticeCore::getPracticeUtils()->getPlayerInSession() as $online) {
-            $form->addButton($online->getName(), -1, '', $online->getName());
-        }
-        $player->sendForm($form);
-        return true;
-    }
-
     public function openTbanUI(Player $player): bool
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
@@ -116,6 +96,27 @@ class TbanCommand extends Command
         $form->addSlider('Hour/s', 0, 24, 1);
         $form->addSlider('Minute/s', 0, 60, 1);
         $form->addInput('Reason');
+        $player->sendForm($form);
+        return true;
+    }
+
+    public function openPlayerListUI(Player $player): bool
+    {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            $target = $data;
+            if ($target === null) {
+                return true;
+            }
+            PracticeCore::getCaches()->targetPlayer[$player->getName()] = $target;
+            $this->openTbanUI($player);
+            return true;
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
+        $form->setContent('§c§lChoose Player');
+        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
+            $online = $session->getPlayer();
+            $form->addButton($online->getName(), -1, '', $online->getName());
+        }
         $player->sendForm($form);
         return true;
     }

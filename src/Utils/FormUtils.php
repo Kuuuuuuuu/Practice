@@ -60,22 +60,28 @@ class FormUtils
     {
         $form = new CustomForm(function (Player $player, array $data = null) {
             if ($data !== null) {
-                $session = PracticeCore::getSessionManager()::getSession($player);
-                if (isset($data['CPS'])) {
-                    $session->CpsCounterEnabled = (bool)$data['CPS'];
-                }
-                if (isset($data['Scoreboard'])) {
-                    $session->ScoreboardEnabled = (bool)$data['Scoreboard'];
-                }
-                if (isset($data['SmoothPearl'])) {
-                    $session->SmoothPearlEnabled = (bool)$data['SmoothPearl'];
+                $session = PracticeCore::getSessionManager()->getSession($player);
+                foreach ($data as $key => $value) {
+                    switch (strtolower($key)) {
+                        case 'cps':
+                            $session->CpsCounterEnabled = (bool)$value;
+                            break;
+                        case 'scoreboard':
+                            $session->ScoreboardEnabled = (bool)$value;
+                            break;
+                        case 'smoothpearl':
+                            $session->SmoothPearlEnabled = (bool)$value;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
-        $form->addToggle('Cps Counter', PracticeCore::getSessionManager()::getSession($player)->CpsCounterEnabled, 'CPS');
-        $form->addToggle('Scoreboard', PracticeCore::getSessionManager()::getSession($player)->ScoreboardEnabled, 'Scoreboard');
-        $form->addToggle('Smooth Pearl', PracticeCore::getSessionManager()::getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
+        $form->addToggle('Cps Counter', PracticeCore::getSessionManager()->getSession($player)->CpsCounterEnabled, 'CPS');
+        $form->addToggle('Scoreboard', PracticeCore::getSessionManager()->getSession($player)->ScoreboardEnabled, 'Scoreboard');
+        $form->addToggle('Smooth Pearl', PracticeCore::getSessionManager()->getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
         $player->sendForm($form);
     }
 
@@ -87,7 +93,7 @@ class FormUtils
     {
         $form = new SimpleForm(function (Player $player, string $data = null) {
             if ($data !== null) {
-                $session = PracticeCore::getSessionManager()::getSession($player);
+                $session = PracticeCore::getSessionManager()->getSession($player);
                 $session->DuelKit = KitRegistry::fromString($data);
                 $session->isQueueing = true;
                 $player->getInventory()->clearAll();
@@ -115,7 +121,7 @@ class FormUtils
         $Count = 0;
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p instanceof Player) {
-                $session = PracticeCore::getSessionManager()::getSession($p);
+                $session = PracticeCore::getSessionManager()->getSession($p);
                 $Qkit = $session->DuelKit;
                 if (($Qkit instanceof Kit) && !$session->isDueling && $Qkit->getName() === $kit) {
                     $Count++;

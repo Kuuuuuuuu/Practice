@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
-use Nayuki\Entities\Hologram;
-use Nayuki\Entities\JoinEntity;
-use Nayuki\Players\PlayerSession;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -19,15 +16,11 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function glob;
 use function is_array;
 use function is_dir;
 use function rmdir;
 use function str_ends_with;
-use function stripos;
-use function strlen;
-use function strtolower;
 use function unlink;
 
 final class PracticeUtils
@@ -57,8 +50,8 @@ final class PracticeUtils
      */
     public function handleStreak(Player $player, Player $death): void
     {
-        $KillSession = PracticeCore::getSessionManager()::getSession($player);
-        $DeathSession = PracticeCore::getSessionManager()::getSession($death);
+        $KillSession = PracticeCore::getSessionManager()->getSession($player);
+        $DeathSession = PracticeCore::getSessionManager()->getSession($death);
         $oldStreak = $DeathSession->getStreak();
         $newStreak = $KillSession->getStreak();
         if ($oldStreak > 5) {
@@ -71,72 +64,13 @@ final class PracticeUtils
     }
 
     /**
-     * @return void
-     */
-    public function dispose(): void
-    {
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
-            foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof Hologram || $entity instanceof JoinEntity) {
-                    continue;
-                }
-                $entity->close();
-            }
-        }
-    }
-
-    /**
-     * @param string $name
-     * @return Player|null
-     */
-    public function getPlayerInSessionByPrefix(string $name): ?Player
-    {
-        $found = null;
-        $name = strtolower($name);
-        $delta = PHP_INT_MAX;
-        foreach ($this->getPlayerInSession() as $player) {
-            if (stripos($player->getName(), $name) === 0) {
-                $curDelta = strlen($player->getName()) - strlen($name);
-                if ($curDelta < $delta) {
-                    $found = $player;
-                    $delta = $curDelta;
-                }
-                if ($curDelta === 0) {
-                    break;
-                }
-            }
-        }
-        return $found;
-    }
-
-    /**
-     * @return array<Player>
-     */
-    public function getPlayerInSession(): array
-    {
-        $array = [];
-        foreach ($this->getPlayerSession() as $session) {
-            $array[] = $session->getPlayer();
-        }
-        return $array;
-    }
-
-    /**
-     * @return array<PlayerSession>
-     */
-    public function getPlayerSession(): array
-    {
-        return PracticeCore::getCaches()->PlayerSession;
-    }
-
-    /**
      * @param Player $player
      * @param string $message
      * @return string
      */
     public function getChatFormat(Player $player, string $message): string
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         if ($session->getCustomTag() !== '') {
             $NameTag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
         } else {
@@ -199,12 +133,13 @@ final class PracticeUtils
     public function checkQueue(Player $player): void
     {
         $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have been entered into the queue!');
-        $PSession = PracticeCore::getSessionManager()::getSession($player);
-        foreach ($this->getPlayerInSession() as $players) {
+        $PSession = PracticeCore::getSessionManager()->getSession($player);
+        foreach (PracticeCore::getSessionManager()->getSessions() as $sessions) {
+            $players = $sessions->getPlayer();
             if ($players->getId() === $player->getId()) {
                 continue;
             }
-            $Qsession = PracticeCore::getSessionManager()::getSession($players);
+            $Qsession = PracticeCore::getSessionManager()->getSession($players);
             if ($PSession->isQueueing && $Qsession->isQueueing && $PSession->DuelKit === $Qsession->DuelKit) {
                 $kit = $PSession->DuelKit;
                 if ($kit !== null) {
@@ -245,6 +180,10 @@ final class PracticeUtils
         }
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isPlayerInWater(Player $player): bool
     {
         $id = $player->getWorld()->getBlock($player->getPosition()->floor())->getIdInfo()->getBlockId();

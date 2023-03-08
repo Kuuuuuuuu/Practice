@@ -6,7 +6,6 @@ namespace Nayuki;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
-
 use function mt_getrandmax;
 use function mt_rand;
 use function sqrt;
@@ -19,7 +18,7 @@ class PracticePlayer extends Player
     public function attack(EntityDamageEvent $source): void
     {
         $attackSpeed = 10;
-        $session = PracticeCore::getSessionManager()::getSession($this);
+        $session = PracticeCore::getSessionManager()->getSession($this);
         if ($session->isDueling) {
             switch ($session->DuelKit?->getName()) {
                 case 'Fist':
@@ -51,7 +50,7 @@ class PracticePlayer extends Player
     {
         $xzKB = 0.393;
         $yKb = 0.398;
-        $session = PracticeCore::getSessionManager()::getSession($this);
+        $session = PracticeCore::getSessionManager()->getSession($this);
         if ($session->isDueling) {
             switch ($session->DuelKit?->getName()) {
                 case 'Boxing':
@@ -85,21 +84,13 @@ class PracticePlayer extends Player
             }
         }
         $f = sqrt($x * $x + $z * $z);
-        if ($f <= 0) {
-            return;
-        }
-        if (mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
+        if ($f > 0 && mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
             $f = 1 / $f;
             $motion = clone $this->motion;
-            $motion->x /= 2;
-            $motion->y /= 2;
-            $motion->z /= 2;
-            $motion->x += $x * $f * $xzKB;
-            $motion->y += $yKb;
-            $motion->z += $z * $f * $xzKB;
-            if ($motion->y > $yKb) {
-                $motion->y = $yKb;
-            }
+            $motion->x = ($motion->x / 2) + ($x * $f * $xzKB);
+            $motion->y = ($motion->y / 2) + $yKb;
+            $motion->z = ($motion->z / 2) + ($z * $f * $xzKB);
+            $motion->y = min($motion->y, $yKb);
             $this->setMotion($motion);
         }
     }

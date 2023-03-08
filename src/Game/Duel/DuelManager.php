@@ -34,7 +34,7 @@ final class DuelManager
         $world->setSpawnPosition(new Vector3(0, 100, 0));
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
         foreach ([$player1, $player2] as $player) {
-            $session = PracticeCore::getSessionManager()::getSession($player);
+            $session = PracticeCore::getSessionManager()->getSession($player);
             $player->getInventory()->clearAll();
             $session->isDueling = true;
         }

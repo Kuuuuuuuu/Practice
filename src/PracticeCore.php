@@ -45,7 +45,6 @@ use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -152,20 +151,12 @@ final class PracticeCore extends PluginBase
         return self::$caches;
     }
 
-    /**
-     * @return PracticeUtils
-     */
-    public static function getPracticeUtils(): PracticeUtils
-    {
-        return self::$PracticeUtils;
-    }
-
     public static function getDuelManager(): DuelManager
     {
         return self::$duelManager;
     }
 
-    public function onLoad(): void
+    protected function onLoad(): void
     {
         self::$plugin = $this;
         self::$cps = new ClickHandler();
@@ -181,7 +172,7 @@ final class PracticeCore extends PluginBase
         self::$duelManager = new DuelManager();
     }
 
-    public function onEnable(): void
+    protected function onEnable(): void
     {
         $this->registerConfigs();
         $this->registerGenerators();
@@ -332,18 +323,41 @@ final class PracticeCore extends PluginBase
      */
     private function loadWorlds(): void
     {
-        $check = glob(Server::getInstance()->getDataPath() . 'worlds/*');
-        if (is_array($check)) {
-            foreach ($check as $world) {
-                $world = str_replace(Server::getInstance()->getDataPath() . 'worlds/', '', $world);
-                if (str_contains($world, 'duel')) {
-                    self::getPracticeUtils()->deleteDir($world);
+        $worldsDir = Server::getInstance()->getDataPath() . 'worlds/';
+        $worlds = glob($worldsDir . '*', GLOB_ONLYDIR);
+        if (is_array($worlds)) {
+            $practiceUtils = self::getPracticeUtils();
+            foreach ($worlds as $worldPath) {
+                $worldName = str_replace($worldsDir, '', $worldPath);
+                if (str_starts_with($worldName, 'duel')) {
+                    $practiceUtils->deleteDir($worldPath);
                     continue;
                 }
-                if (Server::getInstance()->getWorldManager()->isWorldLoaded($world)) {
+                $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName)
+                if ($world !== null) {
                     continue;
                 }
-                Server::getInstance()->getWorldManager()->loadWorld($world, true);
+                Server::getInstance()->getWorldManager()->loadWorld($worldName, true);
+            }
+        }
+    }
+
+    /**
+     * @return PracticeUtils
+     */
+    public static function getPracticeUtils(): PracticeUtils
+    {
+        return self::$PracticeUtils;
+    }
+
+    protected function onDisable(): void
+    {
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
+            foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof Hologram || $entity instanceof JoinEntity) {
+                    continue;
+                }
+                $entity->close();
             }
         }
     }

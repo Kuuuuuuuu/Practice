@@ -32,7 +32,7 @@ final class PlayerHandler
      */
     public function savePlayerData(Player $player): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         $name = $player->getName();
         $filePath = $this->path . "$name.yml";
         if ($session->loadedData) {

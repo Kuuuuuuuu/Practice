@@ -25,7 +25,7 @@ class PracticeTask extends AbstractTask
                 $duel->update($tick);
             }
         }
-        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
             $player = $session->getPlayer();
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 5 === 0) {
@@ -47,7 +47,7 @@ class PracticeTask extends AbstractTask
                     }
                 }
             } elseif (!$session->loadedData && !$player->isOnline()) {
-                PracticeCore::getSessionManager()::removeSession($player);
+                PracticeCore::getSessionManager()->removeSession($player);
             }
         }
     }

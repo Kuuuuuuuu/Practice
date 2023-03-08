@@ -29,7 +29,7 @@ class HubCommand extends BaseCommand
             if ($this->isPlayerCanUseCommand($sender)) {
                 $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
                 if ($world instanceof World) {
-                    $session = PracticeCore::getSessionManager()::getSession($sender);
+                    $session = PracticeCore::getSessionManager()->getSession($sender);
                     $sender->teleport($world->getSafeSpawn());
                     $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
                     $sender->setGamemode(GameMode::ADVENTURE());

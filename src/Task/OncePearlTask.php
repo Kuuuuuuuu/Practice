@@ -19,7 +19,7 @@ class OncePearlTask extends Task
 
     public function __construct(Player $player)
     {
-        $this->session = PracticeCore::getSessionManager()::getSession($player);
+        $this->session = PracticeCore::getSessionManager()->getSession($player);
         $this->player = $player;
         $this->session->PearlCooldown = 10;
         $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . "You can't use pearl for 10 seconds.");
@@ -36,14 +36,12 @@ class OncePearlTask extends Task
                 $percent = (float)($this->session->PearlCooldown / 10);
                 $this->player->getXpManager()->setXpProgress($percent);
                 $this->session->PearlCooldown--;
-            } else {
-                $this->player->getXpManager()->setXpProgress(0.0);
-                $this->session->PearlCooldown = 0;
-                $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
-                throw new CancelTaskException();
+                return;
             }
-        } else {
-            throw new CancelTaskException();
+            $this->player->getXpManager()->setXpProgress(0.0);
+            $this->session->PearlCooldown = 0;
+            $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
         }
+        throw new CancelTaskException();
     }
 }

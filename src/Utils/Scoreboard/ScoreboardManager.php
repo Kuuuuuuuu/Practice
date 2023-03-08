@@ -6,7 +6,6 @@ use Nayuki\Misc\Time;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function count;
 use function round;
 
@@ -18,14 +17,14 @@ final class ScoreboardManager
      */
     public function setLobbyScoreboard(Player $player): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         $ping = $player->getNetworkSession()->getPing();
         $kills = $session->getKills();
         $rate = round($session->getKdr(), 2);
         $deaths = $session->getDeaths();
         $queue = $this->getQueuePlayer();
         $duel = $this->getDuelPlayer();
-        $on = count(PracticeCore::getPracticeUtils()->getPlayerInSession());
+        $on = count(PracticeCore::getSessionManager()->getSessions());
         $lines = [
             1 => '§7---------------§7',
             2 => " §bOnline§f: §a$on",
@@ -50,7 +49,7 @@ final class ScoreboardManager
     private function getQueuePlayer(): int
     {
         $queue = 0;
-        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
             if ($session->isQueueing) {
                 $queue++;
             }
@@ -64,7 +63,7 @@ final class ScoreboardManager
     private function getDuelPlayer(): int
     {
         $duel = 0;
-        foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
             if ($session->isDueling) {
                 $duel++;
             }
@@ -80,14 +79,14 @@ final class ScoreboardManager
     public function setArenaScoreboard(Player $player, bool $duel): void
     {
         $OpponentPing = 0;
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         $duelClass = $session->DuelClass;
         $ping = $player->getNetworkSession()->getPing();
         $CombatSecond = $session->CombatTime;
         $OpponentName = $session->getOpponent();
         $duelTime = 0;
         if ($OpponentName !== null) {
-            $OpponentPlayer = PracticeCore::getPracticeUtils()->getPlayerInSessionByPrefix($OpponentName);
+            $OpponentPlayer = PracticeCore::getSessionManager()->getPlayerInSessionByPrefix($OpponentName);
             if ($OpponentPlayer instanceof Player) {
                 $OpponentPing = $OpponentPlayer->getNetworkSession()->getPing();
             }
@@ -120,7 +119,7 @@ final class ScoreboardManager
      */
     public function Boxing(Player $player): void
     {
-        $session = PracticeCore::getSessionManager()::getSession($player);
+        $session = PracticeCore::getSessionManager()->getSession($player);
         $duelClass = $session->DuelClass;
         $duelTime = 0;
         $opponent = $session->getOpponent();
@@ -131,7 +130,7 @@ final class ScoreboardManager
         if ($opponent !== null) {
             $OpponentPlayer = Server::getInstance()->getPlayerExact($opponent);
             if ($OpponentPlayer !== null) {
-                $OpponentPoint = PracticeCore::getSessionManager()::getSession($OpponentPlayer)->BoxingPoint;
+                $OpponentPoint = PracticeCore::getSessionManager()->getSession($OpponentPlayer)->BoxingPoint;
                 $PingOpponent = $OpponentPlayer->getNetworkSession()->getPing();
             }
         }

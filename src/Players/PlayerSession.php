@@ -71,26 +71,32 @@ final class PlayerSession
      */
     public function loadData(array $data): void
     {
-        if (isset($data['scoreboard'])) {
-            $this->ScoreboardEnabled = (bool)$data['scoreboard'];
-        }
-        if (isset($data['cps'])) {
-            $this->CpsCounterEnabled = (bool)$data['cps'];
-        }
-        if (isset($data['smoothpearl'])) {
-            $this->SmoothPearlEnabled = (bool)$data['smoothpearl'];
-        }
-        if (isset($data['kills'])) {
-            $this->kills = (int)$data['kills'];
-        }
-        if (isset($data['deaths'])) {
-            $this->deaths = (int)$data['deaths'];
-        }
-        if (isset($data['tag'])) {
-            $this->customTag = (string)$data['tag'];
-        }
-        if (isset($data['killStreak'])) {
-            $this->killStreak = (int)$data['killStreak'];
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'scoreboard':
+                    $this->ScoreboardEnabled = (bool)$value;
+                    break;
+                case 'cps':
+                    $this->CpsCounterEnabled = (bool)$value;
+                    break;
+                case 'smoothpearl':
+                    $this->SmoothPearlEnabled = (bool)$value;
+                    break;
+                case 'kills':
+                    $this->kills = (int)$value;
+                    break;
+                case 'deaths':
+                    $this->deaths = (int)$value;
+                    break;
+                case 'tag':
+                    $this->customTag = (string)$value;
+                    break;
+                case 'killStreak':
+                    $this->killStreak = (int)$value;
+                    break;
+                default:
+                    break;
+            }
         }
         $this->loadedData = true;
     }
@@ -196,20 +202,20 @@ final class PlayerSession
      */
     public function updateScoreboard(): void
     {
-        if ($this->ScoreboardEnabled) {
-            if (!$this->isDueling) {
-                if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($this->player);
-                } else {
-                    PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, false);
-                }
-            } elseif ($this->DuelKit?->getName() === 'Boxing') {
-                PracticeCore::getInstance()->getScoreboardManager()->Boxing($this->player);
-            } else {
-                PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);
-            }
-        } else {
+        if (!$this->ScoreboardEnabled) {
             PracticeCore::getScoreboardUtils()->remove($this->player);
+            return;
+        }
+        if (!$this->isDueling) {
+            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($this->player);
+                return;
+            }
+            PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, false);
+        } elseif ($this->DuelKit?->getName() === 'Boxing') {
+            PracticeCore::getInstance()->getScoreboardManager()->Boxing($this->player);
+        } else {
+            PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);
         }
     }
 

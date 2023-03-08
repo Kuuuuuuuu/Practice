@@ -12,7 +12,6 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use Throwable;
-
 use function is_array;
 use function str_contains;
 
@@ -103,7 +102,7 @@ final class Hologram extends Entity
                     }
                 }
             }
-            foreach (PracticeCore::getPracticeUtils()->getPlayerSession() as $session) {
+            foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
                 $player = $session->getPlayer();
                 $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
             }
