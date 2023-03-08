@@ -7,7 +7,8 @@ namespace Nayuki\Players;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
-
+use function fclose;
+use function is_array;
 use function yaml_emit_file;
 use function yaml_parse_file;
 
@@ -45,8 +46,20 @@ class AsyncLoadPlayerData extends AsyncTask
      */
     private function loadFromYaml(array $playerData): array
     {
-        $parsed = is_file($this->path) ? yaml_parse_file($this->path) : [];
-        $playerData += $parsed;
+        $parsed = yaml_parse_file($this->path);
+        if (is_array($parsed)) {
+            foreach ($playerData as $key => $value) {
+                if (!isset($parsed[$key])) {
+                    $parsed[$key] = $value;
+                }
+            }
+            $playerData = $parsed;
+        } else {
+            $file = fopen($this->path, 'wb');
+            if ($file !== false) {
+                fclose($file);
+            }
+        }
         yaml_emit_file($this->path, $playerData);
         return $playerData;
     }

@@ -6,11 +6,8 @@ namespace Nayuki\Task;
 
 use Nayuki\Game\Duel\Duel;
 use Nayuki\Misc\AbstractTask;
-use Nayuki\Misc\ParticleOffsetDisplayer;
 use Nayuki\PracticeCore;
-use pocketmine\Server;
 use pocketmine\utils\TextFormat;
-use pocketmine\world\particle\FlameParticle;
 
 class PracticeTask extends AbstractTask
 {
@@ -30,13 +27,11 @@ class PracticeTask extends AbstractTask
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 5 === 0) {
                     $session->updateScoreTag();
-                    $session->updateScoreboard();
                 }
                 if ($tick % 20 === 0) {
                     $session->updateNameTag();
-                    if ($player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                        ParticleOffsetDisplayer::display($player, new FlameParticle());
-                    } elseif ($session->isCombat()) {
+                    $session->updateScoreboard();
+                    if ($session->isCombat()) {
                         $session->CombatTime--;
                         if ($session->CombatTime <= 0) {
                             $session->setCombat(false);
