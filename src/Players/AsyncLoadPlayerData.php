@@ -7,6 +7,7 @@ namespace Nayuki\Players;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
+
 use function fclose;
 use function is_array;
 use function yaml_emit_file;
