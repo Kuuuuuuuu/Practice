@@ -11,7 +11,7 @@ use function strlen;
 final class SessionManager
 {
     /** @var PlayerSession[] */
-    public array $session = [];
+    public static array $session = [];
 
     /**
      * @param Player $player
@@ -19,7 +19,7 @@ final class SessionManager
      */
     public function getSession(Player $player): PlayerSession
     {
-        return $this->session[spl_object_hash($player)] ??= new PlayerSession($player);
+        return self::$session[spl_object_hash($player)] ??= new PlayerSession($player);
     }
 
     /**
@@ -28,7 +28,7 @@ final class SessionManager
      */
     public function removeSession(Player $player): void
     {
-        unset($this->session[spl_object_hash($player)]);
+        unset(self::$session[spl_object_hash($player)]);
     }
 
     /**
@@ -36,7 +36,7 @@ final class SessionManager
      */
     public function getSessions(): array
     {
-        return $this->session;
+        return self::$session;
     }
 
     /**
@@ -48,7 +48,7 @@ final class SessionManager
         $found = null;
         $name = strtolower($name);
         $delta = PHP_INT_MAX;
-        foreach ($this->session as $session) {
+        foreach (self::$session as $session) {
             $player = $session->getPlayer();
             if (stripos($player->getName(), $name) === 0) {
                 $curDelta = strlen($player->getName()) - strlen($name);

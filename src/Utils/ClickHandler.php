@@ -24,26 +24,16 @@ class ClickHandler
     {
         $session = PracticeCore::getSessionManager()->getSession($p);
         if (!isset(self::$ClickData[spl_object_hash($p)])) {
-            $this->initPlayerClickData($p);
-            return;
+            self::$ClickData[spl_object_hash($p)] = [];
         }
-        $clickData = self::$ClickData[spl_object_hash($p)];
+        $clickData = &self::$ClickData[spl_object_hash($p)];
         if ($session->CpsCounterEnabled) {
             $p->sendTip('§bCPS: §f' . $this->getClicks($p));
         }
         array_unshift($clickData, microtime(true));
         if (count($clickData) >= 50) {
-            array_shift($clickData);
+            array_pop($clickData);
         }
-    }
-
-    /**
-     * @param Player $p
-     * @return void
-     */
-    public function initPlayerClickData(Player $p): void
-    {
-        self::$ClickData[spl_object_hash($p)] = [];
     }
 
     /**
@@ -53,6 +43,9 @@ class ClickHandler
     public function getClicks(Player $player): float
     {
         $clickData = self::$ClickData[spl_object_hash($player)] ?? [];
+        if (count($clickData) === 0) {
+            return 0.0;
+        }
         $currentTime = microtime(true);
         $recentClickCount = array_reduce($clickData, static function (int $count, float $clickTime) use ($currentTime): int {
             return ($currentTime - $clickTime) <= 1.0 ? $count + 1 : $count;
