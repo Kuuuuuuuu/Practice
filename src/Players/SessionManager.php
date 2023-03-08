@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Nayuki\Players;
 
 use pocketmine\player\Player;
+
 use function strlen;
 
 final class SessionManager
 {
     /** @var PlayerSession[] */
-    public static array $session = [];
+    public array $session = [];
 
     /**
      * @param Player $player
@@ -18,7 +19,7 @@ final class SessionManager
      */
     public function getSession(Player $player): PlayerSession
     {
-        return self::$session[spl_object_hash($player)] ??= new PlayerSession($player);
+        return $this->session[spl_object_hash($player)] ??= new PlayerSession($player);
     }
 
     /**
@@ -27,7 +28,7 @@ final class SessionManager
      */
     public function removeSession(Player $player): void
     {
-        unset(self::$session[spl_object_hash($player)]);
+        unset($this->session[spl_object_hash($player)]);
     }
 
     /**
@@ -35,7 +36,7 @@ final class SessionManager
      */
     public function getSessions(): array
     {
-        return self::$session;
+        return $this->session;
     }
 
     /**
@@ -47,7 +48,7 @@ final class SessionManager
         $found = null;
         $name = strtolower($name);
         $delta = PHP_INT_MAX;
-        foreach (self::$session as $session) {
+        foreach ($this->session as $session) {
             $player = $session->getPlayer();
             if (stripos($player->getName(), $name) === 0) {
                 $curDelta = strlen($player->getName()) - strlen($name);

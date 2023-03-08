@@ -35,6 +35,7 @@ use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\server\NetworkInterfaceRegisterEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
 use pocketmine\item\VanillaItems;
@@ -491,10 +492,8 @@ final class PracticeListener extends AbstractListener
                             $damager->getInventory()->clearAll();
                             PracticeCore::getArenaManager()->getKits($damager, (string)$key);
                             if ($key === 'Nodebuff') {
-                                $playerItems = $player->getInventory()->getContents();
-                                $PlayerPot = iterator_count(array_column($playerItems, null, 'id')[VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()] ?? []);
-                                $damagerItems = $damager->getInventory()->getContents();
-                                $DamagerPot = iterator_count(array_column($damagerItems, null, 'id')[VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()] ?? []);
+                                $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
+                                $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
                                 foreach ($damager->getWorld()->getPlayers() as $players) {
                                     $players->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
                                 }

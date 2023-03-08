@@ -11,7 +11,7 @@ use pocketmine\network\mcpe\protocol\SetScorePacket;
 use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
 use pocketmine\player\Player;
 
-class ScoreboardUtils
+final class ScoreboardUtils
 {
     /**
      * @param Player $player

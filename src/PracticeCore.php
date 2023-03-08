@@ -45,6 +45,7 @@ use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
 use SQLite3;
+
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -333,7 +334,7 @@ final class PracticeCore extends PluginBase
                     $practiceUtils->deleteDir($worldPath);
                     continue;
                 }
-                $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName)
+                $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
                 if ($world !== null) {
                     continue;
                 }

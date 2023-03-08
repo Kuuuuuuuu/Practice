@@ -6,6 +6,7 @@ namespace Nayuki;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
+
 use function mt_getrandmax;
 use function mt_rand;
 use function sqrt;
