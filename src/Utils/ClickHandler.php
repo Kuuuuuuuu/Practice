@@ -27,7 +27,7 @@ class ClickHandler
             $this->initPlayerClickData($p);
             return;
         }
-        $clickData = &self::$ClickData[spl_object_hash($p)];
+        $clickData = self::$ClickData[spl_object_hash($p)];
         if ($session->CpsCounterEnabled) {
             $p->sendTip('§bCPS: §f' . $this->getClicks($p));
         }
