@@ -108,10 +108,10 @@ final class Hologram extends Entity
             arsort($array);
             for ($pos = 0; $pos < 10 && $pos < count($array); $pos++) {
                 $name = array_keys($array)[$pos];
-                $kills = $array[$name];
+                $kills = (int)$array[$name];
                 $prefix = ($pos < 3) ? '§6[' . ($pos + 1) . '] §r§a' : '§7[' . ($pos + 1) . '] §r§a';
                 $suffix = ($pos < 3) ? ' §e' : ' §f';
-                $subtitle .= sprintf('%s%s%s%s' . PHP_EOL, $prefix, $name, $suffix, $kills);
+                $subtitle .= sprintf('%s%s%s%s' . "\n", $prefix, $name, $suffix, $kills);
             }
             return $subtitle;
         }

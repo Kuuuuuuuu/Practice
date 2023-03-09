@@ -32,13 +32,10 @@ use Nayuki\Utils\FormUtils;
 use Nayuki\Utils\Scoreboard\ScoreboardManager;
 use Nayuki\Utils\Scoreboard\ScoreboardUtils;
 use pocketmine\data\bedrock\EntityLegacyIds;
-use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Human;
 use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIdentifier;
-use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
@@ -262,10 +259,8 @@ final class PracticeCore extends PluginBase
     private function registerItems(): void
     {
         foreach (PotionType::getAll() as $type) {
-            $typeId = PotionTypeIdMap::getInstance()->toId($type);
-            ItemFactory::getInstance()->register(new CustomSplashPotion(new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId), $type->getDisplayName() . ' Splash Potion', $type), true);
+            ItemFactory::getInstance()->register(new CustomSplashPotion($type), true);
         }
-        ItemFactory::getInstance()->register(new EnderPearl(new ItemIdentifier(ItemIds::ENDER_PEARL, 0), 'Ender Pearl'), true);
     }
 
     /**
@@ -310,7 +305,7 @@ final class PracticeCore extends PluginBase
     private function registerEntities(): void
     {
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
-            return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
+            return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null);
         }, ['ender_pearl'], EntityLegacyIds::ENDER_PEARL);
         EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
