@@ -11,11 +11,12 @@ class OnceRestartTask extends AbstractTask
     /** @var int */
     private int $time;
 
+    /** @noinspection DisallowWritingIntoStaticPropertiesInspection */
     public function __construct(int $time)
     {
         parent::__construct(20);
         $this->time = $time;
-        PracticeCore::getCaches()->Restarting = true;
+        PracticeCore::$isRestarting = true;
     }
 
     /**

@@ -9,8 +9,6 @@ use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
 
 use function yaml_parse_file;
-use function yaml_emit_file;
-use function array_keys;
 
 class AsyncSavePlayerData extends AsyncTask
 {
@@ -37,12 +35,11 @@ class AsyncSavePlayerData extends AsyncTask
 
     public function onRun(): void
     {
-        $info = (array)$this->playerdata;
-        $keys = array_keys($info);
         $parsed = yaml_parse_file($this->path);
-        foreach ($keys as $key) {
-            $parsed[$key] = $info[$key];
+        foreach ((array)$this->playerdata as $key => $value) {
+            $parsed[$key] = $value;
         }
-        yaml_emit_file($this->path, $parsed);
+        $yaml = yaml_emit($parsed);
+        file_put_contents($this->path, $yaml);
     }
 }

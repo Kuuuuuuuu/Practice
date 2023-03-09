@@ -98,7 +98,7 @@ class FormUtils
                 $session->isQueueing = true;
                 $player->getInventory()->clearAll();
                 $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
-                PracticeCore::getPracticeUtils()->checkQueue($player);
+                PracticeCore::getUtils()->checkQueue($player);
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');

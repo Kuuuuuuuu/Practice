@@ -45,19 +45,20 @@ final class SessionManager
      */
     public function getPlayerInSessionByPrefix(string $name): ?Player
     {
-        $found = null;
         $name = strtolower($name);
+        $found = null;
         $delta = PHP_INT_MAX;
         foreach (self::$session as $session) {
             $player = $session->getPlayer();
-            if (stripos($player->getName(), $name) === 0) {
-                $curDelta = strlen($player->getName()) - strlen($name);
+            $playerName = strtolower($player->getName());
+            if (str_starts_with($playerName, $name)) {
+                $curDelta = strlen($playerName) - strlen($name);
                 if ($curDelta < $delta) {
                     $found = $player;
                     $delta = $curDelta;
-                }
-                if ($curDelta === 0) {
-                    break;
+                    if ($curDelta === 0) {
+                        break;
+                    }
                 }
             }
         }

@@ -14,119 +14,26 @@ final class DuelGenerator extends Generator
     public function generateChunk(ChunkManager $world, int $chunkX, int $chunkZ): void
     {
         $chunk = $world->getChunk($chunkX, $chunkZ);
-        if ($chunk instanceof Chunk) {
-            if ($chunkX % 20 === 0 && $chunkZ % 20 === 0) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 0 || $z === 0) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 0) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($z === 0) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 2 && $chunkZ % 20 === 0) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 15 || $z === 0) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 2 && $chunkZ % 20 === 1) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 15) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 2 && $chunkZ % 20 === 2) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 15 || $z === 15) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 0 && $chunkZ % 20 === 1) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 0) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 1) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                    }
-                }
-            } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 2) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($z === 15) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 0 && $chunkZ % 20 === 2) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($x === 0 || $z === 15) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
-                    }
-                }
-            } elseif ($chunkX % 20 === 1 && $chunkZ % 20 === 2) {
-                for ($x = 0; $x < 16; $x++) {
-                    for ($z = 0; $z < 16; $z++) {
-                        if ($z === 15 && $x === 15) {
-                            for ($y = 99; $y < 256; $y++) {
-                                $chunk->setFullBlock($x, $y, $z, VanillaBlocks::GLASS()->getFullId());
-                            }
-                        } else {
-                            $chunk->setFullBlock($x, 100, $z, VanillaBlocks::GRASS()->getFullId());
-                        }
+        if (!($chunk instanceof Chunk)) {
+            return;
+        }
+        $conditions = [
+            [0, 0, 0, 15, 255, 0], // border on left and bottom
+            [15, 0, 0, 15, 255, 15], // border on right and bottom
+            [15, 0, 15, 0, 255, 15], // border on right and top
+            [0, 0, 15, 0, 255, 0], // border on left and top
+            [0, 0, 1, 15, 255, 1], // vertical border on left
+            [1, 0, 0, 1, 255, 15], // vertical border on right
+            [0, 0, 0, 15, 255, 15], // center grass
+            [1, 0, 15, 15, 255, 15], // vertical border on top
+        ];
+        foreach ($conditions as $condition) {
+            [$minX, $minY, $minZ, $maxX, $maxY, $maxZ] = $condition;
+            for ($x = $minX; $x <= $maxX; $x++) {
+                for ($y = $minY; $y <= $maxY; $y++) {
+                    for ($z = $minZ; $z <= $maxZ; $z++) {
+                        $block = ($x == $minX || $x == $maxX || $z == $minZ || $z == $maxZ) ? VanillaBlocks::GLASS() : VanillaBlocks::GRASS();
+                        $chunk->setFullBlock($x, $y, $z, $block->getFullId());
                     }
                 }
             }

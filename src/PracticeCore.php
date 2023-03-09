@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ALL */
+
 declare(strict_types=1);
 
 namespace Nayuki;
@@ -24,7 +26,6 @@ use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
-use Nayuki\Task\BroadcastTask;
 use Nayuki\Task\PracticeTask;
 use Nayuki\Utils\ClickHandler;
 use Nayuki\Utils\FormUtils;
@@ -50,6 +51,7 @@ use function is_array;
 
 final class PracticeCore extends PluginBase
 {
+    public static bool $isRestarting = false;
     private static self $plugin;
     private static ClickHandler $cps;
     private static ScoreboardUtils $score;
@@ -300,7 +302,6 @@ final class PracticeCore extends PluginBase
     private function registerTasks(): void
     {
         new PracticeTask();
-        $this->getScheduler()->scheduleDelayedRepeatingTask(new BroadcastTask(), 200, 9000);
     }
 
     /**
@@ -327,7 +328,7 @@ final class PracticeCore extends PluginBase
         $worldsDir = Server::getInstance()->getDataPath() . 'worlds/';
         $worlds = glob($worldsDir . '*', GLOB_ONLYDIR);
         if (is_array($worlds)) {
-            $practiceUtils = self::getPracticeUtils();
+            $practiceUtils = self::getUtils();
             foreach ($worlds as $worldPath) {
                 $worldName = str_replace($worldsDir, '', $worldPath);
                 if (str_starts_with($worldName, 'duel')) {
@@ -346,7 +347,7 @@ final class PracticeCore extends PluginBase
     /**
      * @return PracticeUtils
      */
-    public static function getPracticeUtils(): PracticeUtils
+    public static function getUtils(): PracticeUtils
     {
         return self::$PracticeUtils;
     }

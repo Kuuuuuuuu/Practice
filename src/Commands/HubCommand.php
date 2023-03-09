@@ -25,26 +25,26 @@ class HubCommand extends BaseCommand
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
-        if ($sender instanceof Player) {
-            if ($this->isPlayerCanUseCommand($sender)) {
-                $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
-                if ($world instanceof World) {
-                    $session = PracticeCore::getSessionManager()->getSession($sender);
-                    $sender->teleport($world->getSafeSpawn());
-                    $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
-                    $sender->setGamemode(GameMode::ADVENTURE());
-                    $sender->getInventory()->clearAll();
-                    $sender->getArmorInventory()->clearAll();
-                    $sender->getEffects()->clear();
-                    PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($sender);
-                    PracticeCore::getPracticeUtils()->setLobbyItem($sender);
-                    $session->isDueling = false;
-                    $session->DuelKit = null;
-                    $session->BoxingPoint = 0;
-                }
-            }
-        } else {
+        if (!$sender instanceof Player) {
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-Game!');
+            return;
+        }
+        if ($this->isPlayerCanUseCommand($sender)) {
+            $world = Server::getInstance()->getWorldManager()->getDefaultWorld();
+            if ($world instanceof World) {
+                $session = PracticeCore::getSessionManager()->getSession($sender);
+                $sender->teleport($world->getSafeSpawn());
+                $sender->sendMessage(PracticeCore::getPrefixCore() . '§aTeleported to Hub!');
+                $sender->setGamemode(GameMode::ADVENTURE());
+                $sender->getInventory()->clearAll();
+                $sender->getArmorInventory()->clearAll();
+                $sender->getEffects()->clear();
+                PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($sender);
+                PracticeCore::getUtils()->setLobbyItem($sender);
+                $session->isDueling = false;
+                $session->DuelKit = null;
+                $session->BoxingPoint = 0;
+            }
         }
     }
 }

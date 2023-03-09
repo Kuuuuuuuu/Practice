@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
+use Nayuki\Misc\PracticeChunkLoader;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -16,6 +17,7 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use pocketmine\world\World;
 
 use function glob;
 use function is_array;
@@ -26,6 +28,35 @@ use function unlink;
 
 final class PracticeUtils
 {
+    /**
+     * @param Player $player
+     * @param World $world
+     * @return void
+     */
+    public function teleportToArena(Player $player, World $world): void
+    {
+        $position = $world->getSpawnLocation();
+        $this->onChunkGenerated($position->getWorld(), (int)$position->getX() >> 4, (int)$position->getZ() >> 4, function () use ($player, $position) {
+            $player->teleport($position);
+        });
+    }
+
+    /**
+     * @param World $world
+     * @param int $x
+     * @param int $z
+     * @param callable $callable
+     * @return void
+     */
+    public function onChunkGenerated(World $world, int $x, int $z, callable $callable): void
+    {
+        if ($world->isChunkPopulated($x, $z)) {
+            ($callable)();
+            return;
+        }
+        $world->registerChunkLoader(new PracticeChunkLoader($world, $x, $z, $callable), $x, $z, true);
+    }
+
     /**
      * @param string $soundName
      * @param Player $player

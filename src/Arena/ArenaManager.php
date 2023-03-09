@@ -31,8 +31,8 @@ final class ArenaManager
                 $player->getArmorInventory()->clearAll();
                 $player->getEffects()->clear();
                 $this->getKits($player, $modes);
-                PracticeCore::getPracticeUtils()->playSound('jump.slime', $player);
-                $player->teleport($world->getSpawnLocation());
+                PracticeCore::getUtils()->playSound('jump.slime', $player);
+                PracticeCore::getUtils()->teleportToArena($player, $world);
             } else {
                 $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'Something went wrong');
             }

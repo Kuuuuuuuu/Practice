@@ -17,7 +17,7 @@ class PracticeTask extends AbstractTask
      */
     public function onUpdate(int $tick): void
     {
-        foreach (PracticeCore::getCaches()->RunningDuel as $duel) {
+        foreach (PracticeCore::getDuelManager()->getArenas() as $duel) {
             if ($duel instanceof Duel) {
                 $duel->update($tick);
             }

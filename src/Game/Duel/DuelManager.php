@@ -15,6 +15,9 @@ use Ramsey\Uuid\Uuid;
 
 final class DuelManager
 {
+    /** @var Duel[] */
+    private array $arenas = [];
+
     /**
      * @param Player $player1
      * @param Player $player2
@@ -48,7 +51,7 @@ final class DuelManager
      */
     public function addMatch(string $name, Duel $task): void
     {
-        PracticeCore::getCaches()->RunningDuel[$name] = $task;
+        $this->arenas[$name] = $task;
     }
 
     /**
@@ -62,10 +65,18 @@ final class DuelManager
             if ($world->isLoaded()) {
                 Server::getInstance()->getWorldManager()->unloadWorld($world);
             }
-            PracticeCore::getPracticeUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
-            if (isset(PracticeCore::getCaches()->RunningDuel[$name])) {
-                unset(PracticeCore::getCaches()->RunningDuel[$name]);
+            PracticeCore::getUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
+            if (isset($this->arenas[$name])) {
+                unset($this->arenas[$name]);
             }
         }
+    }
+
+    /**
+     * @return Duel[]
+     */
+    public function getArenas(): array
+    {
+        return $this->arenas;
     }
 }

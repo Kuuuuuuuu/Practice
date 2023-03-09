@@ -34,11 +34,11 @@ class OncePearlTask extends Task
         if ($this->player->isConnected()) {
             if ($this->session->PearlCooldown > 1 && $this->player->getWorld() !== Server::getInstance()->getWorldManager()->getDefaultWorld()) {
                 $percent = (float)($this->session->PearlCooldown / 10);
-                $this->player->getXpManager()->setXpProgress($percent);
+                $this->player->getXpManager()->setXpAndProgress($this->session->PearlCooldown, $percent);
                 $this->session->PearlCooldown--;
                 return;
             }
-            $this->player->getXpManager()->setXpProgress(0.0);
+            $this->player->getXpManager()->setXpAndProgress(0, 0);
             $this->session->PearlCooldown = 0;
             $this->player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::GREEN . 'You can now use pearl.');
         }

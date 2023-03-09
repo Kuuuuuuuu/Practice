@@ -55,6 +55,8 @@ use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
 
+use function count;
+
 final class PracticeListener extends AbstractListener
 {
     /**
@@ -79,11 +81,11 @@ final class PracticeListener extends AbstractListener
         $item = $event->getItem();
         if ($item->getId() === VanillaItems::ENDER_PEARL()->getId()) {
             $session = PracticeCore::getSessionManager()->getSession($player);
-            if ($session->PearlCooldown === 0) {
-                PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
-            } else {
+            if ($session->PearlCooldown !== 0) {
                 $event->cancel();
+                return;
             }
+            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
         } elseif ($item->getCustomName() === '§r§bPlay') {
             PracticeCore::getFormUtils()->ArenaForm($player);
         } elseif ($item->getCustomName() === '§r§bSettings') {
@@ -94,7 +96,7 @@ final class PracticeListener extends AbstractListener
             $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
             $session->isQueueing = false;
             $session->DuelKit = null;
-            PracticeCore::getPracticeUtils()->setLobbyItem($player);
+            PracticeCore::getUtils()->setLobbyItem($player);
         }
     }
 
@@ -181,7 +183,7 @@ final class PracticeListener extends AbstractListener
         $name = $player->getName();
         $event->setJoinMessage('§f[§a+§f] §a' . $name);
         $player->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Player Data...');
-        PracticeCore::getPracticeUtils()->setLobbyItem($player);
+        PracticeCore::getUtils()->setLobbyItem($player);
         PracticeCore::getPlayerHandler()->loadPlayerData($player);
     }
 
@@ -335,7 +337,7 @@ final class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $message = $event->getMessage();
-        $event->setFormat(PracticeCore::getPracticeUtils()->getChatFormat($player, $message));
+        $event->setFormat(PracticeCore::getUtils()->getChatFormat($player, $message));
     }
 
     /**
@@ -379,7 +381,7 @@ final class PracticeListener extends AbstractListener
                 $player = $session->getPlayer();
                 PracticeCore::getPlayerHandler()->savePlayerData($player);
             }
-            foreach (PracticeCore::getCaches()->RunningDuel as $duel) {
+            foreach (PracticeCore::getDuelManager()->getArenas() as $duel) {
                 PracticeCore::getDuelManager()->stopMatch($duel->name);
             }
         }
@@ -510,13 +512,13 @@ final class PracticeListener extends AbstractListener
                     $session = PracticeCore::getSessionManager()->getSession($p);
                     $session->setCombat(false);
                 }
-                PracticeCore::getPracticeUtils()->handleStreak($damager, $player);
+                PracticeCore::getUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
                 $damagerSession->kills++;
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);
-                PracticeCore::getPracticeUtils()->setLobbyItem($player);
+                PracticeCore::getUtils()->setLobbyItem($player);
             }
         }
     }
@@ -536,7 +538,7 @@ final class PracticeListener extends AbstractListener
         $session->isQueueing = false;
         $session->DuelKit = null;
         PracticeCore::getScoreboardManager()->setLobbyScoreboard($player);
-        PracticeCore::getPracticeUtils()->setLobbyItem($player);
+        PracticeCore::getUtils()->setLobbyItem($player);
     }
 
     /**

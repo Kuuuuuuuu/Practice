@@ -37,15 +37,15 @@ class HologramCommand extends Command
                         case 'spawn':
                         case 'new':
                         case 'add':
-                            if (isset($args[1])) {
-                                if (in_array($args[1], ['kills', 'deaths'], true)) {
-                                    $this->spawn($sender, $args[1]);
-                                } else {
-                                    $sender->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'Usage: /hologram spawn <kills|deaths>');
-                                }
-                            } else {
+                            if (!isset($args[1])) {
                                 $sender->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'Usage: /hologram spawn <type>');
+                                return;
                             }
+                            if (in_array($args[1], ['kills', 'deaths'], true)) {
+                                $this->spawn($sender, $args[1]);
+                                return;
+                            }
+                            $sender->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'Usage: /hologram spawn <kills|deaths>');
                             break;
                         case 'removeall':
                             foreach ($sender->getWorld()->getEntities() as $entity) {
@@ -75,7 +75,7 @@ class HologramCommand extends Command
      */
     public function spawn(Player $player, string $type): ?int
     {
-        $nbt = PracticeCore::getPracticeUtils()->createBaseNBT($player->getPosition(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch());
+        $nbt = PracticeCore::getUtils()->createBaseNBT($player->getPosition(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch());
         $pos = $player->getLocation();
         $nbt->setString('type', $type);
         $entity = $this->createEntity($pos, $nbt);

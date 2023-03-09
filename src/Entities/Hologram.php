@@ -11,10 +11,10 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-use Throwable;
 
+use function array_key_exists;
+use function count;
 use function is_array;
-use function str_contains;
 
 final class Hologram extends Entity
 {
@@ -72,7 +72,7 @@ final class Hologram extends Entity
             $this->setNameTag($this->subtitle . "\n§eUpdate In: §f" . $this->CountdownSeconds);
             if ($this->CountdownSeconds < 1) {
                 $this->subtitle = $this->getSubtitleType();
-                $this->CountdownSeconds = 30;
+                $this->CountdownSeconds = 15;
             }
         }
         return parent::onUpdate($currentTick);
@@ -86,20 +86,18 @@ final class Hologram extends Entity
         if ($this->type !== null) {
             $subtitle = ($this->type === 'kills') ? "§b§lTop Kills\n" : "§b§lTop Deaths\n";
             $array = [];
-            $pos = 0;
             $files = scandir(PracticeCore::getPlayerDataPath());
-            if (is_array($files)) {
-                foreach ($files as $file) {
-                    if (str_contains($file, '.yml')) {
-                        $name = str_replace('.yml', '', $file);
-                        $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $name . '.yml');
-                        try {
-                            if (is_array($parsed)) {
-                                $array[$name] = $parsed[$this->type];
-                            }
-                        } catch (Throwable $e) {
-                            return 'Error Loading Data' . $e->getMessage();
-                        }
+            if ($files === false) {
+                return 'Error Loading Data';
+            }
+            foreach ($files as $file) {
+                if (str_ends_with($file, '.yml')) {
+                    $name = substr($file, 0, -4);
+                    $parsed = yaml_parse_file(PracticeCore::getPlayerDataPath() . $file);
+                    if (is_array($parsed) && array_key_exists($this->type, $parsed)) {
+                        $array[$name] = $parsed[$this->type];
+                    } else {
+                        return 'Error Loading Data';
                     }
                 }
             }
@@ -108,16 +106,12 @@ final class Hologram extends Entity
                 $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
             }
             arsort($array);
-            foreach ($array as $name => $kills) {
-                if ($pos > 9) {
-                    break;
-                }
-                if ($pos < 3) {
-                    $subtitle .= '§6[' . ($pos + 1) . '] §r§a' . $name . ' §e' . $kills . "\n";
-                } else {
-                    $subtitle .= '§7[' . ($pos + 1) . '] §r§a' . $name . ' §f' . $kills . "\n";
-                }
-                $pos++;
+            for ($pos = 0; $pos < 10 && $pos < count($array); $pos++) {
+                $name = array_keys($array)[$pos];
+                $kills = $array[$name];
+                $prefix = ($pos < 3) ? '§6[' . ($pos + 1) . '] §r§a' : '§7[' . ($pos + 1) . '] §r§a';
+                $suffix = ($pos < 3) ? ' §e' : ' §f';
+                $subtitle .= sprintf('%s%s%s%s' . PHP_EOL, $prefix, $name, $suffix, $kills);
             }
             return $subtitle;
         }

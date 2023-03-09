@@ -101,7 +101,7 @@ final class Duel extends AbstractListener
                 if ($this->startSec > 0) {
                     foreach ($this->getPlayers() as $player) {
                         $player->sendTitle('§bStarting in ' . $this->startSec, '', 1, 3, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.click', $player);
+                        PracticeCore::getInstance()->getUtils()->playSound('random.click', $player);
                     }
                 }
                 if ($this->startSec === 3) {
@@ -123,7 +123,7 @@ final class Duel extends AbstractListener
                     foreach ($this->getPlayers() as $player) {
                         $player->setImmobile(false);
                         $player->sendTitle('§bFight!', '', 1, 5, 1);
-                        PracticeCore::getInstance()->getPracticeUtils()->playSound('random.levelup', $player);
+                        PracticeCore::getInstance()->getUtils()->playSound('random.levelup', $player);
                     }
                 }
                 $this->startSec--;
@@ -164,7 +164,7 @@ final class Duel extends AbstractListener
                         $loserMessage .= $this->loser !== null ? $this->loser->getName() : 'None';
                         $online->sendMessage($loserMessage);
                         $online->sendMessage('§f-----------------------');
-                        PracticeCore::getPracticeUtils()->setLobbyItem($online);
+                        PracticeCore::getUtils()->setLobbyItem($online);
                         PracticeCore::getScoreboardManager()->setLobbyScoreboard($online);
                         $session->isDueling = false;
                         $session->DuelKit = null;

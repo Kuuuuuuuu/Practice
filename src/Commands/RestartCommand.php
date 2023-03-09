@@ -24,23 +24,23 @@ class RestartCommand extends Command
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
     {
-        if ($sender instanceof Player) {
-            if (PracticeCore::getCaches()->Restarting) {
-                $sender->sendMessage(PracticeCore::getPrefixCore() . '§cServer is already restarting!');
-            } elseif ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
-                if (isset($args[0])) {
-                    if (is_numeric($args[0])) {
-                        new OnceRestartTask((int)$args[0]);
-                        $sender->sendMessage(PracticeCore::getPrefixCore() . '§aServer restarting...');
-                    }
-                } else {
-                    $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /restart [time]');
-                }
-            } else {
-                $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
-            }
-        } else {
+        if (!$sender instanceof Player) {
             $sender->sendMessage(PracticeCore::getPrefixCore() . '§cYou can only use this command in-Game!');
+            return;
+        }
+        if (PracticeCore::$isRestarting) {
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cServer is already restarting!');
+        } elseif (!$sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+            $sender->sendMessage(PracticeCore::getPrefixCore() . "§cYou don't have permission to use this command.");
+            return;
+        }
+        if (!isset($args[0])) {
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§cUsage: /restart [time]');
+            return;
+        }
+        if (is_numeric($args[0])) {
+            new OnceRestartTask((int)$args[0]);
+            $sender->sendMessage(PracticeCore::getPrefixCore() . '§aServer restarting...');
         }
     }
 }
