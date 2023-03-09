@@ -1,6 +1,8 @@
 <?php
 
-/** @noinspection ALL */
+/** @noinspection SqlDialectInspection */
+/** @noinspection SqlNoDataSourceInspection */
+/** @noinspection MkdirRaceConditionInspection */
 
 declare(strict_types=1);
 
@@ -23,7 +25,6 @@ use Nayuki\Game\Duel\DuelManager;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Items\CustomSplashPotion;
-use Nayuki\Items\EnderPearl;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
@@ -42,6 +43,8 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\world\generator\GeneratorManager;
 use pocketmine\world\World;
+use ReflectionClass;
+use ReflectionException;
 use SQLite3;
 
 use function is_array;
@@ -172,6 +175,9 @@ final class PracticeCore extends PluginBase
         self::$duelManager = new DuelManager();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     protected function onEnable(): void
     {
         $this->registerConfigs();
@@ -245,11 +251,11 @@ final class PracticeCore extends PluginBase
             'ban',
             'ban-ip'
         ];
-        foreach ($commands as $name) {
-            $map = $this->getServer()->getCommandMap();
-            if (($cmd = $map->getCommand($name)) !== null) {
-                $map->unregister($cmd);
-            }
+        $commandMap = $this->getServer()->getCommandMap();
+        $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
+        $commandsToUnregister = array_filter($commandsToUnregister);
+        foreach ($commandsToUnregister as $command) {
+            $commandMap->unregister($command);
         }
     }
 
@@ -265,6 +271,7 @@ final class PracticeCore extends PluginBase
 
     /**
      * @return void
+     * @throws ReflectionException
      */
     private function registerCommands(): void
     {
@@ -278,8 +285,16 @@ final class PracticeCore extends PluginBase
             'settag' => SetTagCommand::class,
             'hologram' => HologramCommand::class,
         ];
-        foreach ($Command as $key => $value) {
-            Server::getInstance()->getCommandMap()->register($key, new $value());
+        $commandMap = Server::getInstance()->getCommandMap();
+        foreach ($Command as $name => $class) {
+            $reflectionClass = new ReflectionClass($class);
+            if ($reflectionClass->hasMethod('__construct')) {
+                $command = $reflectionClass->newInstance($name);
+            } else {
+                $command = $reflectionClass->newInstance();
+            }
+            $commandMap->register($name, $command);
+            $this->getLogger()->notice('§bRegister Commands §a' . $name);
         }
     }
 
@@ -334,6 +349,7 @@ final class PracticeCore extends PluginBase
                 if ($world !== null) {
                     continue;
                 }
+                $this->getLogger()->notice('§bLoad World §a' . $worldName);
                 Server::getInstance()->getWorldManager()->loadWorld($worldName, true);
             }
         }
