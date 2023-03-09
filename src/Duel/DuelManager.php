@@ -1,6 +1,6 @@
 <?php
 
-namespace Nayuki\Game\Duel;
+namespace Nayuki\Duel;
 
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;

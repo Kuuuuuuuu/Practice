@@ -18,10 +18,10 @@ use Nayuki\Commands\SetTagCommand;
 use Nayuki\Commands\TbanCommand;
 use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
+use Nayuki\Duel\DuelManager;
 use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
-use Nayuki\Game\Duel\DuelManager;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Items\CustomSplashPotion;
@@ -46,7 +46,6 @@ use pocketmine\world\World;
 use ReflectionClass;
 use ReflectionException;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase

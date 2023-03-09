@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Players;
 
-use Nayuki\Game\Duel\Duel;
+use Nayuki\Duel\Duel;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
