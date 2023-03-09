@@ -32,7 +32,7 @@ class TbanCommand extends Command
         if ($sender instanceof Player) {
             if ($sender->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                 if (isset($args[0])) {
-                    PracticeCore::getCaches()->targetPlayer[$sender->getName()] = $args[0];
+                    PracticeCore::getInstance()->targetPlayer[$sender->getName()] = $args[0];
                     $this->openTbanUI($sender);
                 } else {
                     $this->openPlayerListUI($sender);
@@ -52,8 +52,8 @@ class TbanCommand extends Command
             if ($result === null) {
                 return true;
             }
-            if (isset(PracticeCore::getCaches()->targetPlayer[$player->getName()])) {
-                if (PracticeCore::getCaches()->targetPlayer[$player->getName()] === $player->getName()) {
+            if (isset(PracticeCore::getInstance()->targetPlayer[$player->getName()])) {
+                if (PracticeCore::getInstance()->targetPlayer[$player->getName()] === $player->getName()) {
                     $player->sendMessage(PracticeCore::getPrefixCore() . "§cYou can't ban yourself");
                     return true;
                 }
@@ -71,7 +71,7 @@ class TbanCommand extends Command
                 $banTime = $now + $day + $hour + $min;
                 $banInfo = PracticeCore::getInstance()->BanDatabase->prepare('INSERT OR REPLACE INTO banPlayers (player, banTime, reason, staff) VALUES (:player, :banTime, :reason, :staff);');
                 /** @phpstan-ignore-next-line */
-                $banInfo->bindValue(':player', PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                $banInfo->bindValue(':player', PracticeCore::getInstance()->targetPlayer[$player->getName()]);
                 /** @phpstan-ignore-next-line */
                 $banInfo->bindValue(':banTime', $banTime);
                 /** @phpstan-ignore-next-line */
@@ -80,16 +80,16 @@ class TbanCommand extends Command
                 $banInfo->bindValue(':staff', $player->getName());
                 /** @phpstan-ignore-next-line */
                 $banInfo->execute();
-                $target = Server::getInstance()->getPlayerExact(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                $target = Server::getInstance()->getPlayerExact(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
                 if ($target instanceof Player) {
                     $target->kick(str_replace(['{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [$data[1], $data[2], $data[3], $data[4], $player->getName()], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
                 }
-                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getCaches()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f"));
-                unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                Server::getInstance()->broadcastMessage(str_replace(['{player}', '{day}', '{hour}', '{minute}', '{reason}', '{staff}'], [PracticeCore::getInstance()->targetPlayer[$player->getName()], $data[1], $data[2], $data[3], $data[4], $player->getName()], "§f––––––––––––––––––––––––\n§ePlayer §f: §c{player}\n§eHas banned: §c{day}§eD §f| §c{hour}§eH §f| §c{minute}§eM\n§eReason: §c{reason}\n§f––––––––––––––––––––––––§f"));
+                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
             }
             return true;
         });
-        $list[] = PracticeCore::getCaches()->targetPlayer[$player->getName()];
+        $list[] = PracticeCore::getInstance()->targetPlayer[$player->getName()];
         $form->setTitle(PracticeConfig::Server_Name . '§eBanSystem');
         $form->addDropdown("\nTarget", $list);
         $form->addSlider('Day/s', 0, 30, 1);
@@ -107,7 +107,7 @@ class TbanCommand extends Command
             if ($target === null) {
                 return true;
             }
-            PracticeCore::getCaches()->targetPlayer[$player->getName()] = $target;
+            PracticeCore::getInstance()->targetPlayer[$player->getName()] = $target;
             $this->openTbanUI($player);
             return true;
         });

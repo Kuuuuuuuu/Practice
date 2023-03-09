@@ -44,7 +44,7 @@ class TcheckCommand extends Command
             if ($data === null) {
                 return true;
             }
-            PracticeCore::getCaches()->targetPlayer[$player->getName()] = $data;
+            PracticeCore::getInstance()->targetPlayer[$player->getName()] = $data;
             $this->openInfoUI($player);
             return true;
         });
@@ -75,7 +75,7 @@ class TcheckCommand extends Command
                 return true;
             }
             if ($result === 0) {
-                $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
+                $banplayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
                 $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -83,11 +83,11 @@ class TcheckCommand extends Command
                     PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§b{player} §ahas been unban'));
                 }
-                unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
             }
             return true;
         });
-        $banPlayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
+        $banPlayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
         $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banPlayer';");
         /** @phpstan-ignore-next-line */
         $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -97,7 +97,7 @@ class TcheckCommand extends Command
             $staff = $array['staff'];
             $now = time();
             if ($banTime < $now) {
-                $banplayer = PracticeCore::getCaches()->targetPlayer[$player->getName()];
+                $banplayer = PracticeCore::getInstance()->targetPlayer[$player->getName()];
                 $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
                 /** @phpstan-ignore-next-line */
                 $array = $banInfo->fetchArray(SQLITE3_ASSOC);
@@ -105,7 +105,7 @@ class TcheckCommand extends Command
                     PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
                     $player->sendMessage(str_replace(['{player}'], [$banplayer], PracticeCore::getPrefixCore() . '§a{player} Has Auto Unban Already'));
                 }
-                unset(PracticeCore::getCaches()->targetPlayer[$player->getName()]);
+                unset(PracticeCore::getInstance()->targetPlayer[$player->getName()]);
                 return true;
             }
             $remainingTime = $banTime - $now;

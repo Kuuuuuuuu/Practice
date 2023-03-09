@@ -60,10 +60,10 @@ final class PracticeCore extends PluginBase
     private static ArenaManager $arena;
     private static PracticeUtils $PracticeUtils;
     private static ScoreboardManager $scoremanager;
-    private static PracticeCaches $caches;
     private static PlayerHandler $playerHandler;
     private static SessionManager $playerSession;
     private static DuelManager $duelManager;
+    public array $targetPlayer = [];
     public SQLite3 $BanDatabase;
 
     /**
@@ -146,14 +146,6 @@ final class PracticeCore extends PluginBase
         return self::$playerHandler;
     }
 
-    /**
-     * @return PracticeCaches
-     */
-    public static function getCaches(): PracticeCaches
-    {
-        return self::$caches;
-    }
-
     public static function getDuelManager(): DuelManager
     {
         return self::$duelManager;
@@ -169,7 +161,6 @@ final class PracticeCore extends PluginBase
         self::$arena = new ArenaManager();
         self::$PracticeUtils = new PracticeUtils();
         self::$scoremanager = new ScoreboardManager();
-        self::$caches = new PracticeCaches();
         self::$playerHandler = new PlayerHandler();
         self::$playerSession = new SessionManager();
         self::$duelManager = new DuelManager();
