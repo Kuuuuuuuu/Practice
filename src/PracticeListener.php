@@ -77,6 +77,7 @@ final class PracticeListener extends AbstractListener
      * @param PlayerItemUseEvent $event
      * @return void
      * @priority LOWEST
+     * @handleCancelled
      */
     public function onPlayerItemUseEvent(PlayerItemUseEvent $event): void
     {
@@ -84,13 +85,17 @@ final class PracticeListener extends AbstractListener
         $session = PracticeCore::getSessionManager()->getSession($player);
         $item = $event->getItem();
         if ($item instanceof EnderPearl) {
-            $location = Location::fromObject($player->getEyePos(), $player->getWorld(), $player->getLocation()->yaw, $player->getLocation()->pitch);
             $event->cancel();
+            $location = Location::fromObject($player->getEyePos(), $player->getWorld(), $player->getLocation()->yaw, $player->getLocation()->pitch);
+            $inventory = $player->getInventory();
+            $heldItem = $inventory->getItemInHand();
             if ($session->PearlCooldown !== 0) {
                 $event->cancel();
                 return;
             }
             $pearl = ($session->SmoothPearlEnabled) ? new EnderPearlEntity($location, $player) : new PMPearl($location, $player);
+            $pearl->spawnToAll();
+            $inventory->setItemInHand($heldItem->setCount($heldItem->getCount() - 1));
             $pearl->setMotion($player->getDirectionVector()->multiply(PracticeConfig::PearlForce));
             PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
         } elseif ($item->getCustomName() === '§r§bPlay') {

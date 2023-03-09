@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
+use FilesystemIterator;
 use Nayuki\Misc\PracticeChunkLoader;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -18,12 +19,11 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
-use function glob;
-use function is_array;
 use function is_dir;
 use function rmdir;
-use function str_ends_with;
 use function unlink;
 
 final class PracticeUtils
@@ -195,20 +195,16 @@ final class PracticeUtils
     public function deleteDir(string $dirPath): void
     {
         if (is_dir($dirPath)) {
-            if (!str_ends_with($dirPath, '/')) {
-                $dirPath .= '/';
-            }
-            $files = glob($dirPath . '*', GLOB_MARK);
-            if (is_array($files)) {
-                foreach ($files as $file) {
-                    if (is_dir($file)) {
-                        $this->deleteDir($file);
-                    } else {
-                        unlink($file);
-                    }
+            $dirPath = rtrim($dirPath, '/') . '/';
+            $files = iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirPath, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST));
+            foreach ($files as $file) {
+                if (is_dir($file)) {
+                    $this->deleteDir($file);
+                } else {
+                    unlink($file);
                 }
-                rmdir($dirPath);
             }
+            rmdir($dirPath);
         }
     }
 

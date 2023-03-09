@@ -47,10 +47,8 @@ class ClickHandler
             return 0.0;
         }
         $currentTime = microtime(true);
-        $recentClickCount = array_reduce($clickData, static function (int $count, float $clickTime) use ($currentTime): int {
-            return ($currentTime - $clickTime) <= 1.0 ? $count + 1 : $count;
-        }, 0);
-        return round($recentClickCount);
+        $recentClicks = array_filter($clickData, static fn($clickTime) => ($currentTime - $clickTime) <= 1.0);
+        return count($recentClicks);
     }
 
     /**

@@ -56,7 +56,7 @@ class CustomSplashPotion extends ProjectileItem
     public function createEntity(Location $location, Player $thrower): Throwable
     {
         $potion = new SplashPotion(Location::fromObject($thrower->getEyePos(), $thrower->getWorld(), $thrower->getLocation()->yaw, $thrower->getLocation()->pitch), $thrower, $this->potionType);
-        $potion->setMotion($thrower->getDirectionVector()->multiply(0.5));
+        $potion->setMotion($thrower->getDirectionVector()->multiply(0.3));
         return $potion;
     }
 }
