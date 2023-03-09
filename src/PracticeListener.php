@@ -6,7 +6,6 @@ namespace Nayuki;
 
 use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\JoinEntity;
-use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\Task\OncePearlTask;
 use pocketmine\entity\Location;
@@ -18,7 +17,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerChatEvent;
@@ -44,7 +42,6 @@ use pocketmine\item\EnderPearl;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
-use pocketmine\item\SplashPotion as PMSplashPotion;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
@@ -60,7 +57,6 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
-use pocketmine\world\sound\ThrowSound;
 use pocketmine\world\World;
 
 use function count;
@@ -94,11 +90,8 @@ final class PracticeListener extends AbstractListener
                 $event->cancel();
                 return;
             }
-            if ($session->SmoothPearlEnabled) {
-                new EnderPearlEntity($location, $player);
-            } else {
-                new PMPearl($location, $player);
-            }
+            $pearl = ($session->SmoothPearlEnabled) ? new EnderPearlEntity($location, $player) : new PMPearl($location, $player);
+            $pearl->setMotion($player->getDirectionVector()->multiply(PracticeConfig::PearlForce));
             PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
         } elseif ($item->getCustomName() === '§r§bPlay') {
             PracticeCore::getFormUtils()->ArenaForm($player);
