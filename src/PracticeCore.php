@@ -24,6 +24,7 @@ use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
+use Nayuki\Game\Generator\VoidGenerator;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
@@ -208,7 +209,8 @@ final class PracticeCore extends PluginBase
     {
         $generator = [
             DuelGenerator::class => 'duel',
-            SumoGenerator::class => 'sumo'
+            SumoGenerator::class => 'sumo',
+            VoidGenerator::class => 'void'
         ];
         foreach ($generator as $key => $value) {
             GeneratorManager::getInstance()->addGenerator($key, $value, fn() => null);

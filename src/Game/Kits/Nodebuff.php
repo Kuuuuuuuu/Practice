@@ -33,7 +33,7 @@ final class Nodebuff extends Kit
     {
         $contents = [];
         $contents[] = VanillaItems::DIAMOND_SWORD()->setUnbreakable();
-        $contents[] = VanillaItems::ENDER_PEARL();
+        $contents[] = VanillaItems::ENDER_PEARL()->setCount(16);
         for ($i = 0; $i < 34; $i++) {
             $contents[] = VanillaItems::SPLASH_POTION()->setType(PotionType::STRONG_HEALING());
         }
