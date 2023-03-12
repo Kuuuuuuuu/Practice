@@ -19,6 +19,7 @@ class TpsCommand extends Command
             '/tps',
             ['tps']
         );
+        $this->setPermission('default.command');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void

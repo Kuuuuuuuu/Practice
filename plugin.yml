@@ -17,3 +17,5 @@ permissions:
     default: op
   hologram.command:
     default: op
+  default.command:
+    default: true

@@ -21,6 +21,7 @@ class HubCommand extends BaseCommand
             '/hub',
             ['lobby', 'spawn'],
         );
+        $this->setPermission('default.command');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, ?array $args): void
