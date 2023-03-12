@@ -24,7 +24,6 @@ use Nayuki\Entities\Hologram;
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
-use Nayuki\Items\CustomSplashPotion;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
@@ -32,12 +31,9 @@ use Nayuki\Utils\ClickHandler;
 use Nayuki\Utils\FormUtils;
 use Nayuki\Utils\Scoreboard\ScoreboardManager;
 use Nayuki\Utils\Scoreboard\ScoreboardUtils;
-use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Human;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\PotionType;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -46,7 +42,6 @@ use pocketmine\world\World;
 use ReflectionClass;
 use ReflectionException;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -174,7 +169,6 @@ final class PracticeCore extends PluginBase
         $this->registerConfigs();
         $this->registerGenerators();
         $this->unregisterCommands();
-        $this->registerItems();
         $this->registerCommands();
         $this->registerEvents();
         $this->registerTasks();
@@ -252,16 +246,6 @@ final class PracticeCore extends PluginBase
 
     /**
      * @return void
-     */
-    private function registerItems(): void
-    {
-        foreach (PotionType::getAll() as $type) {
-            ItemFactory::getInstance()->register(new CustomSplashPotion($type), true);
-        }
-    }
-
-    /**
-     * @return void
      * @throws ReflectionException
      */
     private function registerCommands(): void
@@ -312,7 +296,7 @@ final class PracticeCore extends PluginBase
     {
         EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
             return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null);
-        }, ['ender_pearl'], EntityLegacyIds::ENDER_PEARL);
+        }, ['ender_pearl']);
         EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
         }, ['Hologram']);

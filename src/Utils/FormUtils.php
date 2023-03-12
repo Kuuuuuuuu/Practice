@@ -10,6 +10,7 @@ use Nayuki\PracticeConfig;
 use Nayuki\PracticeCore;
 use Nayuki\Utils\Forms\CustomForm;
 use Nayuki\Utils\Forms\SimpleForm;
+use pocketmine\block\utils\DyeColor;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -97,7 +98,7 @@ class FormUtils
                 $session->DuelKit = KitRegistry::fromString($data);
                 $session->isQueueing = true;
                 $player->getInventory()->clearAll();
-                $player->getInventory()->setItem(8, VanillaItems::RED_DYE()->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
+                $player->getInventory()->setItem(8, VanillaItems::DYE()->setColor(DyeColor::RED())->setCustomName('§r§cLeave Queue')->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10)));
                 PracticeCore::getUtils()->checkQueue($player);
             }
         });

@@ -11,7 +11,6 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
-
 use function array_key_exists;
 use function count;
 use function is_array;
@@ -137,5 +136,21 @@ final class Hologram extends Entity
         }
         $nbt->setString('type', $this->type);
         return $nbt;
+    }
+
+    /**
+     * @return float
+     */
+    protected function getInitialDragMultiplier(): float
+    {
+        return 0.02;
+    }
+
+    /**
+     * @return float
+     */
+    protected function getInitialGravity(): float
+    {
+        return 0.08;
     }
 }

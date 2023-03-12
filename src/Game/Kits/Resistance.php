@@ -13,7 +13,7 @@ use pocketmine\player\Player;
 final class Resistance extends Kit
 {
     /**
-     * @return array<Item>
+     * @return Item[]
      */
     public function getArmorItems(): array
     {
@@ -26,7 +26,7 @@ final class Resistance extends Kit
     }
 
     /**
-     * @return array<Item>
+     * @return Item[]
      */
     public function getInventoryItems(): array
     {

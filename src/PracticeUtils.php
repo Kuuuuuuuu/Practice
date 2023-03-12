@@ -6,7 +6,7 @@ namespace Nayuki;
 
 use FilesystemIterator;
 use Nayuki\Misc\PracticeChunkLoader;
-use pocketmine\block\VanillaBlocks;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -21,7 +21,6 @@ use pocketmine\Server;
 use pocketmine\world\World;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-
 use function is_dir;
 use function rmdir;
 use function unlink;
@@ -54,7 +53,7 @@ final class PracticeUtils
             ($callable)();
             return;
         }
-        $world->registerChunkLoader(new PracticeChunkLoader($world, $x, $z, $callable), $x, $z, true);
+        $world->registerChunkLoader(new PracticeChunkLoader($world, $x, $z, $callable), $x, $z);
     }
 
     /**
@@ -214,7 +213,7 @@ final class PracticeUtils
      */
     public function isPlayerInWater(Player $player): bool
     {
-        $id = $player->getWorld()->getBlock($player->getPosition()->floor())->getIdInfo()->getBlockId();
-        return $id === VanillaBlocks::WATER()->getIdInfo()->getBlockId();
+        $id = $player->getWorld()->getBlock($player->getPosition()->floor())->getIdInfo()->getBlockTypeId();
+        return $id === BlockTypeIds::WATER;
     }
 }

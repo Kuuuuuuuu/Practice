@@ -8,6 +8,8 @@ use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\JoinEntity;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\Task\OncePearlTask;
+use Nayuki\Utils\CustomChatFormatter;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\EnderPearl as PMPearl;
 use pocketmine\entity\projectile\SplashPotion;
@@ -40,9 +42,7 @@ use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\item\EnderPearl;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\PotionType;
-use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
@@ -58,7 +58,6 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
-
 use function count;
 
 final class PracticeListener extends AbstractListener
@@ -179,7 +178,7 @@ final class PracticeListener extends AbstractListener
     {
         foreach (Server::getInstance()->getOnlinePlayers() as $p) {
             if ($p->getUniqueId() !== $event->getPlayerInfo()->getUuid() && strtolower($event->getPlayerInfo()->getUsername()) === strtolower($p->getName())) {
-                $event->setKickReason(3, PracticeConfig::PREFIX . '§cThis player is already online!');
+                $event->setKickFlag(3, PracticeConfig::PREFIX . '§cThis player is already online!');
             }
         }
     }
@@ -219,7 +218,7 @@ final class PracticeListener extends AbstractListener
     {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-        if ($player->getGamemode() !== GameMode::CREATIVE() && ($block->getIdInfo()->getBlockId() === ItemIds::ANVIL || $block->getIdInfo()->getBlockId() == ItemIds::FLOWER_POT)) {
+        if ($player->getGamemode() !== GameMode::CREATIVE() && ($block->getIdInfo()->getBlockTypeId() === BlockTypeIds::ANVIL || $block->getIdInfo()->getBlockTypeId() === BlockTypeIds::FLOWER_POT)) {
             $event->cancel();
         }
     }
@@ -347,9 +346,8 @@ final class PracticeListener extends AbstractListener
      */
     public function onPlayerChatEvent(PlayerChatEvent $event): void
     {
-        $player = $event->getPlayer();
-        $message = $event->getMessage();
-        $event->setFormat(PracticeCore::getUtils()->getChatFormat($player, $message));
+        $formatter = new CustomChatFormatter();
+        $event->setFormatter($formatter);
     }
 
     /**
@@ -506,8 +504,8 @@ final class PracticeListener extends AbstractListener
                             $damager->getInventory()->clearAll();
                             PracticeCore::getArenaManager()->getKits($damager, (string)$key);
                             if ($key === 'Nodebuff') {
-                                $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
-                                $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => $item->getId() === VanillaItems::STRONG_HEALING_SPLASH_POTION()->getId()));
+                                $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => ($item instanceof \pocketmine\item\SplashPotion) && $item->getType() === PotionType::STRONG_HEALING()));
+                                $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => ($item instanceof \pocketmine\item\SplashPotion) && $item->getType() === PotionType::STRONG_HEALING()));
                                 foreach ($damager->getWorld()->getPlayers() as $players) {
                                     $players->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
                                 }

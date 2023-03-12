@@ -11,7 +11,7 @@ use pocketmine\player\Player;
 final class Fist extends Kit
 {
     /**
-     * @return array<Item>
+     * @return Item[]
      */
     public function getArmorItems(): array
     {
@@ -24,7 +24,7 @@ final class Fist extends Kit
     }
 
     /**
-     * @return array<Item>
+     * @return Item[]
      */
     public function getInventoryItems(): array
     {

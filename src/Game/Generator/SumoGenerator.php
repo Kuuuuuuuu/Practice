@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nayuki\Game\Generator;
 
+use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\ChunkManager;
 use pocketmine\world\generator\Generator;
@@ -27,7 +28,8 @@ final class SumoGenerator extends Generator
         ];
         for ($x = 0; $x < 16; ++$x) {
             for ($z = 0; $z < 16; ++$z) {
-                $chunk->setFullBlock($x, 100, $z, $blocks[array_rand($blocks)]->getFullId());
+                /** @var Block[] $blocks */
+                $chunk->setBlockStateId($x, 100, $z, $blocks[array_rand($blocks)]->getStateId());
             }
         }
     }
