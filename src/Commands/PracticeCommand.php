@@ -90,6 +90,16 @@ class PracticeCommand extends Command
                                 $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
                             }
                             break;
+                        case 'Build':
+                            if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[2])) {
+                                Server::getInstance()->getWorldManager()->loadWorld($args[2]);
+                                /** @phpstan-ignore-next-line */
+                                $sender->teleport(Server::getInstance()->getWorldManager()->getWorldByName($args[2])?->getSafeSpawn());
+                                PracticeCore::getArenaFactory()->setArenas($sender, 'Build', $args[2]);
+                            } else {
+                                $sender->sendMessage(Color::RED . 'World ' . $args[2] . ' not found');
+                            }
+                            break;
                         default:
                             $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core make <mode> <world>');
                             $sender->sendMessage(Color::GREEN . 'Modes: ' . Color::AQUA . 'Nodebuff, Fist, Combo, Resistance');
@@ -110,6 +120,9 @@ class PracticeCommand extends Command
                                     break;
                                 case 'Combo':
                                     PracticeCore::getArenaFactory()->removeArenas($sender, 'Combo');
+                                    break;
+                                case 'Build':
+                                    PracticeCore::getArenaFactory()->removeArenas($sender, 'Build');
                                     break;
                                 default:
                                     $sender->sendMessage(PracticeCore::getPrefixCore() . Color::RED . 'use /core remove <mode>');

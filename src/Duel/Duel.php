@@ -2,7 +2,7 @@
 
 namespace Nayuki\Duel;
 
-use Nayuki\Game\Kits\Boxing;
+use Nayuki\Game\Kits\Build;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\PracticeCore;
@@ -74,7 +74,7 @@ final class Duel extends AbstractListener
             $event->cancel();
             return;
         }
-        if (($damager instanceof Player && $player instanceof Player) && ($this->kit instanceof Boxing) && ($damager->getWorld() === $this->world && $player->getWorld() === $this->world)) {
+        if (($damager instanceof Player && $player instanceof Player) && ($this->kit instanceof Build) && ($damager->getWorld() === $this->world && $player->getWorld() === $this->world)) {
             $session = PracticeCore::getSessionManager()->getSession($damager);
             $session->BoxingPoint++;
             if ($session->BoxingPoint > 99) {

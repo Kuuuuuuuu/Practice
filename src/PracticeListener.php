@@ -257,6 +257,11 @@ final class PracticeListener extends AbstractListener
     public function onBlockBreakEvent(BlockBreakEvent $ev): void
     {
         $player = $ev->getPlayer();
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        if ($session->inBuild) {
+            PracticeCore::getDeleteBlocksHandler()->setBlockBuild($ev->getBlock(), true);
+            return;
+        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
         }
@@ -270,6 +275,11 @@ final class PracticeListener extends AbstractListener
     public function onBlockPlaceEvent(BlockPlaceEvent $ev): void
     {
         $player = $ev->getPlayer();
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        if ($session->inBuild) {
+            PracticeCore::getDeleteBlocksHandler()->setBlockBuild($ev->getBlockAgainst());
+            return;
+        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
         }

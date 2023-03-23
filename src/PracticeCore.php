@@ -25,6 +25,7 @@ use Nayuki\Entities\JoinEntity;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Game\Generator\VoidGenerator;
+use Nayuki\Misc\DeleteBlocksHandler;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
@@ -60,6 +61,7 @@ final class PracticeCore extends PluginBase
     private static PlayerHandler $playerHandler;
     private static SessionManager $playerSession;
     private static DuelManager $duelManager;
+    private static DeleteBlocksHandler $buildHandler;
     public array $targetPlayer = [];
     public SQLite3 $BanDatabase;
 
@@ -143,9 +145,20 @@ final class PracticeCore extends PluginBase
         return self::$playerHandler;
     }
 
+    /**
+     * @return DuelManager
+     */
     public static function getDuelManager(): DuelManager
     {
         return self::$duelManager;
+    }
+
+    /**
+     * @return DeleteBlocksHandler
+     */
+    public static function getDeleteBlocksHandler(): DeleteBlocksHandler
+    {
+        return self::$buildHandler;
     }
 
     protected function onLoad(): void
@@ -161,6 +174,7 @@ final class PracticeCore extends PluginBase
         self::$playerHandler = new PlayerHandler();
         self::$playerSession = new SessionManager();
         self::$duelManager = new DuelManager();
+        self::$buildHandler = new DeleteBlocksHandler();
     }
 
     /**
