@@ -21,7 +21,7 @@ class AsyncSavePlayerData extends AsyncTask
     {
         $session = PracticeCore::getSessionManager()->getSession($player);
         $this->path = $path;
-        $this->playerdata = [
+        $this->playerdata = (array)[
             'kills' => $session->getKills(),
             'deaths' => $session->getDeaths(),
             'tag' => $session->getCustomTag(),

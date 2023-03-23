@@ -42,6 +42,7 @@ final class KitRegistry
         self::register(new Nodebuff('Nodebuff'));
         self::register(new Combo('Combo'));
         self::register(new Sumo('Sumo'));
+        self::register(new Build('Build'));
     }
 
     /**
