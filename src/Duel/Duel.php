@@ -20,6 +20,8 @@ final class Duel extends AbstractListener
 {
     /** @var int */
     public static int $status = DuelStatus::STARTING;
+    /** @var bool */
+    public bool $isRanked = false;
     /** @var string */
     public string $name;
     /** @var int */

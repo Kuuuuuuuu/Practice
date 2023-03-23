@@ -44,6 +44,7 @@ use pocketmine\item\EnderPearl;
 use pocketmine\item\Item;
 use pocketmine\item\PotionType;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
@@ -58,6 +59,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
+
 use function count;
 
 final class PracticeListener extends AbstractListener
@@ -319,7 +321,7 @@ final class PracticeListener extends AbstractListener
             if (($packet instanceof InventoryTransactionPacket && $packet->trData instanceof UseItemOnEntityTransactionData) || ($packet instanceof LevelSoundEventPacket && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE)) {
                 PracticeCore::getClickHandler()->addClick($player);
             } elseif ($packet instanceof AnimatePacket) {
-                Server::getInstance()->broadcastPackets($player->getViewers(), [$packet]);
+                NetworkBroadcastUtils::broadcastPackets($player->getViewers(), [$packet]);
                 $event->cancel();
             }
         }
