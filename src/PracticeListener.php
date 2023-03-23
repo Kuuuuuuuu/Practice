@@ -399,6 +399,7 @@ final class PracticeListener extends AbstractListener
     {
         $plugin = $event->getPlugin();
         if ($plugin instanceof PracticeCore) {
+            PracticeCore::getDeleteBlocksHandler()->removeAllBlocks();
             foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
                 $player = $session->getPlayer();
                 PracticeCore::getPlayerHandler()->savePlayerData($player);
