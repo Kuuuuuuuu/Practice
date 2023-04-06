@@ -43,6 +43,7 @@ final class PlayerHandler
 		 }
 		 $yaml = yaml_emit($parsed);
 		 file_put_contents($filePath, $yaml);
+		 PracticeCore::getSessionManager()->removeSession($player);
 	   }
     }
 }

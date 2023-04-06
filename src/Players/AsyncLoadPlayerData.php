@@ -7,7 +7,6 @@ namespace Nayuki\Players;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
-
 use function fclose;
 use function is_array;
 use function yaml_emit_file;
@@ -28,17 +27,11 @@ class AsyncLoadPlayerData extends AsyncTask
 
     public function onRun(): void
     {
-        $playerData = [
-            'kills' => 0,
-            'deaths' => 0,
-            'tag' => '§aMember',
-            'killStreak' => 0,
-            'scoreboard' => true,
-            'cps' => true,
-        ];
-        $data = $this->loadFromYaml($playerData);
+        $playerData = ['kills' => 0, 'deaths' => 0, 'tag' => '§aMember', 'killStreak' => 0, 'scoreboard' => true, 'cps' => true,];
+	  $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);
     }
+
 
     /**
      * @param array<string, int|string|bool|null> $playerData
@@ -46,22 +39,24 @@ class AsyncLoadPlayerData extends AsyncTask
      */
     private function loadFromYaml(array $playerData): array
     {
-        $parsed = yaml_parse_file($this->path);
-        if (is_array($parsed)) {
-            foreach ($playerData as $key => $value) {
-                if (!isset($parsed[$key])) {
-                    $parsed[$key] = $value;
-                }
-            }
-            $playerData = $parsed;
-        } else {
-            $file = fopen($this->path, 'wb');
-            if ($file !== false) {
-                fclose($file);
-            }
-        }
-        yaml_emit_file($this->path, $playerData);
-        return $playerData;
+	  if (file_exists($this->path)) {
+		$parsed = yaml_parse_file($this->path);
+		if (is_array($parsed)) {
+		   foreach ($playerData as $key => $value) {
+			 if (!isset($parsed[$key])) {
+			    $parsed[$key] = $value;
+			 }
+		   }
+		   $playerData = $parsed;
+		}
+	  } else {
+		$file = fopen($this->path, 'wb');
+		if ($file !== false) {
+		   fclose($file);
+		}
+	  }
+	  yaml_emit_file($this->path, $playerData);
+	  return $playerData;
     }
 
     public function onCompletion(): void
