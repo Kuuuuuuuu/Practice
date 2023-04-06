@@ -36,13 +36,10 @@ final class KitRegistry
      */
     protected static function setup(): void
     {
-        self::register(new Build('Boxing'));
-        self::register(new Resistance('Resistance'));
+        self::register(new Boxing('Boxing'));
+	  self::register(new Resistance('Resistance'));
         self::register(new Fist('Fist'));
-        self::register(new Nodebuff('Nodebuff'));
-        self::register(new Combo('Combo'));
         self::register(new Sumo('Sumo'));
-        self::register(new Build('Build'));
     }
 
     /**

@@ -30,19 +30,22 @@ class FormUtils
                 switch ($data) {
                     case 0:
                         PracticeCore::getArenaManager()->joinArenas($player, 'Nodebuff');
-                        break;
-                    case 1:
-                        PracticeCore::getArenaManager()->joinArenas($player, 'Fist');
-                        break;
-                    case 2:
-                        PracticeCore::getArenaManager()->joinArenas($player, 'Resistance');
-                        break;
-                    case 3:
-                        PracticeCore::getArenaManager()->joinArenas($player, 'Combo');
-                        break;
-                    default:
-                        print 'Error';
-                }
+				   break;
+			    case 1:
+				  PracticeCore::getArenaManager()->joinArenas($player, 'Fist');
+				  break;
+			    case 2:
+				  PracticeCore::getArenaManager()->joinArenas($player, 'Resistance');
+				  break;
+			    case 3:
+				  PracticeCore::getArenaManager()->joinArenas($player, 'Combo');
+				  break;
+			    case 4:
+				  PracticeCore::getArenaManager()->joinArenas($player, 'Build');
+				  break;
+			    default:
+				  print 'Error';
+			 }
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
@@ -71,9 +74,6 @@ class FormUtils
                         case 'scoreboard':
                             $session->ScoreboardEnabled = (bool)$value;
                             break;
-                        case 'smoothpearl':
-                            $session->SmoothPearlEnabled = (bool)$value;
-                            break;
                         default:
                             break;
                     }
@@ -83,7 +83,6 @@ class FormUtils
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addToggle('Cps Counter', PracticeCore::getSessionManager()->getSession($player)->CpsCounterEnabled, 'CPS');
         $form->addToggle('Scoreboard', PracticeCore::getSessionManager()->getSession($player)->ScoreboardEnabled, 'Scoreboard');
-        $form->addToggle('Smooth Pearl', PracticeCore::getSessionManager()->getSession($player)->SmoothPearlEnabled, 'SmoothPearl');
         $player->sendForm($form);
     }
 

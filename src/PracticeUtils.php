@@ -207,14 +207,4 @@ final class PracticeUtils
             rmdir($dirPath);
         }
     }
-
-    /**
-     * @param Player $player
-     * @return bool
-     */
-    public function isPlayerInWater(Player $player): bool
-    {
-        $id = $player->getWorld()->getBlock($player->getPosition()->floor())->getIdInfo()->getBlockTypeId();
-        return $id === BlockTypeIds::WATER;
-    }
 }

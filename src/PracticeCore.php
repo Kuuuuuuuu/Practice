@@ -19,13 +19,10 @@ use Nayuki\Commands\TbanCommand;
 use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
 use Nayuki\Duel\DuelManager;
-use Nayuki\Entities\EnderPearlEntity;
 use Nayuki\Entities\Hologram;
-use Nayuki\Entities\JoinEntity;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Game\Generator\VoidGenerator;
-use Nayuki\Misc\DeleteBlocksHandler;
 use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
@@ -35,7 +32,6 @@ use Nayuki\Utils\Scoreboard\ScoreboardManager;
 use Nayuki\Utils\Scoreboard\ScoreboardUtils;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
-use pocketmine\entity\Human;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -61,7 +57,6 @@ final class PracticeCore extends PluginBase
     private static PlayerHandler $playerHandler;
     private static SessionManager $playerSession;
     private static DuelManager $duelManager;
-    private static DeleteBlocksHandler $buildHandler;
     public array $targetPlayer = [];
     public SQLite3 $BanDatabase;
 
@@ -153,14 +148,6 @@ final class PracticeCore extends PluginBase
         return self::$duelManager;
     }
 
-    /**
-     * @return DeleteBlocksHandler
-     */
-    public static function getDeleteBlocksHandler(): DeleteBlocksHandler
-    {
-        return self::$buildHandler;
-    }
-
     protected function onLoad(): void
     {
         self::$plugin = $this;
@@ -174,7 +161,6 @@ final class PracticeCore extends PluginBase
         self::$playerHandler = new PlayerHandler();
         self::$playerSession = new SessionManager();
         self::$duelManager = new DuelManager();
-        self::$buildHandler = new DeleteBlocksHandler();
     }
 
     /**
@@ -253,9 +239,9 @@ final class PracticeCore extends PluginBase
             'ban',
             'ban-ip'
         ];
-        $commandMap = $this->getServer()->getCommandMap();
-        $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
-        $commandsToUnregister = array_filter($commandsToUnregister);
+	  $commandMap = $this->getServer()->getCommandMap();
+	  $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
+	  $commandsToUnregister = array_filter($commandsToUnregister);
         foreach ($commandsToUnregister as $command) {
             $commandMap->unregister($command);
         }
@@ -311,15 +297,9 @@ final class PracticeCore extends PluginBase
      */
     private function registerEntities(): void
     {
-        EntityFactory::getInstance()->register(EnderPearlEntity::class, function (World $world, CompoundTag $nbt): EnderPearlEntity {
-            return new EnderPearlEntity(EntityDataHelper::parseLocation($nbt, $world), null);
-        }, ['ender_pearl']);
         EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
         }, ['Hologram']);
-        EntityFactory::getInstance()->register(JoinEntity::class, function (World $world, CompoundTag $nbt): JoinEntity {
-            return new JoinEntity(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
-        }, ['joinentity']);
     }
 
     /**
@@ -359,9 +339,9 @@ final class PracticeCore extends PluginBase
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof Hologram || $entity instanceof JoinEntity) {
-                    continue;
-                }
+			if ($entity instanceof Hologram) {
+			   continue;
+			}
                 $entity->close();
             }
         }

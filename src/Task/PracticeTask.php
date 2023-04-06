@@ -24,11 +24,6 @@ class PracticeTask extends AbstractTask
         }
         foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
             $player = $session->getPlayer();
-            if ($player->getWorld()->getFolderName() === PracticeCore::getArenaFactory()->getArenas('Build')) {
-                $session->inBuild = true;
-            } else {
-                $session->inBuild = false;
-            }
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 5 === 0) {
                     $session->updateScoreTag();

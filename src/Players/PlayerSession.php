@@ -18,16 +18,12 @@ use pocketmine\Server;
     public bool $ScoreboardEnabled = true;
     /** @var bool */
     public bool $CpsCounterEnabled = true;
-    /** @var bool */
-    public bool $SmoothPearlEnabled = true;
     /** @var string|null */
     public ?string $Scoreboard = null;
     /** @var int */
     public int $CombatTime = 0;
     /** @var int */
     public int $BoxingPoint = 0;
-    /** @var int */
-    public int $PearlCooldown = 0;
     /** @var bool */
     public bool $loadedData = false;
     /** @var int */
@@ -49,7 +45,7 @@ use pocketmine\Server;
     /** @var string|null */
     private ?string $Opponent = null;
     /** @var bool */
-    private bool $isCombat = false;
+    public bool $isCombat = false;
     /** @var string */
     private string $customTag = '§aMember';
     /** @var Player */
@@ -81,9 +77,6 @@ use pocketmine\Server;
                     break;
                 case 'cps':
                     $this->CpsCounterEnabled = (bool)$value;
-                    break;
-                case 'smoothpearl':
-                    $this->SmoothPearlEnabled = (bool)$value;
                     break;
                 case 'kills':
                     $this->kills = (int)$value;

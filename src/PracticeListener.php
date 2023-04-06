@@ -4,73 +4,64 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
-use Nayuki\Entities\EnderPearlEntity;
-use Nayuki\Entities\JoinEntity;
-use Nayuki\Misc\AbstractListener;
+use pocketmine\Server;
+use pocketmine\world\World;
+use pocketmine\math\Vector3;
+use pocketmine\player\Player;
 use Nayuki\Task\OncePearlTask;
-use Nayuki\Utils\CustomChatFormatter;
+use Nayuki\Entities\JoinEntity;
+use pocketmine\item\PotionType;
+use pocketmine\player\GameMode;
+use Nayuki\Misc\AbstractListener;
 use pocketmine\block\BlockTypeIds;
-use pocketmine\entity\Location;
-use pocketmine\entity\projectile\EnderPearl as PMPearl;
-use pocketmine\entity\projectile\SplashPotion;
+use Nayuki\Utils\CustomChatFormatter;
+use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\inventory\CraftItemEvent;
-use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\event\player\PlayerCreationEvent;
-use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\player\PlayerDropItemEvent;
-use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerKickEvent;
-use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\permission\DefaultPermissions;
+use pocketmine\entity\projectile\SplashPotion;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\inventory\CraftItemEvent;
+use pocketmine\event\player\PlayerExhaustEvent;
+use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\plugin\PluginDisableEvent;
-use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\event\entity\EntityTeleportEvent;
+use pocketmine\event\player\PlayerCreationEvent;
+use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\server\DataPacketSendEvent;
-use pocketmine\event\server\NetworkInterfaceRegisterEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
-use pocketmine\event\world\WorldLoadEvent;
-use pocketmine\item\EnderPearl;
-use pocketmine\item\Item;
-use pocketmine\item\PotionType;
-use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
-use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
-use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
-use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
+use pocketmine\event\entity\ProjectileHitBlockEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\inventory\InventoryTransactionEvent;
+use pocketmine\event\server\NetworkInterfaceRegisterEvent;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\network\query\DedicatedQueryNetworkInterface;
-use pocketmine\permission\DefaultPermissions;
-use pocketmine\player\GameMode;
-use pocketmine\player\Player;
-use pocketmine\Server;
-use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat;
-use pocketmine\world\World;
-
-use function count;
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
+use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 
 final class PracticeListener extends AbstractListener
 {
-    /**
-     * @param PlayerCreationEvent $event
-     * @return void
-     * @priority MONITOR
-     */
-    public function onPlayerCreationEvent(PlayerCreationEvent $event): void
-    {
+   /**
+    * @param PlayerCreationEvent $event
+    * @return void
+    * @priority MONITOR
+    */
+   public function onPlayerCreationEvent(PlayerCreationEvent $event): void
+   {
         $event->setPlayerClass(PracticePlayer::class);
     }
 
@@ -85,31 +76,17 @@ final class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $session = PracticeCore::getSessionManager()->getSession($player);
         $item = $event->getItem();
-        if ($item instanceof EnderPearl) {
-            $event->cancel();
-            $location = Location::fromObject($player->getEyePos(), $player->getWorld(), $player->getLocation()->yaw, $player->getLocation()->pitch);
-            $inventory = $player->getInventory();
-            $heldItem = $inventory->getItemInHand();
-            if ($session->PearlCooldown !== 0) {
-                $event->cancel();
-                return;
-            }
-            $pearl = ($session->SmoothPearlEnabled) ? new EnderPearlEntity($location, $player) : new PMPearl($location, $player);
-            $pearl->spawnToAll();
-            $inventory->setItemInHand($heldItem->setCount($heldItem->getCount() - 1));
-            $pearl->setMotion($player->getDirectionVector()->multiply(PracticeConfig::PearlForce));
-            PracticeCore::getInstance()->getScheduler()->scheduleRepeatingTask(new OncePearlTask($player), 20);
-        } elseif ($item->getCustomName() === '§r§bPlay') {
-            PracticeCore::getFormUtils()->ArenaForm($player);
-        } elseif ($item->getCustomName() === '§r§bSettings') {
-            PracticeCore::getFormUtils()->SettingsForm($player);
-        } elseif ($item->getCustomName() === '§r§bDuels') {
-            PracticeCore::getFormUtils()->duelForm($player);
-        } elseif ($item->getCustomName() === '§r§cLeave Queue') {
-            $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
-            $session->isQueueing = false;
-            $session->DuelKit = null;
-            PracticeCore::getUtils()->setLobbyItem($player);
+	  if ($item->getCustomName() === '§r§bPlay') {
+		PracticeCore::getFormUtils()->ArenaForm($player);
+	  } elseif ($item->getCustomName() === '§r§bSettings') {
+		PracticeCore::getFormUtils()->SettingsForm($player);
+	  } elseif ($item->getCustomName() === '§r§bDuels') {
+		PracticeCore::getFormUtils()->duelForm($player);
+	  } elseif ($item->getCustomName() === '§r§cLeave Queue') {
+		$player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
+		$session->isQueueing = false;
+		$session->DuelKit = null;
+		PracticeCore::getUtils()->setLobbyItem($player);
         }
     }
 
@@ -258,10 +235,6 @@ final class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $session = PracticeCore::getSessionManager()->getSession($player);
-        if ($session->inBuild) {
-            PracticeCore::getDeleteBlocksHandler()->setBlockBuild($ev->getBlock(), true);
-            return;
-        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
         }
@@ -276,10 +249,6 @@ final class PracticeListener extends AbstractListener
     {
         $player = $ev->getPlayer();
         $session = PracticeCore::getSessionManager()->getSession($player);
-        if ($session->inBuild) {
-            PracticeCore::getDeleteBlocksHandler()->setBlockBuild($ev->getBlockAgainst());
-            return;
-        }
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
         }
@@ -399,7 +368,6 @@ final class PracticeListener extends AbstractListener
     {
         $plugin = $event->getPlugin();
         if ($plugin instanceof PracticeCore) {
-            PracticeCore::getDeleteBlocksHandler()->removeAllBlocks();
             foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
                 $player = $session->getPlayer();
                 PracticeCore::getPlayerHandler()->savePlayerData($player);
@@ -421,45 +389,43 @@ final class PracticeListener extends AbstractListener
         $damager = $event->getDamager();
         if ($damager instanceof Player && !$event->isCancelled()) {
             if ($player instanceof Player) {
-                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                    $event->cancel();
-                    return;
-                }
-                $DSession = PracticeCore::getSessionManager()->getSession($damager);
-                $PSession = PracticeCore::getSessionManager()->getSession($player);
-                if (!$DSession->isDueling) {
-                    if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
-                        $PSession->setOpponent($damager->getName());
-                        $DSession->setOpponent($player->getName());
-                        foreach ([$player, $damager] as $p) {
-                            $session = PracticeCore::getSessionManager()->getSession($player);
-                            $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
-                            $session->setCombat(true);
-                        }
-                    } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
-                        if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
-                            $PSession->setOpponent($damager->getName());
-                            $DSession->setOpponent($player->getName());
-                            foreach ([$player, $damager] as $p) {
-                                $session = PracticeCore::getSessionManager()->getSession($p);
-                                $session->setCombat(true);
-                            }
-                        } else {
-                            $event->cancel();
-                            $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                        }
-                    } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
-                        $event->cancel();
-                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                    } elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
-                        $event->cancel();
-                        $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-                    }
-                }
-            } elseif ($player instanceof JoinEntity) {
-                PracticeCore::getFormUtils()->ArenaForm($damager);
-                $event->cancel();
-            }
+			if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+			   $event->cancel();
+			   return;
+			}
+			$DSession = PracticeCore::getSessionManager()->getSession($damager);
+			$PSession = PracticeCore::getSessionManager()->getSession($player);
+			if ($DSession->isDueling) {
+			   return;
+			}
+			if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
+			   $PSession->setOpponent($damager->getName());
+			   $DSession->setOpponent($player->getName());
+			   foreach ([$player, $damager] as $p) {
+				 $session = PracticeCore::getSessionManager()->getSession($player);
+				 $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
+				 $session->setCombat(true);
+			   }
+			} elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
+			   if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
+				 $PSession->setOpponent($damager->getName());
+				 $DSession->setOpponent($player->getName());
+				 foreach ([$player, $damager] as $p) {
+				    $session = PracticeCore::getSessionManager()->getSession($p);
+				    $session->setCombat(true);
+				 }
+			   } else {
+				 $event->cancel();
+				 $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+			   }
+			} elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
+			   $event->cancel();
+			   $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+			} elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
+			   $event->cancel();
+			   $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+			}
+		  }
         }
     }
 
@@ -500,48 +466,27 @@ final class PracticeListener extends AbstractListener
     public function onPlayerDeathEvent(PlayerDeathEvent $event): void
     {
         $event->setDeathMessage('');
-        $event->setDrops([]);
-        $player = $event->getPlayer();
-        $name = $player->getName();
+	  $event->setDrops([]);
+	  $event->setXpDropAmount(0);
+	  $player = $event->getPlayer();
         $cause = $player->getLastDamageCause();
         $session = PracticeCore::getSessionManager()->getSession($player);
         if (($cause instanceof EntityDamageByEntityEvent) && $session->getOpponent() !== null) {
             $damager = PracticeCore::getSessionManager()->getPlayerInSessionByPrefix($session->getOpponent());
             if ($damager instanceof Player) {
                 $damagerSession = PracticeCore::getSessionManager()->getSession($damager);
-                $dname = $damager->getName();
-                if ($damager->isAlive() && $damager->isConnected()) {
-                    $data = new Config(PracticeCore::getInstance()->getDataFolder() . 'data/arenas.yml', Config::YAML);
-                    foreach ($data->getAll() as $key => $value) {
-                        if ((PracticeCore::getArenaFactory()->getArenas((string)$key) !== null) && $damager->getWorld()->getFolderName() === (string)$value) {
-                            $damager->getInventory()->clearAll();
-                            PracticeCore::getArenaManager()->getKits($damager, (string)$key);
-                            if ($key === 'Nodebuff') {
-                                $PlayerPot = count(array_filter($player->getInventory()->getContents(), static fn(Item $item): bool => ($item instanceof \pocketmine\item\SplashPotion) && $item->getType() === PotionType::STRONG_HEALING()));
-                                $DamagerPot = count(array_filter($damager->getInventory()->getContents(), static fn(Item $item): bool => ($item instanceof \pocketmine\item\SplashPotion) && $item->getType() === PotionType::STRONG_HEALING()));
-                                foreach ($damager->getWorld()->getPlayers() as $players) {
-                                    $players->sendMessage("§a$dname" . '§f[§a' . $DamagerPot . '§f] §f- §c' . $name . '§f[§c' . $PlayerPot . '§f]');
-                                }
-                                return;
-                            }
-                            $health = round($damager->getHealth(), 1);
-                            foreach ($damager->getWorld()->getPlayers() as $players) {
-                                $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' was killed by ' . TextFormat::GREEN . $damager->getName() . ' §f[§b' . $health . '§f]');
-                            }
-                        }
-                    }
-                }
                 foreach ([$damager, $player] as $p) {
-                    $session = PracticeCore::getSessionManager()->getSession($p);
-                    $session->setCombat(false);
-                }
+			    $session = PracticeCore::getSessionManager()->getSession($p);
+			    $session->setCombat(false);
+			    $session->CombatTime = 0;
+			    $session->isCombat = true;
+			 }
                 PracticeCore::getUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
                 $damagerSession->kills++;
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);
-                PracticeCore::getUtils()->setLobbyItem($player);
             }
         }
     }

@@ -25,9 +25,6 @@ class PracticePlayer extends Player
                 case 'Fist':
                     $attackSpeed = 8;
                     break;
-                case 'Combo':
-                    $attackSpeed = 1;
-                    break;
             }
         } else {
             switch ($this->getWorld()->getFolderName()) {
@@ -65,10 +62,6 @@ class PracticePlayer extends Player
                 case 'Fist':
                     $xzKB = 0.402;
                     $yKb = 0.345;
-                    break;
-                case 'Combo':
-                    $xzKB = 0.310;
-                    $yKb = 0.220;
                     break;
             }
         } else {

@@ -36,8 +36,13 @@ final class PlayerHandler
         $name = $player->getName();
         $filePath = $this->path . "$name.yml";
         if ($session->loadedData) {
-            $task = new AsyncSavePlayerData($player, $filePath);
-            PracticeCore::getInstance()->getServer()->getAsyncPool()->submitTask($task);
-        }
+		 $test = ['kills' => $session->getKills(), 'deaths' => $session->getDeaths(), 'tag' => $session->getCustomTag(), 'killStreak' => $session->getStreak(), 'scoreboard' => $session->ScoreboardEnabled, 'cps' => $session->CpsCounterEnabled,];
+		 $parsed = yaml_parse_file($filePath);
+		 foreach ($test as $key => $value) {
+		    $parsed[$key] = $value;
+		 }
+		 $yaml = yaml_emit($parsed);
+		 file_put_contents($filePath, $yaml);
+	   }
     }
 }
