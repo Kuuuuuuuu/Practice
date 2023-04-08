@@ -239,9 +239,9 @@ final class PracticeCore extends PluginBase
             'ban',
             'ban-ip'
         ];
-	  $commandMap = $this->getServer()->getCommandMap();
-	  $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
-	  $commandsToUnregister = array_filter($commandsToUnregister);
+        $commandMap = $this->getServer()->getCommandMap();
+        $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
+        $commandsToUnregister = array_filter($commandsToUnregister);
         foreach ($commandsToUnregister as $command) {
             $commandMap->unregister($command);
         }
@@ -339,9 +339,9 @@ final class PracticeCore extends PluginBase
     {
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world) {
             foreach ($world->getEntities() as $entity) {
-			if ($entity instanceof Hologram) {
-			   continue;
-			}
+                if ($entity instanceof Hologram) {
+                    continue;
+                }
                 $entity->close();
             }
         }

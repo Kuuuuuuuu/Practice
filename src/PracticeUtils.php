@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
-use FilesystemIterator;
+use InvalidArgumentException;
 use Nayuki\Misc\PracticeChunkLoader;
-use pocketmine\block\BlockTypeIds;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -19,15 +18,32 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-
 use function is_dir;
 use function rmdir;
 use function unlink;
 
 final class PracticeUtils
 {
+    /**
+     * @param string $dirPath
+     * @return void
+     */
+    public function deleteDir(string $dirPath): void
+    {
+        if (!is_dir($dirPath)) {
+            throw new InvalidArgumentException("$dirPath must be a directory");
+        }
+        $dirPath = rtrim($dirPath, '/') . '/';
+        $files = glob($dirPath . '*', GLOB_MARK);
+        if ($files === false) {
+            throw new InvalidArgumentException("Could not read contents of $dirPath");
+        }
+        foreach ($files as $file) {
+            is_dir($file) ? $this->deleteDir($file) : unlink($file);
+        }
+        rmdir($dirPath);
+    }
+
     /**
      * @param Player $player
      * @param World $world
@@ -87,28 +103,15 @@ final class PracticeUtils
         $oldStreak = $DeathSession->getStreak();
         $newStreak = $KillSession->getStreak();
         if ($oldStreak > 5) {
-            $death->sendMessage(PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!');
-            $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreaks!');
+            $deathMessage = PracticeCore::getPrefixCore() . '§r§aYour ' . $oldStreak . ' killstreak was ended by ' . $player->getName() . '!';
+            $playerMessage = PracticeCore::getPrefixCore() . '§r§aYou have ended ' . $death->getName() . "'s " . $oldStreak . ' killstreaks!';
+            $death->sendMessage($deathMessage);
+            $player->sendMessage($playerMessage);
         }
         if ($newStreak % 5 === 0) {
-            Server::getInstance()->broadcastMessage(PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreaks!');
+            $broadcastMessage = PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreaks!';
+            Server::getInstance()->broadcastMessage($broadcastMessage);
         }
-    }
-
-    /**
-     * @param Player $player
-     * @param string $message
-     * @return string
-     */
-    public function getChatFormat(Player $player, string $message): string
-    {
-        $session = PracticeCore::getSessionManager()->getSession($player);
-        if ($session->getCustomTag() !== '') {
-            $NameTag = '§f[' . $session->getCustomTag() . '§f] §b' . $player->getDisplayName() . '§r§a > §r' . $message;
-        } else {
-            $NameTag = '§a' . $player->getDisplayName() . '§r§a > §r' . $message;
-        }
-        return $NameTag;
     }
 
     /**
@@ -185,26 +188,6 @@ final class PracticeUtils
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * @param string $dirPath
-     * @return void
-     */
-    public function deleteDir(string $dirPath): void
-    {
-        if (is_dir($dirPath)) {
-            $dirPath = rtrim($dirPath, '/') . '/';
-            $files = iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirPath, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST));
-            foreach ($files as $file) {
-                if (is_dir($file)) {
-                    $this->deleteDir($file);
-                } else {
-                    unlink($file);
-                }
-            }
-            rmdir($dirPath);
         }
     }
 }

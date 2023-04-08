@@ -6,7 +6,6 @@ namespace Nayuki;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
-
 use function mt_getrandmax;
 use function mt_rand;
 use function sqrt;
@@ -23,7 +22,7 @@ class PracticePlayer extends Player
         if ($session->isDueling) {
             switch ($session->DuelKit?->getName()) {
                 case 'Fist':
-                    $attackSpeed = 8;
+                    $attackSpeed = 7;
                     break;
             }
         } else {
@@ -78,12 +77,13 @@ class PracticePlayer extends Player
             }
         }
         $f = sqrt($x * $x + $z * $z);
-        if ($f > 0 && mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
-            $f = 1 / $f;
+        if ($f > 0 && (mt_rand() / mt_getrandmax()) > $this->knockbackResistanceAttr->getValue()) {
+            $kbFactor = 1 / $f;
+            $xzKbFactor = $kbFactor * $xzKB;
             $motion = clone $this->motion;
-            $motion->x = ($motion->x / 2) + ($x * $f * $xzKB);
+            $motion->x = ($motion->x / 2) + ($x * $xzKbFactor);
             $motion->y = ($motion->y / 2) + $yKb;
-            $motion->z = ($motion->z / 2) + ($z * $f * $xzKB);
+            $motion->z = ($motion->z / 2) + ($z * $xzKbFactor);
             $motion->y = min($motion->y, $yKb);
             $this->setMotion($motion);
         }

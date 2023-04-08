@@ -28,7 +28,7 @@ class AsyncLoadPlayerData extends AsyncTask
     public function onRun(): void
     {
         $playerData = ['kills' => 0, 'deaths' => 0, 'tag' => '§aMember', 'killStreak' => 0, 'scoreboard' => true, 'cps' => true,];
-	  $data = $this->loadFromYaml($playerData);
+        $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);
     }
 
@@ -39,24 +39,24 @@ class AsyncLoadPlayerData extends AsyncTask
      */
     private function loadFromYaml(array $playerData): array
     {
-	  if (file_exists($this->path)) {
-		$parsed = yaml_parse_file($this->path);
-		if (is_array($parsed)) {
-		   foreach ($playerData as $key => $value) {
-			 if (!isset($parsed[$key])) {
-			    $parsed[$key] = $value;
-			 }
-		   }
-		   $playerData = $parsed;
-		}
-	  } else {
-		$file = fopen($this->path, 'wb');
-		if ($file !== false) {
-		   fclose($file);
-		}
-	  }
-	  yaml_emit_file($this->path, $playerData);
-	  return $playerData;
+        if (file_exists($this->path)) {
+            $parsed = yaml_parse_file($this->path);
+            if (is_array($parsed)) {
+                foreach ($playerData as $key => $value) {
+                    if (!isset($parsed[$key])) {
+                        $parsed[$key] = $value;
+                    }
+                }
+                $playerData = $parsed;
+            }
+        } else {
+            $file = fopen($this->path, 'wb');
+            if ($file !== false) {
+                fclose($file);
+            }
+        }
+        yaml_emit_file($this->path, $playerData);
+        return $playerData;
     }
 
     public function onCompletion(): void

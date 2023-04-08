@@ -27,14 +27,15 @@ class PracticeTask extends AbstractTask
             if ($session->loadedData && $player->isConnected()) {
                 if ($tick % 5 === 0) {
                     $session->updateScoreTag();
+                    $session->updateScoreboard();
                 }
                 if ($tick % 20 === 0) {
                     $session->updateNameTag();
-                    $session->updateScoreboard();
-                    if ($session->isCombat()) {
+                    if ($session->isCombat) {
                         $session->CombatTime--;
                         if ($session->CombatTime <= 0) {
-                            $session->setCombat(false);
+                            $session->isCombat = false;
+                            $session->CombatTime = 0;
                             $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
                             $session->BoxingPoint = 0;
                             $session->setOpponent(null);

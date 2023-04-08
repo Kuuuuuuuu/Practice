@@ -28,21 +28,21 @@ class FormUtils
         $form = new SimpleForm(function (Player $player, int $data = null) {
             if ($data !== null) {
                 switch ($data) {
-			    case 0:
-				  PracticeCore::getArenaManager()->joinArenas($player, 'Fist');
-				  break;
-			    case 1:
-				  PracticeCore::getArenaManager()->joinArenas($player, 'Resistance');
-				  break;
-			    default:
-				  print 'Error';
-			 }
+                    case 0:
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Fist');
+                        break;
+                    case 1:
+                        PracticeCore::getArenaManager()->joinArenas($player, 'Resistance');
+                        break;
+                    default:
+                        print 'Error';
+                }
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addButton("§aFist\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Fist')), 0, 'textures/items/beef_cooked.png');
         $form->addButton("§aResistance\n§bPlayers: §f" . PracticeCore::getArenaFactory()->getPlayers(PracticeCore::getArenaFactory()->getArenas('Resistance')), 0, 'textures/items/snowball.png');
-	  $player->sendForm($form);
+        $player->sendForm($form);
     }
 
     /**

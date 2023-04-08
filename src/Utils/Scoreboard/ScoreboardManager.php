@@ -6,7 +6,6 @@ use Nayuki\Misc\Time;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
-
 use function count;
 use function round;
 

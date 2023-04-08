@@ -41,11 +41,9 @@ use pocketmine\Server;
     /** @var bool */
     public bool $isQueueing = false;
     /** @var bool */
-    public bool $inBuild = false;
+    public bool $isCombat = false;
     /** @var string|null */
     private ?string $Opponent = null;
-    /** @var bool */
-    public bool $isCombat = false;
     /** @var string */
     private string $customTag = '§aMember';
     /** @var Player */
@@ -95,28 +93,6 @@ use pocketmine\Server;
             }
         }
         $this->loadedData = true;
-    }
-
-    /**
-     * @param bool $bool
-     * @return void
-     */
-    public function setCombat(bool $bool): void
-    {
-        if (!$bool && $this->CombatTime > 0) {
-            $this->CombatTime = 1;
-        } else {
-            $this->isCombat = $bool;
-            $this->CombatTime = 10;
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCombat(): bool
-    {
-        return $this->isCombat;
     }
 
     /**

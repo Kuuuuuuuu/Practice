@@ -4,64 +4,57 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
-use pocketmine\Server;
-use pocketmine\world\World;
-use pocketmine\math\Vector3;
-use pocketmine\player\Player;
-use Nayuki\Task\OncePearlTask;
-use Nayuki\Entities\JoinEntity;
-use pocketmine\item\PotionType;
-use pocketmine\player\GameMode;
 use Nayuki\Misc\AbstractListener;
-use pocketmine\block\BlockTypeIds;
 use Nayuki\Utils\CustomChatFormatter;
-use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityTeleportEvent;
+use pocketmine\event\inventory\CraftItemEvent;
+use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\event\player\PlayerCreationEvent;
+use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerExhaustEvent;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerKickEvent;
-use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\permission\DefaultPermissions;
-use pocketmine\entity\projectile\SplashPotion;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\inventory\CraftItemEvent;
-use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\event\player\PlayerItemUseEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\plugin\PluginDisableEvent;
-use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\player\PlayerCreationEvent;
-use pocketmine\event\player\PlayerDropItemEvent;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerPreLoginEvent;
-use pocketmine\event\server\DataPacketSendEvent;
-use pocketmine\event\server\QueryRegenerateEvent;
-use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\mcpe\protocol\AnimatePacket;
-use pocketmine\network\mcpe\raklib\RakLibInterface;
-use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\server\NetworkInterfaceRegisterEvent;
-use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
-use pocketmine\network\query\DedicatedQueryNetworkInterface;
+use pocketmine\event\server\QueryRegenerateEvent;
+use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\NetworkBroadcastUtils;
+use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
+use pocketmine\network\mcpe\raklib\RakLibInterface;
+use pocketmine\network\query\DedicatedQueryNetworkInterface;
+use pocketmine\permission\DefaultPermissions;
+use pocketmine\player\GameMode;
+use pocketmine\player\Player;
+use pocketmine\Server;
+use pocketmine\world\World;
 
 final class PracticeListener extends AbstractListener
 {
-   /**
-    * @param PlayerCreationEvent $event
-    * @return void
-    * @priority MONITOR
-    */
-   public function onPlayerCreationEvent(PlayerCreationEvent $event): void
-   {
+    /**
+     * @param PlayerCreationEvent $event
+     * @return void
+     * @priority MONITOR
+     */
+    public function onPlayerCreationEvent(PlayerCreationEvent $event): void
+    {
         $event->setPlayerClass(PracticePlayer::class);
     }
 
@@ -76,17 +69,17 @@ final class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $session = PracticeCore::getSessionManager()->getSession($player);
         $item = $event->getItem();
-	  if ($item->getCustomName() === '§r§bPlay') {
-		PracticeCore::getFormUtils()->ArenaForm($player);
-	  } elseif ($item->getCustomName() === '§r§bSettings') {
-		PracticeCore::getFormUtils()->SettingsForm($player);
-	  } elseif ($item->getCustomName() === '§r§bDuels') {
-		PracticeCore::getFormUtils()->duelForm($player);
-	  } elseif ($item->getCustomName() === '§r§cLeave Queue') {
-		$player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
-		$session->isQueueing = false;
-		$session->DuelKit = null;
-		PracticeCore::getUtils()->setLobbyItem($player);
+        if ($item->getCustomName() === '§r§bPlay') {
+            PracticeCore::getFormUtils()->ArenaForm($player);
+        } elseif ($item->getCustomName() === '§r§bSettings') {
+            PracticeCore::getFormUtils()->SettingsForm($player);
+        } elseif ($item->getCustomName() === '§r§bDuels') {
+            PracticeCore::getFormUtils()->duelForm($player);
+        } elseif ($item->getCustomName() === '§r§cLeave Queue') {
+            $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou have left the queue!');
+            $session->isQueueing = false;
+            $session->DuelKit = null;
+            PracticeCore::getUtils()->setLobbyItem($player);
         }
     }
 
@@ -122,27 +115,26 @@ final class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $banplayer = $player->getName();
-        $banInfo = PracticeCore::getInstance()->BanDatabase->query("SELECT * FROM banPlayers WHERE player = '$banplayer';");
-        /** @phpstan-ignore-next-line */
-        $array = $banInfo->fetchArray(SQLITE3_ASSOC);
-        if (!empty($array)) {
+        $stmt = PracticeCore::getInstance()->BanDatabase->prepare('SELECT * FROM banPlayers WHERE player = ?');
+        $stmt->bindValue(1, $banplayer);
+        $result = $stmt->execute();
+        if ($array = $result->fetchArray(SQLITE3_ASSOC)) {
             $banTime = $array['banTime'];
             $reason = $array['reason'];
             $now = time();
             if ($banTime > $now) {
                 $remainingTime = $banTime - $now;
-                $day = floor($remainingTime / 86400);
-                $hourSeconds = $remainingTime % 86400;
-                $hour = floor($hourSeconds / 3600);
-                $minuteSec = $hourSeconds % 3600;
-                $minute = floor($minuteSec / 60);
-                $remainingSec = $minuteSec % 60;
-                $second = ceil($remainingSec);
-                $player->kick(str_replace(['{day}', '{hour}', '{minute}', '{second}', '{reason}'], [$day, $hour, $minute, $second, $reason], "§cYou Are Banned\n§6Reason : §f{reason}\n§6Unban At §f: §e{day} D §f| §e{hour} H §f| §e{minute} M"));
+                $day = gmdate('d', $remainingTime);
+                $hour = gmdate('H', $remainingTime);
+                $minute = gmdate('i', $remainingTime);
+                $kickMessage = sprintf("§cYou Are Banned\n§6Reason : §f%s\n§6Unban At §f: §e%s D §f| §e%s H §f| §e%s M", $reason, $day, $hour, $minute);
+                $player->kick($kickMessage);
+                PracticeCore::getInstance()->getServer()->broadcastMessage(sprintf('%s has been banned: %s', $player->getName(), $reason));
                 $event->cancel();
-                $player->close();
             } else {
-                PracticeCore::getInstance()->BanDatabase->query("DELETE FROM banPlayers WHERE player = '$banplayer';");
+                $stmt = PracticeCore::getInstance()->BanDatabase->prepare('DELETE FROM banPlayers WHERE player = ?');
+                $stmt->bindValue(1, $banplayer);
+                $stmt->execute();
             }
         }
     }
@@ -195,9 +187,8 @@ final class PracticeListener extends AbstractListener
      */
     public function onPlayerInteractEvent(PlayerInteractEvent $event): void
     {
-        $block = $event->getBlock();
         $player = $event->getPlayer();
-        if ($player->getGamemode() !== GameMode::CREATIVE() && ($block->getIdInfo()->getBlockTypeId() === BlockTypeIds::ANVIL || $block->getIdInfo()->getBlockTypeId() === BlockTypeIds::FLOWER_POT)) {
+        if ($player->getGamemode() !== GameMode::CREATIVE()) {
             $event->cancel();
         }
     }
@@ -234,7 +225,6 @@ final class PracticeListener extends AbstractListener
     public function onBlockBreakEvent(BlockBreakEvent $ev): void
     {
         $player = $ev->getPlayer();
-        $session = PracticeCore::getSessionManager()->getSession($player);
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
         }
@@ -248,42 +238,8 @@ final class PracticeListener extends AbstractListener
     public function onBlockPlaceEvent(BlockPlaceEvent $ev): void
     {
         $player = $ev->getPlayer();
-        $session = PracticeCore::getSessionManager()->getSession($player);
         if (!$player->hasPermission(DefaultPermissions::ROOT_OPERATOR) && $player->getGamemode() !== GameMode::CREATIVE()) {
             $ev->cancel();
-        }
-    }
-
-    /**
-     * @param ProjectileHitBlockEvent $event
-     * @return void
-     * @priority LOWEST
-     */
-    public function onProjectileHitBlockEvent(ProjectileHitBlockEvent $event): void
-    {
-        $projectile = $event->getEntity();
-        if ($projectile instanceof SplashPotion && $projectile->getPotionType() === PotionType::STRONG_HEALING()) {
-            $player = $projectile->getOwningEntity();
-            if ($player instanceof Player && $player->isAlive() && $projectile->getPosition()->distance($player->getPosition()) <= 3) {
-                $player->setHealth($player->getHealth() + 3.5);
-            }
-        }
-    }
-
-    /**
-     * @param DataPacketSendEvent $ev
-     * @return void
-     * @priority LOWEST
-     */
-    public function onDataPacketSendEvent(DataPacketSendEvent $ev): void
-    {
-        foreach ($ev->getPackets() as $packet) {
-            if (($packet instanceof LevelSoundEventPacket) && $packet->pid() === LevelSoundEventPacket::NETWORK_ID) {
-                $sound = $packet->sound;
-                if ($sound === LevelSoundEvent::ATTACK || $sound === LevelSoundEvent::ATTACK_NODAMAGE || $sound === LevelSoundEvent::ATTACK_STRONG) {
-                    $ev->cancel();
-                }
-            }
         }
     }
 
@@ -344,7 +300,7 @@ final class PracticeListener extends AbstractListener
         $event->setQuitMessage('§f[§c-§f] §c' . $name);
         PracticeCore::getClickHandler()->removePlayerClickData($player);
         PracticeCore::getPlayerHandler()->savePlayerData($player);
-        if ($session->isDueling || $session->isCombat()) {
+        if ($session->isDueling || $session->isCombat) {
             $player->kill();
         }
     }
@@ -389,43 +345,39 @@ final class PracticeListener extends AbstractListener
         $damager = $event->getDamager();
         if ($damager instanceof Player && !$event->isCancelled()) {
             if ($player instanceof Player) {
-			if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-			   $event->cancel();
-			   return;
-			}
-			$DSession = PracticeCore::getSessionManager()->getSession($damager);
-			$PSession = PracticeCore::getSessionManager()->getSession($player);
-			if ($DSession->isDueling) {
-			   return;
-			}
-			if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
-			   $PSession->setOpponent($damager->getName());
-			   $DSession->setOpponent($player->getName());
-			   foreach ([$player, $damager] as $p) {
-				 $session = PracticeCore::getSessionManager()->getSession($player);
-				 $p->sendMessage(PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $session->getOpponent());
-				 $session->setCombat(true);
-			   }
-			} elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
-			   if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
-				 $PSession->setOpponent($damager->getName());
-				 $DSession->setOpponent($player->getName());
-				 foreach ([$player, $damager] as $p) {
-				    $session = PracticeCore::getSessionManager()->getSession($p);
-				    $session->setCombat(true);
-				 }
-			   } else {
-				 $event->cancel();
-				 $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-			   }
-			} elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() === null) {
-			   $event->cancel();
-			   $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-			} elseif ($PSession->getOpponent() === null && $DSession->getOpponent() !== null) {
-			   $event->cancel();
-			   $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
-			}
-		  }
+                if ($damager->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                    $event->cancel();
+                    return;
+                }
+                $DSession = PracticeCore::getSessionManager()->getSession($damager);
+                $PSession = PracticeCore::getSessionManager()->getSession($player);
+                if ($DSession->isDueling || $PSession->isDueling) {
+                    return;
+                }
+                if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
+                    $PSession->setOpponent($damager->getName());
+                    $DSession->setOpponent($player->getName());
+                    $msg = PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $PSession->getOpponent();
+                    $player->sendMessage($msg);
+                    $damager->sendMessage($msg);
+                    $PSession->isCombat = true;
+                    $PSession->CombatTime = $DSession->CombatTime = 10;
+                } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
+                    if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
+                        foreach ([$player, $damager] as $p) {
+                            $session = PracticeCore::getSessionManager()->getSession($p);
+                            $session->isCombat = true;
+                            $session->CombatTime = 10;
+                        }
+                        return;
+                    }
+                    $event->cancel();
+                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                } else {
+                    $event->cancel();
+                    $damager->sendMessage(PracticeCore::getPrefixCore() . "§cDon't Interrupt!");
+                }
+            }
         }
     }
 
@@ -466,9 +418,9 @@ final class PracticeListener extends AbstractListener
     public function onPlayerDeathEvent(PlayerDeathEvent $event): void
     {
         $event->setDeathMessage('');
-	  $event->setDrops([]);
-	  $event->setXpDropAmount(0);
-	  $player = $event->getPlayer();
+        $event->setDrops([]);
+        $event->setXpDropAmount(0);
+        $player = $event->getPlayer();
         $cause = $player->getLastDamageCause();
         $session = PracticeCore::getSessionManager()->getSession($player);
         if (($cause instanceof EntityDamageByEntityEvent) && $session->getOpponent() !== null) {
@@ -476,11 +428,11 @@ final class PracticeListener extends AbstractListener
             if ($damager instanceof Player) {
                 $damagerSession = PracticeCore::getSessionManager()->getSession($damager);
                 foreach ([$damager, $player] as $p) {
-			    $session = PracticeCore::getSessionManager()->getSession($p);
-			    $session->setCombat(false);
-			    $session->CombatTime = 0;
-			    $session->isCombat = true;
-			 }
+                    $session = PracticeCore::getSessionManager()->getSession($p);
+                    $session->CombatTime = 0;
+                    $session->isCombat = false;
+                }
+                Server::getInstance()->broadcastMessage('§a' . $damager->getName() . ' §ehas killed §c' . $player->getName());
                 PracticeCore::getUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
                 $damagerSession->kills++;
@@ -500,7 +452,8 @@ final class PracticeListener extends AbstractListener
     {
         $player = $event->getPlayer();
         $session = PracticeCore::getSessionManager()->getSession($player);
-        $session->setCombat(false);
+        $session->isCombat = false;
+        $session->CombatTime = 0;
         $session->setOpponent(null);
         $session->isDueling = false;
         $session->isQueueing = false;
@@ -520,7 +473,8 @@ final class PracticeListener extends AbstractListener
         if ($player instanceof Player && $event->getFrom()->getWorld() !== $event->getTo()->getWorld()) {
             $session = PracticeCore::getSessionManager()->getSession($player);
             if (!$session->isDueling && !$session->isQueueing) {
-                $session->setCombat(false);
+                $session->isCombat = false;
+                $session->CombatTime = 0;
                 $session->setOpponent(null);
             }
         }
