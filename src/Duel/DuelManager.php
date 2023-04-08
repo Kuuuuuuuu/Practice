@@ -28,7 +28,11 @@ final class DuelManager
     {
         $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . Uuid::uuid4();
         $world = new WorldCreationOptions();
-        $world->setGeneratorClass(($kit->getName() === 'Sumo') ? SumoGenerator::class : DuelGenerator::class);
+        if (strtolower($kit->getName()) === 'sumo') {
+            $world->setGeneratorClass(SumoGenerator::class);
+        } else {
+            $world->setGeneratorClass(DuelGenerator::class);
+        }
         $world->setSeed(0);
         $world->setSpawnPosition(new Vector3(0, 100, 0));
         Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);

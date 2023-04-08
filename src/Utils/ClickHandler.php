@@ -6,7 +6,6 @@ namespace Nayuki\Utils;
 
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
-
 use function array_unshift;
 use function count;
 use function microtime;
@@ -31,7 +30,7 @@ class ClickHandler
             $p->sendTip('§bCPS: §f' . $this->getClicks($p));
         }
         array_unshift($clickData, microtime(true));
-        if (count($clickData) >= 50) {
+        if (count($clickData) > 50) {
             array_pop($clickData);
         }
     }

@@ -36,8 +36,8 @@ class PracticeTask extends AbstractTask
                         if ($session->CombatTime <= 0) {
                             $session->isCombat = false;
                             $session->CombatTime = 0;
-                            $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
                             $session->BoxingPoint = 0;
+                            $player->sendMessage(PracticeCore::getPrefixCore() . TextFormat::RED . 'You are no longer in combat.');
                             $session->setOpponent(null);
                         }
                     }

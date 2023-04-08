@@ -1,6 +1,6 @@
 <?php
 
-namespace Nayuki\Utils;
+namespace Nayuki\Misc;
 
 use Nayuki\PracticeCore;
 use pocketmine\lang\Translatable;

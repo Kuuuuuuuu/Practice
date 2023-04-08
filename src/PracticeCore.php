@@ -40,7 +40,6 @@ use pocketmine\world\World;
 use ReflectionClass;
 use ReflectionException;
 use SQLite3;
-
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -213,8 +212,9 @@ final class PracticeCore extends PluginBase
             SumoGenerator::class => 'sumo',
             VoidGenerator::class => 'void'
         ];
+        $generatorManager = GeneratorManager::getInstance();
         foreach ($generator as $key => $value) {
-            GeneratorManager::getInstance()->addGenerator($key, $value, fn() => null);
+            $generatorManager->addGenerator($key, $value, fn() => null);
         }
     }
 
@@ -240,11 +240,8 @@ final class PracticeCore extends PluginBase
             'ban-ip'
         ];
         $commandMap = $this->getServer()->getCommandMap();
-        $commandsToUnregister = array_map(static fn($name) => $commandMap->getCommand($name), $commands);
-        $commandsToUnregister = array_filter($commandsToUnregister);
-        foreach ($commandsToUnregister as $command) {
-            $commandMap->unregister($command);
-        }
+        $commandsToUnregister = array_filter(array_map([$commandMap, 'getCommand'], $commands));
+        array_walk($commandsToUnregister, [$commandMap, 'unregister']);
     }
 
     /**

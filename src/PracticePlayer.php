@@ -81,9 +81,9 @@ class PracticePlayer extends Player
             $kbFactor = 1 / $f;
             $xzKbFactor = $kbFactor * $xzKB;
             $motion = clone $this->motion;
-            $motion->x = ($motion->x / 2) + ($x * $xzKbFactor);
-            $motion->y = ($motion->y / 2) + $yKb;
-            $motion->z = ($motion->z / 2) + ($z * $xzKbFactor);
+            $motion->x = ($motion->x + $x * $xzKbFactor) / 2;
+            $motion->y = ($motion->y + $yKb) / 2;
+            $motion->z = ($motion->z + $z * $xzKbFactor) / 2;
             $motion->y = min($motion->y, $yKb);
             $this->setMotion($motion);
         }

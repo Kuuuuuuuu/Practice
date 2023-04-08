@@ -123,10 +123,7 @@ final class PlayerSession
      */
     public function getKdr(): float|int
     {
-        if ($this->deaths > 0) {
-            return $this->kills / $this->deaths;
-        }
-        return 1;
+        return ($this->deaths > 0) ? ($this->kills / $this->deaths) : 1;
     }
 
     /**
@@ -178,12 +175,14 @@ final class PlayerSession
             return;
         }
         if (!$this->isDueling) {
-            if ($this->player->getWorld() === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
-                PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($this->player);
-                return;
+            $world = $this->player->getWorld();
+            $scoreboardManager = PracticeCore::getInstance()->getScoreboardManager();
+            if ($world === Server::getInstance()->getWorldManager()->getDefaultWorld()) {
+                $scoreboardManager->setLobbyScoreboard($this->player);
+            } else {
+                $scoreboardManager->setArenaScoreboard($this->player, false);
             }
-            PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, false);
-        } elseif ($this->DuelKit?->getName() === 'Boxing') {
+        } elseif (strtolower($this->DuelKit?->getName()) === 'boxing') {
             PracticeCore::getInstance()->getScoreboardManager()->Boxing($this->player);
         } else {
             PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);

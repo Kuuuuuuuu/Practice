@@ -133,43 +133,47 @@ final class Duel extends AbstractListener
             }
         }
         if ($tick % 20 === 0) {
-            if (self::$status === DuelStatus::INGAME) {
-                if ($this->time <= 0) {
-                    self::$status = DuelStatus::ENDING;
-                }
-                $this->time--;
-            } elseif (self::$status === DuelStatus::STARTING) {
-                if ($this->startSec >= 0) {
-                    foreach ($players as $player) {
-                        $player->sendTitle('§bStarting in ' . $this->startSec, '', 1, 3, 1);
-                        PracticeCore::getUtils()->playSound('random.click', $player);
+            switch (self::$status) {
+                case DuelStatus::INGAME:
+                    $this->time--;
+                    if ($this->time <= 0) {
+                        self::$status = DuelStatus::ENDING;
                     }
-                    if ($this->startSec === 3) {
-                        $kitName = $this->kit->getName();
-                        $player1Location = ($kitName === 'Sumo') ? new Location(8, 101, 2, $this->world, 0, 0) : new Location(24, 101, 40, $this->world, 180, 0);
-                        $player2Location = ($kitName === 'Sumo') ? new Location(8, 101, 14, $this->world, 180, 0) : new Location(24, 101, 10, $this->world, 0, 0);
-                        $this->player1->teleport($player1Location);
-                        $this->player2->teleport($player2Location);
+                    break;
+                case DuelStatus::STARTING:
+                    if ($this->startSec >= 0) {
                         foreach ($players as $player) {
-                            $player->setGamemode(GameMode::ADVENTURE());
-                            $this->kit->setEffect($player);
-                            $player->getArmorInventory()->setContents($this->kit->getArmorItems());
-                            $player->getInventory()->setContents($this->kit->getInventoryItems());
+                            $player->sendTitle('§bStarting in ' . $this->startSec, '', 1, 3, 1);
+                            PracticeCore::getUtils()->playSound('random.click', $player);
                         }
-                    } elseif ($this->startSec === 0) {
-                        foreach ($players as $player) {
-                            $player->sendTitle('§bFight!', '', 1, 5, 1);
-                            PracticeCore::getUtils()->playSound('random.levelup', $player);
+                        if ($this->startSec === 3) {
+                            $kitName = $this->kit->getName();
+                            $player1Location = ($kitName === 'Sumo') ? new Location(8, 101, 2, $this->world, 0, 0) : new Location(24, 101, 40, $this->world, 180, 0);
+                            $player2Location = ($kitName === 'Sumo') ? new Location(8, 101, 14, $this->world, 180, 0) : new Location(24, 101, 10, $this->world, 0, 0);
+                            $this->player1->teleport($player1Location);
+                            $this->player2->teleport($player2Location);
+                            foreach ($players as $player) {
+                                $player->setGamemode(GameMode::ADVENTURE());
+                                $this->kit->setEffect($player);
+                                $player->getArmorInventory()->setContents($this->kit->getArmorItems());
+                                $player->getInventory()->setContents($this->kit->getInventoryItems());
+                            }
+                        } elseif ($this->startSec === 0) {
+                            foreach ($players as $player) {
+                                $player->sendTitle('§bFight!', '', 1, 5, 1);
+                                PracticeCore::getUtils()->playSound('random.levelup', $player);
+                            }
+                            self::$status = DuelStatus::INGAME;
                         }
-                        self::$status = DuelStatus::INGAME;
+                        $this->startSec--;
                     }
-                    $this->startSec--;
-                }
-            } elseif (self::$status === DuelStatus::ENDING) {
-                if ($this->endSec <= 0) {
-                    $this->onEnd();
-                }
-                $this->endSec--;
+                    break;
+                case DuelStatus::ENDING:
+                    $this->endSec--;
+                    if ($this->endSec <= 0) {
+                        $this->onEnd();
+                    }
+                    break;
             }
         }
     }

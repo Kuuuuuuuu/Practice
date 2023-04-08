@@ -48,13 +48,9 @@ final class ScoreboardManager
      */
     private function getQueuePlayer(): int
     {
-        $queue = 0;
-        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
-            if ($session->isQueueing) {
-                $queue++;
-            }
-        }
-        return $queue;
+        return array_reduce(PracticeCore::getSessionManager()->getSessions(), function ($count, $session) {
+            return $count + ($session->isQueueing ? 1 : 0);
+        }, 0);
     }
 
     /**
@@ -62,13 +58,9 @@ final class ScoreboardManager
      */
     private function getDuelPlayer(): int
     {
-        $duel = 0;
-        foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
-            if ($session->isDueling) {
-                $duel++;
-            }
-        }
-        return $duel;
+        return array_reduce(PracticeCore::getSessionManager()->getSessions(), function ($count, $session) {
+            return $count + ($session->isDueling ? 1 : 0);
+        }, 0);
     }
 
     /**
@@ -79,12 +71,12 @@ final class ScoreboardManager
     public function setArenaScoreboard(Player $player, bool $duel): void
     {
         $OpponentPing = 0;
+        $duelTime = 0;
         $session = PracticeCore::getSessionManager()->getSession($player);
         $duelClass = $session->DuelClass;
         $ping = $player->getNetworkSession()->getPing();
         $CombatSecond = $session->CombatTime;
         $OpponentName = $session->getOpponent();
-        $duelTime = 0;
         if ($OpponentName !== null) {
             $OpponentPlayer = PracticeCore::getSessionManager()->getPlayerInSessionByPrefix($OpponentName);
             if ($OpponentPlayer instanceof Player) {
@@ -129,10 +121,8 @@ final class ScoreboardManager
         $PingOpponent = 0;
         if ($opponent !== null) {
             $OpponentPlayer = Server::getInstance()->getPlayerExact($opponent);
-            if ($OpponentPlayer !== null) {
-                $OpponentPoint = PracticeCore::getSessionManager()->getSession($OpponentPlayer)->BoxingPoint;
-                $PingOpponent = $OpponentPlayer->getNetworkSession()->getPing();
-            }
+            $OpponentPoint = $OpponentPlayer ? PracticeCore::getSessionManager()->getSession($OpponentPlayer)->BoxingPoint : 0;
+            $PingOpponent = $OpponentPlayer ? $OpponentPlayer->getNetworkSession()->getPing() : 0;
         }
         if ($duelClass !== null) {
             $duelTime = Time::calculateTime($duelClass->getSeconds());

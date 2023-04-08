@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Nayuki;
 
 use Nayuki\Misc\AbstractListener;
-use Nayuki\Utils\CustomChatFormatter;
+use Nayuki\Misc\CustomChatFormatter;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -334,12 +334,18 @@ final class PracticeListener extends AbstractListener
     {
         $plugin = $event->getPlugin();
         if ($plugin instanceof PracticeCore) {
-            foreach (PracticeCore::getSessionManager()->getSessions() as $session) {
-                $player = $session->getPlayer();
-                PracticeCore::getPlayerHandler()->savePlayerData($player);
+            $sessions = PracticeCore::getSessionManager()->getSessions();
+            if (!empty($sessions)) {
+                foreach ($sessions as $session) {
+                    $player = $session->getPlayer();
+                    PracticeCore::getPlayerHandler()->savePlayerData($player);
+                }
             }
-            foreach (PracticeCore::getDuelManager()->getArenas() as $duel) {
-                PracticeCore::getDuelManager()->stopMatch($duel->name);
+            $arenas = PracticeCore::getDuelManager()->getArenas();
+            if (!empty($arenas)) {
+                foreach ($arenas as $duel) {
+                    PracticeCore::getDuelManager()->stopMatch($duel->name);
+                }
             }
         }
     }
@@ -365,9 +371,10 @@ final class PracticeListener extends AbstractListener
                     return;
                 }
                 if ($PSession->getOpponent() === null && $DSession->getOpponent() === null) {
-                    $PSession->setOpponent($damager->getName());
+                    $opponentName = $damager->getName();
+                    $PSession->setOpponent($opponentName);
                     $DSession->setOpponent($player->getName());
-                    $msg = PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $PSession->getOpponent();
+                    $msg = PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $opponentName;
                     $player->sendMessage($msg);
                     $damager->sendMessage($msg);
                     $PSession->isCombat = $DSession->isCombat = true;

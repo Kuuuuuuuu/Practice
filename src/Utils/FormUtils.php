@@ -91,15 +91,16 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
-        $banKits = [
+        $banKits = array_flip([
             'resistance',
-        ];
+        ]);
         foreach (KitRegistry::getKits() as $kit) {
             /** @var Kit $kit */
-            if (in_array(strtolower($kit->getName()), $banKits)) {
+            if (isset($banKits[strtolower($kit->getName())])) {
                 continue;
             }
-            $form->addButton("§a{$kit->getName()}\n§bQueue§f: " . $this->getQueue($kit->getName()), 0, 'textures/items/paper.png', $kit->getName());
+            $queue = $this->getQueue($kit->getName());
+            $form->addButton("§a{$kit->getName()}\n§bQueue§f: $queue", 0, 'textures/items/paper.png', $kit->getName());
         }
         $player->sendForm($form);
     }
@@ -110,16 +111,10 @@ class FormUtils
      */
     private function getQueue(string $kit): int
     {
-        $Count = 0;
-        foreach (Server::getInstance()->getOnlinePlayers() as $p) {
-            if ($p instanceof Player) {
-                $session = PracticeCore::getSessionManager()->getSession($p);
-                $Qkit = $session->DuelKit;
-                if (($Qkit instanceof Kit) && !$session->isDueling && $Qkit->getName() === $kit) {
-                    $Count++;
-                }
-            }
-        }
-        return $Count;
+        return count(array_filter(Server::getInstance()->getOnlinePlayers(), function (Player $p) use ($kit) {
+            $session = PracticeCore::getSessionManager()->getSession($p);
+            $Qkit = $session->DuelKit;
+            return ($Qkit instanceof Kit) && !$session->isDueling && $Qkit->getName() === $kit;
+        }));
     }
 }
