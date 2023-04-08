@@ -45,6 +45,7 @@ use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
+use SQLite3Stmt;
 
 final class PracticeListener extends AbstractListener
 {
@@ -116,8 +117,14 @@ final class PracticeListener extends AbstractListener
         $player = $event->getPlayer();
         $banplayer = $player->getName();
         $stmt = PracticeCore::getInstance()->BanDatabase->prepare('SELECT * FROM banPlayers WHERE player = ?');
+        if (!$stmt instanceof SQLite3Stmt) {
+            return;
+        }
         $stmt->bindValue(1, $banplayer);
         $result = $stmt->execute();
+        if ($result === false) {
+            return;
+        }
         if ($array = $result->fetchArray(SQLITE3_ASSOC)) {
             $banTime = $array['banTime'];
             $reason = $array['reason'];
@@ -133,6 +140,9 @@ final class PracticeListener extends AbstractListener
                 $event->cancel();
             } else {
                 $stmt = PracticeCore::getInstance()->BanDatabase->prepare('DELETE FROM banPlayers WHERE player = ?');
+                if (!$stmt instanceof SQLite3Stmt) {
+                    return;
+                }
                 $stmt->bindValue(1, $banplayer);
                 $stmt->execute();
             }
