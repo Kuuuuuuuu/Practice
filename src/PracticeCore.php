@@ -313,7 +313,7 @@ final class PracticeCore extends PluginBase
             $practiceUtils = self::getUtils();
             foreach ($worlds as $worldPath) {
                 $worldName = str_replace($worldsDir, '', $worldPath);
-                if (str_starts_with($worldName, 'duel')) {
+                if (str_starts_with(strtolower($worldName), 'duel')) {
                     $practiceUtils->deleteDir($worldPath);
                     continue;
                 }

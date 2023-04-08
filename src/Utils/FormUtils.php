@@ -92,12 +92,11 @@ class FormUtils
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cDuel');
         $banKits = [
-            'Resistance',
-            'Build',
+            'resistance',
         ];
         foreach (KitRegistry::getKits() as $kit) {
             /** @var Kit $kit */
-            if (isset($banKits[$kit->getName()])) {
+            if (in_array(strtolower($kit->getName()), $banKits)) {
                 continue;
             }
             $form->addButton("§a{$kit->getName()}\n§bQueue§f: " . $this->getQueue($kit->getName()), 0, 'textures/items/paper.png', $kit->getName());

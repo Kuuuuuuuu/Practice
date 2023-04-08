@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nayuki\Players;
 
-use AllowDynamicProperties;
 use Nayuki\Duel\Duel;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\PracticeConfig;
@@ -12,7 +11,7 @@ use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-#[AllowDynamicProperties] final class PlayerSession
+final class PlayerSession
 {
     /** @var bool */
     public bool $ScoreboardEnabled = true;

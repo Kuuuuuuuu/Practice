@@ -370,7 +370,7 @@ final class PracticeListener extends AbstractListener
                     $msg = PracticeCore::getPrefixCore() . '§7You are now in combat with §c' . $PSession->getOpponent();
                     $player->sendMessage($msg);
                     $damager->sendMessage($msg);
-                    $PSession->isCombat = true;
+                    $PSession->isCombat = $DSession->isCombat = true;
                     $PSession->CombatTime = $DSession->CombatTime = 10;
                 } elseif ($PSession->getOpponent() !== null && $DSession->getOpponent() !== null) {
                     if ($PSession->getOpponent() === $damager->getName() && $DSession->getOpponent() === $player->getName()) {
@@ -441,6 +441,7 @@ final class PracticeListener extends AbstractListener
                     $session = PracticeCore::getSessionManager()->getSession($p);
                     $session->CombatTime = 0;
                     $session->isCombat = false;
+                    $session->setOpponent(null);
                 }
                 Server::getInstance()->broadcastMessage('§a' . $damager->getName() . ' §ehas killed §c' . $player->getName());
                 PracticeCore::getUtils()->handleStreak($damager, $player);

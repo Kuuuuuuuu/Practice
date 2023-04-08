@@ -47,11 +47,12 @@ final class SessionManager
         $name = strtolower($name);
         $found = null;
         $delta = PHP_INT_MAX;
+        $nameLength = strlen($name);
         foreach (self::$session as $session) {
             $player = $session->getPlayer();
             $playerName = strtolower($player->getName());
             if (str_starts_with($playerName, $name)) {
-                $curDelta = strlen($playerName) - strlen($name);
+                $curDelta = strlen($playerName) - $nameLength;
                 if ($curDelta < $delta) {
                     $found = $player;
                     $delta = $curDelta;
