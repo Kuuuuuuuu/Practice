@@ -511,8 +511,8 @@ final class PracticeListener extends AbstractListener
                     $lightning->type = 'minecraft:lightning_bolt';
                     $lightning->yaw = $player->getLocation()->getYaw();
                     $lightning->syncedProperties = new PropertySyncData([], []);
-                    PracticeCore::getUtils()->playSound('ambient.weather.thunder', $player);
-                    $damager->getNetworkSession()->sendDataPacket($lightning);
+                    PracticeCore::getUtils()->playSound('ambient.weather.thunder', $damager);
+                    NetworkBroadcastUtils::broadcastPackets([$damager], [$lightning]);
                 }
             }
         }

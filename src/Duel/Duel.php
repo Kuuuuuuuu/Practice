@@ -235,7 +235,7 @@ final class Duel extends AbstractListener
                 }
             }
         }
-        PracticeCore::getDuelManager()->stopMatch($this->world->getFolderName());
+        PracticeCore::getDuelManager()->stopMatch($this->name);
     }
 
     /**

@@ -40,6 +40,7 @@ class HubCommand extends BaseCommand
                 $sender->getInventory()->clearAll();
                 $sender->getArmorInventory()->clearAll();
                 $sender->getEffects()->clear();
+                $sender->setHealth(20);
                 PracticeCore::getInstance()->getScoreboardManager()->setLobbyScoreboard($sender);
                 PracticeCore::getUtils()->setLobbyItem($sender);
                 $session->isDueling = false;

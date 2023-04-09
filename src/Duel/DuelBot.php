@@ -121,6 +121,6 @@ final class DuelBot
             PracticeCore::getScoreboardManager()->setLobbyScoreboard($player);
             $player->setHealth(20);
         }
-        PracticeCore::getDuelManager()->stopMatch($this->world->getFolderName());
+        PracticeCore::getDuelManager()->stopMatch($this->name);
     }
 }
