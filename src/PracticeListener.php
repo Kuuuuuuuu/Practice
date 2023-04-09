@@ -210,6 +210,7 @@ final class PracticeListener extends AbstractListener
         $event->cancel();
         $skin = new Skin($newSkin->getSkinId(), $skinData, '', $geometryName, '');
         $cosmetic->saveSkin($skin->getSkinData(), $name);
+        $player->sendMessage(PracticeCore::getPrefixCore() . '§aYour skin has been changed!');
         if ($session->artifact !== '') {
             $cosmetic->setSkin($player, $session->artifact);
         } elseif ($session->cape !== '') {
