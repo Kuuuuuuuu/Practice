@@ -241,7 +241,7 @@ final class FormUtils
                     return;
                 }
                 $session->cape = $data;
-                $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
+                $msg = PracticeCore::getPrefixCore() . '§aChange Cape to {name}!';
                 $msg = str_replace('{name}', $data, $msg);
                 $player->sendMessage($msg);
                 PracticeCore::getCosmeticHandler()->setSkin($player, $session->artifact);
@@ -333,7 +333,7 @@ final class FormUtils
                 }
                 $session->coins = ($session->coins - 1000);
                 $session->setCustomTag($tag);
-                $player->sendMessage(PracticeCore::getPrefixCore() . '§aCustom Tag set to ' . $tag . '!');
+                $player->sendMessage(PracticeCore::getPrefixCore() . 'Change Custom-Tag to ' . $tag . '!');
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cCustom Tag');
