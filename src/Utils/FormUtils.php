@@ -318,22 +318,27 @@ final class FormUtils
         $session = PracticeCore::getSessionManager()->getSession($player);
         $form = new CustomForm(function (Player $player, $data = null) use ($session) {
             if ($data !== null) {
-                if (strlen($data) > 6) {
-                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCustom Tag cannot be longer than 6 characters!');
+                $tag = $data['tag'];
+                if (strlen($tag) < 1) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCustom Tag cannot be empty!');
                     return;
                 }
-                if ($session->coins < 1000) {
+                if (strlen($tag) > 8) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCustom Tag cannot be longer than 8 characters!');
+                    return;
+                }
+                if ($session->coins < 1500) {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou do not have enough coins to purchase this custom tag!');
                     return;
                 }
                 $session->coins = ($session->coins - 1000);
-                $session->setCustomTag($data);
-                $player->sendMessage(PracticeCore::getPrefixCore() . '§aCustom Tag set to ' . $data . '!');
+                $session->setCustomTag($tag);
+                $player->sendMessage(PracticeCore::getPrefixCore() . '§aCustom Tag set to ' . $tag . '!');
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cCustom Tag');
-        $form->addLabel('§aCustom Tag costs 1000 coins!');
-        $form->addLabel('§aCustom Tag cannot be longer than 6 characters!');
+        $form->addLabel('§aCustom Tag costs 1500 coins!');
+        $form->addLabel('§aCustom Tag cannot be longer than 8 characters!');
         $form->addInput('CustomTag', 'Custom Tag', $session->getCustomTag(), 'tag');
         $player->sendForm($form);
     }
