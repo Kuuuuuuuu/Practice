@@ -129,6 +129,8 @@ final class PracticeUtils
         $item3->setCustomName('§r§bDuels');
         $item4 = VanillaItems::FEATHER()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName('§r§bCosmetics');
+        $item5 = VanillaItems::IRON_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item5->setCustomName('§r§bBot');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -137,6 +139,7 @@ final class PracticeUtils
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(8, $item2);
         $player->getInventory()->setItem(7, $item4);
+        $player->getInventory()->setItem(1, $item5);
     }
 
     /**

@@ -89,6 +89,8 @@ final class PracticeListener extends AbstractListener
             PracticeCore::getUtils()->setLobbyItem($player);
         } elseif ($item->getCustomName() === '§r§bCosmetics') {
             PracticeCore::getFormUtils()->cosmeticForm($player);
+        } elseif ($item->getCustomName() === '§r§bBot') {
+            PracticeCore::getDuelManager()->createBotMatch($player);
         }
     }
 

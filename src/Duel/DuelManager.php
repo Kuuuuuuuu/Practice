@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 
 final class DuelManager
 {
-    /** @var Duel[] */
+    /** @var Duel[]|DuelBot[] */
     private array $arenas = [];
 
     /**
@@ -46,12 +46,30 @@ final class DuelManager
 
     /**
      * @param string $name
-     * @param Duel $task
+     * @param Duel|DuelBot $task
      * @return void
      */
-    public function addMatch(string $name, Duel $task): void
+    public function addMatch(string $name, Duel|DuelBot $task): void
     {
         $this->arenas[$name] = $task;
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    public function createBotMatch(Player $player): void
+    {
+        $worldName = Uuid::uuid4();
+        $world = new WorldCreationOptions();
+        $world->setGeneratorClass(DuelGenerator::class);
+        $world->setSeed(0);
+        $world->setSpawnPosition(new Vector3(0, 100, 0));
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        Server::getInstance()->getWorldManager()->generateWorld($worldName, $world);
+        $player->getInventory()->clearAll();
+        $session->isDueling = true;
+        $this->addMatch($worldName, new DuelBot($worldName, $player));
     }
 
     /**
@@ -73,7 +91,7 @@ final class DuelManager
     }
 
     /**
-     * @return Duel[]
+     * @return Duel[]|DuelBot[]
      */
     public function getArenas(): array
     {

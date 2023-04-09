@@ -163,7 +163,7 @@ final class Duel extends AbstractListener
                         } elseif ($this->startSec === 0) {
                             foreach ($players as $player) {
                                 $player->sendTitle('§bFight!', '', 1, 5, 1);
-                                PracticeCore::getUtils()->playSound('random.levelup', $player);
+                                PracticeCore::getUtils()->playSound('random.anvil_use', $player);
                             }
                             self::$status = DuelStatus::INGAME;
                         }
