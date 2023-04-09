@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Nayuki;
 
+use JsonException;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\Misc\CustomChatFormatter;
+use pocketmine\entity\Skin;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -13,6 +15,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
+use pocketmine\event\player\PlayerChangeSkinEvent;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -81,6 +84,8 @@ final class PracticeListener extends AbstractListener
             $session->isQueueing = false;
             $session->DuelKit = null;
             PracticeCore::getUtils()->setLobbyItem($player);
+        } elseif ($item->getCustomName() === '§r§bCosmetics') {
+            PracticeCore::getFormUtils()->cosmeticForm($player);
         }
     }
 
@@ -168,6 +173,7 @@ final class PracticeListener extends AbstractListener
      * @param PlayerJoinEvent $event
      * @return void
      * @priority LOWEST
+     * @throws JsonException
      */
     public function onPlayerJoinEvent(PlayerJoinEvent $event): void
     {
@@ -177,6 +183,32 @@ final class PracticeListener extends AbstractListener
         $player->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Player Data...');
         PracticeCore::getUtils()->setLobbyItem($player);
         PracticeCore::getPlayerHandler()->loadPlayerData($player);
+        $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+        PracticeCore::getCosmeticHandler()->saveSkin($skin->getSkinData(), $name);
+    }
+
+    /**
+     * @param PlayerChangeSkinEvent $event
+     * @return void
+     * @throws JsonException
+     * @priority LOWEST
+     */
+    public function onChangeSkin(PlayerChangeSkinEvent $event): void
+    {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        if ($player instanceof PracticePlayer) {
+            $cosmetic = PracticeCore::getCosmeticHandler();
+            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
+                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
+                $cosmetic->resetSkin($player);
+            } else {
+                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
+                $cosmetic->saveSkin($skin->getSkinData(), $name);
+            }
+            $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+            $cosmetic->saveSkin($skin->getSkinData(), $name);
+        }
     }
 
     /**
@@ -454,6 +486,7 @@ final class PracticeListener extends AbstractListener
                 PracticeCore::getUtils()->handleStreak($damager, $player);
                 $damagerSession->killStreak++;
                 $damagerSession->kills++;
+                $damagerSession->coins += PracticeCore::getUtils()->randomCoinsPerKill();
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);

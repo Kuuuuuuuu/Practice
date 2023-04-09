@@ -13,6 +13,7 @@ use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+
 use function in_array;
 
 class HologramCommand extends Command

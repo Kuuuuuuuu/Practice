@@ -27,6 +27,7 @@ use Nayuki\Players\PlayerHandler;
 use Nayuki\Players\SessionManager;
 use Nayuki\Task\PracticeTask;
 use Nayuki\Utils\ClickHandler;
+use Nayuki\Utils\CosmeticHandler;
 use Nayuki\Utils\FormUtils;
 use Nayuki\Utils\Scoreboard\ScoreboardManager;
 use Nayuki\Utils\Scoreboard\ScoreboardUtils;
@@ -40,6 +41,7 @@ use pocketmine\world\World;
 use ReflectionClass;
 use ReflectionException;
 use SQLite3;
+
 use function is_array;
 
 final class PracticeCore extends PluginBase
@@ -56,6 +58,7 @@ final class PracticeCore extends PluginBase
     private static PlayerHandler $playerHandler;
     private static SessionManager $playerSession;
     private static DuelManager $duelManager;
+    private static CosmeticHandler $cosmeticHandler;
     public array $targetPlayer = [];
     public SQLite3 $BanDatabase;
 
@@ -147,6 +150,14 @@ final class PracticeCore extends PluginBase
         return self::$duelManager;
     }
 
+    /**
+     * @return CosmeticHandler
+     */
+    public static function getCosmeticHandler(): CosmeticHandler
+    {
+        return self::$cosmeticHandler;
+    }
+
     protected function onLoad(): void
     {
         self::$plugin = $this;
@@ -160,6 +171,7 @@ final class PracticeCore extends PluginBase
         self::$playerHandler = new PlayerHandler();
         self::$playerSession = new SessionManager();
         self::$duelManager = new DuelManager();
+        self::$cosmeticHandler = new CosmeticHandler();
     }
 
     /**

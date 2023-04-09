@@ -7,6 +7,7 @@ namespace Nayuki\Players;
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
 use pocketmine\scheduler\AsyncTask;
+
 use function fclose;
 use function yaml_emit_file;
 use function yaml_parse_file;
@@ -26,15 +27,25 @@ class AsyncLoadPlayerData extends AsyncTask
 
     public function onRun(): void
     {
-        $playerData = ['kills' => 0, 'deaths' => 0, 'tag' => '§aMember', 'killStreak' => 0, 'scoreboard' => true, 'cps' => true,];
+        $playerData = [
+            'kills' => 0,
+            'deaths' => 0,
+            'tag' => '§aMember',
+            'killStreak' => 0,
+            'scoreboard' => true,
+            'cps' => true,
+            'cape' => '',
+            'artifact' => '',
+            'purchasedArtifacts' => [],
+            'coins' => 0
+        ];
         $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);
     }
 
-
     /**
-     * @param array<string, int|string|bool|null> $playerData
-     * @return array<string, int|string|bool|null>
+     * @param array $playerData
+     * @return array
      */
     private function loadFromYaml(array $playerData): array
     {

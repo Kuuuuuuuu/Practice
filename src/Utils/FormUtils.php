@@ -11,6 +11,7 @@ use Nayuki\PracticeCore;
 use Nayuki\Utils\Forms\CustomForm;
 use Nayuki\Utils\Forms\SimpleForm;
 use pocketmine\block\utils\DyeColor;
+use pocketmine\entity\Skin;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -116,5 +117,191 @@ class FormUtils
             $Qkit = $session->DuelKit;
             return ($Qkit instanceof Kit) && !$session->isDueling && $Qkit->getName() === $kit;
         }));
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    public function cosmeticForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $form = new SimpleForm(function (Player $player, int $data = null) {
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $this->getArtifactForm($player);
+                        break;
+                    case 1:
+                        $this->getCapeForm($player);
+                        break;
+                    case 2:
+                        $this->getArtifactShopForm($player);
+                        break;
+                }
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cCosmetics');
+        $form->setContent('§bYour Coins: §f' . $session->coins);
+        $form->addButton("§aArtifact\n§r§8Tap to continue");
+        $form->addButton("§aCape\n§r§8Tap to continue");
+        $form->addButton("§aArtifact Shop\n§r§8Tap to continue");
+        $player->sendForm($form);
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    private function getArtifactForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $form = new SimpleForm(function (Player $event, $data = null) use ($session) {
+            if ($data !== null) {
+                if ($data === 'None') {
+                    return;
+                }
+                $cosmetic = PracticeCore::getCosmeticHandler();
+                if (($key = array_search($data, $cosmetic->cosmeticAvailable, true)) !== false) {
+                    if (str_contains($data, 'SP-')) {
+                        $session->artifact = '';
+                        $cosmetic->setCostume($event, $cosmetic->cosmeticAvailable[$key]);
+                    } else {
+                        $session->artifact = $cosmetic->cosmeticAvailable[$key];
+                        $cosmetic->setSkin($event, $cosmetic->cosmeticAvailable[$key]);
+                    }
+                    $event->sendMessage(PracticeCore::getPrefixCore() . 'Change Artifact to' . " {$cosmetic->cosmeticAvailable[$key]}.");
+                }
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cArtifact');
+        $validStuffs = $session->purchasedArtifacts;
+        if (count($validStuffs) <= 1) {
+            $form->addButton('None', -1, '', 'None');
+            $player->sendForm($form);
+        }
+        foreach ($validStuffs as $stuff) {
+            if ($stuff === 'None') {
+                continue;
+            }
+            $form->addButton('§a' . $stuff, -1, '', $stuff);
+        }
+        $player->sendForm($form);
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    private function getCapeForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $form = new SimpleForm(function (Player $player, $data = null) use ($session) {
+            if ($data !== null) {
+                switch ($data) {
+                    case 0:
+                        $oldSkin = $player->getSkin();
+                        $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), '', $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                        $player->setSkin($setCape);
+                        $player->sendSkin();
+                        $session->cape = '';
+                        $player->sendMessage(PracticeCore::getPrefixCore() . '§aCape Removed!');
+                        break;
+                    case 1:
+                        $this->getCapeListForm($player);
+                        break;
+                }
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cCapes');
+        $form->addButton('§aRemove your Cape');
+        $form->addButton('§aChoose a Cape');
+        $player->sendForm($form);
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    private function getCapeListForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $form = new SimpleForm(function (Player $player, $data = null) use ($session) {
+            if ($data !== null) {
+                if (!file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCape not found!');
+                } else {
+                    $oldSkin = $player->getSkin();
+                    $capeData = PracticeCore::getCosmeticHandler()->createCape($data);
+                    $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
+                    $player->setSkin($setCape);
+                    $player->sendSkin();
+                    $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
+                    $msg = str_replace('{name}', $data, $msg);
+                    $player->sendMessage($msg);
+                    $session->cape = $data;
+                }
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cCapes');
+        foreach (PracticeCore::getCosmeticHandler()->getCapes() as $capes) {
+            $form->addButton("§a$capes", -1, '', $capes);
+        }
+        $player->sendForm($form);
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    private function getArtifactShopForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $box_item = [
+            'MiniAngelWing' => 1000,
+            'AngelWing' => 1000,
+            'EnderWing' => 3000,
+            'DevilWing' => 2000,
+            'PhantomWing' => 3000,
+            'Halo' => 500,
+            'Crown' => 1000,
+            'BackCap' => 2500,
+            'Viking' => 3000,
+            'ThunderCloud' => 3000,
+            'Questionmark' => 1000,
+            'Santa' => 1000,
+            'Necktie' => 3000,
+            'Backpack' => 2000,
+            'Headphones' => 3000,
+            'HeadphoneNote' => 1000,
+            'BlazeRod' => 1000,
+            'Bubble' => 1000,
+            'Katana' => 3000,
+            'Sickle' => 2000,
+            'SWAT Shield' => 2000
+        ];
+        $form = new SimpleForm(function (Player $player, $data = null) use ($session, $box_item) {
+            if ($data !== null) {
+                if (in_array($data, $session->purchasedArtifacts)) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou already purchased this artifact!');
+                    return;
+                }
+                if ($session->coins < $box_item[$data]) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou do not have enough coins to purchase this artifact!');
+                    return;
+                }
+                $session->coins = ($session->coins - $box_item[$data]);
+                $session->purchasedArtifacts[] = $data;
+                $player->sendMessage(PracticeCore::getPrefixCore() . '§aYou have purchased ' . $data . ' for ' . $box_item[$data] . ' coins!');
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cArtifact Shop');
+        foreach ($box_item as $key => $value) {
+            if (in_array($key, $session->purchasedArtifacts)) {
+                continue;
+            }
+            $form->addButton("§a$key §7- §a$value Coins", -1, '', $key);
+        }
+        $player->sendForm($form);
     }
 }

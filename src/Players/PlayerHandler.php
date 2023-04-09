@@ -43,6 +43,10 @@ final class PlayerHandler
                 'killStreak' => $session->getStreak(),
                 'scoreboard' => $session->ScoreboardEnabled,
                 'cps' => $session->CpsCounterEnabled,
+                'cape' => $session->cape,
+                'artifact' => $session->artifact,
+                'purchasedArtifacts' => $session->purchasedArtifacts,
+                'coins' => $session->coins
             ];
             $parsed = yaml_parse_file($filePath);
             $parsed = array_merge($parsed, $test);

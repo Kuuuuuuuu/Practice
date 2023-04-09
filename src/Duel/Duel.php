@@ -3,7 +3,6 @@
 namespace Nayuki\Duel;
 
 use Nayuki\Game\Kits\Boxing;
-use Nayuki\Game\Kits\Build;
 use Nayuki\Game\Kits\Kit;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\PracticeCore;
@@ -21,16 +20,14 @@ final class Duel extends AbstractListener
 {
     /** @var int */
     public static int $status = DuelStatus::STARTING;
-    /** @var bool */
-    public bool $isRanked = false;
     /** @var string */
     public string $name;
     /** @var int */
-    private int $time = 300;
+    private int $time = 600;
     /** @var int */
     private int $startSec = 3;
     /** @var int */
-    private int $endSec = 3;
+    private int $endSec = 5;
     /** @var Player */
     private Player $player1;
     /** @var Player */
@@ -71,15 +68,16 @@ final class Duel extends AbstractListener
     {
         $player = $event->getEntity();
         $damager = $event->getDamager();
-        if (self::$status === DuelStatus::STARTING) {
+        if (self::$status !== DuelStatus::INGAME) {
             $event->cancel();
             return;
         }
         if (($damager instanceof Player && $player instanceof Player) && ($this->kit instanceof Boxing) && ($damager->getWorld() === $this->world && $player->getWorld() === $this->world)) {
-            $session = PracticeCore::getSessionManager()->getSession($damager);
-            $session->BoxingPoint++;
-            if ($session->BoxingPoint > 99) {
-                $player->kill();
+            $Dsession = PracticeCore::getSessionManager()->getSession($damager);
+            $Dsession->BoxingPoint++;
+            if ($Dsession->BoxingPoint > 99) {
+                $PSession = PracticeCore::getSessionManager()->getSession($player);
+                $PSession->isDueling = false;
             }
         }
     }
@@ -110,8 +108,10 @@ final class Duel extends AbstractListener
         $entity = $event->getEntity();
         $cause = $event->getCause();
         if ($entity instanceof Player && $cause === EntityDamageEvent::CAUSE_VOID) {
-            $winner = ($entity->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
             $event->cancel();
+            $ESession = PracticeCore::getSessionManager()->getSession($entity);
+            $ESession->isDueling = false;
+            $winner = ($entity->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
             $entity->teleport($winner->getPosition());
         }
     }
@@ -123,13 +123,15 @@ final class Duel extends AbstractListener
     public function update(int $tick): void
     {
         $players = $this->getPlayers();
-        foreach ($players as $player) {
-            $session = PracticeCore::getSessionManager()->getSession($player);
-            if (!$session->isDueling || !$player->isOnline()) {
-                $this->loser = $player;
-                $this->winner = ($player->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
-                $this->onEnd($player);
-                break;
+        if ($tick % 5 === 0 && self::$status !== DuelStatus::ENDING) {
+            foreach ($players as $player) {
+                $session = PracticeCore::getSessionManager()->getSession($player);
+                if (!$session->isDueling || !$player->isOnline()) {
+                    $this->loser = $player;
+                    $this->winner = ($player->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
+                    $this->onEnd($player);
+                    break;
+                }
             }
         }
         if ($tick % 20 === 0) {
@@ -212,6 +214,9 @@ final class Duel extends AbstractListener
                     $session->BoxingPoint = 0;
                     $session->DuelClass = null;
                     $session->setOpponent(null);
+                    $session->isCombat = false;
+                    $session->CombatTime = 0;
+                    $session->isQueueing = false;
                     if ($this->winner !== null) {
                         $WinnerSession = PracticeCore::getSessionManager()->getSession($this->winner);
                         $WinnerSession->kills++;

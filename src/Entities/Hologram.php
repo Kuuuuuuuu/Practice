@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Nayuki\Entities;
 
 use Nayuki\PracticeCore;
+use Nayuki\Utils\ArrayUtils;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+
 use function count;
 use function is_array;
 
@@ -104,8 +106,9 @@ final class Hologram extends Entity
                 $array[$player->getName()] = ($this->type === 'kills') ? $session->getKills() : $session->getDeaths();
             }
             arsort($array);
-            for ($pos = 0; $pos < 10 && $pos < count($array); $pos++) {
-                $name = array_keys($array)[$pos];
+            $count = min(count($array), 10);
+            for ($pos = 0; $pos < $count; ++$pos) {
+                $name = ArrayUtils::array_key_nth($array, $pos);
                 $kills = (int)$array[$name];
                 $prefix = ($pos < 3) ? '§6[' . ($pos + 1) . '] §r§a' : '§7[' . ($pos + 1) . '] §r§a';
                 $suffix = ($pos < 3) ? ' §e' : ' §f';

@@ -19,18 +19,20 @@ final class PlayerSession
     public bool $CpsCounterEnabled = true;
     /** @var string|null */
     public ?string $Scoreboard = null;
-    /** @var int */
-    public int $CombatTime = 0;
-    /** @var int */
-    public int $BoxingPoint = 0;
-    /** @var bool */
-    public bool $loadedData = false;
+
     /** @var int */
     public int $kills = 0;
     /** @var int */
     public int $deaths = 0;
     /** @var int */
     public int $killStreak = 0;
+    /** @var int */
+    public int $CombatTime = 0;
+    /** @var int */
+    public int $BoxingPoint = 0;
+
+    /** @var bool */
+    public bool $loadedData = false;
     /** @var bool */
     public bool $isDueling = false;
     /** @var Kit|null */
@@ -41,6 +43,16 @@ final class PlayerSession
     public bool $isQueueing = false;
     /** @var bool */
     public bool $isCombat = false;
+
+    /** @var string */
+    public string $cape = '';
+    /** @var string */
+    public string $artifact = '';
+    /** @var array */
+    public array $purchasedArtifacts = [];
+    /** @var int */
+    public int $coins = 0;
+
     /** @var string|null */
     private ?string $Opponent = null;
     /** @var string */
@@ -86,6 +98,18 @@ final class PlayerSession
                     break;
                 case 'killStreak':
                     $this->killStreak = (int)$value;
+                    break;
+                case 'cape':
+                    $this->cape = (string)$value;
+                    break;
+                case 'artifact':
+                    $this->artifact = (string)$value;
+                    break;
+                case 'purchasedArtifacts':
+                    $this->purchasedArtifacts = (array)$value;
+                    break;
+                case 'coins':
+                    $this->coins = (int)$value;
                     break;
                 default:
                     break;
@@ -182,7 +206,7 @@ final class PlayerSession
             } else {
                 $scoreboardManager->setArenaScoreboard($this->player, false);
             }
-        } elseif (strtolower($this->DuelKit?->getName()) === 'boxing') {
+        } elseif (($this->DuelKit !== null) && strtolower($this->DuelKit->getName()) === 'boxing') {
             PracticeCore::getInstance()->getScoreboardManager()->Boxing($this->player);
         } else {
             PracticeCore::getInstance()->getScoreboardManager()->setArenaScoreboard($this->player, true);

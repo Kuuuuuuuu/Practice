@@ -6,6 +6,7 @@ namespace Nayuki;
 
 use InvalidArgumentException;
 use Nayuki\Misc\PracticeChunkLoader;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -18,6 +19,7 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
+
 use function is_dir;
 use function rmdir;
 use function unlink;
@@ -108,7 +110,7 @@ final class PracticeUtils
             $death->sendMessage($deathMessage);
             $player->sendMessage($playerMessage);
         }
-        if ($newStreak % 5 === 0) {
+        if ($newStreak % 5 == 0) {
             $broadcastMessage = PracticeCore::getPrefixCore() . '§r§a' . $player->getName() . ' is on a ' . $newStreak . ' killstreaks!';
             Server::getInstance()->broadcastMessage($broadcastMessage);
         }
@@ -126,6 +128,8 @@ final class PracticeUtils
         $item2->setCustomName('§r§bSettings');
         $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName('§r§bDuels');
+        $item4 = VanillaBlocks::CHEST()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4->setCustomName('§r§bCosmetics');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
@@ -133,6 +137,7 @@ final class PracticeUtils
         $player->getInventory()->setItem(0, $item);
         $player->getInventory()->setItem(4, $item3);
         $player->getInventory()->setItem(8, $item2);
+        $player->getInventory()->setItem(7, $item4);
     }
 
     /**
@@ -168,26 +173,40 @@ final class PracticeUtils
     public function checkQueue(Player $player): void
     {
         $player->sendMessage(PracticeCore::getPrefixCore() . '§r§aYou have been entered into the queue!');
-        $PSession = PracticeCore::getSessionManager()->getSession($player);
-        foreach (PracticeCore::getSessionManager()->getSessions() as $sessions) {
-            $players = $sessions->getPlayer();
+        $sessionManager = PracticeCore::getSessionManager();
+        $sessions = $sessionManager->getSessions();
+        $PSession = $sessionManager->getSession($player);
+        foreach ($sessions as $Qsession) {
+            $players = $Qsession->getPlayer();
             if ($players->getId() === $player->getId()) {
                 continue;
             }
-            $Qsession = PracticeCore::getSessionManager()->getSession($players);
-            if ($PSession->isQueueing && $Qsession->isQueueing && $PSession->DuelKit === $Qsession->DuelKit) {
-                $kit = $PSession->DuelKit;
-                if ($kit !== null) {
-                    PracticeCore::getInstance()->getDuelManager()->createMatch($player, $players, $kit);
-                    $player->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $players->getName());
-                    $players->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $player->getName());
-                    $PSession->setOpponent($players->getName());
-                    $Qsession->setOpponent($player->getName());
-                    foreach ([$Qsession, $PSession] as $session) {
-                        $session->isQueueing = false;
-                    }
-                }
+            if ($PSession->DuelKit !== $Qsession->DuelKit) {
+                continue;
             }
+            if (!$PSession->isQueueing || !$Qsession->isQueueing) {
+                continue;
+            }
+            $kit = $PSession->DuelKit;
+            if ($kit === null) {
+                continue;
+            }
+            PracticeCore::getInstance()->getDuelManager()->createMatch($player, $players, $kit);
+            $player->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $players->getName());
+            $players->sendMessage(PracticeCore::getPrefixCore() . 'Found a match against §c' . $player->getName());
+            $PSession->setOpponent($players->getName());
+            $Qsession->setOpponent($player->getName());
+            $PSession->isQueueing = false;
+            $Qsession->isQueueing = false;
+            return;
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function randomCoinsPerKill(): int
+    {
+        return mt_rand(1, 10);
     }
 }

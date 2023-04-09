@@ -6,6 +6,7 @@ namespace Nayuki\Utils;
 
 use Nayuki\PracticeCore;
 use pocketmine\player\Player;
+
 use function array_unshift;
 use function count;
 use function microtime;

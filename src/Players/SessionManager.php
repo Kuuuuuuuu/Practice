@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki\Players;
 
 use pocketmine\player\Player;
+
 use function strlen;
 
 final class SessionManager
