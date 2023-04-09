@@ -22,7 +22,9 @@ final class PracticeBot extends Human
     /** @var string */
     private string $target;
     /** @var float */
-    private float $speed = 0.85;
+    private float $speed = 0.7;
+    /** @var int */
+    private int $tick = 0;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, string $target = '')
     {
@@ -37,42 +39,33 @@ final class PracticeBot extends Human
      */
     public function entityBaseTick(int $tickDiff = 1): bool
     {
+        $this->tick++;
         parent::entityBaseTick($tickDiff);
-        if (!$this->isAlive() || $this->getTargetPlayer() === null || !$this->getTargetPlayer()->isAlive() || $this->getTargetPlayer()->getWorld() !== $this->getWorld()) {
+        $target = $this->getTargetPlayer();
+        if (!$this->isAlive() || $target === null || !$target->isAlive() || $target->getWorld() !== $this->getWorld()) {
             if (!$this->closed) {
                 $this->flagForDespawn();
             }
             return false;
         }
-        $health = round($this->getHealth());
-        $this->setNameTag('§bPracticeBot ' . "\n" . TextFormat::RED . $health);
+        $this->setNameTag('§bPracticeBot ' . "\n" . TextFormat::RED . round($this->getHealth()));
         $this->attackTargetPlayer();
-        if (!$this->isSprinting()) {
-            $this->setSprinting();
-        }
-        if ($tickDiff % 10 === 0) {
-            $target = $this->getTargetPlayer();
-            if ($target === null) {
-                if (!$this->closed) {
-                    $this->flagForDespawn();
-                }
-                return false;
+        $targetPosition = $target->getPosition()->asVector3();
+        $position = $this->getPosition()->asVector3();
+        $x = $targetPosition->x - $position->getX();
+        $z = $targetPosition->z - $position->getZ();
+        $y = $targetPosition->y - $position->getY();
+        $speed = $this->speed;
+        if ($this->tick % 3 === 0 && $x != 0 && $z != 0) {
+            if (!$this->isSprinting()) {
+                $this->setSprinting();
             }
-            $position = $target->getPosition();
-            $location = $this->getLocation();
-            $x = $position->x - $location->getX();
-            $z = $position->z - $location->getZ();
-            $y = $position->y - $location->getY();
-            $absX = abs($x);
-            $absZ = abs($z);
-            $maxAbs = max($absX, $absZ);
-            $speed = $this->speed * ($target->isSprinting() ? 0.4 : 0.35);
-            $this->motion->x = $speed * ($x / $maxAbs);
-            $this->motion->z = $speed * ($z / $maxAbs);
-            $sqrtXZ = sqrt($x * $x + $z * $z);
-            $this->location->yaw = rad2deg(atan2(-$x, $z));
-            $this->location->pitch = rad2deg(-atan2($y, $sqrtXZ));
+            $this->motion->x = $speed * 0.34 * ($x / (abs($x) + abs($z)));
+            $this->motion->z = $speed * 0.34 * ($z / (abs($x) + abs($z)));
         }
+        $sqrtXZ = sqrt($x * $x + $z * $z);
+        $this->location->yaw = rad2deg(atan2(-$x, $z));
+        $this->location->pitch = rad2deg(-atan2($y, $sqrtXZ));
         return $this->isAlive();
     }
 
@@ -97,7 +90,7 @@ final class PracticeBot extends Human
             return;
         }
         $targetVector = $target->getPosition()->asVector3();
-        if ($this->isLookingAt($targetVector) && $this->getLocation()->distance($targetVector) <= 3.2) {
+        if ($this->isLookingAt($targetVector) && $this->getLocation()->distance($targetVector) <= 2.8) {
             $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
             $event = new EntityDamageByEntityEvent($this, $target, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
             $this->broadcastMotion();
@@ -151,17 +144,18 @@ final class PracticeBot extends Human
      */
     public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
     {
-        $xzKB = 0.393;
-        $yKb = 0.398;
+        $xzKB = 0.411;
+        $yKb = 0.432;
         $f = sqrt($x * $x + $z * $z);
-        if ($f > 0 && (mt_rand() / mt_getrandmax()) > $this->knockbackResistanceAttr->getValue()) {
-            $kbFactor = 1 / $f;
-            $xzKbFactor = $kbFactor * $xzKB;
+        if ($f > 0 && mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
+            $f = 1 / $f;
             $motion = clone $this->motion;
-            $motion->x = ($motion->x + $x * $xzKbFactor) / 2;
-            $motion->y = ($motion->y + $yKb) / 2;
-            $motion->z = ($motion->z + $z * $xzKbFactor) / 2;
+            $motion->x = ($motion->x / 2) + ($x * $f * $xzKB);
+            $motion->y = ($motion->y / 2) + $yKb;
+            $motion->z = ($motion->z / 2) + ($z * $f * $xzKB);
             $motion->y = min($motion->y, $yKb);
+            $motion->x = $motion->x * 0.325;
+            $motion->z = $motion->z * 0.325;
             $this->setMotion($motion);
         }
     }

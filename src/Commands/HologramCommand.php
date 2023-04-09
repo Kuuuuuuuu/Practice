@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki\Commands;
 
 use Nayuki\Entities\Hologram;
+use Nayuki\Entities\PracticeBot;
 use Nayuki\PracticeCore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -53,6 +54,10 @@ class HologramCommand extends Command
                                     $entity->flagForDespawn();
                                 }
                             }
+                            break;
+                        case 'test':
+                            $bot = new PracticeBot($sender->getLocation(), $sender->getSkin(), null, $sender->getName());
+                            $bot->spawnToAll();
                             break;
                         case 'help':
                             $sender->sendMessage('/hologram spawn <type> | /hologram removeall');

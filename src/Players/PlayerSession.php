@@ -170,11 +170,12 @@ final class PlayerSession
      */
     public function updateNameTag(): void
     {
-        $Tag = '§b' . $this->player->getDisplayName();
-        if ($this->getCustomTag() !== '') {
-            $Tag = '§f[' . $this->getCustomTag() . '§f] §b' . $this->player->getDisplayName();
+        $name = '§b' . $this->player->getDisplayName();
+        $tag = $this->getCustomTag();
+        if ($tag !== '') {
+            $name = $this->getCustomTag() . '§b ' . $name;
         }
-        $this->player->setNameTag($Tag);
+        $this->player->setNameTag($name);
     }
 
     /**

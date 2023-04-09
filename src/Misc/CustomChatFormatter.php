@@ -16,7 +16,7 @@ final class CustomChatFormatter implements ChatFormatter
                 $customTag = $sessions->getCustomTag();
                 $NameTag = '§a' . $player->getDisplayName() . '§r§a > §r' . $message;
                 if ($customTag !== '') {
-                    $NameTag = '§f[' . $customTag . '§f] §b' . $NameTag;
+                    $NameTag = "$customTag §b" . $NameTag;
                 }
                 return $NameTag;
             }

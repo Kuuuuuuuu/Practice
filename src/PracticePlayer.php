@@ -78,13 +78,12 @@ class PracticePlayer extends Player
             }
         }
         $f = sqrt($x * $x + $z * $z);
-        if ($f > 0 && (mt_rand() / mt_getrandmax()) > $this->knockbackResistanceAttr->getValue()) {
-            $kbFactor = 1 / $f;
-            $xzKbFactor = $kbFactor * $xzKB;
+        if ($f > 0 && mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
+            $f = 1 / $f;
             $motion = clone $this->motion;
-            $motion->x = ($motion->x + $x * $xzKbFactor) / 2;
-            $motion->y = ($motion->y + $yKb) / 2;
-            $motion->z = ($motion->z + $z * $xzKbFactor) / 2;
+            $motion->x = ($motion->x / 2) + ($x * $f * $xzKB);
+            $motion->y = ($motion->y / 2) + $yKb;
+            $motion->z = ($motion->z / 2) + ($z * $f * $xzKB);
             $motion->y = min($motion->y, $yKb);
             $this->setMotion($motion);
         }

@@ -26,7 +26,7 @@ final class DuelManager
      */
     public function createMatch(Player $player1, Player $player2, Kit $kit): void
     {
-        $worldName = 'Duel-' . $player1->getName() . '-' . $player2->getName() . ' - ' . Uuid::uuid4();
+        $worldName = Uuid::uuid4();
         $world = new WorldCreationOptions();
         if (strtolower($kit->getName()) === 'sumo') {
             $world->setGeneratorClass(SumoGenerator::class);
