@@ -20,6 +20,7 @@ use Nayuki\Commands\TcheckCommand;
 use Nayuki\Commands\TpsCommand;
 use Nayuki\Duel\DuelManager;
 use Nayuki\Entities\Hologram;
+use Nayuki\Entities\PracticeBot;
 use Nayuki\Game\Generator\DuelGenerator;
 use Nayuki\Game\Generator\SumoGenerator;
 use Nayuki\Game\Generator\VoidGenerator;
@@ -33,6 +34,7 @@ use Nayuki\Utils\Scoreboard\ScoreboardManager;
 use Nayuki\Utils\Scoreboard\ScoreboardUtils;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
+use pocketmine\entity\Human;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -308,6 +310,9 @@ final class PracticeCore extends PluginBase
     {
         EntityFactory::getInstance()->register(Hologram::class, function (World $world, CompoundTag $nbt): Hologram {
             return new Hologram(EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['Hologram']);
+        EntityFactory::getInstance()->register(PracticeBot::class, function (World $world, CompoundTag $nbt): PracticeBot {
+            return new PracticeBot(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
         }, ['Hologram']);
     }
 

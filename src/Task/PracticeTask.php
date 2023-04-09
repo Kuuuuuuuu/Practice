@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nayuki\Task;
 
 use Nayuki\Duel\Duel;
+use Nayuki\Duel\DuelBot;
 use Nayuki\Misc\AbstractTask;
 use Nayuki\PracticeCore;
 use pocketmine\utils\TextFormat;
@@ -18,7 +19,7 @@ class PracticeTask extends AbstractTask
     public function onUpdate(int $tick): void
     {
         foreach (PracticeCore::getDuelManager()->getArenas() as $duel) {
-            if ($duel instanceof Duel) {
+            if ($duel instanceof Duel || $duel instanceof DuelBot) {
                 $duel->update($tick);
             }
         }

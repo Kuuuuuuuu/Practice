@@ -26,7 +26,7 @@ final class DuelManager
      */
     public function createMatch(Player $player1, Player $player2, Kit $kit): void
     {
-        $worldName = Uuid::uuid4();
+        $worldName = 'Duel-' . Uuid::uuid4();
         $world = new WorldCreationOptions();
         if (strtolower($kit->getName()) === 'sumo') {
             $world->setGeneratorClass(SumoGenerator::class);
@@ -60,7 +60,7 @@ final class DuelManager
      */
     public function createBotMatch(Player $player): void
     {
-        $worldName = Uuid::uuid4();
+        $worldName = 'Duel-' . Uuid::uuid4();
         $world = new WorldCreationOptions();
         $world->setGeneratorClass(DuelGenerator::class);
         $world->setSeed(0);
