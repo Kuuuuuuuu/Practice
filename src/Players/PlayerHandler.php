@@ -46,7 +46,8 @@ final class PlayerHandler
                 'cape' => $session->cape,
                 'artifact' => $session->artifact,
                 'purchasedArtifacts' => $session->purchasedArtifacts,
-                'coins' => $session->coins
+                'coins' => $session->coins,
+                'lightningKill' => $session->isLightningKill,
             ];
             $parsed = yaml_parse_file($filePath);
             $parsed = array_merge($parsed, $test);

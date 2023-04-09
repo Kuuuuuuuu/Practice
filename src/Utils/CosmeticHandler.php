@@ -14,13 +14,11 @@ use pocketmine\player\Player;
 use RuntimeException;
 
 use function ord;
-use function round;
 use function strlen;
 
 final class CosmeticHandler
 {
     public const BOUNDS_64_64 = 0;
-    public const BOUNDS_64_32 = self::BOUNDS_64_64;
     public const BOUNDS_128_128 = 1;
     /** @var string */
     public string $dataFolder;
@@ -202,25 +200,26 @@ final class CosmeticHandler
         if ($image === false) {
             return null;
         }
-        $color = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        if ($color === false) {
+        $alpha = imagecolorallocatealpha($image, 0, 0, 0, 127);
+        if ($alpha === false) {
             return null;
         }
-        imagefill($image, 0, 0, $color);
+        imagefill($image, 0, 0, $alpha);
         for ($y = 0; $y < $height; $y++) {
             for ($x = 0; $x < $width; $x++) {
-                $unpack = unpack('C4', $skinData, $skinPos);
-                if ($unpack === false) {
-                    return null;
-                }
-                [$r, $g, $b, $a] = $unpack;
-                $skinPos += 4;
-                $col = imagecolorallocate($image, $r, $g, $b);
+                $r = ord($skinData[$skinPos]);
+                $skinPos++;
+                $g = ord($skinData[$skinPos]);
+                $skinPos++;
+                $b = ord($skinData[$skinPos]);
+                $skinPos++;
+                $a = 127 - intdiv(ord($skinData[$skinPos]), 2);
+                $skinPos++;
+                $col = imagecolorallocatealpha($image, $r, $g, $b, $a);
                 if ($col === false) {
                     return null;
                 }
                 imagesetpixel($image, $x, $y, $col);
-                imagesetpixel($image, $width - $x - 1, $y, $col);
             }
         }
         imagesavealpha($image, true);
@@ -254,24 +253,23 @@ final class CosmeticHandler
      */
     public function loadSkin(string $imagePath, string $geometryPath, string $skinID, string $geometryName): ?Skin
     {
-        $img = imagecreatetruecolor(64, 32);
+        $img = imagecreatefrompng($imagePath);
         if ($img === false) {
             return null;
         }
-        $srcImage = imagecreatefrompng($imagePath);
-        if ($srcImage === false) {
+        $size = getimagesize($imagePath);
+        if ($size === false) {
             return null;
         }
-        imagecopy($img, $srcImage, 0, 0, 0, 0, 64, 32);
         $skinBytes = '';
-        for ($y = 0; $y < 32; $y++) {
-            for ($x = 0; $x < 64; $x++) {
-                $index = imagecolorat($img, $x, $y);
-                if ($index === false) {
-                    return null;
-                }
-                $color = imagecolorsforindex($img, $index);
-                $skinBytes .= chr($color['red']) . chr($color['green']) . chr($color['blue']) . chr(255 - $color['alpha']);
+        for ($y = 0; $y < $size[1]; $y++) {
+            for ($x = 0; $x < $size[0]; $x++) {
+                $pixelColor = imagecolorat($img, $x, $y);
+                $a = ((~($pixelColor >> 24)) << 1) & 0xff;
+                $r = ($pixelColor >> 16) & 0xff;
+                $g = ($pixelColor >> 8) & 0xff;
+                $b = $pixelColor & 0xff;
+                $skinBytes .= chr($r) . chr($g) . chr($b) . chr($a);
             }
         }
         imagedestroy($img);
@@ -325,12 +323,12 @@ final class CosmeticHandler
         if ($size === false) {
             return null;
         }
-        $imagePath = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
-        if ($imagePath === false) {
+        $imagePathh = $this->exportSkinToImage($imagePath, $stuffName, [$size[0], $size[1], 4]);
+        if ($imagePathh === false) {
             return null;
         }
         $geometryPath = $this->artifactFolder . $stuffName . '.json';
-        return $this->loadSkin($imagePath, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
+        return $this->loadSkin($imagePathh, $geometryPath, $skinID, 'geometry.cosmetic/artifact');
     }
 
     /**
@@ -341,28 +339,29 @@ final class CosmeticHandler
      */
     private function exportSkinToImage(string $skinPath, string $stuffName, array $size): string|false
     {
-        $fileContent = file_get_contents($skinPath);
-        if ($fileContent === false) {
-            return false;
-        }
-        $down = imagecreatefromstring($fileContent);
         $path = $this->artifactFolder;
-        $upperSize = $size[0] * $size[1] * $size[2] === 65536 ? 128 : 64;
-        $upper = $this->resizeImage($path . $stuffName . '.png', $upperSize, $upperSize);
-        if ($upper === null) {
-            return false;
-        }
+        $down = imagecreatefrompng($skinPath);
         if ($down === false) {
             return false;
         }
-        imagecopyresampled($down, $upper, 0, 0, 0, 0, $size[0], $size[1], $upperSize, $upperSize);
-        ob_start();
-        imagepng($down);
-        $image_data = ob_get_contents();
-        ob_end_clean();
-        imagedestroy($down);
-        imagedestroy($upper);
-        return $image_data;
+        if ($size[0] * $size[1] * $size[2] === 65536) {
+            $upper = $this->resizeImage($path . $stuffName . '.png', 128, 128);
+        } else {
+            $upper = $this->resizeImage($path . $stuffName . '.png', 64, 64);
+        }
+        if ($upper === null) {
+            return false;
+        }
+        $alpha = imagecolorallocatealpha($upper, 0, 0, 0, 127);
+        if ($alpha === false) {
+            return false;
+        }
+        imagecolortransparent($upper, $alpha);
+        imagealphablending($down, true);
+        imagesavealpha($down, true);
+        imagecopymerge($down, $upper, 0, 0, 0, 0, $size[0], $size[1], 100);
+        imagepng($down, $this->dataFolder . 'temp.png');
+        return $this->dataFolder . 'temp.png';
     }
 
     /**
@@ -386,17 +385,19 @@ final class CosmeticHandler
             $newHeight = $w / $r;
             $newWidth = $w;
         }
-        $fileContent = file_get_contents($file);
-        if ($fileContent === false) {
-            return null;
-        }
-        $src = imagecreatefromstring($fileContent);
+        $src = imagecreatefrompng($file);
         $dst = imagecreatetruecolor($w, $h);
         if ($src === false || $dst === false) {
             return null;
         }
-        imagecopyresized($dst, $src, 0, 0, 0, 0, (int)$newWidth, (int)$newHeight, $width, $height);
-        imagedestroy($src);
+        $alpha = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+        if ($alpha === false) {
+            return null;
+        }
+        imagecolortransparent($dst, $alpha);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, (int)$newWidth, (int)$newHeight, $width, $height);
         return $dst;
     }
 
@@ -430,68 +431,5 @@ final class CosmeticHandler
         imagedestroy($img);
         imagedestroy($src);
         return $bytes;
-    }
-
-    /**
-     * @param Player $player
-     * @return void
-     */
-    public function resetSkin(Player $player): void
-    {
-        try {
-            $name = $player->getName();
-            $imagePath = $this->getSaveSkin($name);
-            $skin = $this->loadSkin($imagePath, $this->resourcesFolder . 'steve.json', $player->getSkin()->getSkinId(), 'geometry.humanoid.customSlim');
-            if ($skin !== null) {
-                $skin = new Skin($skin->getSkinId(), $skin->getSkinData(), '', $skin->getGeometryName(), $player->getSkin()->getGeometryData());
-                $player->setSkin($skin);
-                $player->sendSkin();
-            }
-        } catch (Exception) {
-        }
-    }
-
-    /**
-     * @param string $skinData
-     * @return int|null
-     */
-    public function getSkinTransparencyPercentage(string $skinData): ?int
-    {
-        $skinDataLength = strlen($skinData);
-        switch ($skinDataLength) {
-            case 8192:
-                $maxX = 64;
-                $maxY = 32;
-                $bounds = $this->skinBounds[self::BOUNDS_64_32];
-                break;
-            case 16384:
-                $maxX = 64;
-                $maxY = 64;
-                $bounds = $this->skinBounds[self::BOUNDS_64_64];
-                break;
-            case 65536:
-                $maxX = 128;
-                $maxY = 128;
-                $bounds = $this->skinBounds[self::BOUNDS_128_128];
-                break;
-            default:
-                throw new InvalidArgumentException('Inappropriate skin data length: ' . $skinDataLength);
-        }
-        $transparentPixels = $pixels = 0;
-        $bytePos = 0;
-        foreach ($bounds as $bound) {
-            if ($bound['max']['x'] > $maxX || $bound['max']['y'] > $maxY) {
-                continue;
-            }
-            for ($i = 0, $len = ($bound['max']['y'] - $bound['min']['y'] + 1) * ($bound['max']['x'] - $bound['min']['x'] + 1); $i < $len; ++$i) {
-                $a = ord($skinData[$bytePos + 3]);
-                if (($a & 0x80) === 0) {
-                    ++$transparentPixels;
-                }
-                ++$pixels;
-                $bytePos += 4;
-            }
-        }
-        return (int)round($transparentPixels * 100 / max(1, $pixels));
     }
 }

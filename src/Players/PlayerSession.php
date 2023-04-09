@@ -17,6 +17,8 @@ final class PlayerSession
     public bool $ScoreboardEnabled = true;
     /** @var bool */
     public bool $CpsCounterEnabled = true;
+    /** @var bool */
+    public bool $isLightningKill = true;
     /** @var string|null */
     public ?string $Scoreboard = null;
 
@@ -110,6 +112,9 @@ final class PlayerSession
                     break;
                 case 'coins':
                     $this->coins = (int)$value;
+                    break;
+                case 'lightning':
+                    $this->isLightningKill = (bool)$value;
                     break;
                 default:
                     break;

@@ -6,7 +6,6 @@ namespace Nayuki;
 
 use InvalidArgumentException;
 use Nayuki\Misc\PracticeChunkLoader;
-use pocketmine\block\VanillaBlocks;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\VanillaItems;
@@ -128,7 +127,7 @@ final class PracticeUtils
         $item2->setCustomName('§r§bSettings');
         $item3 = VanillaItems::GOLDEN_SWORD()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item3->setCustomName('§r§bDuels');
-        $item4 = VanillaBlocks::CHEST()->asItem()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
+        $item4 = VanillaItems::FEATHER()->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 10));
         $item4->setCustomName('§r§bCosmetics');
         $player->getOffHandInventory()->clearAll();
         $player->getInventory()->clearAll();

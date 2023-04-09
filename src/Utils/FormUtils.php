@@ -18,7 +18,7 @@ use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-class FormUtils
+final class FormUtils
 {
     /**
      * @param Player $player
@@ -63,6 +63,9 @@ class FormUtils
                         case 'scoreboard':
                             $session->ScoreboardEnabled = (bool)$value;
                             break;
+                        case 'lightning':
+                            $session->isLightningKill = (bool)$value;
+                            break;
                         default:
                             break;
                     }
@@ -72,6 +75,7 @@ class FormUtils
         $form->setTitle(PracticeConfig::Server_Name . '§cMenu');
         $form->addToggle('Cps Counter', PracticeCore::getSessionManager()->getSession($player)->CpsCounterEnabled, 'CPS');
         $form->addToggle('Scoreboard', PracticeCore::getSessionManager()->getSession($player)->ScoreboardEnabled, 'Scoreboard');
+        $form->addToggle('Lightning Kill', PracticeCore::getSessionManager()->getSession($player)->isLightningKill, 'lightning');
         $player->sendForm($form);
     }
 
@@ -138,6 +142,9 @@ class FormUtils
                     case 2:
                         $this->getArtifactShopForm($player);
                         break;
+                    case 3:
+                        $this->getCustomTagForm($player);
+                        break;
                 }
             }
         });
@@ -146,6 +153,7 @@ class FormUtils
         $form->addButton("§aArtifact\n§r§8Tap to continue");
         $form->addButton("§aCape\n§r§8Tap to continue");
         $form->addButton("§aArtifact Shop\n§r§8Tap to continue");
+        $form->addButton("§aCustom Tag\n§r§8Tap to continue");
         $player->sendForm($form);
     }
 
@@ -175,7 +183,7 @@ class FormUtils
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cArtifact');
-        $validStuffs = $session->purchasedArtifacts;
+        $validStuffs = ($player->hasPermission('practice.cosmetic.all')) ? PracticeCore::getCosmeticHandler()->cosmeticAvailable : $session->purchasedArtifacts;
         if (count($validStuffs) <= 1) {
             $form->addButton('None', -1, '', 'None');
             $player->sendForm($form);
@@ -230,17 +238,13 @@ class FormUtils
             if ($data !== null) {
                 if (!file_exists(PracticeCore::getInstance()->getDataFolder() . 'cosmetic/capes/' . $data . '.png')) {
                     $player->sendMessage(PracticeCore::getPrefixCore() . '§cCape not found!');
-                } else {
-                    $oldSkin = $player->getSkin();
-                    $capeData = PracticeCore::getCosmeticHandler()->createCape($data);
-                    $setCape = new Skin($oldSkin->getSkinId(), $oldSkin->getSkinData(), $capeData, $oldSkin->getGeometryName(), $oldSkin->getGeometryData());
-                    $player->setSkin($setCape);
-                    $player->sendSkin();
-                    $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
-                    $msg = str_replace('{name}', $data, $msg);
-                    $player->sendMessage($msg);
-                    $session->cape = $data;
+                    return;
                 }
+                $session->cape = $data;
+                $msg = PracticeCore::getPrefixCore() . '§aCape set to {name}!';
+                $msg = str_replace('{name}', $data, $msg);
+                $player->sendMessage($msg);
+                PracticeCore::getCosmeticHandler()->setSkin($player, $session->artifact);
             }
         });
         $form->setTitle(PracticeConfig::Server_Name . '§cCapes');
@@ -302,6 +306,35 @@ class FormUtils
             }
             $form->addButton("§a$key §7- §a$value Coins", -1, '', $key);
         }
+        $player->sendForm($form);
+    }
+
+    /**
+     * @param Player $player
+     * @return void
+     */
+    public function getCustomTagForm(Player $player): void
+    {
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $form = new CustomForm(function (Player $player, $data = null) use ($session) {
+            if ($data !== null) {
+                if (strlen($data) > 6) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cCustom Tag cannot be longer than 6 characters!');
+                    return;
+                }
+                if ($session->coins < 1000) {
+                    $player->sendMessage(PracticeCore::getPrefixCore() . '§cYou do not have enough coins to purchase this custom tag!');
+                    return;
+                }
+                $session->coins = ($session->coins - 1000);
+                $session->setCustomTag($data);
+                $player->sendMessage(PracticeCore::getPrefixCore() . '§aCustom Tag set to ' . $data . '!');
+            }
+        });
+        $form->setTitle(PracticeConfig::Server_Name . '§cCustom Tag');
+        $form->addLabel('§aCustom Tag costs 1000 coins!');
+        $form->addLabel('§aCustom Tag cannot be longer than 6 characters!');
+        $form->addInput('CustomTag', 'Custom Tag', $session->getCustomTag(), 'tag');
         $player->sendForm($form);
     }
 }

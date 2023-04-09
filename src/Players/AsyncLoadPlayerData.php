@@ -37,7 +37,8 @@ class AsyncLoadPlayerData extends AsyncTask
             'cape' => '',
             'artifact' => '',
             'purchasedArtifacts' => [],
-            'coins' => 0
+            'coins' => 0,
+            'lightningKill' => true,
         ];
         $data = $this->loadFromYaml($playerData);
         $this->setResult(['data' => $data, 'player' => $this->playerName]);
@@ -80,6 +81,7 @@ class AsyncLoadPlayerData extends AsyncTask
                 $session = PracticeCore::getSessionManager()->getSession($player);
                 $player->sendMessage(PracticeCore::getPrefixCore() . 'Your data has been loaded.');
                 $session->loadData($data);
+                PracticeCore::getCosmeticHandler()->setSkin($player, $data['artifact']);
             }
         }
     }

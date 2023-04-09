@@ -7,6 +7,7 @@ namespace Nayuki;
 use JsonException;
 use Nayuki\Misc\AbstractListener;
 use Nayuki\Misc\CustomChatFormatter;
+use pocketmine\entity\Entity;
 use pocketmine\entity\Skin;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -36,9 +37,11 @@ use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\types\entity\PropertySyncData;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
@@ -116,10 +119,13 @@ final class PracticeListener extends AbstractListener
      * @param PlayerLoginEvent $event
      * @return void
      * @priority LOWEST
+     * @throws JsonException
      */
     public function onPlayerLoginEvent(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
+        $name = $player->getName();
+        $cosmetic = PracticeCore::getCosmeticHandler();
         $banplayer = $player->getName();
         $stmt = PracticeCore::getInstance()->BanDatabase->prepare('SELECT * FROM banPlayers WHERE player = ?');
         if (!$stmt instanceof SQLite3Stmt) {
@@ -152,6 +158,8 @@ final class PracticeListener extends AbstractListener
                 $stmt->execute();
             }
         }
+        $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
+        $cosmetic->saveSkin($skin->getSkinData(), $name);
     }
 
     /**
@@ -173,18 +181,15 @@ final class PracticeListener extends AbstractListener
      * @param PlayerJoinEvent $event
      * @return void
      * @priority LOWEST
-     * @throws JsonException
      */
     public function onPlayerJoinEvent(PlayerJoinEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        $event->setJoinMessage('§f[§a+§f] §a' . $name);
         $player->sendMessage(PracticeCore::getPrefixCore() . '§eLoading Player Data...');
+        $event->setJoinMessage('§f[§a+§f] §a' . $name);
         PracticeCore::getUtils()->setLobbyItem($player);
         PracticeCore::getPlayerHandler()->loadPlayerData($player);
-        $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-        PracticeCore::getCosmeticHandler()->saveSkin($skin->getSkinData(), $name);
     }
 
     /**
@@ -193,21 +198,25 @@ final class PracticeListener extends AbstractListener
      * @throws JsonException
      * @priority LOWEST
      */
-    public function onChangeSkin(PlayerChangeSkinEvent $event): void
+    public function onPlayerChangeSkin(PlayerChangeSkinEvent $event): void
     {
         $player = $event->getPlayer();
         $name = $player->getName();
-        if ($player instanceof PracticePlayer) {
-            $cosmetic = PracticeCore::getCosmeticHandler();
-            if (strlen($event->getNewSkin()->getSkinData()) >= 131072 || strlen($event->getNewSkin()->getSkinData()) <= 8192 || $cosmetic->getSkinTransparencyPercentage($event->getNewSkin()->getSkinData()) > 6) {
-                copy($cosmetic->stevePng, $cosmetic->saveSkin . "$name.png");
-                $cosmetic->resetSkin($player);
-            } else {
-                $skin = new Skin($event->getNewSkin()->getSkinId(), $event->getNewSkin()->getSkinData(), '', $event->getNewSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $event->getNewSkin()->getGeometryName(), '');
-                $cosmetic->saveSkin($skin->getSkinData(), $name);
-            }
-            $skin = new Skin($player->getSkin()->getSkinId(), $player->getSkin()->getSkinData(), '', $player->getSkin()->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $player->getSkin()->getGeometryName(), '');
-            $cosmetic->saveSkin($skin->getSkinData(), $name);
+        $session = PracticeCore::getSessionManager()->getSession($player);
+        $cosmetic = PracticeCore::getCosmeticHandler();
+        $newSkin = $event->getNewSkin();
+        $skinData = $newSkin->getSkinData();
+        $geometryName = $newSkin->getGeometryName() !== 'geometry.humanoid.customSlim' ? 'geometry.humanoid.custom' : $newSkin->getGeometryName();
+        $event->cancel();
+        $skin = new Skin($newSkin->getSkinId(), $skinData, '', $geometryName, '');
+        $cosmetic->saveSkin($skin->getSkinData(), $name);
+        if ($session->artifact !== '') {
+            $cosmetic->setSkin($player, $session->artifact);
+        } elseif ($session->cape !== '') {
+            $capeData = $cosmetic->createCape($session->cape);
+            $player->setSkin(new Skin($newSkin->getSkinId(), $newSkin->getSkinData(), $capeData, $geometryName, ''));
+        } else {
+            $player->setSkin(new Skin($newSkin->getSkinId(), $newSkin->getSkinData(), '', $geometryName, ''));
         }
     }
 
@@ -470,6 +479,7 @@ final class PracticeListener extends AbstractListener
         $event->setDrops([]);
         $event->setXpDropAmount(0);
         $player = $event->getPlayer();
+        $position = $player->getPosition();
         $cause = $player->getLastDamageCause();
         $session = PracticeCore::getSessionManager()->getSession($player);
         if (($cause instanceof EntityDamageByEntityEvent) && $session->getOpponent() !== null) {
@@ -490,6 +500,16 @@ final class PracticeListener extends AbstractListener
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);
+
+                $lightning = new AddActorPacket();
+                $lightning->actorUniqueId = Entity::nextRuntimeId();
+                $lightning->actorRuntimeId = 1;
+                $lightning->position = $player->getPosition()->asVector3();
+                $lightning->type = 'minecraft:lightning_bolt';
+                $lightning->yaw = $player->getLocation()->getYaw();
+                $lightning->syncedProperties = new PropertySyncData([], []);
+                PracticeCore::getUtils()->playSound('ambient.weather.thunder', $player);
+                $damager->getNetworkSession()->sendDataPacket($lightning);
             }
         }
     }

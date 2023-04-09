@@ -11,7 +11,7 @@ use function array_unshift;
 use function count;
 use function microtime;
 
-class ClickHandler
+final class ClickHandler
 {
     /** @var array */
     public static array $ClickData = [];
