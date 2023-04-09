@@ -20,3 +20,5 @@ permissions:
     default: op
   default.command:
     default: true
+  practice.cosmetic.all:
+    default: op
