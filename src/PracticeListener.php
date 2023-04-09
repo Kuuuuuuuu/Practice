@@ -500,16 +500,17 @@ final class PracticeListener extends AbstractListener
                 $session->deaths++;
                 $session->killStreak = 0;
                 $damager->setHealth(20);
-
-                $lightning = new AddActorPacket();
-                $lightning->actorUniqueId = Entity::nextRuntimeId();
-                $lightning->actorRuntimeId = 1;
-                $lightning->position = $player->getPosition()->asVector3();
-                $lightning->type = 'minecraft:lightning_bolt';
-                $lightning->yaw = $player->getLocation()->getYaw();
-                $lightning->syncedProperties = new PropertySyncData([], []);
-                PracticeCore::getUtils()->playSound('ambient.weather.thunder', $player);
-                $damager->getNetworkSession()->sendDataPacket($lightning);
+                if ($session->isLightningKill) {
+                    $lightning = new AddActorPacket();
+                    $lightning->actorUniqueId = Entity::nextRuntimeId();
+                    $lightning->actorRuntimeId = 1;
+                    $lightning->position = $player->getPosition()->asVector3();
+                    $lightning->type = 'minecraft:lightning_bolt';
+                    $lightning->yaw = $player->getLocation()->getYaw();
+                    $lightning->syncedProperties = new PropertySyncData([], []);
+                    PracticeCore::getUtils()->playSound('ambient.weather.thunder', $player);
+                    $damager->getNetworkSession()->sendDataPacket($lightning);
+                }
             }
         }
     }
