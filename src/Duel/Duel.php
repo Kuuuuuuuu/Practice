@@ -107,12 +107,19 @@ final class Duel extends AbstractListener
     {
         $entity = $event->getEntity();
         $cause = $event->getCause();
-        if ($entity instanceof Player && $cause === EntityDamageEvent::CAUSE_VOID) {
-            $event->cancel();
-            $ESession = PracticeCore::getSessionManager()->getSession($entity);
-            $ESession->isDueling = false;
-            $winner = ($entity->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
-            $entity->teleport($winner->getPosition());
+        if ($entity instanceof Player) {
+            if ($entity->getWorld() === $this->world) {
+                switch ($cause) {
+                    case EntityDamageEvent::CAUSE_ENTITY_ATTACK:
+                    case EntityDamageEvent::CAUSE_VOID:
+                        $event->cancel();
+                        $ESession = PracticeCore::getSessionManager()->getSession($entity);
+                        $ESession->isDueling = false;
+                        $winner = ($entity->getName() !== $this->player1->getName()) ? $this->player1 : $this->player2;
+                        $entity->teleport($winner->getPosition());
+                        break;
+                }
+            }
         }
     }
 
@@ -244,5 +251,15 @@ final class Duel extends AbstractListener
     public function getSeconds(): int
     {
         return $this->time;
+    }
+
+    public function __destruct()
+    {
+        self::$status = DuelStatus::STARTING;
+        $this->time = DuelConfig::DEFAULT_TIME;
+        $this->startSec = DuelConfig::DEFAULT_START_SEC;
+        $this->endSec = DuelConfig::DEFAULT_END_SEC;
+        $this->winner = null;
+        $this->loser = null;
     }
 }

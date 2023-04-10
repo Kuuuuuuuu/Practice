@@ -85,6 +85,7 @@ final class DuelManager
             }
             PracticeCore::getUtils()->deleteDir(PracticeCore::getInstance()->getServer()->getDataPath() . "worlds/$name");
             if (isset($this->arenas[$name])) {
+                $this->arenas[$name]->__destruct();
                 unset($this->arenas[$name]);
             }
         }

@@ -3,15 +3,17 @@
 namespace Nayuki\Duel;
 
 use Nayuki\Entities\PracticeBot;
+use Nayuki\Misc\AbstractListener;
 use Nayuki\PracticeCore;
 use pocketmine\entity\Location;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
 use pocketmine\world\WorldException;
 
-final class DuelBot
+final class DuelBot extends AbstractListener
 {
     private static int $status = DuelStatus::STARTING;
     /** @var string */
@@ -41,6 +43,26 @@ final class DuelBot
         $this->player1 = $player1;
         $this->player2 = null;
         $this->name = $name;
+    }
+
+    /**
+     * @param EntityDamageEvent $event
+     * @return void
+     * @priority HIGH
+     */
+    public function onEntityDamageEvent(EntityDamageEvent $event): void
+    {
+        $entity = $event->getEntity();
+        $cause = $event->getCause();
+        if ($entity instanceof Player) {
+            if ($entity->getWorld() === $this->world) {
+                if ($cause === EntityDamageEvent::CAUSE_ENTITY_ATTACK) {
+                    $event->cancel();
+                    $ESession = PracticeCore::getSessionManager()->getSession($entity);
+                    $ESession->isDueling = false;
+                }
+            }
+        }
     }
 
     /**
@@ -115,12 +137,13 @@ final class DuelBot
             $session->isCombat = false;
             $session->CombatTime = 0;
             $session->isQueueing = false;
+            $player->setHealth(20);
+            $player->setImmobile(false);
             if ($spawn instanceof World) {
                 $player->teleport($spawn->getSafeSpawn(), 0, 0);
             }
             PracticeCore::getUtils()->setLobbyItem($player);
             PracticeCore::getScoreboardManager()->setLobbyScoreboard($player);
-            $player->setHealth(20);
         }
         PracticeCore::getDuelManager()->stopMatch($this->name);
     }
@@ -131,5 +154,13 @@ final class DuelBot
     public function getSeconds(): int
     {
         return $this->time;
+    }
+
+    public function __destruct()
+    {
+        $this->time = DuelConfig::DEFAULT_TIME;
+        $this->startSec = DuelConfig::DEFAULT_START_SEC;
+        $this->endSec = DuelConfig::DEFAULT_END_SEC;
+        self::$status = DuelStatus::STARTING;
     }
 }
