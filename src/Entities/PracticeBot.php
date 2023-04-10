@@ -22,7 +22,7 @@ final class PracticeBot extends Human
     /** @var string */
     private string $target;
     /** @var float */
-    private float $speed = 0.7;
+    private float $speed = 0.65;
     /** @var int */
     private int $tick = 0;
 
@@ -90,7 +90,7 @@ final class PracticeBot extends Human
             return;
         }
         $targetVector = $target->getPosition()->asVector3();
-        if ($this->isLookingAt($targetVector) && $this->getLocation()->distance($targetVector) <= 2.8) {
+        if ($this->isLookingAt($targetVector) && $this->getLocation()->distance($targetVector) <= 2.5) {
             $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
             $event = new EntityDamageByEntityEvent($this, $target, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getInventory()->getItemInHand()->getAttackPoints());
             $this->broadcastMotion();
