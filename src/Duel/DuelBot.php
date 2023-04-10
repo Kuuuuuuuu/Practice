@@ -33,6 +33,7 @@ final class DuelBot extends AbstractListener
 
     public function __construct(string $name, Player $player1)
     {
+        parent::__construct();
         $world = Server::getInstance()->getWorldManager()->getWorldByName($name);
         if ($world === null) {
             throw new WorldException('World does not exist');
