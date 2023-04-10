@@ -35,6 +35,8 @@ final class DuelBot
         if ($world === null) {
             throw new WorldException('World does not exist');
         }
+        $session = PracticeCore::getSessionManager()->getSession($player1);
+        $session->DuelClass = $this;
         $this->world = $world;
         $this->player1 = $player1;
         $this->player2 = null;
@@ -89,7 +91,6 @@ final class DuelBot
                     break;
             }
         }
-        $this->time--;
     }
 
     public function onEnd(?Player $playerLeft = null): void
@@ -122,5 +123,13 @@ final class DuelBot
             $player->setHealth(20);
         }
         PracticeCore::getDuelManager()->stopMatch($this->name);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSeconds(): int
+    {
+        return $this->time;
     }
 }
