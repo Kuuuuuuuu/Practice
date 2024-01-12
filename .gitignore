@@ -1,0 +1,6 @@
+vendor
+.php-cs-fixer.cache
+composer.lock
+phpstan.bat
+php-cs-fixer.bat
+.idea

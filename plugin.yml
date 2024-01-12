@@ -1,0 +1,21 @@
+name: Practice
+api: 5.0.0
+version: 1.0.0
+src-namespace-prefix: Nayuki
+main: Nayuki\PracticeCore
+load: STARTUP
+author: https://github.com/Kuuuuuuuu
+website: https://nayuki.cyou
+permissions:
+  practice.command:
+    default: op
+  restart.command:
+    default: op
+  settag.command:
+    default: op
+  hologram.command:
+    default: op
+  default.command:
+    default: true
+  practice.cosmetic.all:
+    default: op

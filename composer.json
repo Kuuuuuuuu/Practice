@@ -1,0 +1,20 @@
+{
+  "require": {
+    "ext-gd": "*",
+    "ext-sqlite3": "*",
+    "ext-mbstring": "*",
+    "ext-yaml": "*",
+    "ext-curl": "*",
+    "ext-zip": "*",
+    "ext-igbinary": "*",
+    "pocketmine/pocketmine-mp": "5.10.0",
+    "ext-sockets": "*",
+    "ext-gmp": "*"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10.11",
+    "friendsofphp/php-cs-fixer": "3.13.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
