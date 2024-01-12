@@ -4,6 +4,7 @@ PracticeCore for Pocketmine-MP 5.0 for My small minecraft Servers
 
 ## Notes
 - This may not work because I have not tested it yet and also I quit minecraft
+- Also, the code is so 💩
 
 ## Features
 
